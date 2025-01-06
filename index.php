@@ -70,67 +70,132 @@ body{
 .color-web {
     background-color: rgb(218, 119, 86);
 }
-</style>
-<body style="background-color:rgb(238, 236, 226)" class="d-flex align-content-center justify-content-center">
-    <div class="row mt-4 w-75">
-        <div class="col bg-white pb-0 p-5 rounded-start-3 shadow">
-            <img src="assets/smagaedu.png" alt="" width="60px" class="p-1 mb-2 border rounded-circle">
-            <div>
-                <p class="p-0 m-0">Selamat Datang</p>
-                <h5 class="mb-2 p-0 m-0" style="font-weight: bold; font-size: 20px;">Aplikasi SMAGAEdu</h5>
-                <p class="text-muted" style="font-size: 11px;">SMAGAEdu merupakan salah satu produk LMS yang digunakan SMP Muhammadiyah 2 Gatak dan SMA Muhammadiyah 5 Gatak,
-                     silahkan login untuk dapat melanjutkan belajar.
-                </p>
-            </div>
-            <div>
-              <!-- alert salah password -->
-              <?php if(isset($_GET['pesan'])) { ?>
-                  <div class="alert alert-danger" role="alert">
-                      <?php 
-                          if($_GET['pesan'] == "password_salah") {
-                              echo "Password yang Anda masukkan salah!";
-                          } else if($_GET['pesan'] == "user_tidak_ditemukan") {
-                              echo "User ID tidak ditemukan!";
-                          }
-                      ?>
-                  </div>
-              <?php } ?>
-                <form method="POST" action="login_back.php">
-                    <div class="mb-3">
-                      <label for="exampleInputEmail1" class="form-label" style="font-size: 12px;">Nama ID</label>
-                      <input type="text" name="userid" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Masukkan ID kamu">
-                      <div id="emailHelp" class="form-text"></div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="exampleInputPassword1" class="form-label" style="font-size: 12px;">Kata Sandi</label>
-                      <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Masukkan Kata Sandi kamu">
-                    </div>
 
-                    <div class="d-flex">
-                        <button type="submit" class="flex-fill color-web text-white p-2">Masuk</button>
-                        <style>
-                            button {
-                                transition: background-color 0.3s ease;
-                                border: 0;
-                                border-radius: 5px;
-                            }
-                            button:hover{
-                                background-color: rgb(219, 106, 68);
-                            }
-                        </style>
-                    </div>
-                  </form>
-                  <div class="pt-3">
-                    <p class="text-muted" style="font-size: 8px;">©️ Dikelola dan dikembangkan oleh Tim IT SMAGA - 2025</p>
-                  </div>
+body {
+  background-color: rgb(238, 236, 226);
+}
+
+.logo {
+  width: 60px;
+  padding:10px;
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        background-color: white;
+    }
+    .logo {
+      width: 40px;
+      padding:5px;
+    }
+}
+
+</style>
+<body class="d-flex align-content-center justify-content-center">
+    <!-- Container utama dengan width yang responsif -->
+    <div class="row mt-4 w-100 w-md-75 w-lg-75 mx-auto" style="max-width: 1200px;">
+        <!-- Kolom kiri - Form login -->
+        <div class="form col-12 col-md-6 bg-white p-3 p-md-4 p-lg-5 rounded-start-3 rounded-end-3 rounded-end-md-0 shadow-sm">
+            <!-- Logo -->
+            <div class="mb-md-2 mb-2">
+              <img src="assets/smagaedu.png" alt="SMAGA Edu Logo" class="bg-white border rounded-circle logo">
+                <img src="assets/logo.png" alt="Logo" class="bg-white border rounded-circle logo">
+            </div>
+
+            
+            <!-- Header text -->
+            <div class="mb-4">
+                <p class="p-0 m-0 fs-6">Selamat Datang</p>
+                <h5 class="mb-2 p-0 m-0 fs-5 fw-bold">Aplikasi SMAGAEdu</h5>
+            </div>
+
+            <!-- Alert error -->
+            <?php if(isset($_GET['pesan'])) { ?>
+                <div class="alert alert-danger fs-6 fade show animate-alert" role="alert">
+                    <?php 
+                        if($_GET['pesan'] == "password_salah") {
+                            echo "Password yang Anda masukkan salah!";
+                        } else if($_GET['pesan'] == "user_tidak_ditemukan") {
+                            echo "User ID tidak ditemukan!";
+                        }
+                    ?>
+                </div>
+            <?php } ?>
+            
+            <!-- style untuk alert -->
+            <style>
+              .animate-alert {
+                  animation: fadeIn 0.5s ease-in;
+              }
+
+              @keyframes fadeIn {
+                  0% {
+                      opacity: 0;
+                      transform: translateY(-10px);
+                  }
+                  100% {
+                      opacity: 1;
+                      transform: translateY(0);
+                  }
+              }
+            </style>
+
+            <!-- Form -->
+            <form method="POST" action="login_back.php">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label fs-6">Nama ID</label>
+                    <input type="text" name="userid" class="form-control" id="exampleInputEmail1" 
+                           aria-describedby="emailHelp" placeholder="Masukkan ID kamu">
+                </div>
+                <div class="mb-4">
+                    <label for="exampleInputPassword1" class="form-label fs-6">Kata Sandi</label>
+                    <input type="password" name="password" class="form-control" id="exampleInputPassword1" 
+                           placeholder="Masukkan Kata Sandi kamu">
+                </div>
+
+                <div class="d-flex">
+                    <button type="submit" class="flex-fill color-web text-white p-2 rounded">Masuk</button>
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <div class="pt-3">
+                <p class="text-muted" style="font-size: 10px;">©️ Dikelola dan dikembangkan oleh Tim IT SMAGA - 2025</p>
             </div>
         </div>  
-        <div class="col rounded-end-3 align-content-end shadow p-3 color-web">
-          <div style="text-align: right; margin-bottom: 10px;">
-            <img src="assets/logo.png" alt="" style="background-color: white;" class="border rounded-circle p-2" width="60px">
-          </div>
-            <h1 class="text-white p-0 m-0 text-end" style="font-size: 55px;">Satu <br>Platform Ciptakan Peluang.</h1>
+
+        <!-- Kolom kanan - Banner -->
+        <div class="col-12 col-md-6 rounded-end-3 shadow p-3 p-md-4 p-lg-5 color-web d-none d-md-flex align-items-end">
+            <h1 class="text-white text-end fs-1 fw-bold flex-fill">
+                Satu <br>Platform <br>Ciptakan <br> Peluang.
+            </h1>
         </div>
     </div>
+
+    <style>
+        .color-web {
+            background-color: your-color-here;
+        }
+        button {
+            transition: background-color 0.3s ease;
+            border: 0;
+        }
+        button:hover {
+            background-color: rgb(219, 106, 68);
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            .fs-6 {
+                font-size: 0.875rem !important;
+            }
+            .form {
+              border: 0!important;
+              box-shadow: none!important;
+            }
+        }
+    </style>
 </body>
+
 </html>
