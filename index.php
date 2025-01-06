@@ -83,15 +83,27 @@ body{
                 </p>
             </div>
             <div>
-                <form method="POST" action="logic/login_back.php">
+              <!-- alert salah password -->
+              <?php if(isset($_GET['pesan'])) { ?>
+                  <div class="alert alert-danger" role="alert">
+                      <?php 
+                          if($_GET['pesan'] == "password_salah") {
+                              echo "Password yang Anda masukkan salah!";
+                          } else if($_GET['pesan'] == "user_tidak_ditemukan") {
+                              echo "User ID tidak ditemukan!";
+                          }
+                      ?>
+                  </div>
+              <?php } ?>
+                <form method="POST" action="login_back.php">
                     <div class="mb-3">
                       <label for="exampleInputEmail1" class="form-label" style="font-size: 12px;">Nama ID</label>
-                      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Masukkan ID kamu">
+                      <input type="text" name="userid" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Masukkan ID kamu">
                       <div id="emailHelp" class="form-text"></div>
                     </div>
                     <div class="mb-3">
                       <label for="exampleInputPassword1" class="form-label" style="font-size: 12px;">Kata Sandi</label>
-                      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Masukkan Kata Sandi kamu">
+                      <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Masukkan Kata Sandi kamu">
                     </div>
 
                     <div class="d-flex">

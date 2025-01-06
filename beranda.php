@@ -1,3 +1,11 @@
+<?php
+session_start();
+if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
+    header("Location: index.php");
+    exit();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -171,7 +179,7 @@
                     <!-- dropdown menu option -->
                     <ul class="dropdown-menu" style="font-size: 12px;">
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="#">Keluar</a></li>
+                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
                       </ul>
                 </div>
             </div>

@@ -1,3 +1,12 @@
+<?php
+session_start();
+if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
+    header("Location: ../index.php");
+    exit();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -105,7 +114,7 @@
                 <div class="row gap-0">
                     <div class="ps-3 mb-3">
                         <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="../assets/smagaedu.png" alt="" width="30px">
+                            <img src="assets/smagaedu.png" alt="" width="30px">
                             <div>
                                 <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
                                 <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
@@ -115,7 +124,7 @@
                     <div class="col">
                         <a href="#" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
-                            <img src="../assets/beranda_fill.png" alt="" width="50px" class="pe-4">
+                            <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
                         </div>
                         </a>
@@ -123,7 +132,7 @@
                     <div class="col">
                         <a href="cari.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="../assets/pencarian.png" alt="" width="50px" class="pe-4">
+                            <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Cari</p>
                         </div>
                         </a>
@@ -131,7 +140,7 @@
                     <div class="col">
                         <a href="ujian.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="../assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
+                            <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Ujian</p>
                         </div>
                         </a>
@@ -139,7 +148,7 @@
                     <div class="col">
                         <a href="profil.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="../assets/profil_outfill.png" alt="" width="50px" class="pe-4">
+                            <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Profil</p>
                         </div>
                         </a>
@@ -149,7 +158,7 @@
                     <div class="col">
                         <a href="ai.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="../assets/ai.png" alt="" width="50px" class="pe-4">
+                            <img src="assets/ai.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Gemini</p>
                         </div>
                         </a>
@@ -157,7 +166,7 @@
                     <div class="col">
                         <a href="bantuan.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="../assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
+                            <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Bantuan</p>
                         </div>
                         </a>
@@ -165,13 +174,13 @@
                 </div>
                 <div class="row dropdown">
                     <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="../assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
+                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
                         <p class="p-0 m-0" style="font-size: 12px;">Halo, Ayundy</p>
                     </div>
                     <!-- dropdown menu option -->
                     <ul class="dropdown-menu" style="font-size: 12px;">
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="#">Keluar</a></li>
+                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
                       </ul>
                 </div>
             </div>
@@ -189,7 +198,7 @@
                         <h3 style="font-weight: bold;">Beranda</h3>
                     </div>
                     <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas" class="btn col-auto text-end d-flex align-items-center border p-2 me-3" style="padding: 5px 10px; border-radius: 5px;">
-                        <img src="../assets/tambah.png" alt="Tambah" width="25px" class="me-2">
+                        <img src="assets/tambah.png" alt="Tambah" width="25px" class="me-2">
                         <p class="m-0">Buat Kelas</p>
                     </button>
                 </div>
@@ -197,10 +206,10 @@
                 <div class="d-flex gap-3">
                     <div class="d-flex pt-3">
                         <div class="custom-card">
-                            <img src="../assets/bg.jpg" alt="Background Image">
+                            <img src="assets/bg.jpg" alt="Background Image">
                             <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
                                 <a href="profil.html">
-                                    <img src="../assets/pp.png" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
+                                    <img src="assets/pp.png" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
                                 </a>
                             </div>
                             <div class="ps-3">

@@ -1,15 +1,12 @@
-<!-- koneksi ke database -->
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "smagaedu";
+// Koneksi ke database smagaedu
+$koneksi = mysqli_connect("localhost", "root", "", "smagaedu");
 
-// Membuat koneksi
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Koneksi ke database absensi
+$koneksi_absensi = mysqli_connect("localhost", "root", "", "absensi");
 
-// Memeriksa koneksi
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
+// Cek koneksi
+if (mysqli_connect_errno()){
+    echo "Koneksi database gagal : " . mysqli_connect_error();
 }
 ?>
