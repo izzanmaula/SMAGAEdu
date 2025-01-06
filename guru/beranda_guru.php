@@ -105,7 +105,7 @@
                 <div class="row gap-0">
                     <div class="ps-3 mb-3">
                         <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px">
+                            <img src="../assets/smagaedu.png" alt="" width="30px">
                             <div>
                                 <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
                                 <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
@@ -115,7 +115,7 @@
                     <div class="col">
                         <a href="#" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
-                            <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
+                            <img src="../assets/beranda_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
                         </div>
                         </a>
@@ -123,7 +123,7 @@
                     <div class="col">
                         <a href="cari.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
+                            <img src="../assets/pencarian.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Cari</p>
                         </div>
                         </a>
@@ -131,7 +131,7 @@
                     <div class="col">
                         <a href="ujian.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
+                            <img src="../assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Ujian</p>
                         </div>
                         </a>
@@ -139,7 +139,7 @@
                     <div class="col">
                         <a href="profil.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
+                            <img src="../assets/profil_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Profil</p>
                         </div>
                         </a>
@@ -149,7 +149,7 @@
                     <div class="col">
                         <a href="ai.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ai.png" alt="" width="50px" class="pe-4">
+                            <img src="../assets/ai.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Gemini</p>
                         </div>
                         </a>
@@ -157,7 +157,7 @@
                     <div class="col">
                         <a href="bantuan.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
+                            <img src="../assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Bantuan</p>
                         </div>
                         </a>
@@ -165,7 +165,7 @@
                 </div>
                 <div class="row dropdown">
                     <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
+                        <img src="../assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
                         <p class="p-0 m-0" style="font-size: 12px;">Halo, Ayundy</p>
                     </div>
                     <!-- dropdown menu option -->
@@ -189,18 +189,18 @@
                         <h3 style="font-weight: bold;">Beranda</h3>
                     </div>
                     <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas" class="btn col-auto text-end d-flex align-items-center border p-2 me-3" style="padding: 5px 10px; border-radius: 5px;">
-                        <img src="assets/tambah.png" alt="Tambah" width="25px" class="me-2">
-                        <p class="m-0">Gabung Kelas</p>
+                        <img src="../assets/tambah.png" alt="Tambah" width="25px" class="me-2">
+                        <p class="m-0">Buat Kelas</p>
                     </button>
                 </div>
 
                 <div class="d-flex gap-3">
                     <div class="d-flex pt-3">
                         <div class="custom-card">
-                            <img src="assets/bg.jpg" alt="Background Image">
+                            <img src="../assets/bg.jpg" alt="Background Image">
                             <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
                                 <a href="profil.html">
-                                    <img src="assets/pp.png" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
+                                    <img src="../assets/pp.png" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
                                 </a>
                             </div>
                             <div class="ps-3">
@@ -208,7 +208,7 @@
                                 <p class="p-0 m-0" style="font-size: 12px;">Ayundy Anditaningrum, S.Ag</p>
                             </div>
                             <div class="d-flex btn-group gap-2 p-3">
-                                <a href="kelas.php" class="color-web btn btn w-45 rounded" style="text-decoration: none; color: white;">Masuk</a>
+                                <a href="../kelas.php" class="color-web btn btn w-45 rounded" style="text-decoration: none; color: white;">Masuk</a>
                             </div>
                             <style>
                             .btn {
@@ -228,25 +228,58 @@
         </div>
     </div>
 
-        <!-- modal untuk gabung kelas -->
+        <!-- modal untuk buat kelas -->
      <!-- Modal -->
      <div class="modal fade" id="modal_tambah_kelas" tabindex="-1" aria-labelledby="label_tambah_kelas" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-            <h1 class="modal-title fs-5" id="label_tambah_kelas" style="font-weight: bold;">Gabung Kelas</h1>
+            <h1 class="modal-title fs-5" id="label_tambah_kelas" style="font-weight: bold;">Buat Kelas</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- masukkan kode kelas -->
-                 <div>
-                    <label for="input_kode_kelas" class="form-label">Kode Kelas</label>
-                    <input type="text" class="form-control" id="input_kode_kelas" placeholder="Masukkan kode kelas"></label>
-                 </div>
-
+            <form action="">
+                <div class="mb-3">
+                    <div class="dropdown">
+                            <label for="dropdownField" class="form-label" style="font-size: 14px;">Pilih mata pelajaran Anda</label>
+                            <select class="form-select" id="dropdownField" aria-label="Default select example">
+                                <option selected>Pilih salah satu</option>
+                                <option value="1">Bahasa Indonesia</option>
+                                <option value="2">Matematika</option>
+                                <option value="3">Ilmu Pengetahuan Alam</option>
+                            </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="dropdown">
+                            <label for="dropdownField" class="form-label" style="font-size: 14px;">Kelas apa yang ingin Anda tambahkan?</label>
+                            <select class="form-select" id="dropdownField" aria-label="Default select example">
+                                <option selected>Pilih salah satu</option>
+                                <option value="1">Kelas 7</option>
+                                <option value="2">Kelas 8</option>
+                                <option value="3">Kelas 9</option>
+                            </select>
+                    </div>
+                </div>
+                <div class="container mb-3 p-0">
+                    <div class="form-group">
+                        <label for="bg_kelas" style="font-size: 14px;">Tambahkan gambar latar belakang kelas Anda</label>
+                        <input type="file" class="form-control" id="bg_kelas">    
+                    </div>
+                </div>
+                <div class="container mb-3 p-0">
+                    <div class="form-group">
+                        <label for="bg_kelas" style="font-size: 14px;">Deskripsi kelas Anda</label>
+                        <div class="form-floating">
+                            <textarea class="form-control" style="width: 100%;" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+                            <label for="floatingTextarea">Kelas ini bertujuan untuk ...</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
             </div>
             <div class="modal-footer d-flex">
-            <button type="button" class="btn color-web text-white flex-fill">Masuk</button>
+            <button type="button" class="btn color-web text-white flex-fill">Buat</button>
             </div>
         </div>
         </div>

@@ -1,3 +1,8 @@
+<?php 
+require "koneksi.php";
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,7 +83,7 @@ body{
                 </p>
             </div>
             <div>
-                <form>
+                <form method="POST" action="logic/login_back.php">
                     <div class="mb-3">
                       <label for="exampleInputEmail1" class="form-label" style="font-size: 12px;">Nama ID</label>
                       <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Masukkan ID kamu">
