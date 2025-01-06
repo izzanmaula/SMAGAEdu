@@ -20,11 +20,25 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
 </head>
 <style>
         .custom-card {
-            width: 300px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
             border: 1px solid #dee2e6;
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);        
+        }
+
+        @media (max-width: 768px) {
+            .menu-samping {
+                display: none;
+            }
+            body {
+                padding-top: 60px;
+            }
+            .custom-card {
+                max-width: 100%;
+            }
         }
         .custom-card img {
             width: 100%;
@@ -99,10 +113,103 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
 <body>
     
 
+    <!-- Navbar Mobile -->
+    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
+        <div class="container-fluid">
+            <!-- Logo dan Nama -->
+            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
+                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
+            <div>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
+                </div>
+            </a>
+            
+            <!-- Tombol Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+                <span class="navbar-toggler-icon" style="color:white"></span>
+            </button>
+            
+            <!-- Offcanvas/Sidebar Mobile -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="d-flex flex-column gap-2">
+                        <!-- Menu Beranda -->
+                        <a href="#" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded color-web p-2">
+                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0 text-white">Beranda</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Cari -->
+                        <a href="cari.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Cari</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Ujian -->
+                        <a href="ujian.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Ujian</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Profil -->
+                        <a href="profil.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Profil</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu AI -->
+                        <a href="ai.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Gemini</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Bantuan -->
+                        <a href="bantuan.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Bantuan</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                <!-- Profile Dropdown -->
+                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
+                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
+                            style="background-color: #F8F8F7;" 
+                            type="button" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false">
+                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
+                        <p class="p-0 m-0" style="font-size: 12px;">Halo, Ayundy</p>
+                    </button>
+                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
+                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
+                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
      <!-- row col untuk halaman utama -->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-3 col-md-2 vh-100 p-4 shadow-sm menu-samping" style="background-color:rgb(238, 236, 226)">
+        <div class="col-auto vh-100 p-2 p-md-4 shadow-sm menu-samping d-none d-md-block" style="background-color:rgb(238, 236, 226)">
                 <style>
                     .menu-samping {
                         position: fixed;
@@ -113,7 +220,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
                 <div class="row gap-0">
                     <div class="ps-3 mb-3">
                         <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px">
+                            <img src="assets/smagaedu.png" alt="" width="30px" class="logo_orange">
                             <div>
                                 <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
                                 <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
@@ -185,26 +292,57 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
             </div>
 
             <!-- ini isi kontennya -->
-            <div class="col p-4 col-utama">
-                <style>
-                    .col-utama{
+            <div class="col p-4 col-utama mt-1 mt-md-0">
+            <style>
+                .col-utama {
+                    margin-left: 0;
+                }
+                @media (min-width: 768px) {
+                    .col-utama {
                         margin-left: 13rem;
-                        
                     }
-                </style>
-                <div class="row justify-content-between align-items-center">
-                    <div class="col">
+                }
+            </style>                
+                <div class="row justify-content-between align-items-center mb-1">
+                    <div class="col-12 col-md-auto mb-3 mb-md-0">
                         <h3 style="font-weight: bold;">Beranda</h3>
                     </div>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas" class="btn col-auto text-end d-flex align-items-center border p-2 me-3" style="padding: 5px 10px; border-radius: 5px;">
-                        <img src="assets/tambah.png" alt="Tambah" width="25px" class="me-2">
-                        <p class="m-0">Gabung Kelas</p>
-                    </button>
+                    <!-- Tombol desktop -->
+                    <div class="d-none d-md-block col-md-auto">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas" 
+                                class="btn d-flex align-items-center justify-content-center border p-2">
+                            <img src="assets/tambah.png" alt="Tambah" width="25px" class="me-2">
+                            <p class="m-0">Gabung Kelas</p>
+                        </button>
+                    </div>
+
+                    <!-- Floating button untuk mobile -->
+                    <div class="position-fixed bottom-0 end-0 d-md-none m-4">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas" 
+                                class="btn color-web rounded-circle shadow d-flex align-items-center justify-content-center" 
+                                style="width: 56px; height: 56px;">
+                            <img src="assets/tambah.png" alt="Tambah" width="25px" class="m-0" style="filter: brightness(0) invert(1);">
+                        </button>
+                    </div>
+
+                    <style>
+                        /* Animasi hover untuk floating button */
+                        .position-fixed.bottom-0.end-0 {
+                                margin-right: -75% !important; /* Memastikan tidak ada margin yang mengganggu */
+                            }
+                            .btn.color-web {
+                                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                            }
+                            .btn.color-web:hover {
+                                transform: scale(1.1);
+                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                            }                    
+                    </style>
                 </div>
 
-                <div class="d-flex gap-3">
-                    <div class="d-flex pt-3">
-                        <div class="custom-card">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <div class="col">
+                        <div class="custom-card w-100">
                             <img src="assets/bg.jpg" alt="Background Image">
                             <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
                                 <a href="profil.html">
