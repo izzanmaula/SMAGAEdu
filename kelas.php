@@ -1,3 +1,12 @@
+<?php
+session_start();
+if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
+    header("Location: index.php");
+    exit();
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    <title>Masuk - Smagaedu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <title>Kelas - SMAGAEdu</title>
 </head>
@@ -35,10 +44,104 @@
 </style>
 <body>
     
+    <!-- Navbar Mobile -->
+    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
+        <div class="container-fluid px-0">
+            <!-- Logo dan Nama -->
+            <a class="navbar-brand ms-2 d-flex align-items-center gap-2 text-white" href="<?php echo ($_SESSION['level'] == 'guru') ? 'beranda_guru.php' : 'beranda.php'; ?>">
+                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
+            <div>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
+                </div>
+            </a>
+            
+            <!-- Tombol Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+                <span class="navbar-toggler-icon" style="color:white"></span>
+            </button>
+
+            
+            <!-- Offcanvas/Sidebar Mobile -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="d-flex flex-column gap-2">
+                        <!-- Menu Beranda -->
+                        <a href="#" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded color-web p-2">
+                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0 text-white">Beranda</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Cari -->
+                        <a href="cari.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Cari</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Ujian -->
+                        <a href="ujian.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Ujian</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Profil -->
+                        <a href="profil.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Profil</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu AI -->
+                        <a href="ai.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Gemini</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Bantuan -->
+                        <a href="bantuan.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Bantuan</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                <!-- Profile Dropdown -->
+                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
+                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
+                            style="background-color: #F8F8F7;" 
+                            type="button" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false">
+                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
+                        <p class="p-0 m-0" style="font-size: 12px;">Halo, Ayundy</p>
+                    </button>
+                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
+                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
+                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
      <!-- row col untuk halaman utama -->
-     <div class="container-fluid">
-        <div class="row">
-            <div class="col-3 col-md-2 vh-100 p-4 shadow-sm menu-samping" style="background-color:rgb(238, 236, 226)">
+    <div class="container-fluid px-0">
+        <div class="row g-0">
+        <div class="col-auto vh-100 p-2 p-md-4 shadow-sm menu-samping d-none d-md-block" style="background-color:rgb(238, 236, 226)">
                 <style>
                     .menu-samping {
                         position: fixed;
@@ -49,7 +152,7 @@
                 <div class="row gap-0">
                     <div class="ps-3 mb-3">
                         <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px">
+                            <img src="assets/smagaedu.png" alt="" width="30px" class="logo_orange">
                             <div>
                                 <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
                                 <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
@@ -57,7 +160,7 @@
                         </a>
                     </div>  
                     <div class="col">
-                        <a href="beranda.php" class="text-decoration-none text-black">
+                        <a href="#" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
                             <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
@@ -115,37 +218,84 @@
                     <!-- dropdown menu option -->
                     <ul class="dropdown-menu" style="font-size: 12px;">
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="#">Keluar</a></li>
+                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
                       </ul>
                 </div>
             </div>
 
-
             <!-- konten inti -->
-            <div class="col col-inti">
+            <div class="col col-inti p-0 p-md-3">
                 <style>
                     .col-inti {
-                        margin-left: 13rem;
+                        margin-left: 0;
+                        margin-top: 56px; /* Height of mobile navbar */
+                        padding-right: 0 !important; /* Remove right padding */
+                        max-width: 100%; /* Ensure content doesn't overflow */                            
                     }
+                        @media (min-width: 768px) {
+                            .col-inti {
+                                    margin-left: 13rem;
+                                    margin-top: 0;
+                                }
+                            }                
                 </style>
-                <div style="background-image: url(assets/bg.jpg); height: 300px; padding-top: 200px; margin-top: 15px; background-position: center; position: relative;" class="rounded text-white shadow latar-belakang">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1;" class="rounded"></div>
-                    <div class="ps-3" style="position: relative; z-index: 2;">
-                        <div>
-                            <h5 class="display-5 p-0 m-0" style="font-weight: bold; font-size: 35px;">Pendidikan Agama Islam</h5>
-                            <h4 class="p-0 m-0 pb-3">Kelas 7</h4>       
+                    <div style="background-image: url(assets/bg.jpg); 
+                                height: 200px; 
+                                padding-top: 120px; 
+                                margin-top: 15px; 
+                                background-position: center;
+                                background-size: cover;
+                                " 
+                        class="rounded text-white shadow latar-belakang mx-2 mx-md-0">
+                        <!-- ... -->
+                        <div class="ps-3" style="position: relative; z-index: 999;">
+                            <div>
+                                <h5 class="display-5 p-0 m-0" 
+                                    style="font-weight: bold; font-size: 28px; font-size: clamp(24px, 5vw, 35px);">
+                                    Pendidikan Agama Islam
+                                </h5>
+                                <h4 class="p-0 m-0 pb-3" style="font-size: clamp(16px, 4vw, 24px);">
+                                    Kelas 7
+                                </h4>       
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col-8">
-                        <div style="border: 1px solid rgb(238, 238, 238);"  class="p-3 rounded-3 gap-3 d-flex bg-white shadow-sm">
+                    </div>                
+                    <div class="row mt-4 p-4 pt-0">
+                    <div class="col-12 col-lg-8 p-0">
+                        <div class="buatPosting rounded-3 gap-3 d-flex">
                             <div class="d-flex">
-                                <a href="profil.html">
+                                <a href="profil.php">
                                     <img src="assets/pp.png" alt="" width="50px" class="rounded-circle">
                                 </a>
                             </div>
-                            <div style="background-color: rgb(231, 231, 231);" class="rounded-pill flex-fill btn text-start"><p class="p-2 m-0 text-muted" data-bs-toggle="modal" data-bs-target="#modalTambahPostingan" style="font-size: 14px;">Topik apa yang ingin Anda diskusikan bersama siswa, Ayundy?</p></div>
+                            <div style="background-color: rgb(231, 231, 231);" class="rounded-pill flex-fill btn text-start">
+                                <p class="p-2 m-0 text-muted sapa1" data-bs-toggle="modal" data-bs-target="#modalTambahPostingan" style="font-size: 14px;">Topik apa yang ingin Anda diskusikan bersama siswa, Ayundy?</p>
+                                <p class="p-2 m-0 text-muted sapa2" data-bs-toggle="modal" data-bs-target="#modalTambahPostingan" style="font-size: 12px;">Ingin diskusikan tentang apa?</p>
+                            </div>
+                            <!-- style font -->
+                             <style>
+                                @media screen and (max-width: 768px) {
+                                    .sapa1 {
+                                        display: none;
+                                    }
+                                    .sapa2{
+                                        display: block;
+                                    }
+                                    .buatPosting {
+                                        border: none!important;
+                                        box-shadow: none!important;
+                                    }
+                                }
+                                @media screen and (min-width: 768px) {
+                                    .sapa1 {
+                                        display: block;
+                                    }
+                                    .sapa2{
+                                        display: none;
+                                    }
+                                }
+                                
+                             </style>
                         </div>
 
                         <!-- modal untuk tambah pendapat -->
@@ -203,7 +353,8 @@
                           </div>
                         
                         <!-- postingan guru -->
-                         <div class="mt-4 p-3 mb-4 rounded-3 bg-white shadow-sm" style="border: 1px solid rgb(238, 238, 238);">
+                         <div class="mt-4 p-md-3 mb-4 rounded-3 bg-white mx-md-0 postingan p-4" 
+                         style="border: 1px solid rgb(226, 226, 226);">
                             <div class="d-flex gap-3">
                                 <div>
                                     <a href="profil.html">
@@ -224,23 +375,42 @@
                             </div>
                             <div class="">
                                 <div class="mt-3">
-                                    <p>Selamat siang anak-anakku.
+                                    <p class="textPostingan">Selamat siang anak-anakku.
                                         Berikut ibu lampirkan file dokumen kisi-kisi belajar di rumah, jangan lupa di pelajari ya. Semangat belajar ❤️❤️</p>
+                                    
+                                    <!-- style untk text postingan -->
+                                     <style>
+                                        @media screen and (max-width: 768px) {
+                                            .textPostingan {
+                                                font-size: 14px;
+                                            }   
+
+                                        }
+                                     </style>
                                 </div>
-                                <div class="container mt-4">
+                                <div class="container mt-4 p-0">
                                     <!-- tempat postingan gambar -->
                                     <div id="imageContainer" class="image-grid"></div>
                                 </div>
                                 <div class="mt-3 d-flex gap-3">
-                                    <p><strong>20</strong> Nice</p>
-                                    <p style="color:  rgb(206, 206, 206);">|</p>
+                                    <p><strong>20</strong> Suka</p>
                                     <p><strong>3</strong> Pendapat</p>
                                 </div>
-                                <div class="d-flex gap-2 justify-content-between  mt-3 ps-2 pe-2" style="font-size: 16px;">
-                                    <button class="btn bi-arrow-up-circle flex-fill" style="background-color: rgb(237, 237, 237)">  Nice</button>
-                                    <button class="btn bi-chat flex-fill"  style="background-color: rgb(237, 237, 237)" id="ShowCommentButton" data-bs-toggle="modal" data-bs-target="#commentModal">   Pendapat</button>
-                                    <button class="btn bi-share flex-fill"  style="background-color: rgb(237, 237, 237)">  Bagikan</button>
+                                <div class="d-flex gap-2 justify-content-between mt-3 ps-2 pe-2" style="font-size: 14px;">
+                                    <button class="btn bi-arrow-up-circle text-white flex-fill py-1 py-md-2">
+                                        <span class="d-none d-md-inline">Suka</span>
+                                    </button>
+                                    <button class="btn bi-chat flex-fill text-white py-1 py-md-2" id="ShowCommentButton" 
+                                            data-bs-toggle="modal" data-bs-target="#commentModal">
+                                        <span class="d-none d-md-inline">Pendapat</span>
+                                    </button>
+                                    <button class="btn bi-share text-white flex-fill py-1 py-md-2">
+                                        <span class="d-none d-md-inline">Bagikan</span>
+                                    </button>
                                 </div>
+
+                                <!-- style untuk postingan mobile view -->
+
                                  <!-- modal menampilkan komentar -->
                                 <!-- modal untuk tambah pendapat -->
                                 <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="modalKomentar" aria-hidden="true">
@@ -332,6 +502,19 @@
                             border: 1px solid grey;
                             border-radius: 5px;
                         }
+                         
+                        @media (max-width: 768px) {
+                            .image-grid.three {
+                                grid-template-columns: 1fr;
+                                grid-template-rows: auto;
+                            }
+                            .image-grid.three img:nth-child(1) {
+                                grid-row: auto;
+                            }
+                            .image-grid img {
+                                max-height: 200px;
+                            }
+                        }
                      </style>
                      <!-- script untuk img container -->
                       <script>
@@ -379,7 +562,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <div style="border: 1px solid rgb(238, 238, 238);"  class="p-3 rounded-3 gap-3 bg-white mb-3 shadow-sm" >
+                        <div style="border: 1px solid rgb(238, 238, 238);"  class="tentangKelas p-3 rounded-3 gap-3 bg-white mb-3 shadow-sm" >
                             <h5><strong>Tentang Kelas ini</strong></p>
                                 <div class="w-100">
                                     <p class="text-muted p-0 m-0" style="font-size: 14px;">Guru tidak memberikan deskripsi</p>
@@ -388,6 +571,14 @@
                                     <button class="btn text-white flex-fill" data-bs-toggle="modal" data-bs-target="#deskripsimodal">Edit</button>
                                 </div>
                         </div>
+                        <!-- style untuk tentang kelas -->
+                         <style>
+                            @media screen and (max-width: 768px) {
+                                .tentangKelas {
+                                    display: none;
+                                }
+                            }
+                         </style>
                         <!-- modal untuk guru input deskripsi kelas -->
                                 <div class="modal fade" id="deskripsimodal" tabindex="-1" aria-labelledby="modaldeskripsi" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
@@ -412,7 +603,7 @@
                                     </div>
                                 </div>
 
-                        <div style="border: 1px solid rgb(238, 238, 238);"  class="p-3 rounded-3 gap-3 bg-white shadow-sm" >
+                        <div style="border: 1px solid rgb(238, 238, 238);"  class="catatanGuru p-3 rounded-3 gap-3 bg-white shadow-sm" >
                             <h5><strong>Catatan Guru</strong></p>
                                 <div class="w-100">
                                     <p class="text-muted p-0 m-0" style="font-size: 14px;">Guru tidak memberikan Catatan</p>
@@ -421,6 +612,15 @@
                                     <button class="btn btn-primary flex-fill">Tambah</button>
                                 </div>
                         </div>
+
+                        <!-- style untuk catatan guru -->
+                         <style>
+                            @media screen and (max-width: 768px) {
+                                .catatanGuru {
+                                    display: none;
+                                }
+                            }
+                         </style>
                     </div>
                 </div>
             </div>
