@@ -130,7 +130,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                         
                         <!-- Menu Cari -->
-                        <a href="cari.php" class="text-decoration-none text-black">
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Cari</p>
@@ -138,7 +138,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                         
                         <!-- Menu Ujian -->
-                        <a href="ujian.php" class="text-decoration-none text-black">
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Ujian</p>
@@ -162,7 +162,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                         
                         <!-- Menu Bantuan -->
-                        <a href="bantuan.php" class="text-decoration-none text-black">
+                        <a href="bantuan_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Bantuan</p>
@@ -225,7 +225,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="cari.php" class="text-decoration-none text-black">
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Cari</p>
@@ -233,7 +233,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="ujian.php" class="text-decoration-none text-black">
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Ujian</p>
@@ -241,7 +241,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="profil.php" class="text-decoration-none text-black">
+                        <a href="profil_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded shadow-sm bg-white p-2" style="">
                             <img src="assets/profil_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Profil</p>
@@ -259,7 +259,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="bantuan.php" class="text-decoration-none text-black">
+                        <a href="bantuan_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Bantuan</p>
