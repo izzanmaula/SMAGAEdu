@@ -1,3 +1,20 @@
+<?php
+session_start();
+require "koneksi.php";
+if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
+    header("Location: index.php");
+    exit();
+}
+
+// Ambil data guru
+$userid = $_SESSION['userid'];
+$query = "SELECT * FROM guru WHERE username = '$userid'";
+$result = mysqli_query($koneksi, $query);
+$guru = mysqli_fetch_assoc($result);
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +34,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
         }
         .custom-card img {
             width: 100%;
@@ -33,6 +51,14 @@
         .custom-card .card-body {
             text-align: left;
         }
+
+        @media (max-width: 768px) {
+            .custom-card {
+                width: 100%; /* Full width di mobile */
+                max-width: 300px; /* Maximum width tetap 300px */
+            }
+        }
+
         .merriweather-light {
         font-family: "Merriweather", serif;
         font-weight: 300;
@@ -83,6 +109,11 @@
         body{ 
             font-family: merriweather;
         }
+        @media (max-width: 768px) {
+            body {
+                padding-top: 56px; /* Sesuaikan dengan tinggi navbar */
+            }
+        }
         .color-web {
             background-color: rgb(218, 119, 86);
         }
@@ -98,6 +129,100 @@
 
 </style>
 <body>
+
+    <!-- Navbar Mobile -->
+    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
+        <div class="container-fluid">
+            <!-- Logo dan Nama -->
+            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="beranda_guru.php">
+                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
+            <div>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
+                </div>
+            </a>
+            
+            <!-- Tombol Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+                <span class="navbar-toggler-icon" style="color:white"></span>
+            </button>
+            
+            <!-- Offcanvas/Sidebar Mobile -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="d-flex flex-column gap-2">
+                        <!-- Menu Beranda -->
+                        <a href="beranda_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded  p-2">
+                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0 ">Beranda</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Cari -->
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Cari</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Ujian -->
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center color-web rounded p-2">
+                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0 text-white">Ujian</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Profil -->
+                        <a href="profil_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Profil</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu AI -->
+                        <a href="ai.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Gemini</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Bantuan -->
+                        <a href="bantuan_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Bantuan</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                <!-- Profile Dropdown -->
+                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
+                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
+                            style="background-color: #F8F8F7;" 
+                            type="button" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false">
+                                <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
+                            <p class="p-0 m-0" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
+                    </button>
+                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
+                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
+                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     
      <!-- row col untuk halaman utama -->
      <div class="container-fluid">
@@ -109,6 +234,11 @@
                         width: 13rem;
                         z-index: 1000;
                     }
+                    @media (max-width: 768px) {
+                        .menu-samping {
+                            display: none;
+                        }
+                    }                
                 </style>
                 <div class="row gap-0">
                     <div class="ps-3 mb-3">
@@ -191,21 +321,54 @@
                     .col-utama{
                         margin-left: 13rem;
                     }
+                    @media (max-width: 768px) {
+                            .col-utama {
+                                margin-left: 0;
+                                margin-top: 10px; /* Untuk memberikan space dari fixed navbar mobile */
+                            }
+                    }
                 </style>
-                <div class="row justify-content-between align-items-center">
-                    <div class="col">
+                <div class="row justify-content-between align-items-center mb-1">
+                    <div class="col-12 col-md-auto mb-3 mb-md-0">
                         <h3 style="font-weight: bold;">Ujian</h3>
                     </div>
-                    <button type="button"class="btn col-auto text-end  border p-2 me-3" style="padding: 5px 10px; border-radius: 5px;">
-                        <a href="buat_ujian.html" class="d-flex align-items-center" style="text-decoration: none; color: black;">
+                    <!-- Tombol desktop -->
+                    <div class="d-none d-md-block col-md-auto">
+                        <a href="buat_ujian.php" 
+                        class="btn d-flex align-items-center justify-content-center border p-2 text-decoration-none text-dark">
                             <img src="assets/tambah.png" alt="Tambah" width="25px" class="me-2">
-                            <p class="m-0">Buat Ujian</p>    
+                            <p class="m-0">Buat Ujian</p>
+                        </a>                    
+                    </div>
+
+                    <!-- Floating button untuk mobile -->
+                    <div class="position-fixed bottom-0 end-0 d-md-none m-4">
+                        <a href="buat_ujian.php" class="text-decoration-none">
+                        <button type="button" data-bs-toggle="modal"
+                                class="btn color-web rounded-circle shadow d-flex align-items-center justify-content-center" 
+                                style="width: 56px; height: 56px;">
+                            <img src="assets/tambah.png" alt="Tambah" width="25px" class="m-0" style="filter: brightness(0) invert(1);">
+                        </button>
                         </a>
-                    </button>
+                    </div>
+
+                    <style>
+                        /* Animasi hover untuk floating button */
+                        .position-fixed.bottom-0.end-0 {
+                                margin-right: -75% !important; /* Memastikan tidak ada margin yang mengganggu */
+                            }
+                            .btn.color-web {
+                                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                            }
+                            .btn.color-web:hover {
+                                transform: scale(1.1);
+                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                            }                    
+                    </style>
                 </div>
 
-                <div class="d-flex gap-3">
-                    <div class="d-flex pt-3">
+                <div class="row row-cols-1 row-cols-md-3 g-4">
+                    <div class="col">
                         <div class="custom-card">
                             <img src="assets/bg.jpg" alt="Background Image">
                             <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
@@ -230,55 +393,6 @@
 
     
             </div>
-        </div>
-    </div>
-
-    <!-- modal untuk buat kelas -->
-     <!-- Modal -->
-    <div class="modal fade" id="modal_tambah_kelas" tabindex="-1" aria-labelledby="label_tambah_kelas" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h1 class="modal-title fs-5" id="label_tambah_kelas">Buat Kelas</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-            <form action="">
-                <div class="mb-3">
-                    <div class="dropdown">
-                            <label for="dropdownField" class="form-label">Pilih mata pelajaran Anda</label>
-                            <select class="form-select" id="dropdownField" aria-label="Default select example">
-                                <option selected>Pilih salah satu</option>
-                                <option value="1">Bahasa Indonesia</option>
-                                <option value="2">Matematika</option>
-                                <option value="3">Ilmu Pengetahuan Alam</option>
-                            </select>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <div class="dropdown">
-                            <label for="dropdownField" class="form-label">Kelas apa yang ingin Anda tambahkan?</label>
-                            <select class="form-select" id="dropdownField" aria-label="Default select example">
-                                <option selected>Pilih salah satu</option>
-                                <option value="1">Kelas 7</option>
-                                <option value="2">Kelas 8</option>
-                                <option value="3">Kelas 9</option>
-                            </select>
-                    </div>
-                </div>
-                <div class="container mb-3 p-0">
-                    <div class="form-group">
-                        <label for="bg_kelas">Tambahkan latar belakang kelas Anda</label>
-                        <input type="file" class="form-control" id="bg_kelas">    
-                    </div>
-                </div>
-            </form>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
         </div>
     </div>
 

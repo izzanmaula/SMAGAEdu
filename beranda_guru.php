@@ -157,7 +157,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                         </a>
                         
                         <!-- Menu Ujian -->
-                        <a href="ujian.php" class="text-decoration-none text-black">
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Ujian</p>
@@ -246,7 +246,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                         </a>
                     </div>
                     <div class="col">
-                        <a href="ujian.php" class="text-decoration-none text-black">
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Ujian</p>

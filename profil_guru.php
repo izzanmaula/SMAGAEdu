@@ -258,7 +258,7 @@ $guru = mysqli_fetch_assoc($result);
                         </div>
                         </a>
                     </div>
-                    <div class="col">
+                    <div class="col">   
                         <a href="bantuan_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
@@ -445,9 +445,6 @@ $guru = mysqli_fetch_assoc($result);
             </div>
             <form action="update_profil_guru.php" method="POST">
                 <div class="modal-body">
-                    <div>
-                        <p style="font-size: 14px;">Tuliskan Nama Lengkap dan gelar Anda</p>
-                    </div>
                     <div class="form-floating">
                         <input type="text" name="nama" class="form-control" id="floatingInputValue" value="<?php echo htmlspecialchars($guru['namaLengkap']); ?>" required>
                         <label for="floatingInputValue">Nama dan Gelar</label>
