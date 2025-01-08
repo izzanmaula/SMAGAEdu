@@ -1,5 +1,6 @@
 <?php
 session_start();
+require "koneksi.php";
 if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
     header("Location: index.php");
     exit();
@@ -16,7 +17,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    <title>Masuk - Smagaedu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <title>Beranda - SMAGAEdu</title>
 </head>
 <style>
@@ -164,7 +165,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                         </a>
                         
                         <!-- Menu Profil -->
-                        <a href="profil.php" class="text-decoration-none text-black">
+                        <a href="profil_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Profil</p>
@@ -253,7 +254,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                         </a>
                     </div>
                     <div class="col">
-                        <a href="profil.php" class="text-decoration-none text-black">
+                        <a href="profil_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Profil</p>
@@ -342,6 +343,13 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                 </div>
 
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <?php
+                $query_kelas = "SELECT * FROM kelas WHERE guru_id = '{$_SESSION['userid']}'";
+                $result_kelas = mysqli_query($koneksi, $query_kelas);
+
+                if(mysqli_num_rows($result_kelas) > 0) {
+                while($kelas = mysqli_fetch_assoc($result_kelas)) {
+                    ?>
                     <div class="col">
                         <div class="custom-card w-100">
                             <img src="assets/bg.jpg" alt="Background Image">
@@ -351,11 +359,11 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                                 </a>
                             </div>
                             <div class="ps-3">
-                                <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">Pendidikan Agama Islam</h5>
-                                <p class="p-0 m-0" style="font-size: 12px;">Ayundy Anditaningrum, S.Ag</p>
+                                <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;"><?php echo htmlspecialchars($kelas['mata_pelajaran']); ?></h5>
+                                <p class="p-0 m-0" style="font-size: 12px;"><?php echo htmlspecialchars($kelas['tingkat']); ?></p>
                             </div>
                             <div class="d-flex btn-group gap-2 p-3">
-                                <a href="kelas.php" class="color-web btn btn w-45 rounded" style="text-decoration: none; color: white;">Masuk</a>
+                                <a href="kelas_guru.php?id=<?php echo $kelas['id']; ?>" class="color-web btn btn w-45 rounded" style="text-decoration: none; color: white;">Masuk</a>
                             </div>
                             <style>
                             .btn {
@@ -370,11 +378,29 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                             </style>
                     </div>
                     </div>
+                    <?php
+                        }
+                    } else {
+                        ?>
+                        <div class="tidakAdaKelas position-absolute top-50 start-50 translate-middle text-center w-100">
+                                <p class="text-muted">Anda belum memiliki kelas.</p>
+                        </div>
+                            <?php
+                        }
+                        ?>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- style absolute untuk tidak ada kelas -->
+     <style>
+        @media screen and (max-width: 768px) {
+            .tidakAdaKelas {
+                /* margin-top: -100px; */
+            }
+        }
+     </style>
         <!-- modal untuk buat kelas -->
      <!-- Modal -->
      <div class="modal fade" id="modal_tambah_kelas" tabindex="-1" aria-labelledby="label_tambah_kelas" aria-hidden="true">
@@ -385,7 +411,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <form action="">
+            <form action="tambah_kelas.php" method="POST">
                 <div class="mb-3">
                     <div class="dropdown">
                             <label for="dropdownField" class="form-label" style="font-size: 14px;">Pilih mata pelajaran Anda</label>
@@ -423,11 +449,11 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                         </div>
                     </div>
                 </div>
-            </form>
             </div>
             <div class="modal-footer d-flex">
-            <button type="button" class="btn color-web text-white flex-fill">Buat</button>
+            <button type="submit" name="submit" class="btn color-web text-white flex-fill">Buat</button>
             </div>
+            </form>
         </div>
         </div>
     </div>

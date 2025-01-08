@@ -103,7 +103,7 @@
                     <div class="col">
                         <a href="beranda.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
+                            <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
                         </div>
                         </a>
@@ -177,11 +177,11 @@
                     <div class="ps-3" style="position: relative; z-index: 2;"></div>
                 </div>
                 <div style="text-align: center;">
-                    <img src="assets/pp.png" alt="" width="200px" class="rounded-circle" style="background-color: white; margin-top: -150px; z-index: 10; position: relative; border: 3px solid white;">
+                    <img src="assets/pp-siswa.png" alt="" width="150px" class="rounded-circle" style="background-color: white; margin-top: -5rem; z-index: 10; position: relative; border: 5px solid white;">
                 </div>
                 <div class="text-center mt-1">
-                    <h3 class="p-0 m-1">Ayundy Anditaningrum, S.Ag </h3>
-                    <p class="p-0 m-0">Guru Pendidikan Agama Islam</p>
+                    <h3 class="p-0 m-1">Dhio Lintang Winarto</h3>
+                    <p class="p-0 m-0">Siswa</p>
                 </div>
                 <div class="mt-2 text-center">
                     <button class="btn border bi-pencil-square" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantinama">    Edit Nama Anda</button>
@@ -198,83 +198,151 @@
                             <div class="d-flex gap-3">
                                 <!-- pendidikan sebelumnya -->
                                 <div class="border rounded-4 p-3 flex-fill d-flex gap-2 align-items-center">
-                                    <img src="assets/lulusan.png" alt="" width="35px" height="35px" class="rounded">
+                                    <img src="assets/sekolah-sebelumnya.png" alt="" width="35px" height="35px" class="rounded">
                                     <div>
-                                        <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Lulusan</h6>
-                                        <p class="p-0 m-0">Universitas Muhammadiyah Surakarta</p>        
+                                        <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Pendidikan Sebelumnya</h6>
+                                        <p class="p-0 m-0">MI PK Transan</p>        
                                     </div>
                                 </div>
                                 <div class="border rounded-4 p-3 flex-fill d-flex gap-2 align-items-center">
-                                    <img src="assets/jabatan.png" alt="" width="35px" height="35px" class="rounded">
+                                    <img src="assets/kelas-saat-ini.png" alt="" width="35px" height="35px" class="rounded">
                                     <div>
-                                        <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Jabatan Saat Ini</h6>
-                                        <p class="p-0 m-0">Operator</p>        
+                                        <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Kelas Saat Ini</h6>
+                                        <p class="p-0 m-0">Kelas 8A</p>        
                                     </div>
                                 </div>    
                             </div>
                         </div>
-                        <!-- sertifikasi -->
+                        <!-- rata-rata nilai sekolah -->
                          <div class="d-flex mt-3">
                             <div class="border rounded-4 p-3 flex-fill">
                                 <div class="d-flex gap-2 align-items-center">
-                                    <img src="assets/sertifikat.png" alt="" width="35px" height="35px" class="rounded">
+                                    <img src="assets/nilai-raport.png" alt="" width="35px" height="35px" class="rounded">
                                     <div>
-                                        <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Sertifikasi</h6>
-                                        <p style="font-size: 12px;" class="text-muted p-0 m-0">Sertifikat yang dimiliki</p>        
+                                        <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Rata-Rata Nilai Lapor</h6>
+                                        <p style="font-size: 12px;" class="text-muted p-0 m-0">Kumpulan seluruh rekam nilai siswa</p>        
                                     </div>    
                                 </div>
-                                <div class="p-3">
-                                    <li>Sertifikasi Kompetensi Pedagogik dan Prosesional (SKPP)</li>
-                                    <li>TOEP UMS Bahasa Inggris</li>
-                                    <li>Cisco Certified Network Associate (CCNA)</li>
+                                <div class="p-3 text-center">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th class="p-0 m-0">Kelas</th>
+                                                <th class="p-0 m-0">Semester</th>
+                                                <th class="p-0 m-0">Rata-Rata</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="p-0 m-0">X</td>
+                                                <td class="p-0 m-0">1</td>
+                                                <td class="p-0 m-0">90</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-0 m-0">X</td>
+                                                <td class="p-0 m-0">2</td>
+                                                <td class="p-0 m-0">84</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-0 m-0">XI</td>
+                                                <td class="p-0 m-0">1</td>
+                                                <td class="p-0 m-0">90</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-0 m-0">XI</td>
+                                                <td class="p-0 m-0">2</td>
+                                                <td class="p-0 m-0">91</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    
                                 </div>
                             </div>
                          </div>
 
-                        <!-- riwayat publikasi -->
-                        <div class="d-flex mt-3">
-                            <div class="border rounded-4 p-3 flex-fill">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <img src="assets/publikasi.png" alt="" width="35px" height="35px" class="rounded">
-                                    <div>
-                                        <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Publikasi</h6>
-                                        <p style="font-size: 12px;" class="text-muted p-0 m-0">Riwayat penulisan yang telah di publikasi</p>        
-                                    </div>    
-                                </div>
-                                <div class="p-3">
-                                    <li>Pengembangan Sistem Informasi Manajemen Perpustakaan Berbasis Web. Jurnal Informatika, 12(2): 45-58.</li>
-                                    <li>Analisis Sentimen terhadap Ulasan Produk Elektronik di Media Sosial (bersama dengan Siti Fatimah). Jurnal Teknologi Informasi, 10(1), doi: 10.1234/jti.10.1.</li>
-                                    <li>Cisco Certified Network Associate (CCNA)</li>
+                         <!-- Gaya belajar dan hasil tes IQ -->
+                         <div class="d-flex gap-3 mt-3">
+                            <div class="border rounded-4 p-3 flex-fill d-flex gap-2 align-items-center">
+                                <img src="assets/gaya-belajar.png" alt="" width="35px" height="35px" class="rounded">
+                                <div>
+                                    <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Gaya Belajar</h6>
+                                    <p class="p-0 m-0">Psikomotorik</p>        
                                 </div>
                             </div>
-                         </div>
+                            <div class="border rounded-4 p-3 flex-fill d-flex gap-2 align-items-center">
+                                <img src="assets/iq.png" alt="" width="35px" height="35px" class="rounded">
+                                <div>
+                                    <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Hasil Tes IQ</h6>
+                                    <p class="p-0 m-0">150</p>        
+                                </div>
+                            </div>    
+                        </div>
 
-                        <!-- riwayat publikasi -->
-                        <div class="d-flex mt-3">
-                            <div class="border rounded-4 p-3 flex-fill">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <img src="assets/proyek.png" alt="" width="35px" height="35px" class="rounded">
-                                    <div>
-                                        <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Riwayat Proyek</h6>
-                                        <p style="font-size: 12px;" class="text-muted p-0 m-0">Riwayat proyek pendidikan yang telah di ikuti</p>        
-                                    </div>    
-                                </div>
-                                <div class="p-3">
-                                    <li>Pengembangan Sistem Informasi Manajemen Perpustakaan Berbasis Web. Jurnal Informatika, 12(2): 45-58.</li>
-                                    <li>Analisis Sentimen terhadap Ulasan Produk Elektronik di Media Sosial (bersama dengan Siti Fatimah). Jurnal Teknologi Informasi, 10(1), doi: 10.1234/jti.10.1.</li>
-                                    <li>Cisco Certified Network Associate (CCNA)</li>
+                        <!-- kemampuan literasi dan berhitung -->
+                        <div class="d-flex gap-3 mt-3">
+                            <div class="border rounded-4 p-3 flex-fill d-flex gap-2 align-items-center">
+                                <img src="assets/literasi.png" alt="" width="35px" height="35px" class="rounded">
+                                <div>
+                                    <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Kemampuan Literasi</h6>
+                                    <p class="p-0 m-0">Baik</p>        
                                 </div>
                             </div>
-                         </div>
+                            <div class="border rounded-4 p-3 flex-fill d-flex gap-2 align-items-center">
+                                <img src="assets/numerik.png" alt="" width="35px" height="35px" class="rounded"> 
+                                <div>
+                                    <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Kemampuan Berhitung</h6>
+                                    <p class="p-0 m-0">Baik</p>        
+                                </div>
+                            </div>    
                         </div>
 
                         
                     </div>
+                    <div class="row ms-1">
+                        <!-- minat dan hobi  -->
+                        <div class="d-flex gap-3">
+                            <div class="border rounded-4 p-3 flex-fill">
+                                <img src="assets/minat-siswa.png" alt="" width="35px" class="rounded mb-2">
+                                <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Minat Siswa</h6>
+                                <p class="p-0 m-0" style="font-size: 30px;">Belajar</p>
+                            </div>
+                            <div class="border rounded-4 p-3 flex-fill">
+                                <img src="assets/hobi.png" alt="" width="35px" class="rounded mb-2">
+                                <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Hobi Siswa</h6>
+                                <p class="p-0 m-0" style="font-size: 30px;">Bermain Bola</p>
+                            </div>    
+                        </div>
+
+                        <!-- kesehatan mental  -->
+                        <div class="d-flex gap-3 mt-3">
+                            <div class="border rounded-4 p-3 flex-fill">
+                                <img src="assets/mental.png" alt="" width="35px" class="rounded mb-2">
+                                <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Kesehatan Mental</h6>
+                                <p class="p-0 m-0" style="font-size: 30px;">Baik</p>
+                            </div>
+                            <div class="border rounded-4 p-3 flex-fill">
+                                <img src="assets/emosi.png" alt="" width="35px" class="rounded mb-2">
+                                <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Pengembangan Emosional</h6>
+                                <p class="p-0 m-0" style="font-size: 30px;">Baik</p>
+                            </div>    
+                        </div>
+                        <div class="d-flex gap-3 mt-3">
+                            <div class="border rounded-4 p-3 flex-fill">
+                                <img src="assets/kesehatan.png" alt="" width="35px" class="rounded mb-2">
+                                <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Penyakit Bawaan</h6>
+                                <p class="p-0 m-0" style="font-size: 30px;">Tidak Ada</p>
+                            </div>
+                            <div class="border rounded-4 p-3 flex-fill">
+                                <img src="assets/sosial.png" alt="" width="35px" class="rounded mb-2">
+                                <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Kehidupan Sosial</h6>
+                                <p class="p-0 m-0" style="font-size: 30px;">Baik</p>
+                            </div>    
+                        </div>
+
                     </div>
 
                 </div>
             </div>
-
             
             <!-- modal untuk ganti nama -->
             <div class="modal fade" id="gantinama" tabindex="-1" aria-labelledby="modalgantinamalabel" aria-hidden="true">
@@ -330,116 +398,135 @@
                                     background-color: rgb(218, 119, 86);
                                 }
                              </style>
-
                         </div>
                     </div>
                 </div>
                 </div>
-            </div> 
-            
-                        <!-- modal buat ganti deskripsi siswa -->
-                        <div class="modal fade" id="gantilebih" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalgantinamalabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="modalgantinamalabel">Edit Deskripsi Siswa</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Sertifikasi sebelumnya -->
-                                    <div class="mt-3">
-                                        <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Riwayat Pendidikan</label>
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">S1</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>      
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">S2</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>             
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">Lainya</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>                    
-                                     </div>
-                                    <!-- jabatan -->
-                                    <div class="mt-3">
-                                        <label for="pendidikansebelumnya" class="form-label p-0 m-0" style="font-size: 13px;">Jabatan Sekolah Saat ini</label>
-                                        <div id="jabatan" class="form-text p-0 m-0" style="font-size: 12px;">Pilih jabatan tertinggi Anda</div>
-                                        <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya" aria-describedby="jabatan">
-                                            <option selected>Pilih salah satu</option>
-                                            <option value="1">Kepala Sekolah</option>
-                                            <option value="2">Wakil Kepala Sekolah</option>
-                                            <option value="3">Bag. Kurikulum</option>
-                                            <option value="3">Bag. Kesiswaan</option>
-                                            <option value="3">Kepala Tata Usaha</option>
-                                            <option value="3">Wali Kelas</option>
-                                            <option value="3">Bag. Ekonomi Bisnis</option>
-                                            <option value="3">Staf IT</option>
-                                            <option value="3">Staf TU</option>
-                                          </select>  
-                                    </div>
-                                    <!-- Sertifikasi sebelumnya -->
-                                     <div class="mt-3">
-                                        <label for="pendidikansebelumnya" class="form-label p-0 m-0" style="font-size: 13px;">Sertifikasi</label>
-                                        <div id="sertifikasi" class="form-text p-0 m-0" style="font-size: 12px;">Pilih sertifikasi terbaru Anda</div>
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">1</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>      
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">2</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>             
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">3</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>                    
-                                     </div>
+            </div>
 
-                                    <!-- Publikasi sebelumnya -->
-                                    <div class="mt-3">
-                                        <label for="pendidikansebelumnya" class="form-label p-0 m-0" style="font-size: 13px;">Publikasi</label>
-                                        <p class="text-muted p-0 m-0" style="font-size: 12px;">Pilih publikasi terbaru Anda</p>
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">1</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>      
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">2</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>             
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">3</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>                    
-                                     </div>
-
-                                    <!-- Proyek sebelumnya -->
-                                    <div class="mt-3">
-                                        <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Proyek</label>
-                                        <p class="text-muted p-0 m-0" style="font-size: 12px;">Pilih proyek terbaru Anda</p>
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">1</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>      
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">2</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>             
-                                        <div class="input-group mb-2">
-                                            <span class="input-group-text" id="sertifikasi-pertama">3</span>
-                                            <input type="text" id="pendidikansebelumnya" class="form-control">    
-                                        </div>                    
-                                     </div>
-
-                                </div>
-                                <div class="modal-footer d-flex">
-                                <button type="button" class="btn color-web flex-fill" style="color: white;">Simpan Perubahan</button>
-                                </div>
-                            </div>
-                            </div>
+            <!-- modal buat ganti deskripsi siswa -->
+                         <!-- modal untuk ganti nama -->
+            <div class="modal fade" id="gantilebih" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalgantinamalabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalgantinamalabel">Edit Deskripsi Siswa</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- pendidikan sebelumnya -->
+                        <div>
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Pendidikan Sebelumnya</label>
+                            <input type="text" id="pendidikansebelumnya" class="form-control">    
                         </div>
+                        <!-- gaya belajar -->
+                        <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Gaya Belajar Siswa</label>
+                            <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya">
+                                <option selected>Pilih salah satu</option>
+                                <option value="1">Visual</option>
+                                <option value="2">Auditori</option>
+                                <option value="3">Kinestetik</option>
+                                <option value="3">Linguistik atau Verbal</option>
+                              </select>  
+                        </div>
+                        <!-- pendidikan sebelumnya -->
+                        <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Hasil Tes IQ</label>
+                            <input type="number" id="pendidikansebelumnya" class="form-control">    
+                        </div>         
+                        <!-- gaya belajar -->
+                        <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Gaya Belajar Siswa</label>
+                            <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya">
+                                <option selected>Pilih salah satu</option>
+                                <option value="1">Visual</option>
+                                <option value="2">Auditori</option>
+                                <option value="3">Kinestetik</option>
+                                <option value="3">Linguistik atau Verbal</option>
+                              </select>  
+                        </div>
+                        <!-- Kemampuan Literasi Siswa -->
+                        <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Kemampuan Literasi Siswa</label>
+                            <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya">
+                                <option selected>Pilih salah satu</option>
+                                <option value="1">Baik</option>
+                                <option value="2">Cukup</option>
+                                <option value="3">Kurang</option>
+                              </select>  
+                        </div>
+                         <!-- Kemampuan berhitung Siswa -->
+                         <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Kemampuan Berhitung Siswa</label>
+                            <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya">
+                                <option selected>Pilih salah satu</option>
+                                <option value="1">Baik</option>
+                                <option value="2">Cukup</option>
+                                <option value="3">Kurang</option>
+                              </select>  
+                        </div> 
+                         <!-- minat belajar siswa -->
+                         <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Minat Belajar Siswa</label>
+                            <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya">
+                                <option selected>Pilih salah satu</option>
+                                <option value="1">Tinggi</option>
+                                <option value="2">Baik</option>
+                                <option value="3">Cukup</option>
+                                <option value="3">Kurang</option>
+                              </select>  
+                        </div> 
+                        <!-- hobi siswa -->
+                        <div class="mt-3">
+                            <label for="hobisiswa" class="form-label" style="font-size: 13px;">Hobi Siswa</label>
+                            <input type="text" id="hobisiswa" class="form-control">    
+                        </div>  
+                         <!-- kesehatan mental siswa -->
+                         <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Kesehatan Mental Siswa</label>
+                            <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya">
+                                <option selected>Pilih salah satu</option>
+                                <option value="2">Baik</option>
+                                <option value="3">Cukup</option>
+                                <option value="3">Kurang</option>
+                              </select>  
+                        </div> 
+                         <!-- pengembangan emosional siswa -->
+                         <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Pengembangan Emosi Siswa</label>
+                            <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya">
+                                <option selected>Pilih salah satu</option>
+                                <option value="2">Baik</option>
+                                <option value="3">Cukup</option>
+                                <option value="3">Kurang</option>
+                              </select>  
+                        </div> 
+                         <!-- pengembangan penyakit bawaan -->
+                         <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Penyakit Bawaan Siswa</label>
+                            <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya">
+                                <option selected>Pilih salah satu</option>
+                                <option value="3">Ada</option>
+                                <option value="3">Tidak Ada</option>
+                              </select>  
+                        </div> 
+                         <!-- pengembangan kehidupan sosial -->
+                         <div class="mt-3">
+                            <label for="pendidikansebelumnya" class="form-label" style="font-size: 13px;">Kehidupan Sosial Siswa</label>
+                            <select class="form-select" aria-label="Default select example" id="pendidikansebelumnya">
+                                <option selected>Pilih salah satu</option>
+                                <option value="3">Baik</option>
+                                <option value="3">Kurang</option>
+                              </select>  
+                        </div> 
+                    </div>
+                    <div class="modal-footer d-flex">
+                    <button type="button" class="btn color-web flex-fill" style="color: white;">Simpan Perubahan</button>
+                    </div>
+                </div>
+                </div>
+            </div>
 
 </body>
 </html>
