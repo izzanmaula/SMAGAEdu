@@ -7,12 +7,24 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
     exit();
 }
 
-// Ambil data guru
-$userid = $_SESSION['userid'];
-$query = "SELECT * FROM guru WHERE username = '$userid'";
+// Cek apakah ada parameter username
+if(isset($_GET['username'])) {
+    $username = mysqli_real_escape_string($koneksi, $_GET['username']);
+} else {
+    // Jika tidak ada parameter, gunakan username dari session
+    $username = $_SESSION['userid'];
+}
+
+// Ambil data guru berdasarkan username
+$query = "SELECT * FROM guru WHERE username = '$username'";
 $result = mysqli_query($koneksi, $query);
 $guru = mysqli_fetch_assoc($result);
-?>
+
+// Jika guru tidak ditemukan, redirect ke halaman sebelumnya
+if(!$guru) {
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit();
+}?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

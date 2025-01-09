@@ -10,23 +10,13 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
 // var_dump($_SESSION);
 // echo "<br><br>";
 
+// Ambil userid dari session
+$userid = $_SESSION['userid'];
+
 // Ambil data guru
 $query = "SELECT * FROM guru WHERE username = '$userid'";
 $result = mysqli_query($koneksi, $query);
 $guru = mysqli_fetch_assoc($result);
-
-
-// status like
-$check_like = "SELECT id FROM likes_postingan 
-               WHERE postingan_id = '{$post['id']}' AND user_id = '$user_id'";
-$like_result = mysqli_query($koneksi, $check_like);
-$is_liked = mysqli_num_rows($like_result) > 0;
-
-// Hitung jumlah like
-$count_like = "SELECT COUNT(*) as total FROM likes_postingan 
-               WHERE postingan_id = '{$post['id']}'";
-$count_result = mysqli_query($koneksi, $count_like);
-$like_count = mysqli_fetch_assoc($count_result)['total'];
 
 ?>
 
@@ -185,7 +175,7 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                 <div class="offcanvas-body">
                     <div class="d-flex flex-column gap-2">
                         <!-- Menu Beranda -->
-                        <a href="#" class="text-decoration-none text-black">
+                        <a href="beranda_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded color-web p-2">
                                 <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0 text-white">Beranda</p>
@@ -193,7 +183,7 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                         </a>
                         
                         <!-- Menu Cari -->
-                        <a href="cari.php" class="text-decoration-none text-black">
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Cari</p>
@@ -274,7 +264,7 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                         </a>
                     </div>  
                     <div class="col">
-                        <a href="#" class="text-decoration-none text-black">
+                        <a href="beranda_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
                             <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
@@ -282,7 +272,7 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                         </a>
                     </div>
                     <div class="col">
-                        <a href="cari.php" class="text-decoration-none text-black">
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Cari</p>

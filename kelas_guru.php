@@ -99,7 +99,6 @@ $guru = mysqli_fetch_assoc($result);
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
                 <span class="navbar-toggler-icon" style="color:white"></span>
             </button>
-
             
             <!-- Offcanvas/Sidebar Mobile -->
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
@@ -118,7 +117,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                         
                         <!-- Menu Cari -->
-                        <a href="cari.php" class="text-decoration-none text-black">
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Cari</p>
@@ -126,7 +125,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                         
                         <!-- Menu Ujian -->
-                        <a href="ujian.php" class="text-decoration-none text-black">
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Ujian</p>
@@ -134,7 +133,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                         
                         <!-- Menu Profil -->
-                        <a href="profil.php" class="text-decoration-none text-black">
+                        <a href="profil_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Profil</p>
@@ -207,7 +206,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="cari.php" class="text-decoration-none text-black">
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Cari</p>
@@ -215,7 +214,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="ujian.php" class="text-decoration-none text-black">
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Ujian</p>
@@ -223,7 +222,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="profil.php" class="text-decoration-none text-black">
+                        <a href="profil_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Profil</p>
@@ -305,12 +304,12 @@ $guru = mysqli_fetch_assoc($result);
                     <div class="col-12 col-lg-8 p-0">
                         <div class="buatPosting rounded-3 gap-3 d-flex">
                             <div class="d-flex">
-                                <a href="profil.php">
+                                <a href="profil_guru.php">
                                     <img src="assets/pp.png" alt="" width="50px" class="rounded-circle">
                                 </a>
                             </div>
                             <div style="background-color: rgb(231, 231, 231);" class="rounded-pill flex-fill btn btnPrimary text-start">
-                                <p class="p-2 m-0 text-muted sapa1" data-bs-toggle="modal" data-bs-target="#modalTambahPostingan" style="font-size: 14px;">Hallo, Topik apa yang ingin Anda diskusikan bersama siswa?</p>
+                                <p class="p-2 m-0 text-muted sapa1" data-bs-toggle="modal" data-bs-target="#modalTambahPostingan" style="font-size: 14px;">Halo, topik apa yang ingin Anda diskusikan bersama siswa?</p>
                                 <p class="p-2 m-0 text-muted sapa2" data-bs-toggle="modal" data-bs-target="#modalTambahPostingan" style="font-size: 12px;">Ingin diskusikan tentang apa?</p>
                             </div>
                             <!-- style font -->
@@ -1113,16 +1112,20 @@ function clearFileInput() {
                         </div>
                     </div>
                     <div class="col">
-                        <div style="border: 1px solid rgb(238, 238, 238);"  class="tentangKelas p-3 rounded-3 gap-3 bg-white mb-3" >
-                            <h5><strong>Tentang Kelas ini</strong></p>
-                                <div class="w-100">
-                                    <p class="text-muted p-0 m-0" style="font-size: 14px;">Guru tidak memberikan deskripsi</p>
-                                </div>
-                                <div class="d-flex mt-3">
-                                    <button class="btn btnPrimary text-white flex-fill" data-bs-toggle="modal" data-bs-target="#deskripsimodal">Edit</button>
-                                </div>
+                    <div style="border: 1px solid rgb(238, 238, 238);" class="tentangKelas p-3 rounded-3 gap-3 bg-white mb-3">
+                        <h5><strong>Tentang Kelas ini</strong></h5>
+                        <div class="w-100">
+                            <?php if(!empty($data_kelas['deskripsi'])): ?>
+                                <p class="p-0 m-0" style="font-size: 14px;"><?php echo nl2br(htmlspecialchars($data_kelas['deskripsi'])); ?></p>
+                            <?php else: ?>
+                                <p class="text-muted p-0 m-0" style="font-size: 14px;">Guru tidak memberikan deskripsi</p>
+                            <?php endif; ?>
                         </div>
-                        <!-- style untuk tentang kelas -->
+                        <div class="d-flex mt-3">
+                            <button class="btn btnPrimary text-white flex-fill" data-bs-toggle="modal" data-bs-target="#deskripsimodal">Edit</button>
+                        </div>
+                    </div>                        
+                    <!-- style untuk tentang kelas -->
                          <style>
                             @media screen and (max-width: 768px) {
                                 .tentangKelas {
@@ -1131,38 +1134,205 @@ function clearFileInput() {
                             }
                          </style>
                         <!-- modal untuk guru input deskripsi kelas -->
-                                <div class="modal fade" id="deskripsimodal" tabindex="-1" aria-labelledby="modaldeskripsi" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="modaldeskripsi"><strong>Edit Deskripsi Kelas</strong></h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p style="font-size: 14px;">Apa ada deskripsi khusus untuk kelas Anda?</p>
-                                                <div class="mt-3">
-                                                    <div class="form-floating">
-                                                        <textarea class="form-control" placeholder="Apa pendapat Anda?" id="pendapat" style="height: 100px;"></textarea>
-                                                        <label for="pendapat">Kelas ini bertujuan untuk ..</label>
-                                                    </div>
+                        <div class="modal fade" id="deskripsimodal" tabindex="-1" aria-labelledby="modaldeskripsi" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="modaldeskripsi"><strong>Edit Deskripsi Kelas</strong></h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="update_deskripsi.php" method="POST">
+                                        <div class="modal-body">
+                                            <p style="font-size: 14px;">Apa ada deskripsi khusus untuk kelas Anda?</p>
+                                            <div class="mt-3">
+                                                <div class="form-floating">
+                                                    <textarea class="form-control" name="deskripsi" placeholder="Apa pendapat Anda?" style="height: 100px;"><?php echo htmlspecialchars($data_kelas['deskripsi']); ?></textarea>
+                                                    <label>Kelas ini bertujuan untuk ..</label>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer d-flex">
-                                                <button class="btn btnPrimary text-white flex-fill">Tambah</button>
-                                            </div>
+                                            <input type="hidden" name="kelas_id" value="<?php echo $kelas_id; ?>">
                                         </div>
-                                    </div>
+                                        <div class="modal-footer d-flex">
+                                            <button type="submit" class="btn btnPrimary text-white flex-fill">Simpan</button>
+                                        </div>
+                                    </form>
                                 </div>
-
-                        <div style="border: 1px solid rgb(238, 238, 238);"  class="catatanGuru p-3 rounded-3 gap-3 bg-white" >
-                            <h5><strong>Catatan Guru</strong></p>
-                                <div class="w-100">
-                                    <p class="text-muted p-0 m-0" style="font-size: 14px;">Guru tidak memberikan Catatan</p>
-                                </div>
-                                <div class="d-flex mt-3">
-                                    <button class="btn btnPrimary btn-primary flex-fill">Tambah</button>
-                                </div>
+                            </div>
                         </div>
+
+
+                        <div class="catatanGuru p-3 rounded-3 bg-white" style="border: 1px solid rgb(238, 238, 238);">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="m-0"><strong>Catatan Guru</strong></h5>
+        <button class="btn btnPrimary text-white d-flex align-items-center gap-2" 
+                data-bs-toggle="modal" 
+                data-bs-target="#catatanModal">
+            <i class="bi bi-plus-circle"></i>
+            <span>Tambah</span>
+        </button>
+    </div>
+
+    <?php
+    // Query untuk mengambil catatan guru
+    $query_catatan = "SELECT * FROM catatan_guru WHERE kelas_id = '$kelas_id' ORDER BY created_at DESC";
+    $result_catatan = mysqli_query($koneksi, $query_catatan);
+    ?>
+
+<?php if(isset($_GET['success'])): ?>
+    <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1050;">
+        <?php 
+        if($_GET['success'] == 'catatan_deleted') {
+            echo "Catatan berhasil dihapus!";
+        }
+        ?>
+    </div>
+<?php endif; ?>
+
+<?php if(isset($_GET['error'])): ?>
+    <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1050;">
+        <?php 
+        if($_GET['error'] == 'delete_failed') {
+            echo "Gagal menghapus catatan. Silakan coba lagi.";
+        }
+        ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
+
+<script>
+// Auto hide alerts after 3 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 3000);
+});
+</script>
+
+    <?php if(mysqli_num_rows($result_catatan) > 0): ?>
+        <div class="catatan-list">
+            <?php while($catatan = mysqli_fetch_assoc($result_catatan)): ?>
+                <div class="catatan-item p-3 rounded-3 mb-3" style="background-color: #f8f9fa; border: 1px solid #e9ecef;">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1"><strong><?php echo htmlspecialchars($catatan['judul']); ?></strong></h6>
+                            <small class="text-muted d-flex align-items-center gap-1">
+                                <i class="bi bi-calendar3"></i>
+                                <?php echo date('d M Y', strtotime($catatan['created_at'])); ?>
+                            </small>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item text-danger" href="#" 
+                                       onclick="if(confirm('Hapus catatan ini?')) window.location.href='hapus_catatan.php?id=<?php echo $catatan['id']; ?>&kelas_id=<?php echo $kelas_id; ?>'">
+                                        <i class="bi bi-trash me-2"></i>Hapus
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="catatan-content mt-2">
+                        <p class="mb-2" style="font-size: 14px;">
+                            <?php echo nl2br(htmlspecialchars($catatan['konten'])); ?>
+                        </p>
+                        <?php if($catatan['file_lampiran']): ?>
+                            <div class="file-attachment p-2 rounded-2 d-inline-flex align-items-center gap-2" 
+                                 style="background-color: white; border: 1px solid #dee2e6;">
+                                <?php
+                                $ext = pathinfo($catatan['file_lampiran'], PATHINFO_EXTENSION);
+                                $icon = 'bi-file-earmark';
+                                switch($ext) {
+                                    case 'pdf': $icon = 'bi-file-pdf'; break;
+                                    case 'doc': case 'docx': $icon = 'bi-file-word'; break;
+                                    case 'jpg': case 'jpeg': case 'png': $icon = 'bi-file-image'; break;
+                                }
+                                ?>
+                                <i class="bi <?php echo $icon; ?>"></i>
+                                <a href="<?php echo htmlspecialchars($catatan['file_lampiran']); ?>" 
+                                   class="text-decoration-none" target="_blank">
+                                    Lihat Lampiran
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        </div>
+    <?php else: ?>
+        <div class="text-center py-4" style="background-color: #f8f9fa; border-radius: 8px;">
+            <img src="assets/no-data.png" alt="Tidak ada catatan" style="width: 80px; opacity: 0.5;">
+            <p class="text-muted mt-2 mb-0" style="font-size: 14px;">Belum ada catatan yang ditambahkan</p>
+        </div>
+    <?php endif; ?>
+</div>
+
+<style>
+.catatan-item {
+    transition: all 0.2s ease;
+}
+
+.catatan-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.file-attachment {
+    transition: all 0.2s ease;
+}
+
+.file-attachment:hover {
+    background-color: #f8f9fa !important;
+}
+
+@media (max-width: 768px) {
+    .catatan-item {
+        transform: none !important;
+    }
+}
+</style>
+
+
+<!-- Modal Tambah Catatan -->
+<div class="modal fade" id="catatanModal" tabindex="-1" aria-labelledby="catatanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="catatanModalLabel"><strong>Tambah Catatan</strong></h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="tambah_catatan.php" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Judul Catatan</label>
+                        <input type="text" class="form-control" name="judul" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Isi Catatan</label>
+                        <textarea class="form-control" name="konten" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Lampiran (opsional)</label>
+                        <input type="file" class="form-control" name="file_lampiran">
+                        <div class="form-text">Format yang didukung: PDF, DOC, DOCX, PPT, PPTX, JPG, PNG</div>
+                    </div>
+                    <input type="hidden" name="kelas_id" value="<?php echo $kelas_id; ?>">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btnPrimary text-white">Simpan Catatan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
                         <!-- style untuk catatan guru -->
                          <style>
