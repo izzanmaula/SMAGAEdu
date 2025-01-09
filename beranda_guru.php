@@ -5,8 +5,52 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
     header("Location: index.php");
     exit();
 }
+// Tambahkan debug info di sini
+// echo "Debug seluruh session:<br>";
+// var_dump($_SESSION);
+// echo "<br><br>";
+
+// Ambil data guru
+$query = "SELECT * FROM guru WHERE username = '$userid'";
+$result = mysqli_query($koneksi, $query);
+$guru = mysqli_fetch_assoc($result);
+
+
+// status like
+$check_like = "SELECT id FROM likes_postingan 
+               WHERE postingan_id = '{$post['id']}' AND user_id = '$user_id'";
+$like_result = mysqli_query($koneksi, $check_like);
+$is_liked = mysqli_num_rows($like_result) > 0;
+
+// Hitung jumlah like
+$count_like = "SELECT COUNT(*) as total FROM likes_postingan 
+               WHERE postingan_id = '{$post['id']}'";
+$count_result = mysqli_query($koneksi, $count_like);
+$like_count = mysqli_fetch_assoc($count_result)['total'];
 
 ?>
+
+<?php if(isset($_SESSION['show_siswa_modal']) && $_SESSION['show_siswa_modal']): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    tampilkanModalPilihSiswa(<?php echo $_SESSION['temp_kelas_id']; ?>, '<?php echo $_SESSION['temp_tingkat']; ?>');
+    
+    // Hapus session setelah modal ditampilkan
+    <?php 
+    unset($_SESSION['show_siswa_modal']);
+    unset($_SESSION['temp_kelas_id']);
+    unset($_SESSION['temp_tingkat']);
+    ?>
+});
+
+// Tambahkan event listener untuk modal
+document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal', function () {
+    // Ketika modal ditutup (baik dengan tombol close atau backdrop)
+    window.location.href = 'beranda_guru.php';
+});
+</script>
+<?php endif; ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -197,7 +241,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                             data-bs-toggle="dropdown" 
                             aria-expanded="false">
                         <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0" style="font-size: 12px;">Halo, Ayundy</p>
+                        <p class="p-0 m-0  text-truncate" style="font-size: 12px;" aria-expanded="false"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
                     </button>
                     <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
@@ -283,7 +327,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                 <div class="row dropdown">
                     <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0" style="font-size: 12px;">Halo, Ayundy</p>
+                        <p class="p-0 m-0  text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
                     </div>
                     <!-- dropdown menu option -->
                     <ul class="dropdown-menu" style="font-size: 12px;">
@@ -348,46 +392,60 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
                 $result_kelas = mysqli_query($koneksi, $query_kelas);
 
                 if(mysqli_num_rows($result_kelas) > 0) {
-                while($kelas = mysqli_fetch_assoc($result_kelas)) {
+                    while($kelas = mysqli_fetch_assoc($result_kelas)) {
+                        ?>
+                        <div class="col">
+                            <div class="custom-card w-100">
+                                <!-- Jika ada background image, tampilkan. Jika tidak, gunakan default -->
+                                <?php if(!empty($kelas['background_image'])): ?>
+                                    <img src="<?php echo htmlspecialchars($kelas['background_image']); ?>" alt="Background Image">
+                                <?php else: ?>
+                                    <img src="assets/bg.jpg" alt="Default Background Image">
+                                <?php endif; ?>
+                                
+                                <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
+                                    <a href="profil.html">
+                                        <img src="assets/pp.png" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
+                                    </a>
+                                </div>
+                                <div class="ps-3">
+                                    <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">
+                                        <?php echo htmlspecialchars($kelas['mata_pelajaran']); ?>
+                                    </h5>
+                                    <p class="p-0 m-0" style="font-size: 12px;">
+                                        <?php echo htmlspecialchars($kelas['tingkat']); ?>
+                                    </p>
+                                    <?php if(!empty($kelas['deskripsi'])): ?>
+                                        <p class="p-0 mt-2" style="font-size: 14px;">
+                                            <?php echo htmlspecialchars($kelas['deskripsi']); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="d-flex btn-group gap-2 p-3">
+                                    <a href="kelas_guru.php?id=<?php echo $kelas['id']; ?>" 
+                                    class="color-web btn btn w-45 rounded" 
+                                    style="text-decoration: none; color: white;">
+                                        Masuk
+                                    </a>
+                                    <a href="hapus_kelas.php?id=<?php echo $kelas['id']; ?>" 
+                                        class="btn btn-danger w-45 rounded" 
+                                        onclick="return confirm('Apakah Anda yakin ingin menghapus kelas ini?');"
+                                        style="text-decoration: none; color: white;">
+                                        Hapus
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                } else {
                     ?>
-                    <div class="col">
-                        <div class="custom-card w-100">
-                            <img src="assets/bg.jpg" alt="Background Image">
-                            <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
-                                <a href="profil.html">
-                                    <img src="assets/pp.png" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
-                                </a>
-                            </div>
-                            <div class="ps-3">
-                                <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;"><?php echo htmlspecialchars($kelas['mata_pelajaran']); ?></h5>
-                                <p class="p-0 m-0" style="font-size: 12px;"><?php echo htmlspecialchars($kelas['tingkat']); ?></p>
-                            </div>
-                            <div class="d-flex btn-group gap-2 p-3">
-                                <a href="kelas_guru.php?id=<?php echo $kelas['id']; ?>" class="color-web btn btn w-45 rounded" style="text-decoration: none; color: white;">Masuk</a>
-                            </div>
-                            <style>
-                            .btn {
-                                transition: background-color 0.3s ease;
-                                border: 0;
-                                border-radius: 5px;
-                            }
-                            .btn:hover{
-                                background-color: rgb(219, 106, 68);
-                            }
-
-                            </style>
-                    </div>
+                    <div class="tidakAdaKelas position-absolute top-50 start-50 translate-middle text-center w-100">
+                        <p class="text-muted">Anda belum memiliki kelas.</p>
                     </div>
                     <?php
-                        }
-                    } else {
-                        ?>
-                        <div class="tidakAdaKelas position-absolute top-50 start-50 translate-middle text-center w-100">
-                                <p class="text-muted">Anda belum memiliki kelas.</p>
-                        </div>
-                            <?php
-                        }
-                        ?>
+                }
+                ?>
                 </div>
             </div>
         </div>
@@ -402,62 +460,96 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
         }
      </style>
         <!-- modal untuk buat kelas -->
-     <!-- Modal -->
-     <div class="modal fade" id="modal_tambah_kelas" tabindex="-1" aria-labelledby="label_tambah_kelas" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+<!-- Modal Buat Kelas dan Pilih Siswa -->
+<div class="modal fade" id="modal_tambah_kelas" tabindex="-1" aria-labelledby="label_tambah_kelas" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Ubah ukuran modal jadi lebih besar -->
         <div class="modal-content">
             <div class="modal-header">
-            <h1 class="modal-title fs-5" id="label_tambah_kelas" style="font-weight: bold;">Buat Kelas</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h1 class="modal-title fs-5" id="label_tambah_kelas" style="font-weight: bold;">Buat Kelas</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-            <form action="tambah_kelas.php" method="POST">
-                <div class="mb-3">
-                    <div class="dropdown">
-                            <label for="dropdownField" class="form-label" style="font-size: 14px;">Pilih mata pelajaran Anda</label>
-                            <select class="form-select" id="dropdownField" aria-label="Default select example">
-                                <option selected>Pilih salah satu</option>
-                                <option value="1">Bahasa Indonesia</option>
-                                <option value="2">Matematika</option>
-                                <option value="3">Ilmu Pengetahuan Alam</option>
-                            </select>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <div class="dropdown">
-                            <label for="dropdownField" class="form-label" style="font-size: 14px;">Kelas apa yang ingin Anda tambahkan?</label>
-                            <select class="form-select" id="dropdownField" aria-label="Default select example">
-                                <option selected>Pilih salah satu</option>
-                                <option value="1">Kelas 7</option>
-                                <option value="2">Kelas 8</option>
-                                <option value="3">Kelas 9</option>
-                            </select>
-                    </div>
-                </div>
-                <div class="container mb-3 p-0">
-                    <div class="form-group">
-                        <label for="bg_kelas" style="font-size: 14px;">Tambahkan gambar latar belakang kelas Anda</label>
-                        <input type="file" class="form-control" id="bg_kelas">    
-                    </div>
-                </div>
-                <div class="container mb-3 p-0">
-                    <div class="form-group">
-                        <label for="bg_kelas" style="font-size: 14px;">Deskripsi kelas Anda</label>
-                        <div class="form-floating">
-                            <textarea class="form-control" style="width: 100%;" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-                            <label for="floatingTextarea">Kelas ini bertujuan untuk ...</label>
+                <form action="tambah_kelas.php" method="POST">
+                    <div class="row">
+                        <!-- Kolom Kiri: Form Kelas -->
+                        <div class="col-md-6 border-end">
+                            <div class="mb-3">
+                                <label class="form-label" style="font-size: 14px;">Pilih mata pelajaran</label>
+                                <select class="form-select" name="mata_pelajaran" id="mata_pelajaran" required>
+                                    <option value="">Pilih salah satu</option>
+                                    <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                                    <option value="Matematika">Matematika</option>
+                                    <option value="Ilmu Pengetahuan Alam">Ilmu Pengetahuan Alam</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" style="font-size: 14px;">Pilih tingkat kelas</label>
+                                <select class="form-select" name="tingkat" id="tingkat" onchange="loadSiswa(this.value)" required>
+                                    <option value="">Pilih salah satu</option>
+                                    <option value="7">Kelas 7</option>
+                                    <option value="8">Kelas 8</option>
+                                    <option value="9">Kelas 9</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" style="font-size: 14px;">Deskripsi kelas</label>
+                                <textarea class="form-control" name="deskripsi" rows="3" placeholder="Kelas ini bertujuan untuk ..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Kolom Kanan: Daftar Siswa -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label class="form-label" style="font-size: 14px;">Pilih Siswa</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="pilih_semua">
+                                        <label class="form-check-label" style="font-size: 12px;">
+                                            Pilih Semua
+                                        </label>
+                                    </div>
+                                </div>
+                                <div id="daftar_siswa" style="max-height: 300px; overflow-y: auto;">
+                                    <p class="text-muted">Pilih tingkat kelas terlebih dahulu</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" name="submit" class="btn color-web text-white">Buat Kelas</button>
+                    </div>
+                </form>
             </div>
-            <div class="modal-footer d-flex">
-            <button type="submit" name="submit" class="btn color-web text-white flex-fill">Buat</button>
-            </div>
-            </form>
-        </div>
         </div>
     </div>
+</div>
 
+<script>
+function loadSiswa(tingkat) {
+    if(tingkat) {
+        // Gunakan AJAX untuk mengambil daftar siswa
+        fetch(`get_siswa.php?tingkat=${tingkat}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('daftar_siswa').innerHTML = data;
+            });
+    } else {
+        document.getElementById('daftar_siswa').innerHTML = '<p class="text-muted">Pilih tingkat kelas terlebih dahulu</p>';
+    }
+}
+
+// Handle checkbox "Pilih Semua"
+document.getElementById('pilih_semua').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.siswa-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+    });
+});
+</script>
 
 
 </body>
