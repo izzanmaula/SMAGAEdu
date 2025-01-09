@@ -15,6 +15,14 @@ if(isset($_GET['username'])) {
     $username = $_SESSION['userid'];
 }
 
+// Ambil userid dari session
+$userid = $_SESSION['userid'];
+
+// Ambil data guru
+$query = "SELECT * FROM guru WHERE username = '$userid'";
+$result = mysqli_query($koneksi, $query);
+$guru = mysqli_fetch_assoc($result);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,9 +33,9 @@ if(isset($_GET['username'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    <title>Masuk - Smagaedu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <title>Beranda - SMAGAEdu</title>
+    <title>Cari - SMAGAEdu</title>
 </head>
 <style>
         body{ 
@@ -43,14 +51,121 @@ if(isset($_GET['username'])) {
 
         .list-group-item {
             transition: background-color 0.2s;
+            text-align: left;
         }
 
         .list-group-item:hover {
             background-color: #f8f9fa;
         }
+        @media (max-width: 768px) {
+            .menu-samping {
+                display: none;
+            }
+            body {
+                padding-top: 60px;
+            }
+            .custom-card {
+                max-width: 100%;
+            }
+        }
 
 </style>
 <body>
+
+
+    <!-- Navbar Mobile -->
+    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
+        <div class="container-fluid">
+            <!-- Logo dan Nama -->
+            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
+                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
+            <div>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
+                </div>
+            </a>
+            
+            <!-- Tombol Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+                <span class="navbar-toggler-icon" style="color:white"></span>
+            </button>
+            
+            <!-- Offcanvas/Sidebar Mobile -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="d-flex flex-column gap-2">
+                        <!-- Menu Beranda -->
+                        <a href="beranda_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded color-web p-2">
+                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0 text-white">Beranda</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Cari -->
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Cari</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Ujian -->
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Ujian</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Profil -->
+                        <a href="profil_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Profil</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu AI -->
+                        <a href="ai.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Gemini</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Bantuan -->
+                        <a href="bantuan.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded p-2">
+                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Bantuan</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                <!-- Profile Dropdown -->
+                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
+                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
+                            style="background-color: #F8F8F7;" 
+                            type="button" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false">
+                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
+                        <p class="p-0 m-0  text-truncate" style="font-size: 12px;" aria-expanded="false"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
+                    </button>
+                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
+                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
+                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     
 
      <!-- row col untuk halaman utama -->
@@ -66,7 +181,7 @@ if(isset($_GET['username'])) {
                 </style>
                 <div class="row gap-0">
                     <div class="ps-3 mb-3">
-                        <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
+                        <a href="beranda_guru.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
                             <img src="assets/smagaedu.png" alt="" width="30px">
                             <div>
                                 <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
@@ -75,7 +190,7 @@ if(isset($_GET['username'])) {
                         </a>
                     </div>  
                     <div class="col">
-                        <a href="beranda.php" class="text-decoration-none text-black">
+                        <a href="beranda_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
@@ -128,7 +243,7 @@ if(isset($_GET['username'])) {
                 <div class="row dropdown">
                     <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0" style="font-size: 12px;">Halo, Ayundy</p>
+                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
                     </div>
                     <!-- dropdown menu option -->
                     <ul class="dropdown-menu" style="font-size: 12px;">
@@ -141,15 +256,18 @@ if(isset($_GET['username'])) {
             <!-- ini isi kontennya -->
             <div class="col p-4 col-utama">
                 <style>
-                    .col-utama{
+                .col-utama {
+                    margin-left: 0;
+                }
+                @media (min-width: 768px) {
+                    .col-utama {
                         margin-left: 13rem;
-                        
                     }
+                }
                 </style>
                 <div class="row text-center justify-content-center align-items-center" style="margin-top: 5rem;">
-                    <div class="d-flex text-center justify-content-center align-items-center gap-4 mb-3">
-                        <img src="assets/smagaedu.png" alt="" width="50px" cla>
-                        <h3 style="font-weight: bold;" class="p-0 m-0">Selamat pagi, <?php 
+                    <div class="d-flex text-center justify-content-center align-items-center">
+                        <h3 style="font-weight: bold;" class="p-0 m-0">Halo, <?php 
                         // Ambil namaSebutan guru yang sedang login
                         $userid = $_SESSION['userid'];
                         $query = "SELECT namaSebutan FROM guru WHERE username = '$userid'";
@@ -158,11 +276,14 @@ if(isset($_GET['username'])) {
                         
                         // Tampilkan namaSebutan, jika kosong gunakan namaLengkap
                         echo $guru['namaSebutan'] ? htmlspecialchars($guru['namaSebutan']) : $_SESSION['nama']; 
-                        ?></h3>                    
+                        ?></h3>            
+                    </div>
+                    <div>
+                    <p class="text-muted p-2 mb-3">Siapa yang ingin Anda cari hari ini?</p>        
                     </div>
                     <div class=" card-footer p-2 rounded-3" style="width: 45rem; margin: auto; background-color: #EEECE2;">
                         <div class="input-group">
-                            <input type="text" id="user-input" class="form-control border-0" style="background-color: transparent;" placeholder="Apa yang ingin Anda cari hari ini?">
+                            <input type="text" id="user-input" class="form-control border-0" style="background-color: transparent;" placeholder="Cari">
                             <button id="send-button" class="btn color-web bi-search rounded text-white"></button>
                         </div>
                     </div>    
@@ -174,7 +295,7 @@ if(isset($_GET['username'])) {
     </div>
 
 
-    <script>
+<script>
 const userInput = document.getElementById('user-input');
 const searchResults = document.createElement('div');
 searchResults.className = 'search-results mt-3';
@@ -200,10 +321,25 @@ userInput.addEventListener('input', function() {
 
 function displayResults(data) {
     let html = '<div class="container">';
+
+        // Menampilkan hasil siswa
+        if(data.siswa.length > 0) {
+        html += '<h5 class="mt-3 text-start">Siswa</h5>';
+        html += '<div class="list-group">';
+        data.siswa.forEach(siswa => {
+            html += `
+                <div class="list-group-item d-flex justify-content-between align-items-start">
+                    <strong>${siswa.nama}</strong>
+                    <a href="view_siswa.php?username=${siswa.username}" class="btn btn-sm color-web text-white">Profil</a>
+                </div>
+            `;
+        });
+        html += '</div>';
+    }
     
     // Menampilkan hasil guru
     if(data.guru.length > 0) {
-        html += '<h5 class="mt-3">Guru</h5>';
+        html += '<h5 class="mt-3 text-start">Guru</h5>';
         html += '<div class="list-group">';
         data.guru.forEach(guru => {
             html += `
@@ -218,24 +354,9 @@ function displayResults(data) {
         });
         html += '</div>';
     }
-    
-    // Menampilkan hasil siswa
-    if(data.siswa.length > 0) {
-        html += '<h5 class="mt-3">Siswa</h5>';
-        html += '<div class="list-group">';
-        data.siswa.forEach(siswa => {
-            html += `
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <strong>${siswa.nama}</strong>
-                    <a href="view_siswa.php?username=${siswa.username}" class="btn btn-sm color-web text-white">Profil</a>
-                </div>
-            `;
-        });
-        html += '</div>';
-    }
-    
+        
     if(data.guru.length === 0 && data.siswa.length === 0) {
-        html += '<p class="text-center mt-3">Tidak ada hasil yang ditemukan</p>';
+        html += '<p class="text-center text-muted mt-3" style="font-size: 12px;">Tidak ada hasil yang ditemukan</p>';
     }
     
     html += '</div>';
