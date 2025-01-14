@@ -298,7 +298,7 @@ $guru = mysqli_fetch_assoc($result);
 <script>
 const userInput = document.getElementById('user-input');
 const searchResults = document.createElement('div');
-searchResults.className = 'search-results mt-3';
+searchResults.className = 'search-results m-0 p-0 mt-3';
 document.querySelector('.card-footer').insertAdjacentElement('afterend', searchResults);
 
 let debounceTimer;

@@ -44,8 +44,38 @@ $query = "SELECT * FROM guru WHERE username = '$userid'";
 $result = mysqli_query($koneksi, $query);
 $guru = mysqli_fetch_assoc($result);
 
+// Query untuk menghitung jumlah siswa
+$query_jumlah = "SELECT COUNT(*) as total FROM kelas_siswa WHERE kelas_id = '$kelas_id'";
+$result_jumlah = mysqli_query($koneksi, $query_jumlah);
+$jumlah_siswa = mysqli_fetch_assoc($result_jumlah)['total'];
+
+// Query untuk mengambil semua siswa di kelas ini
+$query_siswa_all = "SELECT s.nama, s.foto_profil FROM siswa s 
+                    JOIN kelas_siswa ks ON s.id = ks.siswa_id 
+                    WHERE ks.kelas_id = '$kelas_id'";
+$result_siswa = mysqli_query($koneksi, $query_siswa_all);
 
 ?>
+
+<?php if(isset($_GET['pesan'])): ?>
+    <div class="alert alert-<?php echo $_GET['pesan'] == 'siswa_dihapus' ? 'success' : 'danger'; ?> alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1050;">
+        <?php 
+        if($_GET['pesan'] == 'siswa_dihapus') {
+            echo "Siswa berhasil dihapus dari kelas!";
+        } else if($_GET['pesan'] == 'gagal_hapus') {
+            echo "Gagal menghapus siswa. Silakan coba lagi.";
+        }
+        ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <script>
+    // Auto hide alert after 3 seconds
+    setTimeout(function() {
+        document.querySelector('.alert').remove();
+    }, 3000);
+    </script>
+<?php endif; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,6 +87,11 @@ $guru = mysqli_fetch_assoc($result);
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <!-- Cropper.js JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <title>Kelas - SMAGAEdu</title>
 </head>
 <style>
@@ -82,6 +117,8 @@ $guru = mysqli_fetch_assoc($result);
 
 </style>
 <body>
+
+
     
     <!-- Navbar Mobile -->
     <nav class="navbar navbar-dark d-md-none color-web fixed-top">
@@ -277,36 +314,107 @@ $guru = mysqli_fetch_assoc($result);
                                 }
                             }                
                 </style>
+
+                <!-- Container untuk background dengan efek hover -->
+                <div class="background-container position-relative rounded mx-2 mx-md-0">
+                    <!-- Background image -->
                     <div style="background-image: url(<?php 
-                                echo !empty($data_kelas['background_image']) ? 
-                                    htmlspecialchars($data_kelas['background_image']) : 
-                                    'assets/bg.jpg'; 
-                                ?>); 
-                                height: 200px; 
-                                padding-top: 120px; 
-                                margin-top: 15px; 
-                                background-position: center;
-                                background-size: cover;" 
-                        class="rounded text-white shadow latar-belakang mx-2 mx-md-0">
-                        <div class="ps-3" style="position: relative; z-index: 999;">
-                            <div>
-                                <h5 class="display-5 p-0 m-0" 
-                                    style="font-weight: bold; font-size: 28px; font-size: clamp(24px, 5vw, 35px);">
-                                    <?php echo htmlspecialchars($data_kelas['mata_pelajaran']); ?>
-                                </h5>
-                                <h4 class="p-0 m-0 pb-3" style="font-size: clamp(16px, 4vw, 24px);">
-                                    Kelas <?php echo htmlspecialchars($data_kelas['tingkat']); ?>
-                                </h4>       
-                            </div>
+                            echo !empty($data_kelas['background_image']) ? 
+                                htmlspecialchars($data_kelas['background_image']) : 
+                                'assets/bg.jpg'; 
+                            ?>); 
+                            height: 200px; 
+                            padding-top: 120px; 
+                            margin-top: 15px; 
+                            background-position: center;
+                            background-size: cover;" 
+                        class="rounded text-white shadow latar-belakang">
+                    </div>
+
+                    <!-- Overlay dengan tombol (akan muncul saat hover) -->
+                    <div class="background-overlay rounded d-flex align-items-center justify-content-center">
+                        <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modalEditBackground">
+                            <i class="fas fa-camera me-2"></i>Ganti Background
+                        </button>
+                    </div>
+
+                    <!-- Tombol titik tiga tetap di posisinya -->
+                    <div class="position-absolute top-0 end-0 m-3" style="z-index: 2;">
+                        <button class="btn btn-light btn-sm rounded-circle" 
+                                type="button" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalEditBackground">
+                                Edit Background
+                            </a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Konten (teks) dengan z-index lebih tinggi -->
+                    <div class="position-absolute bottom-0 start-0 p-3" style="z-index: 2;">
+                        <div>
+                            <h5 class="display-5 p-0 m-0 text-white" 
+                                style="font-weight: bold; font-size: 28px; font-size: clamp(24px, 5vw, 35px);">
+                                <?php echo htmlspecialchars($data_kelas['mata_pelajaran']); ?>
+                            </h5>
+                            <h4 class="p-0 m-0 pb-3 text-white" style="font-size: clamp(16px, 4vw, 24px);">
+                                Kelas <?php echo htmlspecialchars($data_kelas['tingkat']); ?>
+                            </h4>       
                         </div>
                     </div>
+                </div>
+
+                <!-- hover untuk background kelas -->
+                 <!-- CSS untuk efek hover -->
+                <style>
+                .latar-belakang {
+                    filter: brightness(0.6);
+                }
+                .background-container {
+                    position: relative;
+                    cursor: pointer;
+                    
+                }
+
+                .background-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .background-container:hover .background-overlay {
+                    opacity: 1;
+                }
+
+                /* Memastikan tombol tidak inherit opacity dari overlay */
+                .background-overlay .btn {
+                    transform: translateY(20px);
+                    transition: transform 0.3s ease;
+                }
+
+                .background-container:hover .background-overlay .btn {
+                    transform: translateY(0);
+                }
+                </style>
+
                     <div class="row mt-4 p-3 m-0 pt-0">
                     <div class="col-12 col-lg-8 p-0">
                         <div class="buatPosting rounded-3 gap-3 d-flex">
                             <div class="d-flex">
-                                <a href="profil_guru.php">
-                                    <img src="assets/pp.png" alt="" width="50px" class="rounded-circle">
-                                </a>
+                                <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" 
+                                    alt="Profile Image" 
+                                    class="profile-img rounded-4 border-0 bg-white" style="width: 40px; object-fit:cover;">
                             </div>
                             <div style="background-color: rgb(231, 231, 231);" class="rounded-pill flex-fill btn btnPrimary text-start">
                                 <p class="p-2 m-0 text-muted sapa1" data-bs-toggle="modal" data-bs-target="#modalTambahPostingan" style="font-size: 14px;">Halo, topik apa yang ingin Anda diskusikan bersama siswa?</p>
@@ -338,6 +446,237 @@ $guru = mysqli_fetch_assoc($result);
                              </style>
                         </div>
 
+<!-- Modal Edit Background -->
+<div class="modal fade" id="modalEditBackground" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Background Kelas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Tab navigation -->
+                <ul class="nav nav-tabs mb-3" id="backgroundTab" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button">
+                            Upload Gambar
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" id="preset-tab" data-bs-toggle="tab" data-bs-target="#preset" type="button">
+                            Pilih Template
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab content -->
+                <div class="tab-content">
+                    <!-- Upload Tab -->
+                    <div class="tab-pane fade show active" id="upload">
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="imageUpload" accept="image/*">
+                        </div>
+                        <div class="cropper-container" style="display: none;">
+                            <div class="img-container" style="max-height: 400px;">
+                                <img id="image" src="" alt="Picture">
+                            </div>
+                            <div class="mt-3">
+                                <div class="cropper-controls">
+                                    <button class="btn" id="rotateLeft" title="Rotate Left">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                    <button class="btn" id="rotateRight" title="Rotate Right">
+                                        <i class="fas fa-redo"></i>
+                                    </button>
+                                    <button class="btn" id="zoomIn" title="Zoom In">
+                                        <i class="fas fa-search-plus"></i>
+                                    </button>
+                                    <button class="btn" id="zoomOut" title="Zoom Out">
+                                        <i class="fas fa-search-minus"></i>
+                                    </button>
+                                </div>                            
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preset Tab -->
+                    <div class="tab-pane fade" id="preset">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="preset-image" data-image="assets/presets/bg1.jpg">
+                                    <img src="assets/presets/bg1.jpg" class="img-fluid rounded">
+                                </div>
+                            </div>
+                            <!-- Tambahkan preset lainnya sesuai kebutuhan -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" id="saveBackground">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- style untuk cropper -->
+<style>
+/* Warna box cropper */
+.cropper-view-box {
+    border-radius: 5px;
+}
+
+/* Warna garis cropper */
+.cropper-line {
+}
+
+/* Warna handle di sudut dan sisi */
+.cropper-point {
+    width: 10px !important;
+    height: 10px !important;
+    opacity: 1;
+    background-color: #e79e7c !important;
+}
+
+/* Warna overlay di luar area crop */
+.cropper-container {
+    /* background-color: rgba(0, 0, 0, 0.6); */
+}
+
+/* Styling untuk tombol kontrol */
+.cropper-controls {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.cropper-controls .btn {
+    background-color: #fff;
+    border: 1px solid #e79e7c;
+    color: #e79e7c;
+    padding: 8px 15px;
+    transition: all 0.3s ease;
+}
+
+.cropper-controls .btn:hover {
+    background-color: #e79e7c;
+    color: #fff;
+}
+
+.cropper-controls .btn i {
+    font-size: 14px;
+}
+
+/* Container cropper */
+.img-container {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+/* Modifikasi modal untuk tampilan yang lebih baik */
+.modal-content {
+    border-radius: 12px;
+}
+
+/* Style untuk preview gambar */
+#image {
+    max-width: 100%;
+    display: block;
+}
+</style>
+
+<!-- script untuk crop latar belakang -->
+<script>
+let cropper;
+const imageElement = document.getElementById('image');
+const inputElement = document.getElementById('imageUpload');
+const cropperContainer = document.querySelector('.cropper-container');
+
+inputElement.addEventListener('change', function(e) {
+    const files = e.target.files;
+    const reader = new FileReader();
+
+    reader.onload = function() {
+        if (cropper) {
+            cropper.destroy();
+        }
+
+        imageElement.src = reader.result;
+        cropperContainer.style.display = 'block';
+        
+        cropper = new Cropper(imageElement, {
+            aspectRatio: 16 / 9,
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 1,
+            restore: false,
+            modal: false,
+            guides: false,
+            highlight: false,
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            toggleDragModeOnDblclick: false,
+        });
+    };
+
+    if (files && files[0]) {
+        reader.readAsDataURL(files[0]);
+    }
+});
+
+// Tombol kontrol cropper
+document.getElementById('rotateLeft').addEventListener('click', () => cropper.rotate(-90));
+document.getElementById('rotateRight').addEventListener('click', () => cropper.rotate(90));
+document.getElementById('zoomIn').addEventListener('click', () => cropper.zoom(0.1));
+document.getElementById('zoomOut').addEventListener('click', () => cropper.zoom(-0.1));
+
+// Modifikasi bagian event listener saveBackground
+document.getElementById('saveBackground').addEventListener('click', function() {
+    if (cropper) {
+        const canvas = cropper.getCroppedCanvas({
+            width: 1920,
+            height: 1080
+        });
+
+        canvas.toBlob(function(blob) {
+            const formData = new FormData();
+            formData.append('image', blob, 'background.jpg'); // Tambahkan nama file
+            formData.append('kelas_id', '<?php echo $kelas_id; ?>');
+
+            // Log FormData untuk debugging
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+            fetch('save_background.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data); // Log response
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Gagal menyimpan background: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan');
+            });
+        }, 'image/jpeg'); // Specify image format
+    } else {
+        alert('Silakan pilih dan crop gambar terlebih dahulu');
+    }
+});
+
+</script>
+
+
 <!-- Modal Tambah Postingan -->
 <div class="modal fade" id="modalTambahPostingan" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -350,8 +689,10 @@ $guru = mysqli_fetch_assoc($result);
                 <div class="modal-body">
                     <!-- Info Profil -->
                     <div class="d-flex gap-3 mb-3">
-                        <div>
-                            <img src="assets/pp.png" alt="" width="40px" class="rounded-circle">
+                        <div class="border-4">
+                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" 
+                            alt="Profile Image" 
+                            class="profile-img rounded-4 border-0 bg-white" style="width: 40px;">
                         </div>
                         <div>
                             <h6 class="p-0 m-0"><?php echo htmlspecialchars($guru['namaLengkap']); ?></h6>
@@ -459,8 +800,10 @@ function clearFileInput() {
                          style="border: 1px solid rgb(226, 226, 226);">
                             <div class="d-flex gap-3">
                                 <div>
-                                    <a href="profil.html">
-                                        <img src="assets/pp.png" alt="" width="40px" class="rounded-circle">
+                                    <a href="profil_guru.php">
+                                    <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" 
+                                        alt="Profile Image" 
+                                        class="profile-img rounded-4 border-0 bg-white" style="width: 40px;">
                                     </a>
                                 </div>
                                 <div class="">
@@ -1268,7 +1611,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     <?php else: ?>
         <div class="text-center py-4" style="background-color: #f8f9fa; border-radius: 8px;">
-            <img src="assets/no-data.png" alt="Tidak ada catatan" style="width: 80px; opacity: 0.5;">
+            <p class="text-muted " style="font-size: 18px;">Tidak ada catatan</p>
             <p class="text-muted mt-2 mb-0" style="font-size: 14px;">Belum ada catatan yang ditambahkan</p>
         </div>
     <?php endif; ?>
@@ -1296,8 +1639,257 @@ document.addEventListener('DOMContentLoaded', function() {
     .catatan-item {
         transform: none !important;
     }
+    .daftarSiswa {
+        display: none;
+    }
 }
 </style>
+
+<!-- Daftar Siswa -->
+<div class="daftarSiswa p-3 rounded-3 bg-white mt-3" style="border: 1px solid rgb(238, 238, 238);">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="m-0"><strong>Daftar Siswa</strong></h5>
+        <p class="m-0 text-muted"><?php echo $jumlah_siswa; ?> siswa</p>
+    </div>
+
+    <?php if(mysqli_num_rows($result_siswa) > 0): ?>
+        <div class="student-list">
+            <div class="row g-2">
+                <?php 
+                // Mengambil 4 siswa terbaru
+                $query_siswa_terbaru = "SELECT s.nama, s.foto_profil FROM siswa s 
+                                      JOIN kelas_siswa ks ON s.id = ks.siswa_id 
+                                      WHERE ks.kelas_id = '$kelas_id'
+                                      ORDER BY ks.created_at DESC LIMIT 4";
+                $result_siswa_terbaru = mysqli_query($koneksi, $query_siswa_terbaru);
+                
+                while($siswa = mysqli_fetch_assoc($result_siswa_terbaru)): 
+                ?>
+                    <div class="col-6">
+                        <div class="student-card p-2 rounded-3 d-flex align-items-center gap-2" 
+                             style="background-color: #f8f9fa;">
+                            <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp.png'; ?>" 
+                                 alt="Profile" class="rounded-circle" width="32" height="32">
+                            <span class="student-name" style="font-size: 14px;">
+                                <?php echo htmlspecialchars($siswa['nama']); ?>
+                            </span>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+        </div>
+
+        <!-- Button Group -->
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn color-web btn-light text-center flex-grow-1" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#lihatSemuaSiswaModal">
+                <i class="bi bi-people text-white"></i>
+            </button>
+            <button class="btn color-web btn-light text-center flex-grow-1" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#tambahSiswaModal">
+                <i class="bi bi-person-plus text-white"></i>
+            </button>
+            <button class="btn btn-danger text-center flex-grow-1" 
+            data-bs-toggle="modal" 
+            data-bs-target="#hapusSiswaModal">
+            <i class="bi bi-person-x"></i>
+        </button>
+        </div>
+    <?php else: ?>
+        <div class="text-center py-4" style="background-color: #f8f9fa; border-radius: 8px;">
+            <img src="assets/no-data.png" alt="Tidak ada siswa" style="width: 80px; opacity: 0.5;">
+            <p class="text-muted mt-2 mb-0" style="font-size: 14px;">Belum ada siswa dalam kelas ini</p>
+            
+            <!-- Hanya tampilkan tombol tambah -->
+            <div class="mt-3">
+                <button class="btn color-web text-white d-flex align-items-center gap-2 mx-auto" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#tambahSiswaModal">
+                    <i class="bi bi-person-plus"></i>
+                    Tambah Siswa
+                </button>
+            </div>
+        </div>
+        <?php endif; ?>
+</div>
+
+<!-- Modal Tambah Siswa -->
+<div class="modal fade" id="tambahSiswaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Undang Siswa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <div class="mb-4">
+                    <i class="bi bi-qr-code text-primary display-1"></i>
+                </div>
+                <div class="mb-4">
+                    <p class="mb-2 text-muted">Bagikan kode kelas ini kepada siswa</p>
+                    <div class="d-flex align-items-center justify-content-center gap-2">
+                        <h4 class="m-0 fw-bold"><?php echo $kelas_id; ?></h4>
+                        <button class="btn btn-light btn-sm" onclick="copyKodeKelas('<?php echo $kelas_id; ?>')">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="border-top pt-3">
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Siswa dapat bergabung dengan memasukkan kode kelas ini di menu "Gabung Kelas"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Hapus Siswa -->
+<div class="modal fade" id="hapusSiswaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Hapus Siswa dari Kelas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3">
+                <?php
+                $query_siswa_hapus = "SELECT s.id, s.nama, s.foto_profil, s.tingkat 
+                                    FROM siswa s 
+                                    JOIN kelas_siswa ks ON s.id = ks.siswa_id 
+                                    WHERE ks.kelas_id = '$kelas_id' 
+                                    ORDER BY s.nama ASC";
+                $result_siswa_hapus = mysqli_query($koneksi, $query_siswa_hapus);
+                
+                if(mysqli_num_rows($result_siswa_hapus) > 0): 
+                ?>
+                    <div class="list-siswa">
+                        <?php while($siswa = mysqli_fetch_assoc($result_siswa_hapus)): ?>
+                            <div class="student-card p-2 rounded-3 d-flex align-items-center justify-content-between gap-2 mb-2" 
+                                 style="background-color: #f8f9fa; border: 1px solid #e9ecef;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp.png'; ?>" 
+                                         alt="Profile" class="rounded-circle" width="40" height="40">
+                                    <div>
+                                        <div class="fw-medium"><?php echo htmlspecialchars($siswa['nama']); ?></div>
+                                        <small class="text-muted">Kelas <?php echo htmlspecialchars($siswa['tingkat']); ?></small>
+                                    </div>
+                                </div>
+                                <button class="btn btn-danger btn-sm" 
+                                        onclick="hapusSiswa(<?php echo $siswa['id']; ?>, '<?php echo htmlspecialchars($siswa['nama']); ?>')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        <?php endwhile; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-0">Belum ada siswa dalam kelas ini</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Fungsi untuk copy kode kelas
+function copyKodeKelas(kode) {
+    navigator.clipboard.writeText(kode).then(() => {
+        alert('Kode kelas berhasil disalin!');
+    });
+}
+
+// Fungsi untuk konfirmasi dan hapus siswa
+function hapusSiswa(siswaId, namaSiswa) {
+    if(confirm(`Apakah Anda yakin ingin menghapus ${namaSiswa} dari kelas ini?`)) {
+        window.location.href = `hapus_siswa.php?siswa_id=${siswaId}&kelas_id=<?php echo $kelas_id; ?>`;
+    }
+}
+</script>
+
+<!-- Modal Lihat Semua Siswa -->
+<div class="modal fade" id="lihatSemuaSiswaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Daftar Siswa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3">
+                <!-- Statistik Siswa -->
+                <div class="student-stats p-3 rounded-3 mb-3" style="background-color: #f8f9fa; border: 1px solid #e9ecef;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 48px; height: 48px; background-color: rgba(218, 119, 86, 0.1);">
+                            <i class="bi bi-people fs-4" style="color: rgb(218, 119, 86);"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Total Siswa</h6>
+                            <h4 class="m-0"><strong><?php echo $jumlah_siswa; ?></strong> siswa</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daftar Siswa -->
+                <?php
+                $query_semua_siswa = "SELECT s.nama, s.foto_profil, s.tingkat 
+                                    FROM siswa s 
+                                    JOIN kelas_siswa ks ON s.id = ks.siswa_id 
+                                    WHERE ks.kelas_id = '$kelas_id' 
+                                    ORDER BY s.nama ASC";
+                $result_semua_siswa = mysqli_query($koneksi, $query_semua_siswa);
+                
+                if(mysqli_num_rows($result_semua_siswa) > 0): 
+                    while($siswa = mysqli_fetch_assoc($result_semua_siswa)): 
+                ?>
+                    <div class="student-card p-2 rounded-3 d-flex align-items-center gap-2 mb-2" 
+                         style="background-color: #f8f9fa; border: 1px solid #e9ecef;">
+                        <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp.png'; ?>" 
+                             alt="Profile" class="rounded-circle" width="40" height="40">
+                        <div>
+                            <div class="fw-medium"><?php echo htmlspecialchars($siswa['nama']); ?></div>
+                            <small class="text-muted">Kelas <?php echo htmlspecialchars($siswa['tingkat']); ?></small>
+                        </div>
+                    </div>
+                <?php 
+                    endwhile;
+                else: 
+                ?>
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-0">Belum ada siswa dalam kelas ini</p>
+                    </div>
+                <?php 
+                endif; 
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.student-card {
+    transition: all 0.2s ease;
+    border: 1px solid #e9ecef;
+}
+
+.student-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.student-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 40px); /* 40px untuk gambar + padding */
+}
+</style>
+
+                            
 
 
 <!-- Modal Tambah Catatan -->

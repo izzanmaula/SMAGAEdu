@@ -11,6 +11,13 @@ $userid = $_SESSION['userid'];
 $query = "SELECT * FROM guru WHERE username = '$userid'";
 $result = mysqli_query($koneksi, $query);
 $guru = mysqli_fetch_assoc($result);
+
+// Ambil semua ujian yang dibuat oleh guru yang sedang login
+$query_ujian = "SELECT u.*, k.mata_pelajaran FROM ujian u 
+                JOIN kelas k ON u.kelas_id = k.id 
+                WHERE u.guru_id = '$userid' 
+                ORDER BY u.created_at DESC";
+$result_ujian = mysqli_query($koneksi, $query_ujian);
 ?>
 
 
@@ -242,7 +249,7 @@ $guru = mysqli_fetch_assoc($result);
                 </style>
                 <div class="row gap-0">
                     <div class="ps-3 mb-3">
-                        <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
+                        <a href="beranda_guru.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
                             <img src="assets/smagaedu.png" alt="" width="30px">
                             <div>
                                 <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
@@ -251,7 +258,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>  
                     <div class="col">
-                        <a href="beranda.php" class="text-decoration-none text-black">
+                        <a href="beranda_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
@@ -259,7 +266,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="cari.php" class="text-decoration-none text-black">
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Cari</p>
@@ -267,7 +274,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="ujian.php" class="text-decoration-none text-black">
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
                             <img src="assets/ujian_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Ujian</p>
@@ -275,7 +282,7 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                     </div>
                     <div class="col">
-                        <a href="profil.php" class="text-decoration-none text-black">
+                        <a href="profil_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Profil</p>
@@ -329,6 +336,27 @@ $guru = mysqli_fetch_assoc($result);
                     }
                 </style>
                 <div class="row justify-content-between align-items-center mb-1">
+                    <!-- Tambahkan setelah div row justify-content-between -->
+                    <?php if(isset($_GET['pesan'])): ?>
+                        <div class="alert alert-dismissible fade show <?php 
+                            echo $_GET['pesan'] == 'hapus_berhasil' ? 'alert-success' : 'alert-danger'; 
+                        ?>" role="alert">
+                            <?php
+                            switch($_GET['pesan']) {
+                                case 'hapus_berhasil':
+                                    echo "Ujian berhasil dihapus";
+                                    break;
+                                case 'hapus_gagal':
+                                    echo "Gagal menghapus ujian";
+                                    break;
+                                case 'tidak_ditemukan':
+                                    echo "Ujian tidak ditemukan";
+                                    break;
+                            }
+                            ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
                     <div class="col-12 col-md-auto mb-3 mb-md-0">
                         <h3 style="font-weight: bold;">Ujian</h3>
                     </div>
@@ -368,27 +396,54 @@ $guru = mysqli_fetch_assoc($result);
                 </div>
 
                 <div class="row row-cols-1 row-cols-md-3 g-4">
-                    <div class="col">
-                        <div class="custom-card">
-                            <img src="assets/bg.jpg" alt="Background Image">
-                            <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
-                                <img src="assets/pp.png" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
+                    <?php 
+                    if(mysqli_num_rows($result_ujian) > 0) {
+                        while($ujian = mysqli_fetch_assoc($result_ujian)) { 
+                    ?>
+                        <div class="col">
+                            <div class="custom-card">
+                                <img src="assets/bg.jpg" alt="Background Image">
+                                <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
+                                    <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
+                                </div>
+                                <div class="ps-3">
+                                    <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">
+                                        <?php echo htmlspecialchars($ujian['mata_pelajaran']); ?>
+                                    </h5>
+                                    <p class="p-0 m-0" style="font-size: 12px;">
+                                        <?php echo htmlspecialchars($guru['namaLengkap']); ?>
+                                    </p>
+                                </div>
+                                <div style="font-size: 12px;" class="ps-3 pt-2">
+                                    <p class="p-0 m-0">Ujian dilaksanakan pada :</p>
+                                    <p class="p-0 m-0">
+                                        <?php echo date('l, d F Y', strtotime($ujian['tanggal_mulai'])); ?>
+                                    </p>
+                                </div>
+                                <div class="d-flex btn-group gap-2 p-3">
+                                    <a href="buat_soal.php?ujian_id=<?php echo $ujian['id']; ?>"
+                                        class="btn color-web text-white w-45 rounded text-decoration-none">
+                                        Lihat
+                                    </a>
+                                    <button onclick="hapusUjian(<?php echo $ujian['id']; ?>)" 
+                                            class="btn btn-danger w-45 rounded">
+                                        Hapus
+                                    </button>
+                                </div>                            
                             </div>
-                            <div class="ps-3">
-                                <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">Pendidikan Agama Islam</h5>
-                                <p class="p-0 m-0" style="font-size: 12px;">Ayundy Anditaningrum, S.Ag</p>
-                            </div>
-                            <div style="font-size: 12px;" class="ps-3 pt-2">
-                                <p class="p-0 m-0">Ujian dilaksanakan pada :</p>
-                                <p class="p-0 m-0">Rabu, 13 Desember 2025</p>
-                            </div>
-                            <a href="lihat_ujian.html" class="text-decoration-none">
-                            <div class="d-flex btn-group gap-2 p-3">
-                                <button class="btn color-web text-white w-45 rounded">Lihat</button>
-                            </div>
-                        </a>
                         </div>
-                    </div>
+                    <?php 
+                        }
+                    } else {
+                    ?>
+                        <div class="container">
+                            <div class="text-center position-absolute top-50 start-50 translate-middle text-center w-100">
+                                <p>Belum ada ujian yang dibuat.</p>
+                            </div>
+                        </div>
+                    <?php
+                    }
+                    ?>
                 </div>
 
     
@@ -396,5 +451,12 @@ $guru = mysqli_fetch_assoc($result);
         </div>
     </div>
 
+<script>
+function hapusUjian(id) {
+    if(confirm('Apakah Anda yakin ingin menghapus ujian ini? Semua soal yang terkait juga akan terhapus.')) {
+        window.location.href = 'hapus_ujian.php?id=' + id;
+    }
+}
+</script>
 </body>
 </html>

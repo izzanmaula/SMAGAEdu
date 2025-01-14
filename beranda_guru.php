@@ -91,58 +91,16 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
         .custom-card .card-body {
             text-align: left;
         }
-        .merriweather-light {
-        font-family: "Merriweather", serif;
-        font-weight: 300;
-        font-style: normal;
-        }
-
-        .merriweather-regular {
-        font-family: "Merriweather", serif;
-        font-weight: 400;
-        font-style: normal;
-        }
-
-        .merriweather-bold {
-        font-family: "Merriweather", serif;
-        font-weight: 700;
-        font-style: normal;
-        }
-
-        .merriweather-black {
-        font-family: "Merriweather", serif;
-        font-weight: 900;
-        font-style: normal;
-        }
-
-        .merriweather-light-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 300;
-        font-style: italic;
-        }
-
-        .merriweather-regular-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 400;
-        font-style: italic;
-        }
-
-        .merriweather-bold-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 700;
-        font-style: italic;
-        }
-
-        .merriweather-black-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 900;
-        font-style: italic;
-        }
         body{ 
             font-family: merriweather;
         }
         .color-web {
             background-color: rgb(218, 119, 86);
+            transition: background-color 0.3s ease;
+        }
+
+        .color-web:hover{
+            background-color: rgb(206, 100, 65);
         }
 
 </style>
@@ -348,7 +306,7 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                         <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas" 
                                 class="btn d-flex align-items-center justify-content-center border p-2">
                             <img src="assets/tambah.png" alt="Tambah" width="25px" class="me-2">
-                            <p class="m-0">Gabung Kelas</p>
+                            <p class="m-0">Buat Kelas</p>
                         </button>
                     </div>
 
@@ -366,20 +324,19 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                         .position-fixed.bottom-0.end-0 {
                                 margin-right: -75% !important; /* Memastikan tidak ada margin yang mengganggu */
                             }
-                            .btn.color-web {
-                                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                            }
-                            .btn.color-web:hover {
-                                transform: scale(1.1);
-                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-                            }                    
                     </style>
                 </div>
 
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 <?php
-                $query_kelas = "SELECT * FROM kelas WHERE guru_id = '{$_SESSION['userid']}'";
-                $result_kelas = mysqli_query($koneksi, $query_kelas);
+                // Kemudian query untuk kelas
+                $query_kelas = "SELECT k.*, COUNT(ks.siswa_id) as jumlah_siswa 
+                                FROM kelas k 
+                                LEFT JOIN kelas_siswa ks ON k.id = ks.kelas_id 
+                                WHERE k.guru_id = '$userid'
+                                GROUP BY k.id";
+                $result_kelas = mysqli_query($koneksi, $query_kelas); 
+                
 
                 if(mysqli_num_rows($result_kelas) > 0) {
                     while($kelas = mysqli_fetch_assoc($result_kelas)) {
@@ -388,32 +345,33 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                             <div class="custom-card w-100">
                                 <!-- Jika ada background image, tampilkan. Jika tidak, gunakan default -->
                                 <?php if(!empty($kelas['background_image'])): ?>
-                                    <img src="<?php echo htmlspecialchars($kelas['background_image']); ?>" alt="Background Image">
+                                    <img src="<?php echo htmlspecialchars($kelas['background_image']); ?>" 
+                                        alt="Background Image" 
+                                        class="card-img-top">
                                 <?php else: ?>
-                                    <img src="assets/bg.jpg" alt="Default Background Image">
+                                    <img src="assets/bg.jpg" 
+                                        alt="Default Background Image" 
+                                        class="card-img-top">
                                 <?php endif; ?>
                                 
+                                <!-- Profile Image -->
                                 <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
-                                    <a href="profil.html">
-                                        <img src="assets/pp.png" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
-                                    </a>
-                                </div>
+                                                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" 
+                                                            alt="Profile Image" 
+                                                            class="profile-img rounded-4 border-0 bg-white">
+                                                    </div>
+
                                 <div class="ps-3">
                                     <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">
                                         <?php echo htmlspecialchars($kelas['mata_pelajaran']); ?>
                                     </h5>
                                     <p class="p-0 m-0" style="font-size: 12px;">
-                                        <?php echo htmlspecialchars($kelas['tingkat']); ?>
+                                        Kelas <?php echo htmlspecialchars($kelas['tingkat']); ?>
                                     </p>
-                                    <?php if(!empty($kelas['deskripsi'])): ?>
-                                        <p class="p-0 mt-2" style="font-size: 14px;">
-                                            <?php echo htmlspecialchars($kelas['deskripsi']); ?>
-                                        </p>
-                                    <?php endif; ?>
                                 </div>
                                 <div class="d-flex btn-group gap-2 p-3">
                                     <a href="kelas_guru.php?id=<?php echo $kelas['id']; ?>" 
-                                    class="color-web btn btn w-45 rounded" 
+                                    class="btn color-web w-45 rounded" 
                                     style="text-decoration: none; color: white;">
                                         Masuk
                                     </a>
@@ -430,7 +388,7 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                     }
                 } else {
                     ?>
-                    <div class="tidakAdaKelas position-absolute top-50 start-50 translate-middle text-center w-100">
+                    <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
                         <p class="text-muted">Anda belum memiliki kelas.</p>
                     </div>
                     <?php
@@ -441,14 +399,30 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
         </div>
     </div>
 
-    <!-- style absolute untuk tidak ada kelas -->
-     <style>
-        @media screen and (max-width: 768px) {
-            .tidakAdaKelas {
-                /* margin-top: -100px; */
-            }
-        }
-     </style>
+        <!-- script copy kode kelas -->
+        <script>
+function copyKodeKelas(kode) {
+    navigator.clipboard.writeText(kode).then(function() {
+        // Buat alert bootstrap yang akan hilang setelah beberapa detik
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed bottom-0 end-0 m-3';
+        alertDiv.innerHTML = `
+            Kode kelas berhasil disalin!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        
+        // Hilangkan alert setelah 3 detik
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }).catch(function(err) {
+        console.error('Gagal menyalin kode: ', err);
+    });
+}
+</script>
+
+
         <!-- modal untuk buat kelas -->
 <!-- Modal Buat Kelas dan Pilih Siswa -->
 <div class="modal fade" id="modal_tambah_kelas" tabindex="-1" aria-labelledby="label_tambah_kelas" aria-hidden="true">

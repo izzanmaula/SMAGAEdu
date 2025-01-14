@@ -1,8 +1,50 @@
 <?php
 session_start();
+require "koneksi.php";
+
+
 if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
     header("Location: index.php");
     exit();
+}
+
+// Ambil userid dari session
+$userid = $_SESSION['userid'];
+
+
+// Ambil data guru
+$query = "SELECT * FROM guru WHERE username = '$userid'";
+$result = mysqli_query($koneksi, $query);
+$guru = mysqli_fetch_assoc($result);
+
+
+
+// Ambil data siswa
+$userid = $_SESSION['userid'];
+$query = "SELECT * FROM siswa WHERE username = ?";
+$stmt = mysqli_prepare($koneksi, $query);
+mysqli_stmt_bind_param($stmt, "s", $userid);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$siswa = mysqli_fetch_assoc($result);
+
+// Ambil daftar kelas yang diikuti
+$query_kelas = "SELECT k.*, g.namaLengkap as nama_guru 
+                FROM kelas k 
+                JOIN kelas_siswa ks ON k.id = ks.kelas_id 
+                JOIN guru g ON k.guru_id = g.username
+                WHERE ks.siswa_id = ?";
+
+$stmt_kelas = mysqli_prepare($koneksi, $query_kelas);
+mysqli_stmt_bind_param($stmt_kelas, "i", $siswa['id']);
+mysqli_stmt_execute($stmt_kelas);
+$result_kelas = mysqli_stmt_get_result($stmt_kelas);
+
+// Debug - bisa dihapus nanti setelah berhasil
+if (!$result_kelas) {
+    echo "Error query kelas: " . mysqli_error($koneksi);
+    exit();
+
 }
 
 ?>
@@ -55,53 +97,7 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
         .custom-card .card-body {
             text-align: left;
         }
-        .merriweather-light {
-        font-family: "Merriweather", serif;
-        font-weight: 300;
-        font-style: normal;
-        }
 
-        .merriweather-regular {
-        font-family: "Merriweather", serif;
-        font-weight: 400;
-        font-style: normal;
-        }
-
-        .merriweather-bold {
-        font-family: "Merriweather", serif;
-        font-weight: 700;
-        font-style: normal;
-        }
-
-        .merriweather-black {
-        font-family: "Merriweather", serif;
-        font-weight: 900;
-        font-style: normal;
-        }
-
-        .merriweather-light-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 300;
-        font-style: italic;
-        }
-
-        .merriweather-regular-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 400;
-        font-style: italic;
-        }
-
-        .merriweather-bold-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 700;
-        font-style: italic;
-        }
-
-        .merriweather-black-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 900;
-        font-style: italic;
-        }
         body{ 
             font-family: merriweather;
         }
@@ -216,6 +212,14 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
                         width: 13rem;
                         z-index: 1000;
                     }
+                    .col-utama {
+                    margin-left: 0;
+                    }
+                    @media (min-width: 768px) {
+                        .col-utama {
+                            margin-left: 13rem;
+                        }
+                    }
                 </style>
                 <div class="row gap-0">
                     <div class="ps-3 mb-3">
@@ -292,84 +296,136 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
             </div>
 
             <!-- ini isi kontennya -->
-            <div class="col p-4 col-utama mt-1 mt-md-0">
-            <style>
-                .col-utama {
-                    margin-left: 0;
+<!-- Isi konten -->
+<div class="col p-4 col-utama mt-1 mt-md-0">
+        <div class="row justify-content-between align-items-center mb-1">
+            <div class="col-12 col-md-auto mb-3 mb-md-0">
+                <h3 style="font-weight: bold;">Beranda</h3>
+            </div>
+
+            <!-- Tombol Gabung Kelas untuk Desktop -->
+            <div class="d-none d-md-block col-md-auto">
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modal_gabung_kelas" 
+                        class="btn d-flex align-items-center justify-content-center border p-2">
+                    <img src="assets/tambah.png" alt="Tambah" width="25px" class="me-2">
+                    <p class="m-0">Gabung Kelas</p>
+                </button>
+            </div>
+
+            <!-- Floating Button untuk Mobile -->
+            <div class="position-fixed bottom-0 end-0 d-md-none m-4">
+                <button type="button" data-bs-toggle="modal" data-bs-target="#modal_gabung_kelas" 
+                        class="btn color-web rounded-circle shadow d-flex align-items-center justify-content-center" 
+                        style="width: 56px; height: 56px;">
+                    <img src="assets/tambah.png" alt="Tambah" width="25px" class="m-0" style="filter: brightness(0) invert(1);">
+                </button>
+            </div>
+        </div>
+
+        <!-- Alert untuk pesan -->
+        <?php if(isset($_GET['pesan'])): ?>
+            <div class="alert alert-<?php 
+                echo $_GET['pesan'] == 'bergabung_sukses' ? 'success' : 
+                    ($_GET['pesan'] == 'sudah_terdaftar' ? 'warning' : 'danger'); 
+                ?> alert-dismissible fade show" role="alert">
+                <?php 
+                switch($_GET['pesan']) {
+                    case 'bergabung_sukses':
+                        echo "Berhasil bergabung ke kelas!";
+                        break;
+                    case 'sudah_terdaftar':
+                        echo "Anda sudah terdaftar di kelas ini.";
+                        break;
+                    case 'kode_tidak_valid':
+                        echo "Kode kelas tidak valid.";
+                        break;
+                    default:
+                        echo "Terjadi kesalahan.";
                 }
-                @media (min-width: 768px) {
-                    .col-utama {
-                        margin-left: 13rem;
-                    }
-                }
-            </style>                
-                <div class="row justify-content-between align-items-center mb-1">
-                    <div class="col-12 col-md-auto mb-3 mb-md-0">
-                        <h3 style="font-weight: bold;">Beranda</h3>
-                    </div>
-                    <!-- Tombol desktop -->
-                    <div class="d-none d-md-block col-md-auto">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas" 
-                                class="btn d-flex align-items-center justify-content-center border p-2">
-                            <img src="assets/tambah.png" alt="Tambah" width="25px" class="me-2">
-                            <p class="m-0">Gabung Kelas</p>
-                        </button>
-                    </div>
+                ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
 
-                    <!-- Floating button untuk mobile -->
-                    <div class="position-fixed bottom-0 end-0 d-md-none m-4">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas" 
-                                class="btn color-web rounded-circle shadow d-flex align-items-center justify-content-center" 
-                                style="width: 56px; height: 56px;">
-                            <img src="assets/tambah.png" alt="Tambah" width="25px" class="m-0" style="filter: brightness(0) invert(1);">
-                        </button>
-                    </div>
+        <!-- Daftar Kelas -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <?php if(mysqli_num_rows($result_kelas) > 0): 
+                while($kelas = mysqli_fetch_assoc($result_kelas)): ?>
+                <div class="col">
+                    <div class="custom-card w-100">
+                        <!-- Background Image -->
+                        <?php if(!empty($kelas['background_image'])): ?>
+                            <img src="<?php echo htmlspecialchars($kelas['background_image']); ?>" 
+                                alt="Background Image" 
+                                class="card-img-top">
+                        <?php else: ?>
+                            <img src="assets/bg.jpg" 
+                                alt="Default Background Image" 
+                                class="card-img-top">
+                        <?php endif; ?>
+                        
+                        <!-- Profile Image -->
+                        <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
+                            <?php 
+                            // Ambil data guru untuk kelas ini
+                            $guru_id = $kelas['guru_id'];
+                            $query_guru = "SELECT foto_profil FROM guru WHERE username = '$guru_id'";
+                            $result_guru = mysqli_query($koneksi, $query_guru);
+                            $data_guru = mysqli_fetch_assoc($result_guru);
+                            ?>
+                            <a href="profil_guru.php">
+                                <img src="<?php echo !empty($data_guru['foto_profil']) ? 'uploads/profil/'.$data_guru['foto_profil'] : 'assets/pp.png'; ?>" 
+                                    alt="Profile Image" 
+                                    class="profile-img rounded-4 border-0 bg-white">
+                            </a>
+                        </div>
 
-                    <style>
-                        /* Animasi hover untuk floating button */
-                        .position-fixed.bottom-0.end-0 {
-                                margin-right: -75% !important; /* Memastikan tidak ada margin yang mengganggu */
-                            }
-                            .btn.color-web {
-                                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                            }
-                            .btn.color-web:hover {
-                                transform: scale(1.1);
-                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-                            }                    
-                    </style>
-                </div>
-
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    <div class="col">
-                        <div class="custom-card w-100">
-                            <img src="assets/bg.jpg" alt="Background Image">
-                            <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
-                                <a href="profil.html">
-                                    <img src="assets/pp.png" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
-                                </a>
-                            </div>
-                            <div class="ps-3">
-                                <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">Pendidikan Agama Islam</h5>
-                                <p class="p-0 m-0" style="font-size: 12px;">Ayundy Anditaningrum, S.Ag</p>
-                            </div>
-                            <div class="d-flex btn-group gap-2 p-3">
-                                <a href="kelas.php" class="color-web btn btn w-45 rounded" style="text-decoration: none; color: white;">Masuk</a>
-                            </div>
-                            <style>
-                            .btn {
-                                transition: background-color 0.3s ease;
-                                border: 0;
-                                border-radius: 5px;
-                            }
-                            .btn:hover{
-                                background-color: rgb(219, 106, 68);
-                            }
-
-                            </style>
-                    </div>
+                        <div class="ps-3">
+                            <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">
+                                <?php echo htmlspecialchars($kelas['mata_pelajaran']); ?>
+                            </h5>
+                            <p class="p-0 m-0" style="font-size: 12px;">
+                                <?php echo htmlspecialchars($kelas['nama_guru']); ?>
+                            </p>
+                        </div>
+                        <div class="d-flex btn-group gap-2 p-3">
+                            <a href="kelas.php?id=<?php echo $kelas['id']; ?>" 
+                               class="btn color-web w-100 rounded" 
+                               style="text-decoration: none; color: white;">
+                                Masuk
+                            </a>
+                        </div>
                     </div>
                 </div>
+            <?php endwhile; 
+            else: ?>
+                <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
+                    <p class="text-muted">Anda belum memiliki kelas. Silahkan bergabung ke kelas dengan memasukkan kode kelas.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Modal Gabung Kelas -->
+    <div class="modal fade" id="modal_gabung_kelas" tabindex="-1" aria-labelledby="label_gabung_kelas" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="label_gabung_kelas" style="font-weight: bold;">Gabung Kelas</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="gabung_kelas.php" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="kode_kelas" class="form-label">Kode Kelas</label>
+                            <input type="text" class="form-control" id="kode_kelas" name="kode_kelas" 
+                                   placeholder="Masukkan kode kelas" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn color-web text-white w-100">Gabung</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
