@@ -405,6 +405,11 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3>Buat Soal Ujian</h3>
                     <div class="d-flex gap-2">
+
+                    <button type="button" class="btn btn-success d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#uploadSoalModal">
+                        <i class="bi bi-file-earmark-word"></i>
+                        Import dari Word
+                    </button>
                         <!-- Tombol Buat Soal dengan AI -->
                         <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#aiSoalModal">
                             <i class="bi bi-robot"></i>
@@ -578,6 +583,47 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
         </div>
     </div>
 
+    <div class="modal fade" id="uploadSoalModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Soal dari Word</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+            <form id="formUploadSoal" enctype="multipart/form-data" method="post" action="process_word.php">
+                <div class="mb-3">
+                    <label for="fileSoal" class="form-label">Upload File Soal (.docx)</label>
+                    <input type="file" class="form-control" id="fileSoal" name="fileSoal" accept=".docx" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fileJawaban" class="form-label">Upload File Kunci Jawaban (.docx)</label>
+                    <input type="file" class="form-control" id="fileJawaban" name="fileJawaban" accept=".docx" required>
+                </div>
+                <input type="hidden" name="ujian_id" value="<?php echo $ujian_id; ?>">
+            </form>                        
+            <div class="alert alert-info">
+                    <small>
+                        <i class="bi bi-info-circle"></i>
+                        Format File:<br>
+                        <ul class="mb-0">
+                            <li>File Soal: Berisi soal dan pilihan jawaban</li>
+                            <li>File Jawaban: Berisi kunci jawaban (misal: 1. A, 2. B, dll)</li>
+                        </ul>
+                    </small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn color-web text-white" onclick="uploadSoalWord()">
+                    <span>Upload</span>
+                    <div class="spinner-border spinner-border-sm ms-2 d-none" role="status"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
     <!-- Tambahkan modal untuk Buat Soal dengan AI -->
     <div class="modal fade" id="aiSoalModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -705,6 +751,64 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
             modalInstance.hide();
         }
     }
+</script>
+
+<!-- script upload soal pake word -->
+ <script>
+async function uploadSoalWord() {
+    const form = document.getElementById('formUploadSoal');
+    const formData = new FormData(form);
+
+    const button = form.closest('.modal').querySelector('.modal-footer .btn.color-web');
+    const spinner = button.querySelector('.spinner-border');
+    const buttonText = button.querySelector('span');
+    const overlay = document.getElementById('generateOverlay');
+
+    try {
+        button.disabled = true;
+        spinner.classList.remove('d-none');
+        buttonText.textContent = 'Uploading...';
+
+        overlay.classList.add('fade-in');
+        overlay.style.display = 'flex';
+
+        const response = await fetch('process_word.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            console.log('Upload berhasil:', result);
+            location.reload();
+        } else {
+            throw new Error(result.message || 'Gagal mengupload file');
+        }
+        
+    } catch (error) {
+        console.error('Error detail:', error);
+        alert('Gagal mengupload file: ' + (error.message || 'Kesalahan tidak diketahui'));
+    } finally {
+        // Reset button state
+        button.disabled = false;
+        spinner.classList.add('d-none');
+        buttonText.textContent = 'Upload';
+
+        // Sembunyikan overlay
+        overlay.classList.remove('fade-in');
+        overlay.classList.add('fade-out');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            overlay.classList.remove('fade-out');
+        }, 500);
+
+        // Tutup modal
+        const modal = document.getElementById('uploadSoalModal');
+        const modalInstance = bootstrap.Modal.getInstance(modal);
+        modalInstance.hide();
+    }
+}
 </script>
 
     <script>
