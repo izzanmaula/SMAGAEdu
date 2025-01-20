@@ -165,7 +165,7 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                         </a>
                         
                         <!-- Menu AI -->
-                        <a href="ai.php" class="text-decoration-none text-black">
+                        <a href="ai_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ai.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Gemini</p>
@@ -188,8 +188,8 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                             type="button" 
                             data-bs-toggle="dropdown" 
                             aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0  text-truncate" style="font-size: 12px;" aria-expanded="false"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
+                            <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
+                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
                     </button>
                     <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
@@ -256,7 +256,7 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                 </div>
                 <div class="row gap-0" style="margin-bottom: 15rem;">
                     <div class="col">
-                        <a href="ai.php" class="text-decoration-none text-black">
+                        <a href="ai_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/ai.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Gemini</p>
@@ -274,8 +274,8 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                 </div>
                 <div class="row dropdown">
                     <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0  text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
+                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
+                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
                     </div>
                     <!-- dropdown menu option -->
                     <ul class="dropdown-menu" style="font-size: 12px;">
@@ -311,10 +311,10 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                     </div>
 
                     <!-- Floating button untuk mobile -->
-                    <div class="position-fixed bottom-0 end-0 d-md-none m-4">
+                    <div class="position-fixed bottom-0 end-0 d-md-none m-4" style="z-index: 1000;">
                         <button type="button" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas" 
                                 class="btn color-web rounded-circle shadow d-flex align-items-center justify-content-center" 
-                                style="width: 56px; height: 56px;">
+                                style="width: 56px; height: 56px; z-index: 1000;">
                             <img src="assets/tambah.png" alt="Tambah" width="25px" class="m-0" style="filter: brightness(0) invert(1);">
                         </button>
                     </div>
@@ -376,11 +376,16 @@ document.getElementById('modal_pilih_siswa').addEventListener('hidden.bs.modal',
                                         Masuk
                                     </a>
                                     <a href="hapus_kelas.php?id=<?php echo $kelas['id']; ?>" 
-                                        class="btn btn-danger w-45 rounded" 
+                                        class="btn btn-danger hapus w-45 rounded" 
                                         onclick="return confirm('Apakah Anda yakin ingin menghapus kelas ini?');"
                                         style="text-decoration: none; color: white;">
                                         Hapus
                                     </a>
+                                    <style>
+                                        .hapus {
+                                            z-index: 0;
+                                        }
+                                    </style>
                                 </div>
                             </div>
                         </div>
@@ -441,25 +446,79 @@ function copyKodeKelas(kode) {
                                 <label class="form-label" style="font-size: 14px;">Pilih mata pelajaran</label>
                                 <select class="form-select" name="mata_pelajaran" id="mata_pelajaran" required>
                                     <option value="">Pilih salah satu</option>
-                                    <option value="Bahasa Indonesia">Bahasa Indonesia</option>
                                     <option value="Matematika">Matematika</option>
                                     <option value="Ilmu Pengetahuan Alam">Ilmu Pengetahuan Alam</option>
-                                </select>
+                                    <option value="Akidah AKhlak">Akidah Akhlak</option>
+                                    <option value="Quran Hadist">Quran Hadist</option>
+                                    <option value="Fikih">Fikih</option>
+                                    <option value="Bahasa Arab">Bahasa Arab</option>
+                                    <option value="Kemuhammadiyahan Tarikh">Kemuhammadiyahan Tarikh</option>
+                                    <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                                    <option value="Bahasa Inggris">Bahasa Inggris</option>
+                                    <option value="Ilmu Pengetahuan Sosial">Ilmu Pengetahuan Sosial</option>
+                                    <option value="TIK">TIK</option>
+                                    <option value="Bahasa Jawa">Bahasa Jawa</option>
+                                    <option value="Seni Budaya">Seni Budaya</option>
+                                    <option value="PPkn">PPkn</option>
+                                    <option value="PJOK">PJOK</option>
+                                    <option value="Project">Project</option>
+                                    <option value="Bimbingan Konseling">Bimbingan Konseling</option>
+                                    <option value="Mentoring">Mentoring</option>
+                                    <option value="Praktik Ibadah">Praktik Ibadah</option>
+                                    <option value="Geografi">Geografi</option>
+                                    <option value="Matematika Tingkat Lanjut SMA">Matematika Tingkat Lanjut SMA</option>
+                                    <option value="Kemuhammadiyahan">Kemuhammadiyahan</option>
+                                    <option value="PKN">PKN</option>
+                                    <option value="PKWU">PKWU</option>
+                                    <option value="Sosiologi">Sosiologi</option>
+                                    <option value="Biologi">Biologi</option>
+                                    <option value="Pendidikan Jasmani">Pendidikan Jasmani</option>
+                                    <option value="Kimia">Kimia</option>
+                                    <option value="Ekonomi">Ekonomi</option>
+                                    <option value="Ibadah">Ibadah</option>
+                                    <option value="Sejarah">Sejarah</option>
+                                    <option value="Seni">Seni</option>
+                                    <option value="Akutansi">Akutansi</option>
+
+                                    <!-- ngurutkan mata pelajaran asc -->
+                                    <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // Ambil select element
+                                        var select = document.getElementById('mata_pelajaran');
+                                        
+                                        // Ambil semua option (kecuali option pertama "Pilih salah satu")
+                                        var options = Array.from(select.options).slice(1);
+                                        
+                                        // Urutkan options berdasarkan text
+                                        options.sort(function(a, b) {
+                                            return a.text.localeCompare(b.text);
+                                        });
+                                        
+                                        // Hapus semua option lama (kecuali option pertama)
+                                        while (select.options.length > 1) {
+                                            select.remove(1);
+                                        }
+                                        
+                                        // Tambahkan kembali options yang sudah diurutkan
+                                        options.forEach(function(option) {
+                                            select.add(option);
+                                        });
+                                    });
+                                    </script>
+                               </select>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" style="font-size: 14px;">Pilih tingkat kelas</label>
                                 <select class="form-select" name="tingkat" id="tingkat" onchange="loadSiswa(this.value)" required>
                                     <option value="">Pilih salah satu</option>
-                                    <option value="7">Kelas 7</option>
-                                    <option value="8">Kelas 8</option>
-                                    <option value="9">Kelas 9</option>
+                                    <option value="7">SMP Kelas 7</option>
+                                    <option value="8">SMP Kelas 8</option>
+                                    <option value="9">SMP Kelas 9</option>
+                                    <option value="E">SMA Fase E</option>
+                                    <option value="F">SMA Fase F</option>
+                                    <option value="12">SMA Kelas 12</option>
                                 </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label" style="font-size: 14px;">Deskripsi kelas</label>
-                                <textarea class="form-control" name="deskripsi" rows="3" placeholder="Kelas ini bertujuan untuk ..."></textarea>
                             </div>
                         </div>
 
@@ -476,13 +535,13 @@ function copyKodeKelas(kode) {
                                     </div>
                                 </div>
                                 <div id="daftar_siswa" style="max-height: 300px; overflow-y: auto;">
-                                    <p class="text-muted">Pilih tingkat kelas terlebih dahulu</p>
+                                    <p class="text-muted text-center mt-5" style="font-size: 14px;">Pilih tingkat kelas terlebih dahulu</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="modal-footer">
+                    <div class="modal-footer btn-group p-0 mt-4 border-0">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" name="submit" class="btn color-web text-white">Buat Kelas</button>
                     </div>
@@ -502,7 +561,7 @@ function loadSiswa(tingkat) {
                 document.getElementById('daftar_siswa').innerHTML = data;
             });
     } else {
-        document.getElementById('daftar_siswa').innerHTML = '<p class="text-muted">Pilih tingkat kelas terlebih dahulu</p>';
+        document.getElementById('daftar_siswa').innerHTML = '<p class="text-muted text-center mt-5" style="font-size: 14px;">Pilih tingkat kelas terlebih dahulu</p>';
     }
 }
 

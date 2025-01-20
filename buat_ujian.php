@@ -27,7 +27,8 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <title>Buat Ujian - SMAGAEdu</title>
     <style>
         body{ 
@@ -63,83 +64,194 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
     </style>
 </head>
 <body>
-    <!-- row col untuk halaman utama -->
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 vh-100 p-4 shadow-sm menu-samping" style="background-color:rgb(238, 236, 226)">
-                <div class="row gap-0">
-                    <div class="ps-3 mb-3">
-                        <a href="#" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px">
-                            <div>
-                                <h1 class="display-5 p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
-                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
-                            </div>
-                        </a>
-                    </div>  
-                    <div class="col">
+    <!-- Navbar Mobile -->
+    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
+        <div class="container-fluid">
+            <!-- Logo dan Nama -->
+            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="beranda_guru.php">
+                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
+            <div>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
+                </div>
+            </a>
+            
+            <!-- Tombol Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
+                <span class="navbar-toggler-icon" style="color:white"></span>
+            </button>
+            
+            <!-- Offcanvas/Sidebar Mobile -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <div class="d-flex flex-column gap-2">
+                        <!-- Menu Beranda -->
                         <a href="beranda_guru.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center rounded  p-2">
+                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0 ">Beranda</p>
+                            </div>
+                        </a>
+                        
+                        <!-- Menu Cari -->
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Beranda</p>
+                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Cari</p>
                             </div>
                         </a>
-                    </div>
-                    <div class="col">
+                        
+                        <!-- Menu Ujian -->
                         <a href="ujian_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded bg-white shadow-sm p-2">
-                                <img src="assets/ujian_fill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Ujian</p>
+                            <div class="d-flex align-items-center color-web rounded p-2">
+                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0 text-white">Ujian</p>
                             </div>
                         </a>
-                    </div>
-                    <div class="col">
+                        
+                        <!-- Menu Profil -->
                         <a href="profil_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Profil</p>
                             </div>
                         </a>
-                    </div>
-                </div>
-                <!-- Menu Gemini dan Bantuan -->
-                <div class="row gap-0" style="margin-bottom: 14rem;">
-                    <div class="col">
+                        
+                        <!-- Menu AI -->
                         <a href="ai.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ai.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Gemini</p>
                             </div>
                         </a>
-                    </div>
-                    <div class="col">
-                        <a href="bantuan.php" class="text-decoration-none text-black">
+                        
+                        <!-- Menu Bantuan -->
+                        <a href="bantuan_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Bantuan</p>
                             </div>
                         </a>
                     </div>
-                </div>
-                <!-- User Profile -->
-                <div class="row dropdown">
-                    <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" 
-                         style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
-                    </div>
-                    <ul class="dropdown-menu" style="font-size: 12px;">
+                    
+                <!-- Profile Dropdown -->
+                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
+                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
+                            style="background-color: #F8F8F7;" 
+                            type="button" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false">
+                            <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
+                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
+                    </button>
+                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
                         <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    
+     <!-- row col untuk halaman utama -->
+     <div class="container-fluid">
+        <div class="row">
+            <div class="col-3 col-md-2 vh-100 p-4 shadow-sm menu-samping" style="background-color:rgb(238, 236, 226)">
+                <style>
+                    .menu-samping {
+                        position: fixed;
+                        width: 13rem;
+                        z-index: 1000;
+                    }
+                    @media (max-width: 768px) {
+                        .menu-samping {
+                            display: none;
+                        }
+                    }                
+                </style>
+                <div class="row gap-0">
+                    <div class="ps-3 mb-3">
+                        <a href="beranda_guru.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
+                            <img src="assets/smagaedu.png" alt="" width="30px">
+                            <div>
+                                <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
+                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
+                            </div>
+                        </a>
+                    </div>  
+                    <div class="col">
+                        <a href="beranda_guru.php" class="text-decoration-none text-black">
+                        <div class="d-flex align-items-center rounded p-2" style="">
+                            <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
+                            <p class="p-0 m-0">Beranda</p>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="cari_guru.php" class="text-decoration-none text-black">
+                        <div class="d-flex align-items-center rounded p-2" style="">
+                            <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
+                            <p class="p-0 m-0">Cari</p>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="ujian_guru.php" class="text-decoration-none text-black">
+                        <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
+                            <img src="assets/ujian_fill.png" alt="" width="50px" class="pe-4">
+                            <p class="p-0 m-0">Ujian</p>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="profil_guru.php" class="text-decoration-none text-black">
+                        <div class="d-flex align-items-center rounded p-2" style="">
+                            <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
+                            <p class="p-0 m-0">Profil</p>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="row gap-0" style="margin-bottom: 15rem;">
+                    <div class="col">
+                        <a href="ai.php" class="text-decoration-none text-black">
+                        <div class="d-flex align-items-center rounded p-2" style="">
+                            <img src="assets/ai.png" alt="" width="50px" class="pe-4">
+                            <p class="p-0 m-0">Gemini</p>
+                        </div>
+                        </a>
+                    </div>
+                    <div class="col">
+                        <a href="bantuan.php" class="text-decoration-none text-black">
+                        <div class="d-flex align-items-center rounded p-2" style="">
+                            <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
+                            <p class="p-0 m-0">Bantuan</p>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="row dropdown">
+                    <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
+                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
+                    </div>
+                    <!-- dropdown menu option -->
+                    <ul class="dropdown-menu" style="font-size: 12px;">
+                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
+                        <li><a class="dropdown-item" href="#">Keluar</a></li>
+                      </ul>
                 </div>
             </div>
 
             <!-- Main Content -->
             <div class="col p-4 col-utama">
                 <h3 class="mb-4">Buat Ujian Baru</h3>
-                <div class="card">
+                <div class="card border-0 p-0 m-0">
                     <div class="card-body">
                         <form action="proses_buat_ujian.php" method="POST">
                             <div class="mb-3">
@@ -174,7 +286,7 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                                                     <span class="input-group-text bg-light">1</span>
                                                     <input type="text" class="form-control" name="materi[]" placeholder="Masukkan materi ujian" required>
                                                     <button type="button" class="btn btn-outline-danger" onclick="hapusMateri(this)">
-                                                        <img src="assets/delete.png" alt="Hapus" width="20px">
+                                                        <span class="bi bi-trash"></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -201,9 +313,9 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                                 </div>
                             </div>
 
-                            <div class="text-end">
+                            <div class="text-end d-flex btn-group">
                                 <a href="ujian_guru.php" class="btn btn-secondary me-2">Kembali</a>
-                                <button type="submit" class="btn color-web text-white">Buat Ujian & Lanjut Buat Soal</button>
+                                <button type="submit" class="btn color-web text-white">Lanjut</button>
                             </div>
                         </form>
                     </div>
@@ -225,7 +337,7 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                 <span class="input-group-text bg-light">${materiCount}</span>
                 <input type="text" class="form-control" name="materi[]" placeholder="Masukkan materi ujian" required>
                 <button type="button" class="btn btn-outline-danger" onclick="hapusMateri(this)">
-                    <img src="assets/delete.png" alt="Hapus" width="20px">
+                    <span class="bi bi-trash"></span>
                 </button>
             </div>
         `;

@@ -11,42 +11,48 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
 // Ambil userid dari session
 $userid = $_SESSION['userid'];
 
+// Get exams for classes the student is enrolled in
+$query = "SELECT u.*, k.mata_pelajaran, k.tingkat 
+          FROM ujian u
+          JOIN kelas k ON u.kelas_id = k.id 
+          JOIN kelas_siswa ks ON k.id = ks.kelas_id
+          JOIN siswa s ON ks.siswa_id = s.id
+          WHERE s.username = '$userid'
 
-// Ambil data guru
-$query = "SELECT * FROM guru WHERE username = '$userid'";
+          ORDER BY u.tanggal_mulai ASC";
+
 $result = mysqli_query($koneksi, $query);
-$guru = mysqli_fetch_assoc($result);
 
 
 
-// Ambil data siswa
-$userid = $_SESSION['userid'];
-$query = "SELECT * FROM siswa WHERE username = ?";
-$stmt = mysqli_prepare($koneksi, $query);
-mysqli_stmt_bind_param($stmt, "s", $userid);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$siswa = mysqli_fetch_assoc($result);
 
-// Ambil daftar kelas yang diikuti
-$query_kelas = "SELECT k.*, g.namaLengkap as nama_guru 
-                FROM kelas k 
-                JOIN kelas_siswa ks ON k.id = ks.kelas_id 
-                JOIN guru g ON k.guru_id = g.username
-                WHERE ks.siswa_id = ?";
-
-$stmt_kelas = mysqli_prepare($koneksi, $query_kelas);
-mysqli_stmt_bind_param($stmt_kelas, "i", $siswa['id']);
-mysqli_stmt_execute($stmt_kelas);
-$result_kelas = mysqli_stmt_get_result($stmt_kelas);
-
-// Debug - bisa dihapus nanti setelah berhasil
-if (!$result_kelas) {
-    echo "Error query kelas: " . mysqli_error($koneksi);
-    exit();
-
+// function untuk waktu ujian
+function getExamStatus($startTime, $endTime) {
+    date_default_timezone_set('Asia/Jakarta');
+    $now = time();
+    $start = strtotime($startTime);
+    $end = strtotime($endTime);
+    
+    if ($now < $start) {
+        $diffSeconds = $start - $now;
+        $hours = floor($diffSeconds / 3600);
+        $minutes = floor(($diffSeconds % 3600) / 60);
+        return [
+            'status' => 'waiting',
+            'countdown' => "$hours jam $minutes menit"
+        ];
+    } elseif ($now >= $start && $now <= $end) {
+        return [
+            'status' => 'ongoing',
+            'countdown' => ''
+        ];
+    } else {
+        return [
+            'status' => 'ended',
+            'countdown' => ''
+        ];
+    }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,51 +114,6 @@ if (!$result_kelas) {
 </style>
 <body>
     
-
-<title>SMAGAAI - SMAGAEdu</title>
-</head>
-<style>
-        body{ 
-            font-family: merriweather;
-        }
-        .color-web {
-            background-color: rgb(218, 119, 86);
-        }
-</style>
-    <style>
-        .col-utama {
-            margin-left: 13rem;
-        }
-        @media (max-width: 768px) {
-            .menu-samping {
-                display: none;
-            }
-            .col-utama {
-                margin-left: 0;
-            }
-        }
-        .message {
-            max-width: 30%;
-            margin-bottom: 1rem;
-            padding: 0.8rem 1rem;
-            border-radius: 0.5rem;
-        }
-        .user-message {
-            background-color: #EEECE2;
-            margin-left: auto;
-        }
-        .ai-message {
-            border: 1px solid #EEECE2;
-            margin-right: auto;
-        }
-        .loading {
-            animation-duration: 3s;
-        }
-    </style>
-</style>
-<body>
-    
-
     <!-- Navbar Mobile -->
     <nav class="navbar navbar-dark d-md-none color-web fixed-top">
         <div class="container-fluid">
@@ -189,7 +150,7 @@ if (!$result_kelas) {
                         
                         <!-- Menu Ujian -->
                         <a href="ujian.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
+                            <div class="d-flex align-items-center color-web rounded p-2">
                                 <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Ujian</p>
                             </div>
@@ -197,7 +158,7 @@ if (!$result_kelas) {
 
                         <!-- Menu ai -->
                         <a href="ai.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center color-web rounded p-2">
+                            <div class="d-flex align-items-center  rounded p-2">
                                 <img src="assets/ai.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">SMAGA AI</p>
                             </div>
@@ -291,16 +252,16 @@ if (!$result_kelas) {
                     </div>  
                     <div class="col">
                         <a href="beranda.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center bg-white shadow-sm rounded p-2" style="">
-                            <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
+                        <div class="d-flex align-items-center rounded p-2" style="">
+                            <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
                         </div>
                         </a>
                     </div>
                     <div class="col">
                         <a href="ujian.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
+                        <div class="d-flex align-items-center  bg-white shadow-sm rounded p-2" style="">
+                            <img src="assets/ujian_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Ujian</p>
                         </div>
                         </a>
@@ -348,96 +309,64 @@ if (!$result_kelas) {
             <!-- ini isi kontennya -->
 <!-- Isi konten -->
 <div class="col p-4 col-utama mt-1 mt-md-0">
-        <div class="row justify-content-between align-items-center mb-1">
-            <div class="col-12 col-md-auto mb-3 mb-md-0">
-                <h3 style="font-weight: bold;">Beranda</h3>
-            </div>
-
-        <!-- Daftar Kelas -->
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 m-0">
-            <?php if(mysqli_num_rows($result_kelas) > 0): 
-                while($kelas = mysqli_fetch_assoc($result_kelas)): ?>
-                <div class="col ps-0">
-                    <div class="custom-card w-100">
-                        <!-- Background Image -->
-                        <?php if(!empty($kelas['background_image'])): ?>
-                            <img src="<?php echo htmlspecialchars($kelas['background_image']); ?>" 
-                                alt="Background Image" 
-                                class="card-img-top">
-                        <?php else: ?>
-                            <img src="assets/bg.jpg" 
-                                alt="Default Background Image" 
-                                class="card-img-top">
-                        <?php endif; ?>
-                        
-                        <!-- Profile Image -->
-                        <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
-                            <?php 
-                            // Ambil data guru untuk kelas ini
-                            $guru_id = $kelas['guru_id'];
-                            $query_guru = "SELECT foto_profil FROM guru WHERE username = '$guru_id'";
-                            $result_guru = mysqli_query($koneksi, $query_guru);
-                            $data_guru = mysqli_fetch_assoc($result_guru);
-                            ?>
-                            <a href="profil_guru.php">
-                                <img src="<?php echo !empty($data_guru['foto_profil']) ? 'uploads/profil/'.$data_guru['foto_profil'] : 'assets/pp.png'; ?>" 
-                                    alt="Profile Image" 
-                                    class="profile-img rounded-4 border-0 bg-white">
-                            </a>
-                        </div>
-
-                        <div class="ps-3">
-                            <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">
-                                <?php echo htmlspecialchars($kelas['mata_pelajaran']); ?>
-                            </h5>
-                            <p class="p-0 m-0" style="font-size: 12px;">
-                                <?php echo htmlspecialchars($kelas['nama_guru']); ?>
-                            </p>
-                        </div>
-                        <div class="d-flex btn-group gap-2 p-3">
-                            <a href="kelas.php?id=<?php echo $kelas['id']; ?>" 
-                               class="btn color-web w-100 rounded" 
-                               style="text-decoration: none; color: white;">
-                                Masuk
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            <?php endwhile; 
-            else: ?>
-                <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
-                    <p class="text-muted">Anda belum memiliki kelas. Silahkan bergabung ke kelas dengan memasukkan kode kelas.</p>
-                </div>
-            <?php endif; ?>
+    <div class="row justify-content-between align-items-center mb-1">
+        <div class="col-12 col-md-auto mb-3 mb-md-0">
+            <h3 style="font-weight: bold;">Ujian</h3>
         </div>
     </div>
 
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 m-0">
+    <?php if(mysqli_num_rows($result) > 0): 
+        while($ujian = mysqli_fetch_assoc($result)):
+        // Get teacher data inside the loop
+            $guru_id = $ujian['guru_id'];
+            $query_guru = "SELECT foto_profil FROM guru WHERE username = '$guru_id'";
+            $result_guru = mysqli_query($koneksi, $query_guru);
+            $data_guru = mysqli_fetch_assoc($result_guru);
+    ?>
+        <div class="col ps-0">
+            <div class="custom-card w-100">
+                <img src="assets/bg.jpg" alt="Background Image" class="card-img-top">
+                
+                <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
+                <img src="<?php echo !empty($data_guru['foto_profil']) ? 'uploads/profil/'.$data_guru['foto_profil'] : 'assets/pp.png'; ?>" 
+                    alt="Profile Image" 
+                    class="profile-img rounded-4 border-0 bg-white">
+                </div>
 
-        <!-- modal untuk gabung kelas -->
-     <!-- Modal -->
-     <div class="modal fade" id="modal_tambah_kelas" tabindex="-1" aria-labelledby="label_tambah_kelas" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h1 class="modal-title fs-5" id="label_tambah_kelas" style="font-weight: bold;">Gabung Kelas</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- masukkan kode kelas -->
-                 <div>
-                    <label for="input_kode_kelas" class="form-label">Kode Kelas</label>
-                    <input type="text" class="form-control" id="input_kode_kelas" placeholder="Masukkan kode kelas"></label>
-                 </div>
+                <div class="ps-3">
+                    <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">
+                        <?php echo htmlspecialchars($ujian['mata_pelajaran']); ?>
+                    </h5>
+                    <p class="p-0 m-0" style="font-size: 12px;">
+                        <?php echo date('d/m/Y H:i', strtotime($ujian['tanggal_mulai'])); ?>
+                        (<?php echo $ujian['durasi']; ?> menit)
+                    </p>
+                </div>
 
-            </div>
-            <div class="modal-footer d-flex">
-            <button type="button" class="btn color-web text-white flex-fill">Masuk</button>
+                <div class="d-flex btn-group gap-2 p-3">
+                    <?php 
+                    $examStatus = getExamStatus($ujian['tanggal_mulai'], $ujian['tanggal_selesai']);
+                    if ($examStatus['status'] === 'ongoing'): ?>
+                        <a href="mulai_ujian.php?id=<?php echo $ujian['id']; ?>" 
+                           class="btn color-web w-100 rounded text-white">
+                            Mulai Ujian
+                        </a>
+                    <?php else: ?>
+                        <button class="btn btn-secondary w-100 rounded" disabled>
+                            <?php echo $examStatus['status'] === 'waiting' ? $examStatus['countdown'] : 'Ujian Selesai'; ?>
+                        </button>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
+    <?php endwhile; 
+    else: ?>
+        <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
+            <p class="text-muted">Tidak ada ujian yang tersedia saat ini.</p>
         </div>
-    </div>
-
-
+    <?php endif; ?>
+</div>
 
 </body>
 </html>

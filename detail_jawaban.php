@@ -1,10 +1,35 @@
 <?php
 session_start();
 require "koneksi.php";
-if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
-    header("Location: index.php");
-    exit();
-}
+
+$ujian_id = $_GET['ujian_id'];
+$siswa_id = $_GET['siswa_id'];
+
+// Get student info
+$query_siswa = "SELECT nama FROM siswa WHERE id = '$siswa_id'";
+$siswa = mysqli_fetch_assoc(mysqli_query($koneksi, $query_siswa));
+
+// Get exam details
+$query_ujian = "SELECT judul, mata_pelajaran FROM ujian WHERE id = '$ujian_id'";
+$ujian = mysqli_fetch_assoc(mysqli_query($koneksi, $query_ujian));
+
+// Get questions and answers
+$query_jawaban = "
+    SELECT 
+        bs.id as soal_id,
+        bs.pertanyaan,
+        bs.jawaban_a,
+        bs.jawaban_b,
+        bs.jawaban_c,
+        bs.jawaban_d,
+        UPPER(bs.jawaban_benar) as jawaban_benar,
+        UPPER(ju.jawaban) as jawaban_siswa
+    FROM bank_soal bs
+    LEFT JOIN jawaban_ujian ju ON bs.id = ju.soal_id AND ju.siswa_id = '$siswa_id'
+    WHERE bs.ujian_id = '$ujian_id'
+    ORDER BY bs.id ASC
+";
+$result_jawaban = mysqli_query($koneksi, $query_jawaban);
 
 // Ambil data guru
 $userid = $_SESSION['userid'];
@@ -12,81 +37,50 @@ $query = "SELECT * FROM guru WHERE username = '$userid'";
 $result = mysqli_query($koneksi, $query);
 $guru = mysqli_fetch_assoc($result);
 
-// Ambil semua ujian yang dibuat oleh guru yang sedang login
-$query_ujian = "SELECT u.*, k.mata_pelajaran FROM ujian u 
-                JOIN kelas k ON u.kelas_id = k.id 
-                WHERE u.guru_id = '$userid' 
-                ORDER BY u.created_at DESC";
-$result_ujian = mysqli_query($koneksi, $query_ujian);
 ?>
-
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Detail Jawaban Siswa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> 
-    <title>Ujian - SMAGAEdu</title>
-</head>
-<style>
-        .custom-card {
-            width: 300px;
-            border: 1px solid #dee2e6;
+
+    <style>
+        .answer-box {
+            padding: 15px;
             border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 0;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
         }
-        .custom-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
+        .correct-answer {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
         }
-        .custom-card .profile-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border: 3px solid white;
-            margin-top: -40px;
+        .wrong-answer {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
         }
-        .custom-card .card-body {
-            text-align: left;
+        .option {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
         }
-
-        @media (max-width: 768px) {
-            .custom-card {
-                width: 100%; /* Full width di mobile */
-                max-width: 300px; /* Maximum width tetap 300px */
-            }
+        .selected-correct {
+            background-color: #d4edda;
         }
-        body{ 
-            font-family: merriweather;
+        .selected-wrong {
+            background-color: #f8d7da;
         }
-        @media (max-width: 768px) {
-            body {
-                padding-top: 56px; /* Sesuaikan dengan tinggi navbar */
-            }
+        .correct-option {
+            font-weight: bold;
+            color: #28a745;
         }
-        .color-web {
-            background-color: rgb(218, 119, 86);
+        body {
+            font-family: 'Merriweather', serif;
         }
-        .btn {
-            transition: background-color 0.3s ease;
-            border: 0;
-            border-radius: 5px;
-        }
-
-        .btn:hover {
-            background-color: rgb(219, 106, 68);
-        }
-</style>
-<body>
+    </style>
+</head>
+<body class="bg-light">
 
     <!-- Navbar Mobile -->
     <nav class="navbar navbar-dark d-md-none color-web fixed-top">
@@ -170,7 +164,7 @@ $result_ujian = mysqli_query($koneksi, $query_ujian);
                             data-bs-toggle="dropdown" 
                             aria-expanded="false">
                             <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
-                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
+                            <p class="p-0 m-0" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
                     </button>
                     <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
@@ -261,8 +255,9 @@ $result_ujian = mysqli_query($koneksi, $query_ujian);
                 </div>
                 <div class="row dropdown">
                     <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
-                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
+                    <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
+                    <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
+
                     </div>
                     <!-- dropdown menu option -->
                     <ul class="dropdown-menu" style="font-size: 12px;">
@@ -273,10 +268,10 @@ $result_ujian = mysqli_query($koneksi, $query_ujian);
             </div>
 
 
-            <!-- ini isi kontennya -->
-            <div class="col p-4 col-utama">
-                <style>
-                    .col-utama{
+<!-- ini isi kontennya -->
+<div class="col p-4 col-utama">
+    <style>
+                            .col-utama{
                         margin-left: 13rem;
                     }
                     @media (max-width: 768px) {
@@ -285,137 +280,67 @@ $result_ujian = mysqli_query($koneksi, $query_ujian);
                                 margin-top: 10px; /* Untuk memberikan space dari fixed navbar mobile */
                             }
                     }
-                </style>
-                <div class="row justify-content-between align-items-center mb-1">
-                    <!-- Tambahkan setelah div row justify-content-between -->
-                    <?php if(isset($_GET['pesan'])): ?>
-                        <div class="alert alert-dismissible fade show <?php 
-                            echo $_GET['pesan'] == 'hapus_berhasil' ? 'alert-success' : 'alert-danger'; 
-                        ?>" role="alert">
-                            <?php
-                            switch($_GET['pesan']) {
-                                case 'hapus_berhasil':
-                                    echo "Ujian berhasil dihapus";
-                                    break;
-                                case 'hapus_gagal':
-                                    echo "Gagal menghapus ujian";
-                                    break;
-                                case 'tidak_ditemukan':
-                                    echo "Ujian tidak ditemukan";
-                                    break;
-                            }
-                            ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    <?php endif; ?>
-                    <div class="col-12 col-md-auto mb-3 mb-md-0">
-                        <h3 style="font-weight: bold;">Ujian</h3>
-                    </div>
-                    <!-- Tombol desktop -->
-                    <div class="d-none d-md-block col-md-auto">
-                        <a href="buat_ujian.php" 
-                        class="btn d-flex align-items-center justify-content-center border p-2 text-decoration-none text-dark">
-                            <img src="assets/tambah.png" alt="Tambah" width="25px" class="me-2">
-                            <p class="m-0">Buat Ujian</p>
-                        </a>                    
-                    </div>
 
-                    <!-- Floating button untuk mobile -->
-                    <div class="position-fixed bottom-0 end-0 d-md-none m-4">
-                        <a href="buat_ujian.php" class="text-decoration-none">
-                        <button type="button" data-bs-toggle="modal"
-                                class="btn color-web rounded-circle shadow d-flex align-items-center justify-content-center" 
-                                style="width: 56px; height: 56px;">
-                            <img src="assets/tambah.png" alt="Tambah" width="25px" class="m-0" style="filter: brightness(0) invert(1);">
-                        </button>
-                        </a>
-                    </div>
+    </style>
 
-                    <style>
-                        /* Animasi hover untuk floating button */
-                        .position-fixed.bottom-0.end-0 {
-                                margin-right: -75% !important; /* Memastikan tidak ada margin yang mengganggu */
-                            }
-                  
-                    </style>
+    <div class="container my-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0"><?php echo htmlspecialchars($ujian['mata_pelajaran']); ?></h4>
+                    <p>Ujian: <?php echo htmlspecialchars($ujian['judul']); ?></p>
+                    <p class="text-muted mb-0">Siswa: <?php echo htmlspecialchars($siswa['nama']); ?></p>
                 </div>
-
-                <div class="row row-cols-1 row-cols-md-3 g-4">
-                    <?php 
-                    if(mysqli_num_rows($result_ujian) > 0) {
-                        while($ujian = mysqli_fetch_assoc($result_ujian)) { 
-                    ?>
-                        <div class="col">
-                            <div class="custom-card w-100">
-                                <img src="assets/bg.jpg" alt="Background Image">
-                                <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
-                                    <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white">
-                                </div>
-                                <div class="ps-3">
-                                    <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">
-                                        <?php echo htmlspecialchars($ujian['mata_pelajaran']); ?>
-                                    </h5>
-                                    <p class="p-0 m-0" style="font-size: 12px;">
-                                        <?php echo htmlspecialchars($guru['namaLengkap']); ?>
-                                    </p>
-                                </div>
-                                <div style="font-size: 12px;" class="ps-3 pt-2">
-                                    <p class="p-0 m-0">Ujian dilaksanakan pada :</p>
-                                    <p class="p-0 m-0">
-                                        <?php echo date('l, d F Y', strtotime($ujian['tanggal_mulai'])); ?>
-                                    </p>
-                                </div>
-                                <div class="d-flex btn-group gap-1 p-3">
-                                    <a href="buat_soal.php?ujian_id=<?php echo $ujian['id']; ?>"
-                                        class="btn color-web text-white w-45 rounded text-decoration-none">
-                                        Lihat
-                                    </a>
-                                    <!-- dropdown menu ujian -->
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary text-white w-45 rounded dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Lainnya
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" href="#" onclick="hapusUjian(<?php echo $ujian['id']; ?>); return false;">
-                                                    <p style="color: red;" class="p-0 m-0">Hapus Ujian</p>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="detail_hasil_ujian.php?ujian_id=<?php echo $ujian['id']; ?>">
-                                                    Hasil Ujian
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>                            
-                            </div>
+                <a href="detail_hasil_ujian.php?ujian_id=<?php echo $ujian_id; ?>" class="btn btn-outline-secondary">Kembali</a>
+            </div>
+            <div class="card-body">
+                <?php 
+                $no = 1;
+                while($jawaban = mysqli_fetch_assoc($result_jawaban)) {
+                    $is_correct = $jawaban['jawaban_siswa'] === $jawaban['jawaban_benar'];
+                    $status_class = $jawaban['jawaban_siswa'] ? ($is_correct ? 'correct-answer' : 'wrong-answer') : '';
+                ?>
+                    <div class="answer-box <?php echo $status_class; ?>">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Soal <?php echo $no; ?></h5>
+                            <?php if($jawaban['jawaban_siswa']): ?>
+                                <span class="badge <?php echo $is_correct ? 'bg-success' : 'bg-danger'; ?>">
+                                    <?php echo $is_correct ? 'Benar' : 'Salah'; ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="badge bg-secondary">Tidak Dijawab</span>
+                            <?php endif; ?>
                         </div>
-                    <?php 
-                        }
-                    } else {
-                    ?>
-                        <div class="container">
-                            <div class="text-center position-absolute top-50 start-50 translate-middle text-center w-100">
-                                <p>Belum ada ujian yang dibuat.</p>
+                        
+                        <p class="mb-3"><?php echo htmlspecialchars($jawaban['pertanyaan']); ?></p>
+                        
+                        <?php
+                        $options = ['A', 'B', 'C', 'D'];
+                        foreach($options as $option) {
+                            $option_key = 'jawaban_' . strtolower($option);
+                            $is_selected = $jawaban['jawaban_siswa'] === $option;
+                            $is_correct_option = $jawaban['jawaban_benar'] === $option;
+                            
+                            $option_class = '';
+                            if($is_selected && $is_correct) $option_class = 'selected-correct';
+                            else if($is_selected) $option_class = 'selected-wrong';
+                            else if($is_correct_option) $option_class = 'correct-option';
+                        ?>
+                            <div class="option <?php echo $option_class; ?>">
+                                <?php echo $option . '. ' . htmlspecialchars($jawaban[$option_key]); ?>
+                                <?php if($is_selected): ?>
+                                    <i class="fas fa-check-circle"></i>
+                                <?php endif; ?>
                             </div>
-                        </div>
-                    <?php
-                    }
-                    ?>
-                </div>
-
-    
+                        <?php } ?>
+                    </div>
+                <?php 
+                    $no++;
+                } 
+                ?>
             </div>
         </div>
     </div>
-
-<script>
-function hapusUjian(id) {
-    if(confirm('Apakah Anda yakin ingin menghapus ujian ini? Semua soal yang terkait juga akan terhapus.')) {
-        window.location.href = 'hapus_ujian.php?id=' + id;
-    }
-}
-</script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -129,9 +129,9 @@ function ambilKomentar($postingan_id, $koneksi) {
     
     <!-- Navbar Mobile -->
     <nav class="navbar navbar-dark d-md-none color-web fixed-top">
-        <div class="container-fluid px-0">
+        <div class="container-fluid">
             <!-- Logo dan Nama -->
-            <a class="navbar-brand ms-2 d-flex align-items-center gap-2 text-white" href="<?php echo ($_SESSION['level'] == 'guru') ? 'beranda_guru.php' : 'beranda.php'; ?>">
+            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
                 <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
             <div>
                     <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
@@ -143,7 +143,6 @@ function ambilKomentar($postingan_id, $koneksi) {
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
                 <span class="navbar-toggler-icon" style="color:white"></span>
             </button>
-
             
             <!-- Offcanvas/Sidebar Mobile -->
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
@@ -155,19 +154,12 @@ function ambilKomentar($postingan_id, $koneksi) {
                     <div class="d-flex flex-column gap-2">
                         <!-- Menu Beranda -->
                         <a href="#" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded color-web p-2">
+                            <div class="d-flex align-items-center rounded  p-2">
                                 <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0 text-white">Beranda</p>
                             </div>
                         </a>
                         
-                        <!-- Menu Cari -->
-                        <a href="cari.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Cari</p>
-                            </div>
-                        </a>
                         
                         <!-- Menu Ujian -->
                         <a href="ujian.php" class="text-decoration-none text-black">
@@ -176,6 +168,15 @@ function ambilKomentar($postingan_id, $koneksi) {
                                 <p class="p-0 m-0">Ujian</p>
                             </div>
                         </a>
+
+                        <!-- Menu ai -->
+                        <a href="ai.php" class="text-decoration-none text-black">
+                            <div class="d-flex align-items-center color-web rounded p-2">
+                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">SMAGA AI</p>
+                            </div>
+                        </a>
+
                         
                         <!-- Menu Profil -->
                         <a href="profil.php" class="text-decoration-none text-black">
@@ -185,13 +186,6 @@ function ambilKomentar($postingan_id, $koneksi) {
                             </div>
                         </a>
                         
-                        <!-- Menu AI -->
-                        <a href="ai.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Gemini</p>
-                            </div>
-                        </a>
                         
                         <!-- Menu Bantuan -->
                         <a href="bantuan.php" class="text-decoration-none text-black">
@@ -210,7 +204,7 @@ function ambilKomentar($postingan_id, $koneksi) {
                             data-bs-toggle="dropdown" 
                             aria-expanded="false">
                         <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0" style="font-size: 12px;">Halo, Ayundy</p>
+                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?></p>
                     </button>
                     <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
@@ -222,18 +216,45 @@ function ambilKomentar($postingan_id, $koneksi) {
     </nav>
 
      <!-- row col untuk halaman utama -->
-    <div class="container-fluid px-0">
-        <div class="row g-0">
+     <div class="container-fluid">
+        <div class="row">
         <div class="col-auto vh-100 p-2 p-md-4 shadow-sm menu-samping d-none d-md-block" style="background-color:rgb(238, 236, 226)">
                 <style>
-                    .menu-samping {
-                        position: fixed;
-                        width: 13rem;
-                        z-index: 1000;
+                .menu-samping {
+                    position: fixed;
+                    width: 13rem;
+                    z-index: 1000;
+                    /* Tambahkan flexbox dan height */
+                    display: flex;
+                    flex-direction: column;
+                    height: 100vh;
+                    
+                }
+                .menu-content {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .menu-atas {
+                    height: calc(100vh - 80px); /* 80px adalah perkiraan tinggi dropdown */
+
+                }
+                .menu-bawah {
+                    position: fixed;
+                    bottom: 1rem;
+                    width: 10rem; /* Sesuaikan dengan lebar menu */
+                }
+                .col-utama {
+                    margin-left: 0;
+                }
+                @media (min-width: 768px) {
+                    .col-utama {
+                        margin-left: 13rem;
                     }
+                }
                 </style>
-                <div class="row gap-0">
-                    <div class="ps-3 mb-3">
+                <div class="menu-atas">
+                    <div class="ps-1 mb-3">
                         <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
                             <img src="assets/smagaedu.png" alt="" width="30px" class="logo_orange">
                             <div>
@@ -243,18 +264,10 @@ function ambilKomentar($postingan_id, $koneksi) {
                         </a>
                     </div>  
                     <div class="col">
-                        <a href="#" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
+                        <a href="beranda.php" class="text-decoration-none text-black">
+                        <div class="d-flex align-items-center bg-white shadow-sm rounded p-2" style="">
                             <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="cari.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Cari</p>
                         </div>
                         </a>
                     </div>
@@ -274,13 +287,11 @@ function ambilKomentar($postingan_id, $koneksi) {
                         </div>
                         </a>
                     </div>
-                </div>
-                <div class="row gap-0" style="margin-bottom: 15rem;">
                     <div class="col">
-                        <a href="ai.php" class="text-decoration-none text-black">
+                        <a href="profil.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Gemini</p>
+                            <p class="p-0 m-0">SMAGA AI</p>
                         </div>
                         </a>
                     </div>
@@ -293,18 +304,21 @@ function ambilKomentar($postingan_id, $koneksi) {
                         </a>
                     </div>
                 </div>
-                <div class="row dropdown">
-                    <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0" style="font-size: 12px;">Halo, Ayundy</p>
+                <div class="menu-bawah">
+                    <div class="row dropdown">
+                        <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
+                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($_SESSION['nama']); ?></p>
+                        </div>
+                        <!-- dropdown menu option -->
+                        <ul class="dropdown-menu" style="font-size: 12px;">
+                            <li><a class="dropdown-item" href="#">Pengaturan</a></li>
+                            <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
+                        </ul>
                     </div>
-                    <!-- dropdown menu option -->
-                    <ul class="dropdown-menu" style="font-size: 12px;">
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
-                      </ul>
                 </div>
             </div>
+
             
             <style>
                     .col-inti {
@@ -354,6 +368,7 @@ function ambilKomentar($postingan_id, $koneksi) {
 <div class="col col-inti p-0 p-md-3">
     <div style="background-image: url(<?php echo !empty($kelas['background_image']) ? $kelas['background_image'] : 'assets/bg.jpg'; ?>); 
                 height: 200px; 
+                width: 98%;
                 padding-top: 120px; 
                 margin-top: 15px; 
                 background-position: center;
@@ -372,15 +387,16 @@ function ambilKomentar($postingan_id, $koneksi) {
         </div>
     </div>
 
-    <div class="row mt-4 p-4 pt-0">
+    <div class="row m-0 mt-4 p-4 ps-0 pt-0">
         <div class="col-12 col-lg-8 p-0">
             <!-- Tampilkan postingan -->
+        <?php if(mysqli_num_rows($result_postingan) > 0): ?>
             <?php while($postingan = mysqli_fetch_assoc($result_postingan)): 
                 $jumlah_like = hitungLike($postingan['id'], $koneksi);
                 $jumlah_komentar = hitungKomentar($postingan['id'], $koneksi);
                 $sudah_like = sudahLike($postingan['id'], $_SESSION['userid'], $koneksi);
             ?>
-            <div class="mt-4 p-md-3 mb-4 rounded-3 bg-white mx-md-0 postingan p-4" 
+            <div class=" p-md-3 mb-4 rounded-3 bg-white mx-md-0 postingan p-4" 
                  style="border: 1px solid rgb(226, 226, 226);">
                 <div class="d-flex gap-3">
                     <div>
@@ -398,6 +414,62 @@ function ambilKomentar($postingan_id, $koneksi) {
                     <div class="mt-3">
                         <p class="textPostingan"><?php echo nl2br(htmlspecialchars($postingan['konten'])); ?></p>
                     </div>
+                    <!-- lampiran -->
+                    <!-- Tambahkan di bagian postingan setelah konten -->
+                    <div class="mt-3">
+                        <?php
+                        $postingan_id = $postingan['id'];
+                        $query_lampiran = "SELECT * FROM lampiran_postingan WHERE postingan_id = '$postingan_id'";
+                        $result_lampiran = mysqli_query($koneksi, $query_lampiran);
+
+                        if(mysqli_num_rows($result_lampiran) > 0) {
+                            echo '<div class="container mt-3 p-2 bg-light rounded">';
+                            
+                            $images = [];
+                            $documents = [];
+                            
+                            while($lampiran = mysqli_fetch_assoc($result_lampiran)) {
+                                if(strpos($lampiran['tipe_file'], 'image') !== false) {
+                                    $images[] = $lampiran;
+                                } else {
+                                    $documents[] = $lampiran;
+                                }
+                            }
+
+                            if(!empty($images)) {
+                                echo '<div id="imageContainer-'.$postingan['id'].'" class="image-grid mb-3">';
+                                foreach($images as $image) {
+                                    echo '<img src="'.$image['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                }
+                                echo '</div>';
+                            }
+
+                            if(!empty($documents)) {
+                                echo '<div class="document-list">';
+                                foreach($documents as $doc) {
+                                    $extension = pathinfo($doc['nama_file'], PATHINFO_EXTENSION);
+                                    $icon = 'bi-file-text-fill text-secondary';
+                                    
+                                    switch(strtolower($extension)) {
+                                        case 'pdf': $icon = 'bi-file-pdf-fill text-danger'; break;
+                                        case 'doc': case 'docx': $icon = 'bi-file-word-fill text-primary'; break;
+                                        case 'xls': case 'xlsx': $icon = 'bi-file-excel-fill text-success'; break;
+                                        case 'ppt': case 'pptx': $icon = 'bi-file-ppt-fill text-warning'; break;
+                                    }
+                                    
+                                    echo '<div class="doc-item mb-2 p-2 bg-white rounded border">';
+                                    echo '<a href="'.$doc['path_file'].'" class="text-decoration-none text-dark d-flex align-items-center gap-2" target="_blank">';
+                                    echo '<i class="bi '.$icon.' fs-4"></i>';
+                                    echo '<div><div class="doc-name">'.htmlspecialchars($doc['nama_file']).'</div>';
+                                    echo '<small class="text-muted">'.strtoupper($extension).' file</small></div>';
+                                    echo '</a></div>';
+                                }
+                                echo '</div>';
+                            }
+                            echo '</div>';
+                        }
+                        ?>
+                    </div>
                     <!-- Like dan Komentar info -->
                     <div class="mt-3 d-flex gap-3">
                         <p><strong><?php echo $jumlah_like; ?></strong> Suka</p>
@@ -405,10 +477,17 @@ function ambilKomentar($postingan_id, $koneksi) {
                     </div>
                     <!-- Tombol aksi -->
                     <div class="d-flex gap-2 justify-content-between mt-3 ps-2 pe-2" style="font-size: 14px;">
-                        <button class="btn bi-arrow-up-circle text-white flex-fill py-1 py-md-2 <?php echo $sudah_like ? 'active' : ''; ?>"
-                                onclick="likePost(<?php echo $postingan['id']; ?>)">
-                            <span class="d-none d-md-inline">Suka</span>
-                        </button>
+
+                    <!-- Ganti bagian tombol like yang lama dengan ini -->
+                    <button class="btnPrimary btn text-white flex-fill py-1 py-md-2" 
+                            id="like-btn-<?php echo $postingan['id']; ?>"
+                            onclick="likePost(<?php echo $postingan['id']; ?>)">
+                        <i class="<?php echo $sudah_like ? 'bi bi-arrow-up-circle-fill' : 'bi bi-arrow-up-circle'; ?>"></i>
+                        <span id="like-count-<?php echo $postingan['id']; ?>"><?php echo $jumlah_like; ?></span>
+                        <span class="d-none d-md-inline">Suka</span>
+                    </button>
+
+
                         <button class="btn bi-chat flex-fill text-white py-1 py-md-2" 
                                 onclick="showComments(<?php echo $postingan['id']; ?>)"
                                 data-bs-toggle="modal" data-bs-target="#commentModal<?php echo $postingan['id']; ?>">
@@ -418,62 +497,80 @@ function ambilKomentar($postingan_id, $koneksi) {
                 </div>
             </div>
             <?php endwhile; ?>
+        <?php else: ?>
+            <div class="text-center py-4 rounded-3 bg-white" style="border: 1px solid rgb(226, 226, 226);">
+                <i class="bi bi-search text-muted" style="font-size: 50px;"></i>
+                <p class="text-muted mb-1" style="font-size: 16px;">Belum ada postingan</p>
+                <p class="text-muted mb-0" style="font-size: 14px;">Guru belum membuat postingan apapun</p>
+            </div>
+        <?php endif; ?>
         </div>
 
 
                     <!-- col untuk samping -->
                     <div class="col">
-                        <div style="border: 1px solid rgb(238, 238, 238);"  class="tentangKelas p-3 rounded-3 gap-3 bg-white mb-3 shadow-sm" >
-                            <h5><strong>Tentang Kelas ini</strong></p>
-                                <div class="w-100">
-                                    <p class="text-muted p-0 m-0" style="font-size: 14px;">Guru tidak memberikan deskripsi</p>
-                                </div>
-                                <div class="d-flex mt-3">
-                                    <button class="btn text-white flex-fill" data-bs-toggle="modal" data-bs-target="#deskripsimodal">Edit</button>
-                                </div>
+                    <?php
+// Query untuk mengambil catatan guru
+$query_catatan = "SELECT c.*, g.namaLengkap as nama_guru 
+                  FROM catatan_guru c 
+                  JOIN guru g ON c.guru_id = g.username 
+                  WHERE c.kelas_id = $kelas_id 
+                  ORDER BY c.created_at DESC";
+$result_catatan = mysqli_query($koneksi, $query_catatan);
+?>
+
+<!-- Tampilan Catatan Guru -->
+<div class="catatan-guru mb-4 border rounded-3 p-3 bg-white catatanGuru">
+    <h5 class="mb-3"><strong>Catatan Guru</strong></h5>
+    
+    <?php if(mysqli_num_rows($result_catatan) > 0): ?>
+        <div class="catatan-list">
+            <?php while($catatan = mysqli_fetch_assoc($result_catatan)): ?>
+                <div class="catatan-item p-3 rounded-3 mb-3" style="background-color:rgb(255, 239, 216); border: 1px solid #e9ecef;">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1"><strong><?php echo htmlspecialchars($catatan['judul']); ?></strong></h6>
+                            <small class="text-muted d-flex align-items-center gap-1">
+                                <i class="bi bi-calendar3"></i>
+                                <?php echo date('d M Y', strtotime($catatan['created_at'])); ?>
+                            </small>
                         </div>
-                        <!-- style untuk tentang kelas -->
-                         <style>
-                            @media screen and (max-width: 768px) {
-                                .tentangKelas {
-                                    display: none;
+                    </div>
+                    
+                    <div class="catatan-content mt-2">
+                        <p class="mb-2" style="font-size: 14px;">
+                            <?php echo nl2br(htmlspecialchars($catatan['konten'])); ?>
+                        </p>
+                        <?php if($catatan['file_lampiran']): ?>
+                            <div class="file-attachment p-2 rounded-2 d-inline-flex align-items-center gap-2" 
+                                 style="background-color: white; border: 1px solid #dee2e6;">
+                                <?php
+                                $ext = pathinfo($catatan['file_lampiran'], PATHINFO_EXTENSION);
+                                $icon = 'bi-file-earmark';
+                                switch($ext) {
+                                    case 'pdf': $icon = 'bi-file-pdf'; break;
+                                    case 'doc': case 'docx': $icon = 'bi-file-word'; break;
+                                    case 'jpg': case 'jpeg': case 'png': $icon = 'bi-file-image'; break;
                                 }
-                            }
-                         </style>
-                        <!-- modal untuk guru input deskripsi kelas -->
-                                <div class="modal fade" id="deskripsimodal" tabindex="-1" aria-labelledby="modaldeskripsi" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="modaldeskripsi"><strong>Edit Deskripsi Kelas</strong></h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p style="font-size: 14px;">Apa ada deskripsi khusus untuk kelas Anda?</p>
-                                                <div class="mt-3">
-                                                    <div class="form-floating">
-                                                        <textarea class="form-control" placeholder="Apa pendapat Anda?" id="pendapat" style="height: 100px;"></textarea>
-                                                        <label for="pendapat">Kelas ini bertujuan untuk ..</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer d-flex">
-                                                <button class="btn text-white flex-fill">Tambah</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                        <div style="border: 1px solid rgb(238, 238, 238);"  class="catatanGuru p-3 rounded-3 gap-3 bg-white shadow-sm" >
-                            <h5><strong>Catatan Guru</strong></p>
-                                <div class="w-100">
-                                    <p class="text-muted p-0 m-0" style="font-size: 14px;">Guru tidak memberikan Catatan</p>
-                                </div>
-                                <div class="d-flex mt-3">
-                                    <button class="btn btn-primary flex-fill">Tambah</button>
-                                </div>
-                        </div>
-
+                                ?>
+                                <i class="bi <?php echo $icon; ?>"></i>
+                                <a href="<?php echo htmlspecialchars($catatan['file_lampiran']); ?>" 
+                                   class="text-decoration-none text-black" target="_blank">
+                                    Lihat Lampiran
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        </div>
+    <?php else: ?>
+        <div class="text-center py-4" style="background-color: #f8f9fa; border-radius: 8px;">
+            <p class="text-muted mb-1" style="font-size: 16px;">Tidak ada catatan</p>
+            <p class="text-muted mb-0" style="font-size: 14px;">Guru belum menambahkan catatan apapun</p>
+        </div>
+    <?php endif; ?>
+</div>
                         <!-- style untuk catatan guru -->
                          <style>
                             @media screen and (max-width: 768px) {
@@ -496,61 +593,121 @@ function ambilKomentar($postingan_id, $koneksi) {
 mysqli_data_seek($result_postingan, 0); // Reset pointer hasil query
 while($postingan = mysqli_fetch_assoc($result_postingan)): 
 ?>
-<div class="modal fade" id="commentModal<?php echo $postingan['id']; ?>" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5"><strong>Pendapat</strong></h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="comments-container-<?php echo $postingan['id']; ?> gap-3">
-                    <?php 
-                    $komentar_result = ambilKomentar($postingan['id'], $koneksi);
-                    while($komentar = mysqli_fetch_assoc($komentar_result)): 
-                    ?>
-                    <div class="d-flex gap-3 mb-3">
-                        <div>
-                            <img src="<?php 
-                                if($komentar['user_type'] == 'siswa') {
-                                    echo !empty($komentar['foto_siswa']) ? 'uploads/profil/'.$komentar['foto_siswa'] : 'assets/pp-siswa.png';
-                                } else {
-                                    echo !empty($komentar['foto_guru']) ? 'uploads/profil/'.$komentar['foto_guru'] : 'assets/pp.png';
-                                }
-                            ?>" alt="" width="40px" class="rounded-circle border">
-                        </div>
-                        <div class="pt-2 pb-2 pe-4 ps-3 rounded-4" style="background-color: rgb(238, 238, 238);">
-                            <h6 class="p-0 m-0" style="font-size: 12px;">
-                                <?php echo $komentar['user_type'] == 'siswa' ? $komentar['nama_siswa'] : $komentar['nama_guru']; ?>
-                            </h6>
-                            <p class="p-0 m-0" style="font-size: 14px;"><?php echo htmlspecialchars($komentar['konten']); ?></p>
-                        </div>
-                    </div>
-                    <?php endwhile; ?>
-                </div>
-            </div>
-            <div class="modal-footer d-flex align-items-center">
-                <div class="me-3">
-                    <img src="<?php echo !empty($_SESSION['foto_profil']) ? 'uploads/profil/'.$_SESSION['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
-                         alt="Profile Picture" width="40px" class="rounded-circle">
-                </div>
-                <div class="flex-fill">
-                    <div class="form-floating">
-                        <textarea class="form-control comment-input-<?php echo $postingan['id']; ?>" 
-                                  placeholder="Pendapat Anda" style="height: 60px;"></textarea>
-                        <label>Pendapat Anda</label>
-                    </div>
-                </div>
-                <button class="btn bi-send" onclick="submitComment(<?php echo $postingan['id']; ?>)"></button>
-            </div>
-        </div>
-    </div>
-</div>
-<?php endwhile; ?>
+                                <div class="modal fade" id="commentModal<?php echo $postingan['id']; ?>" tabindex="-1" aria-labelledby="modalKomentar" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+                                        <div class="modal-content">
+                                            <?php
+                                            $query_komentar = "SELECT k.*, COALESCE(g.namaLengkap, s.nama) as nama_user 
+                                                            FROM komentar_postingan k 
+                                                            LEFT JOIN guru g ON k.user_id = g.username 
+                                                            LEFT JOIN siswa s ON k.user_id = s.username 
+                                                            WHERE k.postingan_id = '{$postingan['id']}' 
+                                                            ORDER BY k.created_at ASC";
+                                            $result_komentar = mysqli_query($koneksi, $query_komentar);
+                                            ?>
+
+                                            <div class="modal-header border-0">
+                                                <h1 class="modal-title fs-5" id="modalKomentar">
+                                                    <strong>Pendapat</strong>
+                                                    <span class="text-muted fs-6 ms-2"><?php echo mysqli_num_rows($result_komentar); ?></span>
+                                                </h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            
+                                            <!-- Body Komentar dengan Scroll -->
+                                            <div class="modal-body p-0">
+                                                <div class="komentar-container px-3" style="max-height: 60vh; overflow-y: auto;">
+                                                    <?php
+                                                    if(mysqli_num_rows($result_komentar) > 0) {
+                                                        while($komentar = mysqli_fetch_assoc($result_komentar)) {
+                                                        ?>
+                                                            <div class="d-flex gap-3 mb-3">
+                                                                <div class="flex-shrink-0">
+                                                                    <img src="assets/pp.png" alt="" width="32px" height="32px" class="rounded-circle border">
+                                                                </div>
+                                                                <div class="bubble-chat flex-grow-1">
+                                                                    <div class="rounded-4 p-3" style="background-color: #f0f2f5;">
+                                                                        <h6 class="p-0 m-0 mb-1" style="font-size: 13px; font-weight: 600;">
+                                                                            <?php echo htmlspecialchars($komentar['nama_user']); ?>
+                                                                        </h6>
+                                                                        <p class="p-0 m-0" style="font-size: 13px; line-height: 1.4;">
+                                                                            <?php echo nl2br(htmlspecialchars($komentar['konten'])); ?>
+                                                                        </p>
+                                                                    </div>
+                                                                    <small class="text-muted" style="font-size: 11px;">
+                                                                        <?php echo date('d M Y, H:i', strtotime($komentar['created_at'])); ?>
+                                                                    </small>
+                                                                </div>
+                                                            </div>
+                                                        <?php
+                                                        }
+                                                    } else {
+                                                        echo '<div class="text-center text-muted py-4">Belum ada pendapat</div>';
+                                                    }
+                                                    ?>
+                                                </div>
+                                            </div>
+
+                                            <!-- Footer dengan Input Komentar -->
+                                            <div class="modal-footer p-2 border-top">
+                                                <div class="d-flex gap-2 align-items-end w-100">
+                                                    <div class="flex-shrink-0">
+                                                    <img src="<?php echo !empty($_SESSION['foto_profil']) ? 'uploads/profil/'.$_SESSION['foto_profil'] : 'assets/pp.png'; ?>" alt="Profile" width="35px" height="35px" class="rounded-circle">
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <form class="komentar-form" data-postid="<?php echo $postingan['id']; ?>">
+                                                            <div class="form-group">
+                                                            <textarea class="form-control bg-light border-0 comment-input-<?php echo $postingan['id']; ?>" 
+                                                                rows="1" 
+                                                                placeholder="Tulis pendapat kamu" 
+                                                                style="resize: none; font-size: 14px;"
+                                                                oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                                                                required></textarea>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <button class="btn color-web text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                                                style="width: 35px; height: 35px;"
+                                                                onclick="submitComment(<?php echo $postingan['id']; ?>)">
+                                                            <i class="bi bi-send-fill"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            <?php endwhile; ?>
 
 <!-- JavaScript untuk handle like dan komentar -->
 <script>
 function likePost(postId) {
+    // Ambil elemen button dan count
+    const button = document.querySelector(`#like-btn-${postId} i`);
+    const countElement = document.querySelector(`#like-count-${postId}`);
+    
+    if (!button || !countElement) {
+        console.error('Button or count element not found:', postId);
+        return;
+    }
+    
+    // Cek status like
+    const isCurrentlyLiked = button.classList.contains('bi-arrow-up-circle-fill');
+    const currentCount = parseInt(countElement.textContent);
+
+    // Update tampilan
+    if (isCurrentlyLiked) {
+        button.classList.remove('bi-arrow-up-circle-fill');
+        button.classList.add('bi-arrow-up-circle');
+        countElement.textContent = currentCount - 1;
+    } else {
+        button.classList.remove('bi-arrow-up-circle');
+        button.classList.add('bi-arrow-up-circle-fill');
+        countElement.textContent = parseInt(currentCount) + 1;
+    }
+
+    // Kirim request ke server
     fetch('like_post.php', {
         method: 'POST',
         headers: {
@@ -561,30 +718,85 @@ function likePost(postId) {
     .then(response => response.json())
     .then(data => {
         if(data.success) {
-            location.reload(); // Refresh untuk update tampilan
+            // Berhasil - tampilan sudah diupdate sebelumnya
+            console.log('Like berhasil diupdate');
+        } else {
+            // Gagal - kembalikan ke status sebelumnya
+            if (isCurrentlyLiked) {
+                button.classList.remove('bi-arrow-up-circle');
+                button.classList.add('bi-arrow-up-circle-fill');
+                countElement.textContent = currentCount;
+            } else {
+                button.classList.remove('bi-arrow-up-circle-fill');
+                button.classList.add('bi-arrow-up-circle');
+                countElement.textContent = currentCount;
+            }
+            console.error('Like gagal:', data.message);
         }
-    });
-}
-
-function submitComment(postId) {
-    const commentText = document.querySelector(`.comment-input-${postId}`).value;
-    if(!commentText.trim()) return;
-
-    fetch('add_comment.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `postingan_id=${postId}&konten=${encodeURIComponent(commentText)}`
     })
-    .then(response => response.json())
-    .then(data => {
-        if(data.success) {
-            location.reload(); // Refresh untuk update tampilan
+    .catch(error => {
+        console.error('Error:', error);
+        // Error - kembalikan ke status sebelumnya
+        if (isCurrentlyLiked) {
+            button.classList.remove('bi-arrow-up-circle');
+            button.classList.add('bi-arrow-up-circle-fill');
+            countElement.textContent = currentCount;
+        } else {
+            button.classList.remove('bi-arrow-up-circle-fill');
+            button.classList.add('bi-arrow-up-circle');
+            countElement.textContent = currentCount;
         }
     });
 }
 </script>
+
+                                  <!-- logika komentar -->
+                                  <script>
+                                    function submitKomentar(postId) {
+                                        const form = document.querySelector(`.komentar-form[data-postid="${postId}"]`);
+                                        const textarea = form.querySelector('textarea');
+                                        const konten = textarea.value.trim();
+
+                                        if(!konten) return;
+
+                                        // Kirim komentar ke server
+                                        fetch('tambah_komentar.php', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/x-www-form-urlencoded',
+                                            },
+                                            body: `postingan_id=${postId}&konten=${encodeURIComponent(konten)}`
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if(data.status === 'success') {
+                                                // Tambahkan komentar ke DOM
+                                                const container = document.querySelector(`#commentModal${postId} .komentar-container`);
+                                                const komentarHTML = `
+                                                    <div class="d-flex gap-3 mb-3">
+                                                        <div>
+                                                            <img src="assets/pp.png" alt="" width="40px" class="rounded-circle border">
+                                                        </div>
+                                                        <div class="pt-2 pb-2 pe-4 ps-3 rounded-4" style="background-color: rgb(238, 238, 238);">
+                                                            <h6 class="p-0 m-0" style="font-size: 12px;">${data.komentar.nama_user}</h6>
+                                                            <p class="p-0 m-0" style="font-size: 14px;">${data.komentar.konten}</p>
+                                                        </div>
+                                                    </div>
+                                                `;
+                                                container.insertAdjacentHTML('beforeend', komentarHTML);
+                                                
+                                                // Reset textarea
+                                                textarea.value = '';
+                                                
+                                                // Update jumlah komentar di postingan
+                                                const countElement = document.querySelector(`#post-${postId} .comment-count`);
+                                                const currentCount = parseInt(countElement.textContent);
+                                                countElement.textContent = currentCount + 1;
+                                            }
+                                        });
+                                    }
+                                    </script>
+
 
 
 </body>

@@ -338,21 +338,6 @@ $result_siswa = mysqli_query($koneksi, $query_siswa_all);
                         </button>
                     </div>
 
-                    <!-- Tombol titik tiga tetap di posisinya -->
-                    <div class="position-absolute top-0 end-0 m-3" style="z-index: 2;">
-                        <button class="btn btn-light btn-sm rounded-circle" 
-                                type="button" 
-                                data-bs-toggle="dropdown" 
-                                aria-expanded="false">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalEditBackground">
-                                Edit Background
-                            </a></li>
-                        </ul>
-                    </div>
-
                     <!-- Konten (teks) dengan z-index lebih tinggi -->
                     <div class="position-absolute bottom-0 start-0 p-3" style="z-index: 2;">
                         <div>
@@ -856,7 +841,7 @@ function clearFileInput() {
                                     if(!empty($images)) {
                                         echo '<div id="imageContainer-'.$post['id'].'" class="image-grid mb-3">';
                                         foreach($images as $image) {
-                                            echo '<img src="'.$image['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                            echo '<img src="'.$image['path_file'].'" alt="Lampiran" class="rounded" onclick="showImage(this.src)">';
                                         }
                                         echo '</div>';
                                     }
@@ -1173,17 +1158,59 @@ function clearFileInput() {
                                                         while($komentar = mysqli_fetch_assoc($result_komentar)) {
                                                         ?>
                                                             <div class="d-flex gap-3 mb-3">
-                                                                <div class="flex-shrink-0">
-                                                                    <img src="assets/pp.png" alt="" width="32px" height="32px" class="rounded-circle border">
-                                                                </div>
+                                                            <div class="flex-shrink-0">
+                                                            <?php
+                                                            $user_id = $komentar['user_id'];
+                                                            $foto_profil = 'assets/pp.png'; // Default image
+
+                                                            // First check guru table
+                                                            $query_guru = "SELECT foto_profil FROM guru WHERE username = '$user_id'";
+                                                            $result_guru = mysqli_query($koneksi, $query_guru);
+                                                            
+                                                            if(mysqli_num_rows($result_guru) > 0) {
+                                                                $user = mysqli_fetch_assoc($result_guru);
+                                                                if(!empty($user['foto_profil'])) {
+                                                                    $foto_profil = 'uploads/profil/' . $user['foto_profil'];
+                                                                }
+                                                            } else {
+                                                                // If not found in guru, check siswa table
+                                                                $query_siswa = "SELECT foto_profil FROM siswa WHERE username = '$user_id'";
+                                                                $result_siswa = mysqli_query($koneksi, $query_siswa);
+                                                                if(mysqli_num_rows($result_siswa) > 0) {
+                                                                    $user = mysqli_fetch_assoc($result_siswa);
+                                                                    if(!empty($user['foto_profil'])) {
+                                                                        $foto_profil = 'uploads/profil/' . $user['foto_profil'];
+                                                                    }
+                                                                }
+                                                            }
+                                                            ?>
+                                                            <img src="<?php echo $foto_profil; ?>" alt="" width="32px" height="32px" class="rounded-circle border">
+                                                        </div>
                                                                 <div class="bubble-chat flex-grow-1">
-                                                                    <div class="rounded-4 p-3" style="background-color: #f0f2f5;">
-                                                                        <h6 class="p-0 m-0 mb-1" style="font-size: 13px; font-weight: 600;">
-                                                                            <?php echo htmlspecialchars($komentar['nama_user']); ?>
-                                                                        </h6>
-                                                                        <p class="p-0 m-0" style="font-size: 13px; line-height: 1.4;">
-                                                                            <?php echo nl2br(htmlspecialchars($komentar['konten'])); ?>
-                                                                        </p>
+                                                                    <div class="d-flex justify-content-between align-items-start rounded-4 p-3" style="background-color: #f0f2f5;">
+                                                                        <div>
+                                                                            <h6 class="p-0 m-0 mb-1" style="font-size: 13px; font-weight: 600;">
+                                                                                <?php echo htmlspecialchars($komentar['nama_user']); ?>
+                                                                            </h6>
+                                                                            <p class="p-0 m-0 text-break" style="font-size: 13px; line-height: 1.4; word-wrap: break-word; max-width: 100%;">
+                                                                                <?php echo nl2br(htmlspecialchars($komentar['konten'])); ?>
+                                                                            </p>
+                                                                        </div>
+                                                                        <?php if($komentar['user_id'] == $_SESSION['userid'] || $_SESSION['level'] == 'guru'): ?>
+                                                                        <div class="dropdown">
+                                                                            <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown">
+                                                                                <i class="fas fa-ellipsis-v"></i>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                                                <li>
+                                                                                    <button class="dropdown-item text-danger" 
+                                                                                            onclick="hapusKomentar(<?php echo $komentar['id']; ?>, <?php echo $post['id']; ?>)">
+                                                                                        <i class="fas fa-trash-alt me-2"></i>Hapus
+                                                                                    </button>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <?php endif; ?>
                                                                     </div>
                                                                     <small class="text-muted" style="font-size: 11px;">
                                                                         <?php echo date('d M Y, H:i', strtotime($komentar['created_at'])); ?>
@@ -1200,10 +1227,40 @@ function clearFileInput() {
                                             </div>
 
                                             <!-- Footer dengan Input Komentar -->
+
+<script>
+function hapusKomentar(komentarId, postId) {
+    if(confirm('Apakah Anda yakin ingin menghapus komentar ini?')) {
+        fetch('hapus_komentar.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `komentar_id=${komentarId}&post_id=${postId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                // Refresh modal content
+                location.reload();
+            } else {
+                alert('Gagal menghapus komentar: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus komentar');
+        });
+    }
+}
+</script>
                                             <div class="modal-footer p-2 border-top">
                                                 <div class="d-flex gap-2 align-items-end w-100">
                                                     <div class="flex-shrink-0">
-                                                        <img src="assets/pp.png" alt="Profile" width="35px" height="35px" class="rounded-circle">
+                                                    <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" 
+                                                            alt="Profile Image" 
+                                                            class="profile-img rounded-4 border-0 bg-white"
+                                                            style="width: 35px;;">
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <form class="komentar-form" data-postid="<?php echo $post['id']; ?>">
@@ -1305,24 +1362,23 @@ function clearFileInput() {
                                         })
                                         .then(response => response.json())
                                         .then(data => {
-                                            if(data.status === 'success') {
-                                                // Tambahkan komentar ke DOM
-                                                const container = document.querySelector(`#commentModal-${postId} .komentar-container`);
-                                                const komentarHTML = `
-                                                    <div class="d-flex gap-3 mb-3">
+                                        if(data.status === 'success') {
+                                            const container = document.querySelector(`#commentModal-${postId} .komentar-container`);
+                                            const komentarHTML = `
+                                                <div class="mb-3">
+                                                    <div class="d-flex gap-3 ">
                                                         <div>
-                                                            <img src="assets/pp.png" alt="" width="40px" class="rounded-circle border">
+                                                            <img src="uploads/profil/${data.komentar.foto_profil}" onerror="this.src='assets/pp.png'" width="40px" class="rounded-circle border">
                                                         </div>
                                                         <div class="pt-2 pb-2 pe-4 ps-3 rounded-4" style="background-color: rgb(238, 238, 238);">
                                                             <h6 class="p-0 m-0" style="font-size: 12px;">${data.komentar.nama_user}</h6>
                                                             <p class="p-0 m-0" style="font-size: 14px;">${data.komentar.konten}</p>
                                                         </div>
                                                     </div>
-                                                `;
-                                                container.insertAdjacentHTML('beforeend', komentarHTML);
-                                                
-                                                // Reset textarea
-                                                textarea.value = '';
+                                                </div>
+                                            `;
+                                            container.innerHTML += komentarHTML;
+                                            document.querySelector(`#commentModal-${postId} textarea`).value = '';
                                                 
                                                 // Update jumlah komentar di postingan
                                                 const countElement = document.querySelector(`#post-${postId} .comment-count`);
@@ -1455,27 +1511,6 @@ function clearFileInput() {
                         </div>
                     </div>
                     <div class="col">
-                    <div style="border: 1px solid rgb(238, 238, 238);" class="tentangKelas p-3 rounded-3 gap-3 bg-white mb-3">
-                        <h5><strong>Tentang Kelas ini</strong></h5>
-                        <div class="w-100">
-                            <?php if(!empty($data_kelas['deskripsi'])): ?>
-                                <p class="p-0 m-0" style="font-size: 14px;"><?php echo nl2br(htmlspecialchars($data_kelas['deskripsi'])); ?></p>
-                            <?php else: ?>
-                                <p class="text-muted p-0 m-0" style="font-size: 14px;">Guru tidak memberikan deskripsi</p>
-                            <?php endif; ?>
-                        </div>
-                        <div class="d-flex mt-3">
-                            <button class="btn btnPrimary text-white flex-fill" data-bs-toggle="modal" data-bs-target="#deskripsimodal">Edit</button>
-                        </div>
-                    </div>                        
-                    <!-- style untuk tentang kelas -->
-                         <style>
-                            @media screen and (max-width: 768px) {
-                                .tentangKelas {
-                                    display: none;
-                                }
-                            }
-                         </style>
                         <!-- modal untuk guru input deskripsi kelas -->
                         <div class="modal fade" id="deskripsimodal" tabindex="-1" aria-labelledby="modaldeskripsi" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
@@ -1511,7 +1546,6 @@ function clearFileInput() {
                 data-bs-toggle="modal" 
                 data-bs-target="#catatanModal">
             <i class="bi bi-plus-circle"></i>
-            <span>Tambah</span>
         </button>
     </div>
 
@@ -1699,7 +1733,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     <?php else: ?>
         <div class="text-center py-4" style="background-color: #f8f9fa; border-radius: 8px;">
-            <img src="assets/no-data.png" alt="Tidak ada siswa" style="width: 80px; opacity: 0.5;">
+            <span><i class="bi bi-x-circle"></i> Tidak ada siswa</span>
             <p class="text-muted mt-2 mb-0" style="font-size: 14px;">Belum ada siswa dalam kelas ini</p>
             
             <!-- Hanya tampilkan tombol tambah -->
@@ -1720,39 +1754,134 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold">Undang Siswa</h5>
+                <h5 class="modal-title fw-bold">Tambah Siswa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center p-4">
-                <div class="mb-4">
-                    <i class="bi bi-qr-code text-primary display-1"></i>
-                </div>
-                <div class="mb-4">
-                    <p class="mb-2 text-muted">Bagikan kode kelas ini kepada siswa</p>
-                    <div class="d-flex align-items-center justify-content-center gap-2">
-                        <h4 class="m-0 fw-bold"><?php echo $kelas_id; ?></h4>
-                        <button class="btn btn-light btn-sm" onclick="copyKodeKelas('<?php echo $kelas_id; ?>')">
-                            <i class="bi bi-clipboard"></i>
-                        </button>
+            <div class="modal-body p-4">
+                <form id="formTambahSiswa">
+                    <!-- Input Group Kelas -->
+                    <div class="mb-3">
+                        <label class="form-label">Pilih Kelas</label>
+                        <select class="form-select" id="tingkatKelas" required>
+                        <option value="">Pilih salah satu</option>
+                                    <option value="7">SMP Kelas 7</option>
+                                    <option value="8">SMP Kelas 8</option>
+                                    <option value="9">SMP Kelas 9</option>
+                                    <option value="E">SMA Fase E</option>
+                                    <option value="F">SMA Fase F</option>
+                                    <option value="12">SMA Kelas 12</option>
+                        </select>
                     </div>
-                </div>
-                <div class="border-top pt-3">
-                    <p class="text-muted small mb-0">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Siswa dapat bergabung dengan memasukkan kode kelas ini di menu "Gabung Kelas"
-                    </p>
-                </div>
+
+                    <!-- Daftar Siswa dengan Checkbox -->
+                    <div class="mb-3 p-3 rounded-2" style="background-color: rgb(238, 238, 238);">
+                        <label class="form-label">Daftar Siswa</label>
+                        <div class="daftar-siswa" style="max-height: 300px; overflow-y: auto;">
+                            <!-- Daftar siswa akan dimuat di sini -->
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn color-web text-white">Tambahkan</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<!-- script tambah siswa -->
+<script>
+
+    console.log('ngapain kalian sampe di sini? balik belajar sana');
+// Ketika tingkat kelas berubah
+document.getElementById('tingkatKelas').addEventListener('change', function() {
+    const tingkat = this.value;
+    const daftarSiswaDiv = document.querySelector('.daftar-siswa');
+    
+    if(tingkat) {
+        // Fetch data siswa berdasarkan tingkat
+        fetch(`get_siswa.php?tingkat=${tingkat}`)
+            .then(response => response.text()) // Ubah ke text() karena response dari PHP adalah HTML
+            .then(html => {
+                // Tambahkan checkbox "Pilih Semua" di atas daftar siswa
+                const pilihSemuaHTML = `
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="pilihSemua">
+                        <label class="form-check-label" for="pilihSemua">
+                            Pilih Semua
+                        </label>
+                    </div>
+                    <hr>
+                `;
+                
+                daftarSiswaDiv.innerHTML = pilihSemuaHTML + html;
+                
+                // Event listener untuk "Pilih Semua" checkbox
+                document.getElementById('pilihSemua').addEventListener('change', function() {
+                    const checkboxes = document.querySelectorAll('.siswa-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                daftarSiswaDiv.innerHTML = '<p class="text-danger">Terjadi kesalahan saat memuat data siswa</p>';
+            });
+    } else {
+        daftarSiswaDiv.innerHTML = '<p class="text-muted">Pilih tingkat kelas terlebih dahulu</p>';
+    }
+});
+
+
+document.getElementById('formTambahSiswa').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const selectedSiswa = Array.from(document.querySelectorAll('.siswa-checkbox:checked'))
+                              .map(checkbox => checkbox.value);
+    
+    if(selectedSiswa.length === 0) {
+        alert('Pilih minimal satu siswa');
+        return;
+    }
+
+    // Ambil kelas_id dari parameter URL atau dari variabel PHP
+    const kelas_id = <?php echo $kelas_id; ?>;
+    
+    // Kirim data ke proses_tambah_siswa.php
+    fetch('proses_tambah_siswa.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `siswa_ids=${JSON.stringify(selectedSiswa)}&kelas_id=${kelas_id}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert('Siswa berhasil ditambahkan ke kelas');
+            // Tutup modal
+            document.querySelector('#tambahSiswaModal .btn-close').click();
+            // Refresh halaman
+            location.reload();
+        } else {
+            alert('Gagal menambahkan siswa: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat menambahkan siswa');
+    });
+});
+</script>
 
 <!-- Modal Hapus Siswa -->
 <div class="modal fade" id="hapusSiswaModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold">Hapus Siswa dari Kelas</h5>
+                <h5 class="modal-title fw-bold">Tendang Siswa dari Kelas</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-3">

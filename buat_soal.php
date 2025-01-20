@@ -412,7 +412,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                     </button>
                         <!-- Tombol Buat Soal dengan AI -->
                         <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#aiSoalModal">
-                            <i class="bi bi-robot"></i>
+                            <i class="bi bi-stars"></i>
                             Buat Soal dengan AI
                         </button>
                         
@@ -613,7 +613,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                     </small>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer btn-group">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 <button type="button" class="btn color-web text-white" onclick="uploadSoalWord()">
                     <span>Upload</span>
@@ -649,7 +649,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer btn-group">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="button" class="btn color-web text-white" onclick="generateMultipleSoal()">
                         <span>Generate Soal</span>
@@ -886,7 +886,7 @@ async function uploadSoalWord() {
                         <div class="d-flex gap-2 position-relative">
                             <textarea class="form-control" name="pertanyaan" rows="3" required style="border-radius: 12px; resize: none;"></textarea>
                                 <button type="button" class="btn color-web text-white ai-button" onclick="generateSoal('${currentTipeSoal}')">
-                                    <i class="bi bi-robot"></i>
+                                    <i class="bi bi-stars"></i>
                                     <div class="ai-loader"></div>
                                 </button>                                
                         </div>
@@ -953,7 +953,7 @@ async function uploadSoalWord() {
                     <div class="d-flex gap-2">
                         <textarea class="form-control" name="pertanyaan" rows="3" required style="border-radius: 12px; resize: none;"></textarea>
                         <button type="button" class="btn color-web text-white ai-button" onclick="generateSoal('uraian')" style="border-radius: 12px; height: 45px;">
-                            <i class="bi bi-robot"></i>
+                            <i class="bi bi-stars"></i>
                             <div class="ai-loader"></div>
                         </button>
                     </div>
@@ -1035,7 +1035,7 @@ async function generateSoal(jenis) {
     try {
         // Show loading
         const button = document.querySelector('.ai-button');
-        const icon = button.querySelector('.bi-robot');
+        const icon = button.querySelector('.bi-stars');
         const loader = button.querySelector('.ai-loader');
         const overlay = document.getElementById('generateOverlay');
         
@@ -1091,7 +1091,7 @@ async function generateSoal(jenis) {
     } finally {
         // Hide loading
         const button = document.querySelector('.ai-button');
-        const icon = button.querySelector('.bi-robot');
+        const icon = button.querySelector('.bi-stars');
         const loader = button.querySelector('.ai-loader');
 
 

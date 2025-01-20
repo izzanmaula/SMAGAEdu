@@ -34,7 +34,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
              " untuk mata pelajaran {$mata_pelajaran} kelas {$tingkat}.\n\n";
 
             //  error log untuk promt
-            error_log("Prompt: " . $prompt);
+            error_log("Prompt buat jumlah soal, tipe soal, dan mata pelajaran: " . $prompt);
     
     // Tambahkan daftar materi ke prompt
     if(!empty($materi_list)) {
@@ -43,6 +43,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $prompt .= "- " . $materi . "\n";
         }
         $prompt .= "\n";
+        
     }
 
     if($tipe_soal == 'pilihan_ganda') {
@@ -63,6 +64,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     D. [jawaban]
     Jawaban: [A/B/C/D]
     ---
+
+    Contoh:
+    Soal: Berapakah hasil dari 5 x 5?
+    A. 15
+    B. 20
+    C. 25
+    D. 30
+    Jawaban: C
+    ---
+    
     [Soal kedua dst]
     
     ATURAN PENTING:
@@ -71,7 +82,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     - WAJIB mulai tiap soal dengan kata 'Soal:'
     - DILARANG memberikan komentar atau teks tambahan";
 
-    } else {
+
+    } 
+    else {
         $prompt .= "Format yang diinginkan:
     1. Soal harus dalam bentuk uraian yang menguji pemahaman
     2. Tingkat kesulitan soal harus bervariasi

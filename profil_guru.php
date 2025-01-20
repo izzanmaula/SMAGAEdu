@@ -41,53 +41,6 @@ if(!$guru) {
     <title>Profil - SMAGAEdu</title>
 </head>
 <style>
-        .merriweather-light {
-        font-family: "Merriweather", serif;
-        font-weight: 300;
-        font-style: normal;
-        }
-
-        .merriweather-regular {
-        font-family: "Merriweather", serif;
-        font-weight: 400;
-        font-style: normal;
-        }
-
-        .merriweather-bold {
-        font-family: "Merriweather", serif;
-        font-weight: 700;
-        font-style: normal;
-        }
-
-        .merriweather-black {
-        font-family: "Merriweather", serif;
-        font-weight: 900;
-        font-style: normal;
-        }
-
-        .merriweather-light-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 300;
-        font-style: italic;
-        }
-
-        .merriweather-regular-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 400;
-        font-style: italic;
-        }
-
-        .merriweather-bold-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 700;
-        font-style: italic;
-        }
-
-        .merriweather-black-italic {
-        font-family: "Merriweather", serif;
-        font-weight: 900;
-        font-style: italic;
-        }
         body{ 
             font-family: merriweather;
         }
@@ -166,7 +119,7 @@ if(!$guru) {
                         </a>
                         
                         <!-- Menu AI -->
-                        <a href="ai.php" class="text-decoration-none text-black">
+                        <a href="ai_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ai.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Gemini</p>
@@ -263,7 +216,7 @@ if(!$guru) {
                 </div>
                 <div class="row gap-0" style="margin-bottom: 15rem;">
                     <div class="col">
-                        <a href="ai.php" class="text-decoration-none text-black">
+                        <a href="ai_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/ai.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Gemini</p>
@@ -319,16 +272,25 @@ if(!$guru) {
                     }                
                 </style>
                     <div style="
-                    background-image: url('<?php echo !empty($guru['foto_latarbelakang']) ? 'uploads/background/'.$guru['foto_latarbelakang'] : 'assets/bg-profil.png'; ?>'); 
-                    height: 300px; 
-                    padding-top: 200px; 
-                    margin-top: 15px; 
-                    background-position: center; 
-                    background-size: cover;
-                    position: relative;" class="rounded text-white shadow-lg latar-belakang">
-                    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 0;" class="rounded"></div>
-                    <div class="ps-3" style="position: relative; z-index: 2;"></div>
-                </div>
+                        background-image: url('<?php echo !empty($guru['foto_latarbelakang']) ? 'uploads/background/'.$guru['foto_latarbelakang'] : 'assets/bg-profil.png'; ?>'); 
+                        height: 300px; 
+                        padding-top: 200px; 
+                        margin-top: 15px; 
+                        background-position: center; 
+                        background-size: cover;
+                        position: relative;" 
+                        class="rounded text-white shadow-lg latar-belakang">
+                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 0;" class="rounded"></div>
+                        <div class="ps-3" style="position: relative; z-index: 2;"></div>
+                    </div>
+                    <style>
+                        @media (max-width: 768px) {
+                            .latar-belakang {
+                                height: 200px;
+                                padding-top: 150px;
+                            }
+                        }
+                    </style>
                 <div style="text-align: center;">
                     <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" alt="" width="200px" class="rounded-circle" style="background-color: white; margin-top: -150px; z-index: 10; position: relative; border: 3px solid white;">
                 </div>
@@ -336,10 +298,10 @@ if(!$guru) {
                     <h3 class="p-0 m-1"><?php echo htmlspecialchars($guru['namaLengkap']); ?></h3>
                     <p class="p-0 m-0"><?php echo htmlspecialchars($guru['jabatan']); ?></p>
                 </div>
-                <div class="mt-2 text-center d-flex flex-wrap justify-content-center gap-2">
-                    <button class="btn border bi-pencil-square" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantinama">    Edit Nama Anda</button>
-                    <button class="btn border bi-image" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantifoto">    Edit Foto dan Latar Belakang</button>
-                    <button class="btn border bi-asterisk" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantilebih">    Edit Rekam Anda</button>
+                <div class="mt-2 text-center d-flex flex-column flex-md-row flex-wrap justify-content-center gap-2">
+                    <button class="btn border bi-pencil-square" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantinama"> Edit Nama Anda</button>
+                    <button class="btn border bi-image" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantifoto"> Edit Foto dan Latar Belakang</button>
+                    <button class="btn border bi-asterisk" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantilebih"> Edit Rekam Anda</button>
                 </div>
                 <div class="px-5">
                     <hr class="text-muted">
