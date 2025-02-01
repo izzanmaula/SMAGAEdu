@@ -70,11 +70,20 @@ if(!$siswa) {
                     <?php endif; ?>
                         <h3 class="text-center mb-4">Edit Profil Siswa</h3>
                         <div class="text-center mb-4">
-                            <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
-                                 alt="Profile Picture" class="rounded-circle" 
-                                 style="width: 150px; height: 150px; object-fit: cover; border: 5px solid white;">
-                            <h4 class="mt-2"><?php echo htmlspecialchars($siswa['nama']); ?></h4>
-                        </div>
+                            <div class="position-relative d-inline-block">
+                                <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
+                                    alt="Profile Picture" 
+                                    class="rounded-circle" 
+                                    style="width: 150px; height: 150px; object-fit: cover; border: 5px solid white;">
+                                <button type="button" 
+                                        class="btn btn-sm color-web text-white position-absolute bottom-0 end-0"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalGantiFoto">
+                                    <img src="assets/kamera.png" alt="Edit" width="20px" style="filter: brightness(0) invert(1);">
+                                </button>
+                            </div>
+                                <h4 class="mt-2"><?php echo htmlspecialchars($siswa['nama']); ?></h4>
+                            </div>
 
                         <form action="update_siswa.php" method="POST">
                             <input type="hidden" name="username" value="<?php echo $siswa['username']; ?>">
@@ -211,5 +220,51 @@ if(!$siswa) {
             </div>
         </div>
     </div>
+
+    <!-- Modal Ganti Foto -->
+<div class="modal fade" id="modalGantiFoto" tabindex="-1" aria-labelledby="modalGantiFotoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalGantiFotoLabel">Ganti Foto Profil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="update_foto_siswa.php" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" name="username" value="<?php echo $siswa['username']; ?>">
+                    <div class="mb-3">
+                        <label for="foto" class="form-label">Pilih Foto Baru</label>
+                        <input type="file" class="form-control" id="foto" name="foto" accept="image/*" required>
+                    </div>
+                    <div id="preview" class="text-center mt-3" style="display: none;">
+                        <img src="" alt="Preview" style="max-width: 200px; max-height: 200px;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn color-web text-white">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Script untuk preview foto -->
+<script>
+document.getElementById('foto').addEventListener('change', function(e) {
+    const preview = document.getElementById('preview');
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        preview.style.display = 'block';
+        preview.querySelector('img').src = e.target.result;
+    }
+
+    if(file) {
+        reader.readAsDataURL(file);
+    }
+});
+</script>
 </body>
 </html>

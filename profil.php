@@ -8,18 +8,95 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
 }
 
 $userid = $_SESSION['userid'];
-$query = "SELECT s.*, 
-    k.nama_kelas AS kelas_saat_ini 
+$query = "SELECT s.*,
+    k.nama_kelas AS kelas_saat_ini,
+    COALESCE(AVG(pg.nilai_akademik), 0) as nilai_akademik,
+    COALESCE(AVG(pg.keaktifan), 0) as keaktifan,
+    COALESCE(AVG(pg.pemahaman), 0) as pemahaman,
+    COALESCE(AVG(pg.kehadiran_ibadah), 0) as kehadiran_ibadah,
+    COALESCE(AVG(pg.kualitas_ibadah), 0) as kualitas_ibadah,
+    COALESCE(AVG(pg.pemahaman_agama), 0) as pemahaman_agama,
+    COALESCE(AVG(pg.minat_bakat), 0) as minat_bakat,
+    COALESCE(AVG(pg.prestasi), 0) as prestasi,
+    COALESCE(AVG(pg.keaktifan_ekskul), 0) as keaktifan_ekskul,
+    COALESCE(AVG(pg.partisipasi_sosial), 0) as partisipasi_sosial,
+    COALESCE(AVG(pg.empati), 0) as empati,
+    COALESCE(AVG(pg.kerja_sama), 0) as kerja_sama,
+    COALESCE(AVG(pg.kebersihan_diri), 0) as kebersihan_diri,
+    COALESCE(AVG(pg.aktivitas_fisik), 0) as aktivitas_fisik,
+    COALESCE(AVG(pg.pola_makan), 0) as pola_makan,
+    COALESCE(AVG(pg.kejujuran), 0) as kejujuran,
+    COALESCE(AVG(pg.tanggung_jawab), 0) as tanggung_jawab,
+    COALESCE(AVG(pg.kedisiplinan), 0) as kedisiplinan
     FROM siswa s 
     LEFT JOIN kelas_siswa ks ON s.id = ks.siswa_id 
     LEFT JOIN kelas k ON ks.kelas_id = k.id 
-    WHERE s.username = ?";
+    LEFT JOIN pg ON s.id = pg.siswa_id 
+    WHERE s.username = ?
+    GROUP BY s.id, k.nama_kelas";
 
 $stmt = mysqli_prepare($koneksi, $query);
 mysqli_stmt_bind_param($stmt, "s", $userid);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $siswa = mysqli_fetch_assoc($result);
+
+// Function to get grade label and class
+function getNilaiLabel($value) {
+    if ($value >= 80) return ['Baik', 'text-success'];
+    if ($value >= 60) return ['Cukup', 'text-warning'];
+    return ['Kurang', 'text-danger'];
+}
+
+// Calculate category averages
+function calculateCategoryAverage($values) {
+    $validValues = array_filter($values, function($v) { return $v !== null; });
+    return empty($validValues) ? 0 : round(array_sum($validValues) / count($validValues));
+}
+
+// Get category values
+$belajar = calculateCategoryAverage([
+    $siswa['nilai_akademik'],
+    $siswa['keaktifan'],
+    $siswa['pemahaman']
+]);
+
+$ibadah = calculateCategoryAverage([
+    $siswa['kehadiran_ibadah'],
+    $siswa['kualitas_ibadah'],
+    $siswa['pemahaman_agama']
+]);
+
+$pengembangan = calculateCategoryAverage([
+    $siswa['minat_bakat'],
+    $siswa['prestasi'],
+    $siswa['keaktifan_ekskul']
+]);
+
+$sosial = calculateCategoryAverage([
+    $siswa['partisipasi_sosial'],
+    $siswa['empati'],
+    $siswa['kerja_sama']
+]);
+
+$kesehatan = calculateCategoryAverage([
+    $siswa['kebersihan_diri'],
+    $siswa['aktivitas_fisik'],
+    $siswa['pola_makan']
+]);
+
+$karakter = calculateCategoryAverage([
+    $siswa['kejujuran'],
+    $siswa['tanggung_jawab'],
+    $siswa['kedisiplinan']
+]);
+
+// Get grade
+function getGrade($value) {
+    if ($value >= 80) return ['Baik', 'text-success'];
+    if ($value >= 60) return ['Cukup', 'text-warning'];
+    return ['Kurang', 'text-danger'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -65,7 +142,7 @@ $siswa = mysqli_fetch_assoc($result);
             <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
                 <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
             <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">Profil</h1>
                     <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
                 </div>
             </a>
@@ -81,12 +158,12 @@ $siswa = mysqli_fetch_assoc($result);
                     <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
                 </div>
-                <div class="offcanvas-body">
+                <div class="offcanvas-body d-flex justify-content-between flex-column">
                     <div class="d-flex flex-column gap-2">
                         <!-- Menu Beranda -->
-                        <a href="#" class="text-decoration-none text-black">
+                        <a href="beranda.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded  p-2">
-                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
+                                <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Beranda</p>
                             </div>
                         </a>
@@ -94,7 +171,7 @@ $siswa = mysqli_fetch_assoc($result);
                         
                         <!-- Menu Ujian -->
                         <a href="ujian.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
+                            <div class="d-flex align-items-center  rounded p-2">
                                 <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">Ujian</p>
                             </div>
@@ -112,8 +189,8 @@ $siswa = mysqli_fetch_assoc($result);
                         <!-- Menu Profil -->
                         <a href="profil.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center color-web rounded p-2">
-                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Profil</p>
+                                <img src="assets/profil_fill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0 text-white">Profil</p>
                             </div>
                         </a>
                         
@@ -128,18 +205,21 @@ $siswa = mysqli_fetch_assoc($result);
                     </div>
                     
                 <!-- Profile Dropdown -->
-                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
+                <div class="mt-3 dropup"> <!-- Tambahkan class dropdown di sini -->
                     <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
-                            style="background-color: #F8F8F7;" 
+                            style="background-color:rgb(255, 252, 248);" 
                             type="button" 
                             data-bs-toggle="dropdown" 
                             aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?></p>
+                            <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
+                                    alt="Profile Picture" 
+                                    class="rounded-circle" 
+                                    style="width: 25px; height: 25px;object-fit: cover; z-index: 99999;">
+                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?></p>
                     </button>
                     <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
+                        <li><a class="dropdown-item" href="logout.php" style="color: red;">Keluar</a></li>
                     </ul>
                 </div>
             </div>
@@ -196,7 +276,7 @@ $siswa = mysqli_fetch_assoc($result);
                     </div>  
                     <div class="col">
                         <a href="beranda.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center  rounded p-2" style="">
+                        <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Beranda</p>
                         </div>
@@ -238,7 +318,10 @@ $siswa = mysqli_fetch_assoc($result);
                 <div class="menu-bawah">
                     <div class="row dropdown">
                         <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
+                        <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
+                                    alt="Profile Picture" 
+                                    class="rounded-circle" 
+                                    style="width: 30px; height: 30px;object-fit: cover; z-index: 99999;">
                             <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($_SESSION['nama']); ?></p>
                         </div>
                         <!-- dropdown menu option -->
@@ -251,476 +334,487 @@ $siswa = mysqli_fetch_assoc($result);
             </div>
 
 
-
             <!-- ini isi kontennya -->
-            <div class="col pt-0 p-2 p-md-4 col-utama">
-                <style>
-                    .col-utama {
-                        margin-left: 0;
-                    }
-                    @media (min-width: 768px) {
-                        .col-utama {
-                            margin-left: 13rem;
-                        }
-                    }
-                </style>
-                
-                <!-- Background Profile -->
-                <div class="rounded text-white shadow-lg latar-belakang position-relative" 
-                     style="background-image: url(assets/bg-profil.png); 
-                            height: 200px; 
-                            padding-top: 200px; 
-                            margin-top: 56px;
-                            background-position: center;
-                            background-size: cover;">
-                    <div class="rounded position-absolute top-0 start-0 w-100 h-100" 
-                         style="background: rgba(0, 0, 0, 0.5);"></div>
-                    <div class="ps-3 position-relative"></div>
-                </div>
-
-                <!-- Profile Picture -->
-                <div class="text-center">
-                    <img src="<?php echo !empty($siswa['foto_profil']) ? 'uploads/profil/'.$siswa['foto_profil'] : 'assets/pp.png'; ?>" 
-                         alt="" 
-                         class="rounded-circle position-relative"
-                         style="width: 120px; height: 120px; margin-top: -60px; border: 5px solid white; object-fit: cover;">
-                </div>
-
-                <!-- Profile Info -->
-                <div class="text-center mt-2">
-                    <h3 class="p-0 m-1"><?php echo htmlspecialchars($siswa['nama']); ?></h3>
-                    <p class="p-0 m-0">Siswa Kelas <?php echo htmlspecialchars($siswa['tingkat']); ?></p>
-                </div>
-
-                <div class="px-3 px-md-5">
-                    <hr class="text-muted">
-                </div>
-
-                <!-- Profile Content -->
-                <div class="container-fluid px-2 px-md-4">
-                    <div class="row g-3">
-                        <!-- Previous Education & Current Class -->
-                        <div class="col-12">
-                            <div class="d-flex flex-column flex-md-row gap-3">
-                                <div class="border rounded-4 p-3 flex-fill d-flex gap-2 align-items-center">
-                                    <img src="assets/sekolah-sebelumnya.png" alt="" width="35px" height="35px" class="rounded">
-                                    <div>
-                                        <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Pendidikan Sebelumnya</p>
-                                        <p class="p-0 m-0"><?php echo !empty($siswa['pendidikan_sebelumnya']) ? htmlspecialchars($siswa['pendidikan_sebelumnya']) : 'Belum diisi'; ?></p>
+<div class="col pt-0 p-2 p-md-4 col-utama">
+    <div class="row g-4">
+        <!-- Kolom Kiri (Profil dan Nilai) -->
+        <div class="col-md-8">
+            <div class="row mb-4">
+                <!-- Profile Card -->
+                <div class="col-12">
+                    <div class="profile-header rounded-4 p-4" style="background-color: rgb(218, 119, 86);">
+                        <div class="row align-items-center">
+                            <div class="col-md-3 text-center">
+                                <img src="<?php echo !empty($siswa['foto_profil']) ? 'uploads/profil/'.$siswa['foto_profil'] : 'assets/pp.png'; ?>" 
+                                    class="rounded-circle" width="100" height="100" style="object-fit: cover;">
+                            </div>
+                            <div class="col-md-9 text-white mt-4 mt-md-0">
+                                <h2 class="fw-bold mb-1"><?php echo htmlspecialchars($siswa['nama']); ?></h2>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><i class="bi bi-person-badge me-2"></i>NIS: <?php echo htmlspecialchars($siswa['nis']); ?></p>
+                                        <p class="mb-1"><i class="bi bi-mortarboard me-2"></i>Kelas/Fase <?php echo htmlspecialchars($siswa['tingkat']); ?></p>
+                                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>Tahun Masuk: <?php echo htmlspecialchars($siswa['tahun_masuk']); ?></p>
                                     </div>
-                                </div>
-                                <div class="border rounded-4 p-3 flex-fill d-flex gap-2 align-items-center">
-                                    <img src="assets/kelas-saat-ini.png" alt="" width="35px" height="35px" class="rounded">
-                                    <div>
-                                        <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Kelas Saat Ini</p>
-                                        <p class="p-0 m-0"><?php echo !empty($siswa['tingkat']) ? htmlspecialchars($siswa['tingkat']) : 'Belum diisi'; ?></p>
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><i class="bi bi-telephone me-2"></i><?php echo htmlspecialchars($siswa['no_hp']); ?></p>
+                                        <p class="mb-1"><i class="bi bi-geo-alt me-2"></i><?php echo htmlspecialchars($siswa['alamat']); ?></p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Report Card -->
-                        <div class="col-12">
-                            <div class="border rounded-4 p-3">
-                                <div class="d-flex gap-2 align-items-center mb-3">
-                                    <img src="assets/nilai-raport.png" alt="" width="35px" height="35px" class="rounded">
-                                    <div>
-                                        <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Rata-Rata Nilai Lapor</p>
-                                        <p class="text-muted p-0 m-0" style="font-size: 12px;">Kumpulan seluruh rekam nilai siswa</p>
-                                    </div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Kelas</th>
-                                                <th>Semester</th>
-                                                <th>Rata-Rata</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Table content remains the same -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Rest of the content follows similar pattern -->
-                        <!-- Convert all d-flex containers to use col-12 col-md-6 for responsive layout -->
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/gaya-belajar.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Gaya Belajar</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['gaya_belajar']) ? htmlspecialchars($siswa['gaya_belajar']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/iq.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Hasil Tes IQ</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['hasil_iq']) ? htmlspecialchars($siswa['hasil_iq']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/iq.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Hasil Tes IQ</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['hasil_iq']) ? htmlspecialchars($siswa['hasil_iq']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/literasi.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Kemampuan Literasi</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['kemampuan_literasi']) ? htmlspecialchars($siswa['kemampuan_literasi']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/numerik.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Kemampuan Berhitung</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['kemampuan_berhitung']) ? htmlspecialchars($siswa['kemampuan_berhitung']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/minat-siswa.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Minat Siswa</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['minat_siswa']) ? htmlspecialchars($siswa['minat_siswa']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/hobi.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Hobi Siswa</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['hobi']) ? htmlspecialchars($siswa['hobi']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/mental.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Kesehatan Mental</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['kesehatan_mental']) ? htmlspecialchars($siswa['kesehatan_mental']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/emosi.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Pengembangan Emosional</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['pengembangan_emosional']) ? htmlspecialchars($siswa['pengembangan_emosional']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/kesehatan.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Penyakit Bawaan</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['penyakit_bawaan']) ? htmlspecialchars($siswa['penyakit_bawaan']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="border rounded-4 p-3 h-100 d-flex gap-2 align-items-center">
-                                <img src="assets/sosial.png" alt="" width="35px" height="35px" class="rounded">
-                                <div>
-                                    <p class="p-0 m-0" style="font-size: 12px; font-weight: bold;">Kehidupan Sosial</p>
-                                    <p class="p-0 m-0"><?php echo !empty($siswa['kehidupan_sosial']) ? htmlspecialchars($siswa['kehidupan_sosial']) : 'Belum diisi guru'; ?></p>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-                        
                     </div>
                 </div>
             </div>
-            
-            <div class="modal fade" id="gantifoto" tabindex="-1">
-   <div class="modal-dialog modal-lg modal-dialog-centered">
-       <div class="modal-content rounded-4 shadow">
-           <div class="modal-header border-0 pb-0">
-               <h5 class="modal-title fw-bold">Ubah Foto</h5>
-               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-           </div>
-           
-           <form action="upload_foto.php" method="post" enctype="multipart/form-data">
-               <div class="modal-body p-4">
-                   <div class="row g-4 justify-content-center">
-                       <!-- Profile Photo -->
-                       <div class="col-md-6">
-                           <div class="text-center">
-                               <div class="position-relative d-inline-block">
-                                   <div id="preview-container" class="rounded-circle overflow-hidden border border-4 border-light shadow-lg mb-3 d-flex align-items-center justify-content-center" 
-                                        style="width:180px; height:180px;">
-                                       <img id="preview" src="" style="display:none; width:100%; height:100%; object-fit:cover;">
-                                       <i class="bi bi-person-circle display-1 text-secondary"></i>
-                                   </div>
-                                   <label class="position-absolute bottom-0 end-0 mb-3 me-2">
-                                       <span class="btn btn-light btn-sm rounded-circle shadow-sm">
-                                           <i class="bi bi-camera-fill text-primary"></i>
-                                       </span>
-                                       <input type="file" name="foto_profil" id="foto_profil" class="d-none" accept="image/*">
-                                   </label>
-                               </div>
-                               <small class="d-block text-muted">Foto Profil</small>
-                           </div>
-                       </div>
 
-                       <!-- Background Photo --> 
-                       <div class="col-md-6">
-                           <div class="text-center">
-                               <div class="position-relative d-inline-block">
-                                   <div class="rounded-4 overflow-hidden border border-2 border-light shadow-lg mb-3 bg-light d-flex align-items-center justify-content-center" 
-                                        style="width:300px; height:180px;">
-                                       <i class="bi bi-image display-2 text-secondary"></i>
-                                   </div>
-                                   <label class="position-absolute bottom-0 end-0 mb-2 me-2">
-                                       <span class="btn btn-light btn-sm rounded-circle shadow-sm">
-                                           <i class="bi bi-image text-secondary"></i>
-                                       </span>
-                                       <input type="file" name="foto_latarbelakang" class="d-none" accept="image/*">
-                                   </label>
-                               </div>
-                               <small class="d-block text-muted">Foto Latar</small>
-                           </div>
-                       </div>
-                   </div>
+            <!-- grafik chart -->
+            <!-- Dropdown and Charts Container -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="border rounded-4 p-4 shadow-sm">
+                        <div style="height: 200px">
+                            <canvas id="barChart"></canvas>
+                        </div>
 
-                   <!-- Cropper Modal -->
-                   <div class="modal fade" id="cropperModal" tabindex="-1">
-                       <div class="modal-dialog">
-                           <div class="modal-content">
-                               <div class="modal-header">
-                                   <h5 class="modal-title">Crop Image</h5>
-                                   <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                               </div>
-                               <div class="modal-body">
-                                   <div style="max-width: 100%;">
-                                       <img id="cropperImage" src="" style="display: block; max-width: 100%;">
-                                   </div>
-                               </div>
-                               <div class="modal-footer">
-                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                   <button type="button" class="btn color-web text-white" id="cropButton">Crop</button>
-                               </div>
-                           </div>
-                       </div>
-                   </div>
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script>
+                        const ctx = document.getElementById('barChart').getContext('2d');
+                        const barChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Belajar', 'Ibadah', 'Pengembangan', 'Sosial', 'Kesehatan', 'Karakter'],
+                                datasets: [{
+                                    data: [
+                                        <?php echo $belajar; ?>,
+                                        <?php echo $ibadah; ?>,
+                                        <?php echo $pengembangan; ?>,
+                                        <?php echo $sosial; ?>,
+                                        <?php echo $kesehatan; ?>,
+                                        <?php echo $karakter; ?>
+                                    ],
+                                    backgroundColor: 'rgba(218, 119, 86, 0.2)',
+                                    borderColor: 'rgb(218, 119, 86)',
+                                    borderWidth: 1,
+                                    borderRadius: 8
+                                }]
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 100,
+                                        ticks: {
+                                            stepSize: 20
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        </script>
+                    </div>
+                </div>
+            </div>
 
-                   <input type="hidden" name="cropped_image" id="cropped_image">
-               </div>
+<!-- Content Grid -->
+<div class="row g-4">
+    <!-- Behavior & Character -->
+    <div class="col-md-4">
+        <div class="border rounded-4 p-4 shadow-sm">
+            <h5 class="mb-4" style="font-size: 14px;"><i class="bi bi-mortarboard-fill text-primary"></i> Pendampingan</h5>
+            <div class="mb-4">
+                <div class="mb-2">
+                    <h6 class="m-0">Belajar</h6>
+                    <?php list($label, $class) = getGrade($belajar); ?>
+                    <span class="p-0 m-0 badge <?= $class ?>"><?= $label ?> (<?= $belajar ?>%)</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar color-web" style="width: <?= $belajar ?>%"></div>
+                </div>
+                <div class="mt-2 text-muted small" style="font-size: 12px;">
+                    <div class="d-flex justify-content-between">
+                        <span>Nilai Akademik</span>
+                        <span><?= round($siswa['nilai_akademik']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Keaktifan</span>
+                        <span><?= round($siswa['keaktifan']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Pemahaman</span>
+                        <span><?= round($siswa['pemahaman']) ?>%</span>
+                    </div>
+                </div>
+            </div>
 
-               <div class="modal-footer border-0 pt-0">
-                   <button type="submit" class="btn color-web w-100 text-white rounded-3">Simpan Perubahan</button>
-               </div>
-           </form>
-       </div>
-   </div>
+            <div>
+                <div class="mb-2">
+                    <h6 class="m-0">Ibadah</h6>
+                    <?php list($label, $class) = getGrade($ibadah); ?>
+                    <span class="badge p-0 m-0 <?= $class ?>"><?= $label ?> (<?= $ibadah ?>%)</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar color-web" style="width: <?= $ibadah ?>%"></div>
+                </div>
+                <div class="mt-2 text-muted small" style="font-size: 12px;">
+                    <div class="d-flex justify-content-between">
+                        <span>Kehadiran Ibadah</span>
+                        <span><?= round($siswa['kehadiran_ibadah']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Kualitas Ibadah</span>
+                        <span><?= round($siswa['kualitas_ibadah']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Pemahaman Agama</span>
+                        <span><?= round($siswa['pemahaman_agama']) ?>%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="border rounded-4 p-4 shadow-sm">
+            <h5 class="mb-4" style="font-size: 14px;"><i class="bi bi-graph-up-arrow text-success"></i> Pengembangan</h5>
+            <div class="mb-4">
+                <div class="mb-2">
+                    <h6 class="m-0">Pengembangan Diri</h6>
+                    <?php list($label, $class) = getGrade($pengembangan); ?>
+                    <span class="badge p-0 m-0 <?= $class ?>"><?= $label ?> (<?= $pengembangan ?>%)</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar color-web" style="width: <?= $pengembangan ?>%"></div>
+                </div>
+                <div class="mt-2 text-muted small" style="font-size: 12px;">
+                    <div class="d-flex justify-content-between">
+                        <span>Minat Bakat</span>
+                        <span><?= round($siswa['minat_bakat']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Prestasi</span>
+                        <span><?= round($siswa['prestasi']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Keaktifan Ekstrakurikuler</span>
+                        <span><?= round($siswa['keaktifan_ekskul']) ?>%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="mb-2">
+                    <h6 class="m-0">Sosial</h6>
+                    <?php list($label, $class) = getGrade($sosial); ?>
+                    <span class="badge p-0 m-0 <?= $class ?>"><?= $label ?> (<?= $sosial ?>%)</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar color-web" style="width: <?= $sosial ?>%"></div>
+                </div>
+                <div class="mt-2 text-muted small" style="font-size: 12px;">
+                    <div class="d-flex justify-content-between">
+                        <span>Partisipasi Sosial</span>
+                        <span><?= round($siswa['partisipasi_sosial']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Empati</span>
+                        <span><?= round($siswa['empati']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Kerja Sama</span>
+                        <span><?= round($siswa['kerja_sama']) ?>%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="border rounded-4 p-4 shadow-sm">
+            <h5 class="mb-4" style="font-size: 14px;"><i class="bi bi-shield-check text-warning"></i> Kesehatan & Karakter</h5>
+            <div class="mb-4">
+                <div class="mb-2">
+                    <h6 class="m-0">Kesehatan</h6>
+                    <?php list($label, $class) = getGrade($kesehatan); ?>
+                    <span class="badge p-0 m-0 <?= $class ?>"><?= $label ?> (<?= $kesehatan ?>%)</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar color-web" style="width: <?= $kesehatan ?>%"></div>
+                </div>
+                <div class="mt-2 text-muted small" style="font-size: 12px;">
+                    <div class="d-flex justify-content-between">
+                        <span>Kebersihan Diri</span>
+                        <span><?= round($siswa['kebersihan_diri']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Aktivitas Fisik</span>
+                        <span><?= round($siswa['aktivitas_fisik']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Pola Makan</span>
+                        <span><?= round($siswa['pola_makan']) ?>%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="mb-2">
+                    <h6 class="m-0">Karakter</h6>
+                    <?php list($label, $class) = getGrade($karakter); ?>
+                    <span class="badge p-0 m-0 <?= $class ?>"><?= $label ?> (<?= $karakter ?>%)</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar color-web" style="width: <?= $karakter ?>%"></div>
+                </div>
+                <div class="mt-2 text-muted small" style="font-size: 12px;">
+                    <div class="d-flex justify-content-between">
+                        <span>Kejujuran</span>
+                        <span><?= round($siswa['kejujuran']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Tanggung Jawab</span>
+                        <span><?= round($siswa['tanggung_jawab']) ?>%</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Kedisiplinan</span>
+                        <span><?= round($siswa['kedisiplinan']) ?>%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+
+        <!-- Kolom Kanan (AI Assistant) -->
+        <div class="col-md-4 ai-col">
+            <div class="sticky-top" style="top: 20px;">
+                <!-- AI Assistant Card -->
+                <div class="border rounded-4 shadow-sm" style="height: 36rem;">
+                    <!-- AI Header -->
+                    <div class="p-3 border-bottom d-flex align-items-center gap-2">
+                        <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background-color: #da775620; width: 40px; height: 40px;">
+                            <i class="bi bi-stars text-primary" style="color: #da7756 !important; font-size: 1.2rem;"></i>
+                        </div>
+                        <div>
+                            <h5 class="m-0" style="color: #da7756;">SMAGA AI</h5>
+                            <small class="text-muted">Analisis Profil SMAGA AI</small>
+                        </div>
+                    </div>
+
+                    <div class="p-3">
+                    <?php
+                    $groq_api_key = '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';
+                    $http_code = 0; // Inisialisasi variabel
+                    
+                    if(!empty($groq_api_key)) {
+                        // Format data untuk prompt
+                    $categories = [
+                        'Belajar' => [
+                            'Nilai Akademik' => $siswa['nilai_akademik'],
+                            'Keaktifan' => $siswa['keaktifan'],
+                            'Pemahaman' => $siswa['pemahaman']
+                        ],
+                        'Ibadah' => [
+                            'Kehadiran Ibadah' => $siswa['kehadiran_ibadah'],
+                            'Kualitas Ibadah' => $siswa['kualitas_ibadah'],
+                            'Pemahaman Agama' => $siswa['pemahaman_agama']
+                        ],
+                        'Pengembangan' => [
+                            'Minat Bakat' => $siswa['minat_bakat'],
+                            'Prestasi' => $siswa['prestasi'],
+                            'Keaktifan Ekstrakurikuler' => $siswa['keaktifan_ekskul']
+                        ],
+                        'Sosial' => [
+                            'Partisipasi Sosial' => $siswa['partisipasi_sosial'],
+                            'Empati' => $siswa['empati'],
+                            'Kerja Sama' => $siswa['kerja_sama']
+                        ],
+                        'Kesehatan' => [
+                            'Kebersihan Diri' => $siswa['kebersihan_diri'],
+                            'Aktivitas Fisik' => $siswa['aktivitas_fisik'],
+                            'Pola Makan' => $siswa['pola_makan']
+                        ],
+                        'Karakter' => [
+                            'Kejujuran' => $siswa['kejujuran'],
+                            'Tanggung Jawab' => $siswa['tanggung_jawab'],
+                            'Kedisiplinan' => $siswa['kedisiplinan']
+                        ]
+                    ];
+
+                    // Modifikasi bagian prompt
+                    $prompt = "Halo {$siswa['nama']}! Aku akan bantu analisis perkembanganmu di SMAGAEdu. Berikut datanya:\n\n";
+
+                    foreach($categories as $category => $subjects) {
+                        $prompt .= "- {$category}: ";
+                        $prompt .= implode(', ', array_map(
+                            fn($subject, $value) => "$subject (" . round($value) . "%)",
+                            array_keys($subjects), 
+                            $subjects
+                        ));
+                        $prompt .= "\n";
+                    }
+
+                    $prompt .= "\nBuatkan analisis dengan struktur:
+                    1. Salam penyemangat menggunakan nama panggilan
+                    2. 1 kalimat positif tentang prestasi terbaik
+                    3. 2 area perlu perbaikan dengan bahasa kasual
+                    4. 2 saran konkret untuk perbaikan
+                    5. Kalimat penutup motivasi
+
+                    Gunakan:
+                    - Bahasa Indonesia santai seperti teman sebaya
+                    - Emoji yang relevan
+                    - Fokus beri saran siswa harus ngapain
+                    - Kalimat pendek maksimal 10 kata
+                    - Hindari istilah teknis
+                    - Gunakan hashtag #BelajarBersamaSMAGAEdu";
+
+                // eksekusi api
+                $ch = curl_init();
+                curl_setopt_array($ch, [
+                    CURLOPT_URL => 'https://api.groq.com/openai/v1/chat/completions',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => json_encode([
+                        'model' => 'mixtral-8x7b-32768',
+                        'messages' => [['role' => 'user', 'content' => $prompt]],
+                        'temperature' => 0.5,
+                        'max_tokens' => 700
+                    ]),
+                    CURLOPT_HTTPHEADER => [
+                        'Content-Type: application/json',
+                        'Authorization: Bearer ' . $groq_api_key
+                    ]
+                ]);
+
+                $response = curl_exec($ch);
+                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+
+                if($http_code == 200) {
+                            $response_data = json_decode($response, true);
+                            $raw_text = $response_data['choices'][0]['message']['content'];
+                            $formatted_text = nl2br(htmlspecialchars($raw_text));
+                            $formatted_text = preg_replace(
+                                '/(Halo|Hai|Wah|Nilai|Saran|Rekomendasi|Tips|Solusi|Yuk|Ayo|Perhatian|Poin|Kesimpulan)(.*?)(:|!)/', 
+                                '<strong>$1$2$3</strong>', 
+                                $formatted_text
+                            );
+                            $formatted_text = str_replace('*', '•', $formatted_text);
+                            $full_text = htmlspecialchars($response_data['choices'][0]['message']['content']);
+                            $words = explode(' ', strip_tags($raw_text));
+                    ?>
+                        <style>
+                            .ai-col {
+                                animation: fadeIn 1s ease-in-out;
+                            }
+                            @keyframes fadeIn {
+                                0% {
+                                    opacity: 0;
+                                }
+                                100% {
+                                    opacity: 1;
+                                }
+                            }
+                            #aiResponseContainer {
+                                white-space: pre-wrap;
+                                padding: 1rem;
+                                background-color: #fff;
+                                border-radius: 0.5rem;
+                                font-size: 0.9rem;
+                                line-height: 1.6;
+                            }
+                            #aiResponseContainer strong {
+                                color: #da7756;
+                                font-weight: 600;
+                            }
+                            .ai-expand-btn {
+                                background-color: #da7756;
+                                color: white;
+                                border: none;
+                                padding: 0.5rem 1rem;
+                                border-radius: 0.5rem;
+                                font-size: 0.9rem;
+                                transition: all 0.3s ease;
+                            }
+                            .ai-expand-btn:hover {
+                                background-color: #c56a4d;
+                            }
+                        </style>
+
+                        <div id="aiResponseContainer" style="height: 25rem; overflow-y: auto;"></div>
+                        
+                        <div class="mt-3 d-flex">
+                            <button class="ai-expand-btn flex-fill" data-bs-toggle="modal" data-bs-target="#aiDetailModal">
+                                <i class="bi bi-arrows-angle-expand"></i> Lihat Detail
+                            </button>
+                        </div>
+
+                        <script>
+                        (function() {
+                            const container = document.getElementById('aiResponseContainer');
+                            const words = <?= json_encode($words) ?>;
+                            let index = 0;
+                            
+                            function typeWord() {
+                                if(index < words.length) {
+                                    container.innerHTML += (index > 0 ? ' ' : '') + words[index];
+                                    container.scrollTop = container.scrollHeight;
+                                    index++;
+                                    setTimeout(typeWord, 50);
+                                }
+                            }
+                            
+                            typeWord();
+                        })();
+                        </script>
+                    <?php
+                        } else {
+                            echo "<div class='alert alert-warning rounded-3'>
+                                    <i class='bi bi-exclamation-triangle me-2'></i>
+                                    Asisten sedang offline. Kode error: {$http_code}
+                                  </div>";
+                        }
+                    } else {
+                        echo "<div class='alert alert-warning rounded-3'>
+                                <i class='bi bi-exclamation-triangle me-2'></i>
+                                Fitur AI belum dikonfigurasi
+                              </div>";
+                    }
+                    ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+                        <!-- Modal -->
+                        <div class="modal fade" id="aiDetailModal" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header text-white" style="background-color: #c56a4d;">
+                                        <h5 class="modal-title">
+                                            <i class="bi bi-robot me-2"></i>
+                                            Analisis Lengkap SMAGA AI
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body" style="height: calc(100vh - 200px); overflow-y: auto;">
+                                        <div class="p-3">
+                                            <?= nl2br($full_text) ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-<style>
-.modal-content {
-   border: none;
-}
-.btn-light {
-   background: rgba(255,255,255,0.9);
-   backdrop-filter: blur(4px);
-}
-</style>
-
-<!-- script untuk crop -->
-<script>
-let cropper;
-const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
-
-document.getElementById('foto_profil').addEventListener('change', function(e) {
-    if (this.files && this.files[0]) {
-        const file = this.files[0];
-        if (validateFile(file)) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // Set image source for cropper
-                document.getElementById('cropperImage').src = e.target.result;
-                // Show cropper modal
-                cropperModal.show();
-                // Initialize cropper
-                if (cropper) {
-                    cropper.destroy();
-                }
-                cropper = new Cropper(document.getElementById('cropperImage'), {
-                    aspectRatio: 1,
-                    viewMode: 1,
-                    dragMode: 'move',
-                    autoCropArea: 1,
-                    restore: false,
-                    guides: false,
-                    center: false,
-                    highlight: false,
-                    cropBoxMovable: false,
-                    cropBoxResizable: false,
-                    toggleDragModeOnDblclick: false
-                });
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-});
-
-document.getElementById('cropButton').addEventListener('click', function() {
-    const croppedCanvas = cropper.getCroppedCanvas({
-        width: 180,
-        height: 180
-    });
-    
-    // Update preview
-    const preview = document.getElementById('preview');
-    preview.src = croppedCanvas.toDataURL();
-    preview.style.display = 'block';
-    
-    // Store cropped image data
-    document.getElementById('cropped_image').value = croppedCanvas.toDataURL();
-    
-    // Hide cropper modal
-    cropperModal.hide();
-    
-    // Destroy cropper instance
-    cropper.destroy();
-    cropper = null;
-});
-
-function validateFile(file) {
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-
-    if (file.size > maxSize) {
-        alert('File terlalu besar. Maksimal 5MB');
-        return false;
-    }
-
-    if (!allowedTypes.includes(file.type)) {
-        alert('Format file tidak didukung. Gunakan JPG, PNG atau GIF');
-        return false;
-    }
-
-    return true;
-}
-</script>
-
-<!-- Preview script -->
-<script>
-document.querySelectorAll('input[type="file"]').forEach(input => {
-   input.onchange = function() {
-       const file = this.files[0];
-       const preview = this.closest('.text-center').querySelector('.preview-img');
-       
-       if(file) {
-           preview.src = URL.createObjectURL(file);
-       }
-   }
-});
-
-document.querySelectorAll('input[type="file"]').forEach(input => {
-   input.addEventListener('change', function() {
-       if (this.files && this.files[0]) {
-           const reader = new FileReader();
-           const preview = this.closest('.text-center').querySelector('.preview-img');
-           
-           reader.onload = function(e) {
-               preview.src = e.target.result;
-               preview.classList.add('preview-loaded');
-           };
-
-           reader.readAsDataURL(this.files[0]);
-       }
-   });
-});
-
-// Validasi file
-function validateFile(input) {
-   const file = input.files[0];
-   const maxSize = 5 * 1024 * 1024; // 5MB
-   const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-
-   if (!file) return false;
-
-   if (file.size > maxSize) {
-       alert('File terlalu besar. Maksimal 5MB');
-       input.value = '';
-       return false;
-   }
-
-   if (!allowedTypes.includes(file.type)) {
-       alert('Format file tidak didukung. Gunakan JPG, PNG atau GIF');
-       input.value = '';
-       return false;
-   }
-
-   return true;
-}
-
-document.querySelectorAll('input[type="file"]').forEach(input => {
-   input.addEventListener('change', function() {
-       if (validateFile(this)) {
-           const reader = new FileReader();
-           const preview = this.closest('.text-center').querySelector('.preview-img');
-           
-           reader.onload = e => {
-               preview.src = e.target.result;
-               preview.classList.add('preview-loaded');
-           };
-
-           reader.readAsDataURL(this.files[0]);
-       }
-   });
-});
-</script>
-<style>
-/* Animasi ketika preview dimuat */
-.preview-loaded {
-   animation: fadeIn 0.3s ease-in;
-}
-
-@keyframes fadeIn {
-   from { opacity: 0; }
-   to { opacity: 1; }
-}
-
-
-.upload-preview {
-   transition: transform 0.2s;
-   cursor: pointer;
-}
-
-.upload-preview:hover {
-   transform: scale(1.05);
-}
-
-.preview-img {
-   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-</style>
+            
 </body>
 </html>

@@ -44,6 +44,8 @@ $guru = mysqli_fetch_assoc($result);
     <title>Detail Jawaban Siswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
 
     <style>
         .answer-box {
@@ -283,15 +285,35 @@ $guru = mysqli_fetch_assoc($result);
 
     </style>
 
-    <div class="container my-4">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <div>
-                    <h4 class="mb-0"><?php echo htmlspecialchars($ujian['mata_pelajaran']); ?></h4>
-                    <p>Ujian: <?php echo htmlspecialchars($ujian['judul']); ?></p>
-                    <p class="text-muted mb-0">Siswa: <?php echo htmlspecialchars($siswa['nama']); ?></p>
+    <div class="container">
+        <div class="card border-0">
+            <div class="card-header bg-white">
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
+                    <div>
+                        <h5 class="mb-1 text-secondary">
+                            <i class="bi bi-book me-2"></i><?php echo htmlspecialchars($ujian['mata_pelajaran']); ?>
+                        </h5>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="detail_hasil_ujian.php?ujian_id=<?php echo $ujian_id; ?>" 
+                           class="btn btn-light btn-sm">
+                            <i class="bi bi-arrow-left me-1"></i>Kembali
+                        </a>
+                        <button onclick="window.print()" class="btn btn-primary btn-sm">
+                            <i class="bi bi-printer me-1"></i>Cetak
+                        </button>
+                    </div>
                 </div>
-                <a href="detail_hasil_ujian.php?ujian_id=<?php echo $ujian_id; ?>" class="btn btn-outline-secondary">Kembali</a>
+                <div class="pt-3">
+                    <p class="mb-2">
+                        <i class="bi bi-file-text"></i>
+                        <strong>Ujian:</strong> <?php echo htmlspecialchars($ujian['judul']); ?>
+                    </p>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-person"></i>
+                        <strong>Siswa:</strong> <?php echo htmlspecialchars($siswa['nama']); ?>
+                    </p>
+                </div>
             </div>
             <div class="card-body">
                 <?php 

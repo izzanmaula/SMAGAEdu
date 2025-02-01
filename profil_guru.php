@@ -1,6 +1,8 @@
 <?php
 session_start();
 require "koneksi.php";
+require_once 'ai_analysis.php';
+
 
 if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
     header("Location: index.php");
@@ -24,7 +26,10 @@ $guru = mysqli_fetch_assoc($result);
 if(!$guru) {
     header("Location: " . $_SERVER['HTTP_REFERER']);
     exit();
-}?>
+}
+
+$report = generateAIReport($koneksi, $_SESSION['userid'], $_SESSION['level']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,214 +66,44 @@ if(!$guru) {
 </style>
 <body>
 
-    <!-- Navbar Mobile -->
-    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
-        <div class="container-fluid">
-            <!-- Logo dan Nama -->
-            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
-                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
-            <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
-                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
-                </div>
-            </a>
-            
-            <!-- Tombol Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
-                <span class="navbar-toggler-icon" style="color:white"></span>
-            </button>
-            
-            <!-- Offcanvas/Sidebar Mobile -->
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <div class="d-flex flex-column gap-2">
-                        <!-- Menu Beranda -->
-                        <a href="beranda_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded  p-2">
-                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0 ">Beranda</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Cari -->
-                        <a href="cari_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Cari</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Ujian -->
-                        <a href="ujian_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Ujian</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Profil -->
-                        <a href="profil_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded color-web p-2">
-                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0 text-white">Profil</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu AI -->
-                        <a href="ai_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Gemini</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Bantuan -->
-                        <a href="bantuan_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Bantuan</p>
-                            </div>
-                        </a>
-                    </div>
-                    
-                <!-- Profile Dropdown -->
-                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
-                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
-                            style="background-color: #F8F8F7;" 
-                            type="button" 
-                            data-bs-toggle="dropdown" 
-                            aria-expanded="false">
-                                <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
-                            <p class="p-0 m-0" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
-                    </button>
-                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
+<?php include 'includes/styles.php'; ?>
 
-    
-     <!-- row col untuk halaman utama -->
-     <div class="container-fluid">
+<div class="container-fluid">
         <div class="row">
-            <div class="col-auto vh-100 p-2 p-md-4 shadow-sm menu-samping d-none d-md-block" style="background-color:rgb(238, 236, 226)">
-                <style>
-                    .menu-samping {
-                        position: fixed;
-                        width: 13rem;
-                        z-index: 1000;
-                    }
-                    @media (max-width: 768px) {
-                        .menu-samping {
-                            display: none;
-                        }
-                    }                
-                    </style>
-                <div class="row gap-0">
-                    <div class="ps-3 mb-3">
-                        <a href="beranda_guru.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px">
-                            <div>
-                                <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
-                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
-                            </div>
-                        </a>
-                    </div>  
-                    <div class="col">
-                        <a href="beranda_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Beranda</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="cari_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Cari</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="ujian_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Ujian</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="profil_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded shadow-sm bg-white p-2" style="">
-                            <img src="assets/profil_fill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Profil</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row gap-0" style="margin-bottom: 15rem;">
-                    <div class="col">
-                        <a href="ai_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Gemini</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">   
-                        <a href="bantuan_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Bantuan</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row dropdown">
-                    <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" alt="" width="30px" class="rounded-circle" style="background-color: white;">
-                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
-                    </div>
-                    <!-- dropdown menu option -->
-                    <ul class="dropdown-menu" style="font-size: 12px;">
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="#">Keluar</a></li>
-                      </ul>
-                </div>
-            </div>
+            <!-- Sidebar for desktop -->
+            <?php include 'includes/sidebar.php'; ?>
 
+            <!-- Mobile navigation -->
+            <?php include 'includes/mobile_nav.php'; ?>
+
+            <!-- Settings Modal -->
+            <?php include 'includes/settings_modal.php'; ?>
+
+            
+        </div>
+    </div>    
 
             <!-- ini isi kontennya -->
             <div class="col col-inti p-0 p-md-3">
                 <style>
                     .col-inti {
                         margin-left: 0;
-                        padding-left: 5rem;
-                        margin-top: 56px; /* Height of mobile navbar */
-                        padding-right: 0 !important; /* Remove right padding */
-                        max-width: 100%; /* Ensure content doesn't overflow */   
-                        padding: 5rem;                         
+                        padding: 1rem;
+                        max-width: 100%; /* Ensure content doesn't overflow */                      
                     }
                     @media (min-width: 768px) {
                         .col-inti {
                             margin-left: 13rem;
                             margin-top: 0;
+                            padding: 2rem;
                         }
                     }
                     @media screen and (max-width: 768px) {
                         .col-inti {
-                            margin-left: 10px;
-                            margin-top: 56px; /* Height of mobile navbar */
+                            margin-left: 0.5rem;
+                            margin-right: 0.5rem;
+                            padding: 1rem;
                         }
-                        
                     }                
                 </style>
                     <div style="
@@ -299,19 +134,42 @@ if(!$guru) {
                     <p class="p-0 m-0"><?php echo htmlspecialchars($guru['jabatan']); ?></p>
                 </div>
                 <div class="mt-2 text-center d-flex flex-column flex-md-row flex-wrap justify-content-center gap-2">
-                    <button class="btn border bi-pencil-square" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantinama"> Edit Nama Anda</button>
-                    <button class="btn border bi-image" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantifoto"> Edit Foto dan Latar Belakang</button>
-                    <button class="btn border bi-asterisk" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#gantilebih"> Edit Rekam Anda</button>
+                    <button class="btn border d-flex align-items-center justify-content-center gap-2 px-3 py-2 hover-effect" style="font-size: 14px; min-width: 160px;" data-bs-toggle="modal" data-bs-target="#gantinama">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Edit Nama</span>
+                    </button>
+                    <button class="btn border d-flex align-items-center justify-content-center gap-2 px-3 py-2 hover-effect" style="font-size: 14px; min-width: 160px;" data-bs-toggle="modal" data-bs-target="#gantifoto">
+                        <i class="bi bi-image"></i>
+                        <span>Edit Foto</span>
+                    </button>
+                    <button class="btn border d-flex align-items-center justify-content-center gap-2 px-3 py-2 hover-effect" style="font-size: 14px; min-width: 160px;" data-bs-toggle="modal" data-bs-target="#gantilebih">
+                        <i class="bi bi-asterisk"></i>
+                        <span>Edit Profil</span>
+                    </button>
                 </div>
-                <div class="px-5">
-                    <hr class="text-muted">
-                </div>
+
+<style>
+.hover-effect {
+    transition: all 0.3s ease;
+    border: 1px solid #ddd;
+    background: white;
+}
+
+.hover-effect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background: rgb(218, 119, 86);
+    color: white;
+    border-color: transparent;
+}
+</style>
                 <div class="col d-flex justify-content-center mt-2">
                     <div class="row ">
                         <!-- pendidikan sekolah sebelum dan saat ini -->
                         <div class="">
                             <div class="d-flex gap-3 flex-column flex-md-row">
                                 <!-- pendidikan sebelumnya -->
+                                <?php if(!empty($guru['pendidikan_s1'])): ?>
                                 <div class="border rounded-4 p-3 flex-fill">
                                     <img src="assets/lulusan.png" alt="" width="35px" height="35px" class="rounded">
                                     <div>
@@ -319,6 +177,8 @@ if(!$guru) {
                                         <p class="p-0 m-0"><?php echo htmlspecialchars($guru['pendidikan_s1']); ?></p>        
                                     </div>
                                 </div>
+                                <?php endif; ?>
+                                <?php if(!empty($guru['jabatan'])): ?>
                                 <div class="border rounded-4 p-3 flex-fill">
                                     <img src="assets/jabatan.png" alt="" width="35px" height="35px" class="rounded">
                                     <div>
@@ -326,9 +186,11 @@ if(!$guru) {
                                         <p class="p-0 m-0"><?php echo htmlspecialchars($guru['jabatan']); ?></p>        
                                     </div>
                                 </div>    
+                                <?php endif; ?>
                             </div>
                         </div>
                         <!-- sertifikasi -->
+                        <?php if(!empty($guru['sertifikasi1']) || !empty($guru['sertifikasi2']) || !empty($guru['sertifikasi3'])): ?>
                          <div class="d-flex mt-3">
                             <div class="border rounded-4 p-3 flex-fill">
                                 <div class="d-flex gap-2 align-items-center">
@@ -351,8 +213,10 @@ if(!$guru) {
                                 </div>
                             </div>
                          </div>
+                         <?php endif; ?>
 
                         <!-- riwayat publikasi -->
+                        <?php if(!empty($guru['publikasi1']) || !empty($guru['publikasi2']) || !empty($guru['publikasi3'])): ?>
                         <div class="d-flex mt-3">
                             <div class="border rounded-4 p-3 flex-fill">
                                 <div class="d-flex gap-2 align-items-center">
@@ -372,11 +236,13 @@ if(!$guru) {
                                 <?php if(!empty($guru['publikasi3'])): ?>
                                     <li><?php echo htmlspecialchars($guru['publikasi3']); ?></li>
                                 <?php endif; ?>
-                                        </div>
+                                </div>
                             </div>
                          </div>
+                         <?php endif; ?>
 
-                        <!-- riwayat publikasi -->
+                        <!-- riwayat proyek -->
+                        <?php if(!empty($guru['proyek1']) || !empty($guru['proyek2']) || !empty($guru['proyek3'])): ?>
                         <div class="d-flex mt-3">
                             <div class="border rounded-4 p-3 flex-fill">
                                 <div class="d-flex gap-2 align-items-center">
@@ -396,17 +262,107 @@ if(!$guru) {
                                 <?php if(!empty($guru['proyek3'])): ?>
                                     <li><?php echo htmlspecialchars($guru['proyek3']); ?></li>
                                 <?php endif; ?>                                
-                            </div>
+                                </div>
                             </div>
                          </div>
+                         <?php endif; ?>
+
+                            <!-- Interaction Stats -->
+                            <div class="d-flex mt-3">
+                                <div class="border rounded-4 p-3 flex-fill">
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <img src="assets/chat_ai.png" alt="" width="35px" height="35px" class="rounded">
+                                        <div>
+                                            <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Interaksi Anda dengan SMAGA AI</p>
+                                            <p style="font-size: 12px;" class="text-muted p-0 m-0">Total interaksi dan pola komunikasi dengan AI</p>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3 g-2">
+                                        <div class="col-6">
+                                            <div class="border rounded p-2">
+                                                <p style="font-size: 12px;" class="text-muted m-0">Total Interaksi</p>
+                                                <h3 style="font-size: 20px;" class="m-0"><?php echo $report['user_info']['total_conversations']; ?></h3>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="border rounded p-2">
+                                                <p style="font-size: 12px;" class="text-muted m-0">Total Pertanyaan</p>
+                                                <h3 style="font-size: 20px;" class="m-0"><?php echo $report['conversation_analysis']['interaction_patterns']['question_frequency']; ?></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                         <!-- Character Traits -->
+                            <div class="d-flex mt-3">
+                                <div class="border rounded-4 p-3 flex-fill">
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <img src="assets/karakter_ai.png" alt="" width="35px" height="35px" class="rounded">
+                                        <div>
+                                            <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Rekaman Karakter Anda</p>
+                                            <p style="font-size: 12px;" class="text-muted p-0 m-0">Analisis karakter berdasarkan interaksi SMAGA AI</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <?php foreach ($report['conversation_analysis']['character_traits'] as $trait => $value): ?>
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between">
+                                                <span style="font-size: 12px;"><?php echo ucfirst($trait); ?></span>
+                                                <span style="font-size: 12px;" class="text-muted"><?php echo number_format($value * 100, 0); ?>%</span>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar color-web" role="progressbar" style="width: <?php echo $value * 100; ?>%"></div>
+                                            </div>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Common Topics -->
+                            <div class="d-flex mt-3">
+                                <div class="border rounded-4 p-3 flex-fill">
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <img src="assets/topik_ai.png" alt="" width="35px" height="35px" class="rounded">
+                                        <div>
+                                            <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Topik Paling Dibahas</p>
+                                            <p style="font-size: 12px;" class="text-muted p-0 m-0">Topik yang sering dibahas dengan SMAGA AI</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <?php foreach ($report['conversation_analysis']['common_topics'] as $topic => $count): ?>
+                                        <div class="mb-2">
+                                            <div class="d-flex justify-content-between">
+                                                <span style="font-size: 12px;"><?php echo ucfirst($topic); ?></span>
+                                                <span style="font-size: 12px;" class="text-muted"><?php echo $count; ?> kali</span>
+                                            </div>
+                                            <div class="progress" style="height: 6px;">
+                                                <div class="progress-bar color-web" role="progressbar" 
+                                                    style="width: <?php echo ($count / array_sum($report['conversation_analysis']['common_topics']) * 100); ?>%">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- style untuk ai -->
+                             <style>
+                            .progress-bar {
+                                transition: width 0.5s ease-in-out;
+                            }
+                            </style>
                         </div>
 
-                        
                     </div>
+                    
                     </div>
-
                 </div>
             </div>
+
 
             
             <!-- modal untuk ganti nama -->
@@ -433,7 +389,7 @@ if(!$guru) {
 </div>
 
 <!-- Modal ganti foto -->
-<div class="modal fade" id="gantifoto" tabindex="-1" aria-labelledby="modalgantifoto" aria-hidden="true">
+<div class="modal fade rounded" id="gantifoto" tabindex="-1" aria-labelledby="modalgantifoto" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">

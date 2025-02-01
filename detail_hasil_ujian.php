@@ -77,26 +77,39 @@ $guru = mysqli_fetch_assoc($result);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hasil Ujian</title>
+    <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> 
+    <!-- CSS kustom setelah Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <body>
 
     <style>
-        body {
-            background-color: #f4f6f9;
+        .navbar {
+            display: none;
+        }
+        body{
             font-family: 'Merriweather', serif;
         }
-        .card {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        @media screen and (max-width: 768px) {
+            .navbar {
+                display: block !important;
+            }
+            .menu-samping {
+                display: none;
+            }
         }
-        .table-hover tbody tr:hover {
-            background-color: rgba(0,123,255,0.1);
-        }
+        @media screen and (max-width: 768px) {
+            .container-fluid {
+                display: none;
+                } 
+            }
     </style>
-</head>
-<body>
+
 
 
     <!-- Navbar Mobile -->
@@ -106,7 +119,7 @@ $guru = mysqli_fetch_assoc($result);
             <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="beranda_guru.php">
                 <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
             <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">Ujian</h1>
                     <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
                 </div>
             </a>
@@ -122,7 +135,7 @@ $guru = mysqli_fetch_assoc($result);
                     <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
                 </div>
-                <div class="offcanvas-body">
+                <div class="offcanvas-body d-flex justify-content-between flex-column">
                     <div class="d-flex flex-column gap-2">
                         <!-- Menu Beranda -->
                         <a href="beranda_guru.php" class="text-decoration-none text-black">
@@ -157,10 +170,10 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                         
                         <!-- Menu AI -->
-                        <a href="ai.php" class="text-decoration-none text-black">
+                        <a href="ai_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Gemini</p>
+                                <p class="p-0 m-0">SMAGA AI</p>
                             </div>
                         </a>
                         
@@ -181,7 +194,7 @@ $guru = mysqli_fetch_assoc($result);
                             data-bs-toggle="dropdown" 
                             aria-expanded="false">
                             <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
-                            <p class="p-0 m-0" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
+                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
                     </button>
                     <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
@@ -254,10 +267,10 @@ $guru = mysqli_fetch_assoc($result);
                 </div>
                 <div class="row gap-0" style="margin-bottom: 15rem;">
                     <div class="col">
-                        <a href="ai.php" class="text-decoration-none text-black">
+                        <a href="ai_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Gemini</p>
+                            <p class="p-0 m-0">SMAGA AI</p>
                         </div>
                         </a>
                     </div>
@@ -272,9 +285,8 @@ $guru = mysqli_fetch_assoc($result);
                 </div>
                 <div class="row dropdown">
                     <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
-                    <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
-
+                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
+                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
                     </div>
                     <!-- dropdown menu option -->
                     <ul class="dropdown-menu" style="font-size: 12px;">
@@ -283,6 +295,9 @@ $guru = mysqli_fetch_assoc($result);
                       </ul>
                 </div>
             </div>
+
+
+
 
 
 <!-- ini isi kontennya -->
@@ -301,12 +316,12 @@ $guru = mysqli_fetch_assoc($result);
     </style>
 
 <!-- Top Section -->
-<div class="container-fluid py-4">
+<div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card mb-4">
-                <div class="card-header bg-white pb-0">
-                    <div class="d-flex justify-content-between align-items-center">
+            <div class="card border-0 mb-4">
+                <div class="card-header bg-white border-0 pb-0">
+                    <div class="d-flex border-0 justify-content-between align-items-center">
                         <div>
                             <h3 class="mb-0"><?php echo htmlspecialchars($ujian['mata_pelajaran']); ?></h3>
                             <p class="text-muted mb-0">
@@ -314,49 +329,75 @@ $guru = mysqli_fetch_assoc($result);
                                 Kelas <?php echo htmlspecialchars($ujian['tingkat']); ?>
                             </p>
                         </div>
-                        <a href="beranda_guru.php" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left"></i> Kembali
-                        </a>
+                        <div>
+                            <button onclick="window.print()" class="btn btn-outline-secondary me-2">
+                                <i class="bi bi-printer"></i> Print
+                            </button>
+                            <a href="ujian_guru.php" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Kembali
+                            </a>
+                        </div>
                     </div>
+
                 </div>
+
 
                 <div class="card-body">
                 <?php if ($total_questions > 0): ?>
-                    <div class="row mb-4">
+                    <div class="row mb-4 g-3">
                         <div class="col-md-3">
-                            <div class="card border-0 bg-light">
-                                <div class="card-body">
-                                    <h6 class="text-muted mb-2">Total Peserta</h6>
-                                    <h4 class="mb-0"><?php echo mysqli_num_rows($result_peserta); ?> Siswa</h4>
+                            <div class="card rounded-4 border-1 h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="rounded p-2 bg-primary bg-opacity-10 me-3">
+                                            <i class="bi bi-people text-primary"></i>
+                                        </div>
+                                        <h6 class="mb-0">Total Peserta</h6>
+                                    </div>
+                                    <h3 class="mb-0 fw-bold"><?php echo mysqli_num_rows($result_peserta); ?> <span class="fs-6 fw-normal text-muted">Siswa</span></h3>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card border-0 bg-light">
-                                <div class="card-body">
-                                    <h6 class="text-muted mb-2">Rata-rata Nilai</h6>
-                                    <h4 class="mb-0"><?php echo number_format($rata_rata, 1); ?></h4>
+                            <div class="card rounded-4 border-1 h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="rounded p-2 bg-success bg-opacity-10 me-3">
+                                            <i class="bi bi-graph-up text-success"></i>
+                                        </div>
+                                        <h6 class="mb-0">Rata-rata Nilai</h6>
+                                    </div>
+                                    <h3 class="mb-0 fw-bold"><?php echo number_format($rata_rata, 1); ?>/100</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card border-0 bg-light">
-                                <div class="card-body">
-                                    <h6 class="text-muted mb-2">Nilai Tertinggi</h6>
-                                    <h4 class="mb-0"><?php echo $nilai_tertinggi; ?></h4>
+                            <div class="card rounded-4 border-1 h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="rounded p-2 bg-warning bg-opacity-10 me-3">
+                                            <i class="bi bi-trophy text-warning"></i>
+                                        </div>
+                                        <h6 class="mb-0">Nilai Tertinggi</h6>
+                                    </div>
+                                    <h3 class="mb-0 fw-bold"><?php echo number_format($nilai_tertinggi, 1); ?>/100</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card border-0 bg-light">
-                                <div class="card-body">
-                                    <h6 class="text-muted mb-2">Nilai Terendah</h6>
-                                    <h4 class="mb-0"><?php echo $nilai_terendah; ?></h4>
+                            <div class="card rounded-4 border-1 h-100">
+                                <div class="card-body p-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="rounded p-2 bg-danger bg-opacity-10 me-3">
+                                            <i class="bi bi-flag text-danger"></i>
+                                        </div>
+                                        <h6 class="mb-0">Nilai Terendah</h6>
+                                    </div>
+                                    <h3 class="mb-0 fw-bold"><?php echo number_format($nilai_terendah, 1); ?>/100</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="table-responsive">
     <table class="table table-hover align-middle">
         <thead class="bg-light">

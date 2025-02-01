@@ -27,25 +27,18 @@ mysqli_stmt_bind_param($stmt, "s", $userid);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $siswa = mysqli_fetch_assoc($result);
-
-// Ambil daftar kelas yang diikuti
 $query_kelas = "SELECT k.*, g.namaLengkap as nama_guru 
                 FROM kelas k 
                 JOIN kelas_siswa ks ON k.id = ks.kelas_id 
                 JOIN guru g ON k.guru_id = g.username
-                WHERE ks.siswa_id = ?";
+                JOIN siswa s ON ks.siswa_id = s.id
+                WHERE s.username = ? AND ks.is_archived = 0";
+
 
 $stmt_kelas = mysqli_prepare($koneksi, $query_kelas);
-mysqli_stmt_bind_param($stmt_kelas, "i", $siswa['id']);
+mysqli_stmt_bind_param($stmt_kelas, "s", $userid);
 mysqli_stmt_execute($stmt_kelas);
 $result_kelas = mysqli_stmt_get_result($stmt_kelas);
-
-// Debug - bisa dihapus nanti setelah berhasil
-if (!$result_kelas) {
-    echo "Error query kelas: " . mysqli_error($koneksi);
-    exit();
-
-}
 
 ?>
 <!DOCTYPE html>
@@ -57,7 +50,8 @@ if (!$result_kelas) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    <title>Masuk - Smagaedu</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <title>Beranda - SMAGAEdu</title>
 </head>
 <style>
@@ -160,7 +154,7 @@ if (!$result_kelas) {
             <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
                 <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
             <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">Beranda</h1>
                     <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
                 </div>
             </a>
@@ -176,11 +170,11 @@ if (!$result_kelas) {
                     <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
                 </div>
-                <div class="offcanvas-body">
+                <div class="offcanvas-body d-flex justify-content-between flex-column">
                     <div class="d-flex flex-column gap-2">
                         <!-- Menu Beranda -->
                         <a href="#" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded  p-2">
+                            <div class="d-flex align-items-center color-web rounded  p-2">
                                 <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0 text-white">Beranda</p>
                             </div>
@@ -197,7 +191,7 @@ if (!$result_kelas) {
 
                         <!-- Menu ai -->
                         <a href="ai.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center color-web rounded p-2">
+                            <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ai.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">SMAGA AI</p>
                             </div>
@@ -223,18 +217,21 @@ if (!$result_kelas) {
                     </div>
                     
                 <!-- Profile Dropdown -->
-                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
+                <div class="mt-3 dropup"> <!-- Tambahkan class dropdown di sini -->
                     <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
-                            style="background-color: #F8F8F7;" 
+                            style="background-color:rgb(255, 252, 248);" 
                             type="button" 
                             data-bs-toggle="dropdown" 
                             aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?></p>
+                            <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp.png'; ?>" 
+                                    alt="Profile Picture" 
+                                    class="rounded-circle" 
+                                    style="width: 25px; height: 25px;object-fit: cover; z-index: 99999;">
+                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?></p>
                     </button>
                     <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
+                        <li><a class="dropdown-item" href="logout.php" style="color: red;">Keluar</a></li>
                     </ul>
                 </div>
             </div>
@@ -333,7 +330,10 @@ if (!$result_kelas) {
                 <div class="menu-bawah">
                     <div class="row dropdown">
                         <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
+                        <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
+                                    alt="Profile Picture" 
+                                    class="rounded-circle" 
+                                    style="width: 30px; height: 30px;object-fit: cover; z-index: 99999;">
                             <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($_SESSION['nama']); ?></p>
                         </div>
                         <!-- dropdown menu option -->
@@ -349,9 +349,30 @@ if (!$result_kelas) {
 <!-- Isi konten -->
 <div class="col p-4 col-utama mt-1 mt-md-0">
         <div class="row justify-content-between align-items-center mb-1">
-            <div class="col-12 col-md-auto mb-3 mb-md-0">
+            <div class="salam col-12 col-md-auto mb-3 mb-md-0">
                 <h3 style="font-weight: bold;">Beranda</h3>
             </div>
+
+            <style>
+                @media screen and (max-width: 768px) {
+                    .salam {
+                        display: none;
+                    }
+                    .col-utama {
+                        padding-top: 0 !important;
+                    }
+                }
+            </style>
+
+                    <!-- Tombol desktop -->
+                    <div class="d-none d-md-flex col-md-auto">
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#modal_arsip_kelas" 
+                                class="btn d-flex align-items-center justify-content-center border p-2 ms-2">
+                                <i class="bi bi-archive me-3"></i>
+                            <p class="m-0"> Arsip Kelas</p>
+                        </button>
+                    </div>
+
 
         <!-- Daftar Kelas -->
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 m-0">
@@ -395,18 +416,72 @@ if (!$result_kelas) {
                             </p>
                         </div>
                         <div class="d-flex btn-group gap-2 p-3">
-                            <a href="kelas.php?id=<?php echo $kelas['id']; ?>" 
-                               class="btn color-web w-100 rounded" 
-                               style="text-decoration: none; color: white;">
-                                Masuk
-                            </a>
-                        </div>
+                                    <a href="kelas.php?id=<?php echo $kelas['id']; ?>" 
+                                    class="btn color-web w-45 rounded" 
+                                    style="text-decoration: none; color: white;">
+                                        Masuk
+                                    </a>
+                                    <div class="btn-group dropup w-25">
+                                        <button type="button" class="btn btn-secondary dropdown-toggle rounded w-100" 
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end animate slideIn" style="margin-bottom:5px;">
+                                            <style>
+                                            .animate {
+                                                animation-duration: 0.2s;
+                                                animation-fill-mode: both;
+                                            }
+                                            
+                                            @keyframes slideIn {
+                                                from {
+                                                    transform: translateY(10px);
+                                                    opacity: 0;
+                                                }
+                                                to {
+                                                    transform: translateY(0);
+                                                    opacity: 1;
+                                                }
+                                            }
+
+                                            .slideIn {
+                                                animation-name: slideIn;
+                                            }
+
+                                            .dropdown-item {
+                                                padding: 8px 16px;
+                                                transition: background-color 0.2s;
+                                            }
+
+                                            .dropdown-item:hover {
+                                                background-color: #f8f9fa;
+                                            }
+
+                                            .dropdown-item i {
+                                                margin-right: 8px;
+                                                width: 16px;
+                                            }
+                                            </style>
+                                            <li>
+                                                <a class="dropdown-item" href="archive_kelas_siswa.php?id=<?php echo $kelas['id']; ?>"
+                                                onclick="return confirm('Apakah Anda yakin ingin mengarsipkan kelas ini?');">
+                                                    <i class="bi bi-archive"></i> Arsipkan
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <style>
+                                        .hapus {
+                                            z-index: 0;
+                                        }
+                                    </style>
+                                </div>
                     </div>
                 </div>
             <?php endwhile; 
             else: ?>
                 <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
-                    <p class="text-muted">Anda belum memiliki kelas. Silahkan bergabung ke kelas dengan memasukkan kode kelas.</p>
+                    <p class="text-muted">Kamu tidak memiliki kelas saat ini, silahkan hubungi guru untuk memasukkan kamu ke dalam kelasnya.</p>
                 </div>
             <?php endif; ?>
         </div>
@@ -436,6 +511,143 @@ if (!$result_kelas) {
         </div>
         </div>
     </div>
+
+
+    <!-- Modal Arsip Kelas -->
+<div class="modal fade" id="modal_arsip_kelas" tabindex="-1" aria-labelledby="label_arsip_kelas" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content rounded-4 border-0">
+            <!-- Header -->
+            <div class="modal-header border-0 px-4 pt-4">
+                <div>
+                    <h5 class="modal-title fw-bold mb-1">Kelas yang Diarsipkan</h5>
+                    <p class="text-muted small mb-0">Daftar kelas yang telah diarsipkan</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body px-4">
+                <?php
+                $query_arsip = "SELECT k.*, g.namaLengkap as nama_guru, g.foto_profil as guru_foto 
+                               FROM kelas k 
+                               JOIN kelas_siswa ks ON k.id = ks.kelas_id 
+                               JOIN guru g ON k.guru_id = g.username
+                               JOIN siswa s ON ks.siswa_id = s.id
+                               WHERE s.username = ? AND ks.is_archived = 1";
+
+                $stmt_arsip = mysqli_prepare($koneksi, $query_arsip);
+                mysqli_stmt_bind_param($stmt_arsip, "s", $userid);
+                mysqli_stmt_execute($stmt_arsip);
+                $result_arsip = mysqli_stmt_get_result($stmt_arsip);
+
+                if(mysqli_num_rows($result_arsip) > 0): ?>
+                    <div class="row g-4">
+                        <?php while($kelas_arsip = mysqli_fetch_assoc($result_arsip)): ?>
+                            <div class="col-12">
+                                <div class="card border shadow-sm rounded-4 overflow-hidden">
+                                    <div class="row g-0">
+                                        <!-- Gambar Kelas -->
+                                        <div class="col-md-4">
+                                            <img src="<?php echo !empty($kelas_arsip['background_image']) ? htmlspecialchars($kelas_arsip['background_image']) : 'assets/bg.jpg'; ?>" 
+                                                 class="h-100 w-100"
+                                                 style="object-fit: cover;" 
+                                                 alt="Background Image">
+                                        </div>
+                                        
+                                        <!-- Informasi Kelas -->
+                                        <div class="col-md-8">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <div>
+                                                        <h5 class="card-title fw-bold mb-1">
+                                                            <?php echo htmlspecialchars($kelas_arsip['mata_pelajaran']); ?>
+                                                        </h5>
+                                                        <p class="text-muted mb-0">
+                                                            <small><?php echo htmlspecialchars($kelas_arsip['nama_guru']); ?></small>
+                                                        </p>
+                                                        <p class="text-muted mb-0">
+                                                            <small>Kelas <?php echo htmlspecialchars($kelas_arsip['tingkat']); ?></small>
+                                                        </p>
+                                                    </div>
+                                                    <img src="<?php echo !empty($kelas_arsip['guru_foto']) ? 'uploads/profil/'.$kelas_arsip['guru_foto'] : 'assets/pp.png'; ?>" 
+                                                         class="rounded-circle shadow-sm border border-2" 
+                                                         width="45" 
+                                                         height="45"
+                                                         style="object-fit: cover;"
+                                                         alt="Foto Profil Pengajar">
+                                                </div>
+
+                                                <!-- Action Buttons -->
+                                                <div class="d-flex gap-2">
+                                                    <a href="unarchive_kelas_siswa.php?id=<?php echo $kelas_arsip['id']; ?>" 
+                                                       class="btn color-web text-white flex-grow-1 rounded-3">
+                                                        <i class="bi bi-box-arrow-up-right me-2"></i>
+                                                        Keluarkan dari Arsip
+                                                    </a>
+                                                    <button type="button" 
+                                                            class="btn btn-outline-danger rounded-3"
+                                                            onclick="if(confirm('Apakah Anda yakin ingin menghapus kelas ini dari arsip?')) window.location.href='hapus_kelas.php?id=<?php echo $kelas_arsip['id']; ?>'">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center py-5">
+                        <i class="bi bi-archive text-muted fs-1 mb-3"></i>
+                        <p class="text-muted mb-0">Belum ada kelas yang diarsipkan</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Modal Archive Styling */
+#modal_arsip_kelas .modal-content {
+    border-radius: 15px;
+}
+
+#modal_arsip_kelas .card {
+    transition: transform 0.2s;
+    border-radius: 12px;
+}
+
+#modal_arsip_kelas .card:hover {
+    transform: translateY(-2px);
+}
+
+#modal_arsip_kelas .btn {
+    border-radius: 8px;
+    padding: 8px 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    #modal_arsip_kelas .modal-dialog {
+        margin: 1rem;
+    }
+    
+    #modal_arsip_kelas .col-md-4 img {
+        height: 150px;
+        width: 100%;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #modal_arsip_kelas .card-body {
+        padding: 1rem;
+    }
+}
+</style>
+
+
 
 
 

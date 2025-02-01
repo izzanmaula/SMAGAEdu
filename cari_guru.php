@@ -80,7 +80,7 @@ $guru = mysqli_fetch_assoc($result);
             <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
                 <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
             <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">Cari</h1>
                     <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
                 </div>
             </a>
@@ -96,7 +96,7 @@ $guru = mysqli_fetch_assoc($result);
                     <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
                 </div>
-                <div class="offcanvas-body">
+                <div class="offcanvas-body d-flex justify-content-between flex-column">
                     <div class="d-flex flex-column gap-2">
                         <!-- Menu Beranda -->
                         <a href="beranda_guru.php" class="text-decoration-none text-black">
@@ -110,7 +110,7 @@ $guru = mysqli_fetch_assoc($result);
                         <a href="cari_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center color-web rounded p-2">
                                 <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Cari</p>
+                                <p class="p-0 m-0 text-white">Cari</p>
                             </div>
                         </a>
                         
@@ -131,10 +131,10 @@ $guru = mysqli_fetch_assoc($result);
                         </a>
                         
                         <!-- Menu AI -->
-                        <a href="ai.php" class="text-decoration-none text-black">
+                        <a href="ai_guru.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Gemini</p>
+                                <p class="p-0 m-0">SMAGA AI</p>
                             </div>
                         </a>
                         
@@ -148,7 +148,7 @@ $guru = mysqli_fetch_assoc($result);
                     </div>
                     
                 <!-- Profile Dropdown -->
-                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
+                <div class="mt-3 dropup"> <!-- Tambahkan class dropdown di sini -->
                     <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
                             style="background-color: #F8F8F7;" 
                             type="button" 
@@ -159,7 +159,7 @@ $guru = mysqli_fetch_assoc($result);
                     </button>
                     <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
+                        <li><a class="dropdown-item" href="logout.php" style="color: red;">Keluar</a></li>
                     </ul>
                 </div>
             </div>
@@ -224,10 +224,10 @@ $guru = mysqli_fetch_assoc($result);
                 </div>
                 <div class="row gap-0" style="margin-bottom: 15rem;">
                     <div class="col">
-                        <a href="ai.php" class="text-decoration-none text-black">
+                        <a href="ai_guru.php" class="text-decoration-none text-black">
                         <div class="d-flex align-items-center rounded p-2" style="">
                             <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Gemini</p>
+                            <p class="p-0 m-0">SMAGA AI</p>
                         </div>
                         </a>
                     </div>
@@ -245,11 +245,42 @@ $guru = mysqli_fetch_assoc($result);
                         <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
                         <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
                     </div>
-                    <!-- dropdown menu option -->
-                    <ul class="dropdown-menu" style="font-size: 12px;">
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="#">Keluar</a></li>
-                      </ul>
+                    <!-- dropdown menu option with animation -->
+                    <ul class="dropdown-menu animate slideIn" style="font-size: 12px;">
+                        <style>
+                        .animate {
+                            animation-duration: 0.2s;
+                            animation-fill-mode: both;
+                        }
+                        
+                        @keyframes slideIn {
+                            from {
+                                transform: translateY(-10px);
+                                opacity: 0;
+                            }
+                            to {
+                                transform: translateY(0);
+                                opacity: 1;
+                            }
+                        }
+
+                        .slideIn {
+                            animation-name: slideIn;
+                        }
+
+                        .dropdown-item {
+                            padding: 8px 16px;
+                            transition: background-color 0.2s;
+                        }
+
+                        .dropdown-item:hover {
+                            background-color: #f8f9fa;
+                        }
+                        </style>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Pengaturan</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
+                    </ul>
                 </div>
             </div>
 
@@ -264,31 +295,68 @@ $guru = mysqli_fetch_assoc($result);
                         margin-left: 13rem;
                     }
                 }
-                </style>
-                <div class="row text-center justify-content-center align-items-center" style="margin-top: 5rem;">
-                    <div class="d-flex text-center justify-content-center align-items-center">
-                        <h3 style="font-weight: bold;" class="p-0 m-0">Halo, <?php 
-                        // Ambil namaSebutan guru yang sedang login
-                        $userid = $_SESSION['userid'];
-                        $query = "SELECT namaSebutan FROM guru WHERE username = '$userid'";
-                        $result = mysqli_query($koneksi, $query);
-                        $guru = mysqli_fetch_assoc($result);
-                        
-                        // Tampilkan namaSebutan, jika kosong gunakan namaLengkap
-                        echo $guru['namaSebutan'] ? htmlspecialchars($guru['namaSebutan']) : $_SESSION['nama']; 
-                        ?></h3>            
-                    </div>
-                    <div>
-                    <p class="text-muted p-2 mb-3">Siapa yang ingin Anda cari hari ini?</p>        
-                    </div>
-                    <div class=" card-footer p-2 rounded-3" style="width: 45rem; margin: auto; background-color: #EEECE2;">
-                        <div class="input-group">
-                            <input type="text" id="user-input" class="form-control border-0" style="background-color: transparent;" placeholder="Cari">
-                            <button id="send-button" class="btn color-web bi-search rounded text-white"></button>
-                        </div>
-                    </div>    
-                </div>
 
+                /* Animasi untuk hasil pencarian */
+                .search-results {
+                    max-height: 400px;
+                    overflow-y: auto;
+                    transition: all 0.3s ease-in-out;
+                }
+
+                .search-result-item {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                    animation: slideIn 0.3s ease forwards;
+                }
+
+                @keyframes slideIn {
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                /* Memberikan delay untuk setiap item */
+                .search-result-item:nth-child(1) { animation-delay: 0.1s; }
+                .search-result-item:nth-child(2) { animation-delay: 0.2s; }
+                .search-result-item:nth-child(3) { animation-delay: 0.3s; }
+                .search-result-item:nth-child(4) { animation-delay: 0.4s; }
+                .search-result-item:nth-child(5) { animation-delay: 0.5s; }
+                /* dan seterusnya... */
+
+                /* Styling untuk card hasil pencarian */
+                .list-group-item {
+                    border: none;
+                    margin-bottom: 0.5rem;
+                    background: #f8f9fa;
+                    border-radius: 10px !important;
+                    transition: all 0.2s ease;
+                }
+
+                .list-group-item:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }
+                </style>
+                    <div class="row text-center justify-content-center align-items-center" style="margin-top: 2rem;">
+                        <div class="col-12 col-md-8 col-lg-6"> <!-- Tambahkan pembungkus col untuk mengontrol lebar -->
+                            <div class="d-flex flex-column align-items-center">
+                                <h3 style="font-weight: bold;" class="mb-2">Halo, <?php 
+                                    // Kode PHP tetap sama
+                                    echo $guru['namaSebutan'] ? htmlspecialchars($guru['namaSebutan']) : $_SESSION['nama']; 
+                                ?></h3>            
+                                <p class="text-muted mb-4">Siapa yang ingin Anda cari hari ini?</p>
+                                
+                                <div class="card-footer p-3 rounded-4 shadow-sm w-100" style="background-color: #EEECE2;">
+                                    <div class="input-group">
+                                        <input type="text" id="user-input" class="form-control border-0 py-2" 
+                                            style="background-color: transparent;" placeholder="Cari nama siswa atau guru...">
+                                        <button id="send-button" class="btn color-web bi-search rounded text-white px-4"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 
             </div>
         </div>
@@ -320,17 +388,35 @@ userInput.addEventListener('input', function() {
 });
 
 function displayResults(data) {
-    let html = '<div class="container">';
+    let html = '<div class="container px-4">';
 
-        // Menampilkan hasil siswa
-        if(data.siswa.length > 0) {
-        html += '<h5 class="mt-3 text-start">Siswa</h5>';
+    // Menampilkan hasil siswa
+    if(data.siswa.length > 0) {
+        html += '<h5 class="mt-4 mb-3 text-start fw-bold">Siswa</h5>';
         html += '<div class="list-group">';
         data.siswa.forEach(siswa => {
+            // Tentukan tingkat/fase berdasarkan data tingkat
+            let tingkatLabel = '';
+            if(siswa.tingkat) {
+                if(['7','8','9'].includes(siswa.tingkat)) {
+                    tingkatLabel = `Kelas ${siswa.tingkat}`;
+                } else {
+                    tingkatLabel = `Fase ${siswa.tingkat}`;
+                }
+            }
+
             html += `
-                <div class="list-group-item d-flex justify-content-between align-items-start">
-                    <strong>${siswa.nama}</strong>
-                    <a href="view_siswa.php?username=${siswa.username}" class="btn btn-sm color-web text-white">Profil</a>
+                <div class="list-group-item search-result-item d-flex justify-content-between align-items-start p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-truncate">
+                            <strong>${siswa.nama}</strong>
+                            <div class="text-muted small">${tingkatLabel || 'Kelas belum ditentukan'}</div>
+                        </div>
+                    </div>
+                    <a href="view_siswa.php?username=${siswa.username}" 
+                       class="btn btn-sm color-web text-white px-3 d-flex align-items-center gap-2">
+                       Lihat
+                    </a>
                 </div>
             `;
         });
@@ -339,16 +425,21 @@ function displayResults(data) {
     
     // Menampilkan hasil guru
     if(data.guru.length > 0) {
-        html += '<h5 class="mt-3 text-start">Guru</h5>';
+        html += '<h5 class="mt-4 mb-3 text-start fw-bold">Guru</h5>';
         html += '<div class="list-group">';
         data.guru.forEach(guru => {
             html += `
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong>${guru.namaLengkap}</strong>
-                        ${guru.jabatan ? `<br><small class="text-muted">${guru.jabatan}</small>` : ''}
+                <div class="list-group-item search-result-item d-flex justify-content-between align-items-center p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-truncate">
+                            <strong>${guru.namaLengkap}</strong>
+                            ${guru.jabatan ? `<div class="text-muted small">${guru.jabatan}</div>` : ''}
+                        </div>
                     </div>
-                    <a href="profil_guru.php?username=${guru.username}" class="btn btn-sm color-web text-white">Profil</a>
+                    <a href="profil_guru.php?username=${guru.username}" 
+                       class="btn btn-sm color-web text-white px-3 mx-3 d-flex align-items-center gap-2">
+                       Lihat
+                    </a>
                 </div>
             `;
         });
@@ -356,7 +447,12 @@ function displayResults(data) {
     }
         
     if(data.guru.length === 0 && data.siswa.length === 0) {
-        html += '<p class="text-center text-muted mt-3" style="font-size: 12px;">Tidak ada hasil yang ditemukan</p>';
+        html += `
+            <div class="text-center py-5 search-result-item">
+                <i class="bi bi-search display-1 mb-3 text-muted"></i>
+                <p class="text-muted">Tidak ada hasil yang ditemukan</p>
+            </div>
+        `;
     }
     
     html += '</div>';

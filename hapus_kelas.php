@@ -23,6 +23,13 @@ if(isset($_GET['id'])) {
         $result_ujian = mysqli_stmt_get_result($stmt);
         
         while($ujian = mysqli_fetch_assoc($result_ujian)) {
+            
+            $query_hapus_jawaban = "DELETE FROM jawaban_ujian WHERE ujian_id = ?";
+            $stmt_jawaban = mysqli_prepare($koneksi, $query_hapus_jawaban);
+            mysqli_stmt_bind_param($stmt_jawaban, "i", $ujian['id']);
+            mysqli_stmt_execute($stmt_jawaban);
+
+
             // Hapus soal dari setiap ujian
             $query_hapus_soal = "DELETE FROM bank_soal WHERE ujian_id = ?";
             $stmt_soal = mysqli_prepare($koneksi, $query_hapus_soal);

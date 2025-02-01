@@ -1,0 +1,354 @@
+2025-01-26 18:41:57
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 862
+    [HTTP_PRAGMA] => no-cache
+    [HTTP_CACHE_CONTROL] => no-cache
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+    [HTTP_ACCEPT] => application/json
+    [HTTP_SEC_CH_UA] => "Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"
+    [CONTENT_TYPE] => application/json
+    [HTTP_DNT] => 1
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => http://localhost
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost/smagaBelajar/ai_guru.php
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9,id;q=0.8
+    [HTTP_COOKIE] => authToken=9e8f673fa2938122eb7f7e86b09ee09b; PHPSESSID=qprn74pkkmmc6lufn057dd8chg
+    [PATH] => C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Users\izzan\AppData\Local\Microsoft\WindowsApps;D:\SDK\FLUTTER\flutter_windows_3.27.0-stable\flutter\bin;C:\Users\izzan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\JetBrains\WebStorm 2024.3.1.1\bin;;C:\Users\izzan\AppData\Roaming\Composer\vendor\bin;
+    [SystemRoot] => C:\Windows
+    [COMSPEC] => C:\Windows\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\Windows
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/smagaBelajar/save_chat.php
+    [REMOTE_PORT] => 61029
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /smagaBelajar/save_chat.php
+    [SCRIPT_NAME] => /smagaBelajar/save_chat.php
+    [PHP_SELF] => /smagaBelajar/save_chat.php
+    [REQUEST_TIME_FLOAT] => 1737913317.3356
+    [REQUEST_TIME] => 1737913317
+)
+
+{"user_id":"fadhilmanfa","pesan":"Berikan saya Tips mengajar efektif","respons":"Bapak/Ibu! Berikut beberapa tips mengajar efektif yang bisa saya berikan:\n\n1. **Kenali siswa**: Pahami karakter dan gaya belajar siswa untuk menyampaikan materi yang tepat.\n2. **Buat rencana**: Siapkan rencana pelajaran yang jelas dan terstruktur untuk memudahkan penyampaian materi.\n3. **Gunakan metode yang bervariasi**: Gunakan metode mengajar yang bervariasi seperti diskusi, simulasi, dan projek untuk meningkatkan minat siswa.\n4. **Berikan umpan balik**: Berikan umpan balik yang konstruktif dan membantu siswa untuk meningkatkan pemahaman mereka.\n5. **Buat suasana belajar yang nyaman**: Buat suasana belajar yang nyaman dan mendukung untuk meningkatkan motivasi siswa.\n\nApakah Bapak/Ibu ingin tahu lebih lanjut tentang cara mengimplementasikan tips-tips tersebut?"}
+
+2025-01-26 18:42:01
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [HTTP_SEC_CH_UA] => "Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_DNT] => 1
+    [HTTP_UPGRADE_INSECURE_REQUESTS] => 1
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+    [HTTP_ACCEPT] => text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+    [HTTP_SEC_FETCH_SITE] => none
+    [HTTP_SEC_FETCH_MODE] => navigate
+    [HTTP_SEC_FETCH_USER] => ?1
+    [HTTP_SEC_FETCH_DEST] => document
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9,id;q=0.8
+    [HTTP_COOKIE] => authToken=9e8f673fa2938122eb7f7e86b09ee09b; PHPSESSID=qprn74pkkmmc6lufn057dd8chg
+    [PATH] => C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Users\izzan\AppData\Local\Microsoft\WindowsApps;D:\SDK\FLUTTER\flutter_windows_3.27.0-stable\flutter\bin;C:\Users\izzan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\JetBrains\WebStorm 2024.3.1.1\bin;;C:\Users\izzan\AppData\Roaming\Composer\vendor\bin;
+    [SystemRoot] => C:\Windows
+    [COMSPEC] => C:\Windows\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\Windows
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/smagaBelajar/save_chat.php
+    [REMOTE_PORT] => 61078
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => GET
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /smagaBelajar/save_chat.php
+    [SCRIPT_NAME] => /smagaBelajar/save_chat.php
+    [PHP_SELF] => /smagaBelajar/save_chat.php
+    [REQUEST_TIME_FLOAT] => 1737913321.2509
+    [REQUEST_TIME] => 1737913321
+)
+
+
+
+2025-01-26 18:43:28
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 475
+    [HTTP_PRAGMA] => no-cache
+    [HTTP_CACHE_CONTROL] => no-cache
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+    [HTTP_ACCEPT] => application/json
+    [HTTP_SEC_CH_UA] => "Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"
+    [CONTENT_TYPE] => application/json
+    [HTTP_DNT] => 1
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => http://localhost
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost/smagaBelajar/ai_guru.php
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9,id;q=0.8
+    [HTTP_COOKIE] => authToken=9e8f673fa2938122eb7f7e86b09ee09b; PHPSESSID=qprn74pkkmmc6lufn057dd8chg
+    [PATH] => C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Users\izzan\AppData\Local\Microsoft\WindowsApps;D:\SDK\FLUTTER\flutter_windows_3.27.0-stable\flutter\bin;C:\Users\izzan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\JetBrains\WebStorm 2024.3.1.1\bin;;C:\Users\izzan\AppData\Roaming\Composer\vendor\bin;
+    [SystemRoot] => C:\Windows
+    [COMSPEC] => C:\Windows\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\Windows
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/smagaBelajar/save_chat.php
+    [REMOTE_PORT] => 62141
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /smagaBelajar/save_chat.php
+    [SCRIPT_NAME] => /smagaBelajar/save_chat.php
+    [PHP_SELF] => /smagaBelajar/save_chat.php
+    [REQUEST_TIME_FLOAT] => 1737913408.3483
+    [REQUEST_TIME] => 1737913408
+)
+
+{"user_id":"fadhilmanfa","pesan":"Berikan saya Tips mengajar efektif","respons":"Tips mengajar efektif, Bapak/Ibu! Berikut beberapa yang bisa saya sarankan:\n1. Persiapan yang matang sebelum mengajar\n2. Hubungan yang baik dengan siswa\n3. Penggunaan metode dan media yang bervariasi\n4. Fokus pada proses pembelajaran, bukan hanya hasil\n5. Memberikan umpan balik yang konstruktif kepada siswa\n\nMau saya jelaskan lebih lanjut tentang salah satu poin tersebut, Bapak/Ibu?"}
+
+2025-01-26 18:43:32
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [HTTP_SEC_CH_UA] => "Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_DNT] => 1
+    [HTTP_UPGRADE_INSECURE_REQUESTS] => 1
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+    [HTTP_ACCEPT] => text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+    [HTTP_SEC_FETCH_SITE] => none
+    [HTTP_SEC_FETCH_MODE] => navigate
+    [HTTP_SEC_FETCH_USER] => ?1
+    [HTTP_SEC_FETCH_DEST] => document
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9,id;q=0.8
+    [HTTP_COOKIE] => authToken=9e8f673fa2938122eb7f7e86b09ee09b; PHPSESSID=qprn74pkkmmc6lufn057dd8chg
+    [PATH] => C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Users\izzan\AppData\Local\Microsoft\WindowsApps;D:\SDK\FLUTTER\flutter_windows_3.27.0-stable\flutter\bin;C:\Users\izzan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\JetBrains\WebStorm 2024.3.1.1\bin;;C:\Users\izzan\AppData\Roaming\Composer\vendor\bin;
+    [SystemRoot] => C:\Windows
+    [COMSPEC] => C:\Windows\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\Windows
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/smagaBelajar/save_chat.php
+    [REMOTE_PORT] => 62141
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => GET
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /smagaBelajar/save_chat.php
+    [SCRIPT_NAME] => /smagaBelajar/save_chat.php
+    [PHP_SELF] => /smagaBelajar/save_chat.php
+    [REQUEST_TIME_FLOAT] => 1737913412.3193
+    [REQUEST_TIME] => 1737913412
+)
+
+
+
+2025-01-26 18:44:59
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 707
+    [HTTP_PRAGMA] => no-cache
+    [HTTP_CACHE_CONTROL] => no-cache
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+    [HTTP_ACCEPT] => application/json
+    [HTTP_SEC_CH_UA] => "Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"
+    [CONTENT_TYPE] => application/json
+    [HTTP_DNT] => 1
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => http://localhost
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost/smagaBelajar/ai_guru.php
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9,id;q=0.8
+    [HTTP_COOKIE] => authToken=9e8f673fa2938122eb7f7e86b09ee09b; PHPSESSID=qprn74pkkmmc6lufn057dd8chg
+    [PATH] => C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Users\izzan\AppData\Local\Microsoft\WindowsApps;D:\SDK\FLUTTER\flutter_windows_3.27.0-stable\flutter\bin;C:\Users\izzan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\JetBrains\WebStorm 2024.3.1.1\bin;;C:\Users\izzan\AppData\Roaming\Composer\vendor\bin;
+    [SystemRoot] => C:\Windows
+    [COMSPEC] => C:\Windows\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\Windows
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/smagaBelajar/save_chat.php
+    [REMOTE_PORT] => 63330
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /smagaBelajar/save_chat.php
+    [SCRIPT_NAME] => /smagaBelajar/save_chat.php
+    [PHP_SELF] => /smagaBelajar/save_chat.php
+    [REQUEST_TIME_FLOAT] => 1737913498.982
+    [REQUEST_TIME] => 1737913498
+)
+
+{"user_id":"fadhilmanfa","pesan":"Berikan saya Ide aktivitas kelas","respons":"Bapak/Ibu, saya punya beberapa ide aktivitas kelas yang menarik:1. Diskusi kelompok: Siswa dibagi menjadi kelompok kecil untuk mendiskusikan topik tertentu.2. Presentasi siswa: Siswa diminta untuk membuat presentasi tentang materi yang telah dipelajari.3. Role-play: Siswa diminta untuk memainkan peran tertentu untuk memahami konsep atau situasi.4. Quiz interaktif: Siswa dapat berpartisipasi dalam quiz online atau offline dengan menggunakan teknologi.5. Proyek kolaboratif: Siswa bekerja sama dalam proyek yang membutuhkan kerja sama dan kreativitas.Mau saya jelaskan lebih lanjut tentang salah satu ide di atas, Bapak/Ibu?"}
+
+2025-01-26 18:45:05
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [HTTP_SEC_CH_UA] => "Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_DNT] => 1
+    [HTTP_UPGRADE_INSECURE_REQUESTS] => 1
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+    [HTTP_ACCEPT] => text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+    [HTTP_SEC_FETCH_SITE] => none
+    [HTTP_SEC_FETCH_MODE] => navigate
+    [HTTP_SEC_FETCH_USER] => ?1
+    [HTTP_SEC_FETCH_DEST] => document
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9,id;q=0.8
+    [HTTP_COOKIE] => authToken=9e8f673fa2938122eb7f7e86b09ee09b; PHPSESSID=qprn74pkkmmc6lufn057dd8chg
+    [PATH] => C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Users\izzan\AppData\Local\Microsoft\WindowsApps;D:\SDK\FLUTTER\flutter_windows_3.27.0-stable\flutter\bin;C:\Users\izzan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Program Files\JetBrains\WebStorm 2024.3.1.1\bin;;C:\Users\izzan\AppData\Roaming\Composer\vendor\bin;
+    [SystemRoot] => C:\Windows
+    [COMSPEC] => C:\Windows\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\Windows
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/smagaBelajar/save_chat.php
+    [REMOTE_PORT] => 63481
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => GET
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /smagaBelajar/save_chat.php
+    [SCRIPT_NAME] => /smagaBelajar/save_chat.php
+    [PHP_SELF] => /smagaBelajar/save_chat.php
+    [REQUEST_TIME_FLOAT] => 1737913505.6405
+    [REQUEST_TIME] => 1737913505
+)
+
+
+

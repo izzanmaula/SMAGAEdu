@@ -12,13 +12,14 @@ if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
 $userid = $_SESSION['userid'];
 
 // Get exams for classes the student is enrolled in
-$query = "SELECT u.*, k.mata_pelajaran, k.tingkat 
+$query = "SELECT u.*, k.mata_pelajaran, k.tingkat, k.background_image,
+          (SELECT COUNT(*) FROM jawaban_ujian ju 
+           WHERE ju.ujian_id = u.id AND ju.siswa_id = s.id) as sudah_ujian
           FROM ujian u
           JOIN kelas k ON u.kelas_id = k.id 
           JOIN kelas_siswa ks ON k.id = ks.kelas_id
           JOIN siswa s ON ks.siswa_id = s.id
           WHERE s.username = '$userid'
-
           ORDER BY u.tanggal_mulai ASC";
 
 $result = mysqli_query($koneksi, $query);
@@ -53,6 +54,19 @@ function getExamStatus($startTime, $endTime) {
         ];
     }
 }
+
+$query_siswa = "SELECT s.*, 
+    k.nama_kelas AS kelas_saat_ini 
+    FROM siswa s 
+    LEFT JOIN kelas_siswa ks ON s.id = ks.siswa_id 
+    LEFT JOIN kelas k ON ks.kelas_id = k.id 
+    WHERE s.username = ?";
+
+$stmt_siswa = mysqli_prepare($koneksi, $query_siswa);
+mysqli_stmt_bind_param($stmt_siswa, "s", $userid);
+mysqli_stmt_execute($stmt_siswa);
+$result_siswa = mysqli_stmt_get_result($stmt_siswa);
+$siswa = mysqli_fetch_assoc($result_siswa);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -121,7 +135,7 @@ function getExamStatus($startTime, $endTime) {
             <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
                 <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
             <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
+                    <h1 class="p-0 m-0" style="font-size: 20px;">Ujian</h1>
                     <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
                 </div>
             </a>
@@ -137,13 +151,13 @@ function getExamStatus($startTime, $endTime) {
                     <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
                 </div>
-                <div class="offcanvas-body">
+                <div class="offcanvas-body d-flex justify-content-between flex-column">
                     <div class="d-flex flex-column gap-2">
                         <!-- Menu Beranda -->
-                        <a href="#" class="text-decoration-none text-black">
+                        <a href="beranda.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center rounded  p-2">
-                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0 text-white">Beranda</p>
+                                <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0">Beranda</p>
                             </div>
                         </a>
                         
@@ -151,14 +165,14 @@ function getExamStatus($startTime, $endTime) {
                         <!-- Menu Ujian -->
                         <a href="ujian.php" class="text-decoration-none text-black">
                             <div class="d-flex align-items-center color-web rounded p-2">
-                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Ujian</p>
+                                <img src="assets/ujian_fill.png" alt="" width="50px" class="pe-4">
+                                <p class="p-0 m-0 text-white">Ujian</p>
                             </div>
                         </a>
 
                         <!-- Menu ai -->
                         <a href="ai.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center  rounded p-2">
+                            <div class="d-flex align-items-center rounded p-2">
                                 <img src="assets/ai.png" alt="" width="50px" class="pe-4">
                                 <p class="p-0 m-0">SMAGA AI</p>
                             </div>
@@ -184,18 +198,21 @@ function getExamStatus($startTime, $endTime) {
                     </div>
                     
                 <!-- Profile Dropdown -->
-                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
+                <div class="mt-3 dropup"> <!-- Tambahkan class dropdown di sini -->
                     <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
-                            style="background-color: #F8F8F7;" 
+                            style="background-color:rgb(255, 252, 248);" 
                             type="button" 
                             data-bs-toggle="dropdown" 
                             aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?></p>
+                            <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
+                                    alt="Profile Picture" 
+                                    class="rounded-circle" 
+                                    style="width: 25px; height: 25px;object-fit: cover; z-index: 99999;">
+                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?></p>
                     </button>
                     <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
                         <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
+                        <li><a class="dropdown-item" href="logout.php" style="color: red;">Keluar</a></li>
                     </ul>
                 </div>
             </div>
@@ -260,7 +277,7 @@ function getExamStatus($startTime, $endTime) {
                     </div>
                     <div class="col">
                         <a href="ujian.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center  bg-white shadow-sm rounded p-2" style="">
+                        <div class="d-flex align-items-center bg-white shadow-sm  rounded p-2" style="">
                             <img src="assets/ujian_fill.png" alt="" width="50px" class="pe-4">
                             <p class="p-0 m-0">Ujian</p>
                         </div>
@@ -294,7 +311,10 @@ function getExamStatus($startTime, $endTime) {
                 <div class="menu-bawah">
                     <div class="row dropdown">
                         <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
+                        <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
+                                    alt="Profile Picture" 
+                                    class="rounded-circle" 
+                                    style="width: 30px; height: 30px;object-fit: cover; z-index: 99999;">
                             <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($_SESSION['nama']); ?></p>
                         </div>
                         <!-- dropdown menu option -->
@@ -306,15 +326,26 @@ function getExamStatus($startTime, $endTime) {
                 </div>
             </div>
 
+
             <!-- ini isi kontennya -->
 <!-- Isi konten -->
 <div class="col p-4 col-utama mt-1 mt-md-0">
     <div class="row justify-content-between align-items-center mb-1">
-        <div class="col-12 col-md-auto mb-3 mb-md-0">
+        <div class="col-12 col-mobile col-md-auto mb-3 mb-md-0">
             <h3 style="font-weight: bold;">Ujian</h3>
         </div>
     </div>
-
+    
+    <style>
+        @media (max-width: 768px) {
+            .col-mobile {
+                display: none;
+            }
+            .col-utama {
+                padding-top: 0px !important;
+            }
+        }
+    </style>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 m-0">
     <?php if(mysqli_num_rows($result) > 0): 
         while($ujian = mysqli_fetch_assoc($result)):
@@ -326,7 +357,16 @@ function getExamStatus($startTime, $endTime) {
     ?>
         <div class="col ps-0">
             <div class="custom-card w-100">
-                <img src="assets/bg.jpg" alt="Background Image" class="card-img-top">
+                <!-- Jika ada background image, tampilkan. Jika tidak, gunakan default -->
+                <?php if(!empty($ujian['background_image'])): ?>
+                                    <img src="<?php echo htmlspecialchars($ujian['background_image']); ?>" 
+                                        alt="Background Image" 
+                                        class="card-img-top">
+                                <?php else: ?>
+                                    <img src="assets/bg.jpg" 
+                                        alt="Default Background Image" 
+                                        class="card-img-top">
+                                <?php endif; ?>         
                 
                 <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
                 <img src="<?php echo !empty($data_guru['foto_profil']) ? 'uploads/profil/'.$data_guru['foto_profil'] : 'assets/pp.png'; ?>" 
@@ -334,24 +374,67 @@ function getExamStatus($startTime, $endTime) {
                     class="profile-img rounded-4 border-0 bg-white">
                 </div>
 
+                <!-- data guru -->
+                 <?php
+
+                $guru_id = $ujian['guru_id'];
+                $query_guru = "SELECT namaLengkap, foto_profil FROM guru WHERE username = '$guru_id'";
+                $result_guru = mysqli_query($koneksi, $query_guru);
+                $data_guru = mysqli_fetch_assoc($result_guru);
+
+                // Tambahkan pengecekan sebelum mendefinisikan fungsi
+                if (!function_exists('formatDurasi')) {
+                    function formatDurasi($menit) {
+                        if($menit >= 60) {
+                            $jam = floor($menit / 60);
+                            $sisa_menit = $menit % 60;
+                            
+                            if($sisa_menit > 0) {
+                                return $jam . " jam " . $sisa_menit . " menit";
+                            } else {
+                                return $jam . " jam";
+                            }
+                        } else {
+                            return $menit . " menit";
+                        }
+                    }
+                }
+
+                ?>
+
                 <div class="ps-3">
+                    <!-- Tambahkan info guru di sini -->
                     <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">
                         <?php echo htmlspecialchars($ujian['mata_pelajaran']); ?>
                     </h5>
                     <p class="p-0 m-0" style="font-size: 12px;">
-                        <?php echo date('d/m/Y H:i', strtotime($ujian['tanggal_mulai'])); ?>
-                        (<?php echo $ujian['durasi']; ?> menit)
+                        Dibuat oleh: <?php echo htmlspecialchars($data_guru['namaLengkap']); ?>
+                    </p>
+                    <p class="p-0 m-0" style="font-size: 12px;">
+                        Ujian dimulai: <?php echo date('d/m/Y H:i', strtotime($ujian['tanggal_mulai'])); ?>
+                    </p>
+                    <p class="p-0 m-0" style="font-size: 12px;">
+                        Durasi Ujian: <?php echo $ujian['durasi']; ?> menit 
                     </p>
                 </div>
+
+                <script>
+                </script>
 
                 <div class="d-flex btn-group gap-2 p-3">
                     <?php 
                     $examStatus = getExamStatus($ujian['tanggal_mulai'], $ujian['tanggal_selesai']);
                     if ($examStatus['status'] === 'ongoing'): ?>
-                        <a href="mulai_ujian.php?id=<?php echo $ujian['id']; ?>" 
-                           class="btn color-web w-100 rounded text-white">
-                            Mulai Ujian
-                        </a>
+                        <?php if ($ujian['sudah_ujian'] > 0): ?>
+                            <button class="btn btn-secondary w-100 rounded" disabled>
+                                Sudah Ujian
+                            </button>
+                        <?php else: ?>
+                            <a href="mulai_ujian.php?id=<?php echo $ujian['id']; ?>" 
+                            class="btn color-web w-100 rounded text-white">
+                                Mulai Ujian
+                            </a>
+                        <?php endif; ?>
                     <?php else: ?>
                         <button class="btn btn-secondary w-100 rounded" disabled>
                             <?php echo $examStatus['status'] === 'waiting' ? $examStatus['countdown'] : 'Ujian Selesai'; ?>
@@ -363,7 +446,7 @@ function getExamStatus($startTime, $endTime) {
     <?php endwhile; 
     else: ?>
         <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
-            <p class="text-muted">Tidak ada ujian yang tersedia saat ini.</p>
+            <p class="text-muted">Guru belum membuat ujian untuk kamu.</p>
         </div>
     <?php endif; ?>
 </div>

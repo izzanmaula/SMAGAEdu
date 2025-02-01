@@ -1,17 +1,21 @@
-<?php
+<?php 
 require "koneksi.php";
 
 if(isset($_GET['keyword'])) {
     $keyword = mysqli_real_escape_string($koneksi, $_GET['keyword']);
     
-    // Query untuk mencari guru
-    $query_guru = "SELECT username, namaLengkap, jabatan FROM guru 
-                  WHERE namaLengkap LIKE '%$keyword%' OR username LIKE '%$keyword%'";
+    // Query untuk mencari guru (ditambahkan foto_profil)
+    $query_guru = "SELECT username, namaLengkap, jabatan, foto_profil 
+                   FROM guru 
+                   WHERE namaLengkap LIKE '%$keyword%' 
+                   OR username LIKE '%$keyword%'";
     $result_guru = mysqli_query($koneksi, $query_guru);
     
-    // Query untuk mencari siswa
-    $query_siswa = "SELECT username, nama FROM siswa 
-                   WHERE nama LIKE '%$keyword%' OR username LIKE '%$keyword%'";
+    // Query untuk mencari siswa (ditambahkan foto_profil dan tingkat)
+    $query_siswa = "SELECT username, nama, tingkat, foto_profil 
+                    FROM siswa 
+                    WHERE nama LIKE '%$keyword%' 
+                    OR username LIKE '%$keyword%'";
     $result_siswa = mysqli_query($koneksi, $query_siswa);
     
     $results = array('guru' => array(), 'siswa' => array());
@@ -26,6 +30,8 @@ if(isset($_GET['keyword'])) {
         $results['siswa'][] = $row;
     }
     
+    // Return hasil dalam format JSON
+    header('Content-Type: application/json');
     echo json_encode($results);
 }
 ?>

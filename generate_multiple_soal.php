@@ -27,14 +27,38 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($ujian['materi'])) {
         $materi_list = json_decode($ujian['materi'], true);
     }
-    
-    // Susun prompt berdasarkan konteks
-    $prompt = "Buatkan {$jumlah_soal} soal " . 
-             ($tipe_soal == 'pilihan_ganda' ? "pilihan ganda" : "uraian") . 
-             " untuk mata pelajaran {$mata_pelajaran} kelas {$tingkat}.\n\n";
 
-            //  error log untuk promt
-            error_log("Prompt buat jumlah soal, tipe soal, dan mata pelajaran: " . $prompt);
+    $kesulitan = $_POST['kesulitan'];
+    
+    // Update prompt generation
+    $prompt = "Buatkan {$jumlah_soal} soal " . 
+    ($tipe_soal == 'pilihan_ganda' ? "pilihan ganda" : "uraian") . 
+    " untuk mata pelajaran {$mata_pelajaran} kelas {$tingkat} dengan tingkat kesulitan " . 
+    strtoupper($kesulitan) . ".\n\n";
+
+    // Add difficulty guidelines based on level
+    $difficulty_guidelines = match($kesulitan) {
+        'mudah' => "- Gunakan konsep dasar dan pengetahuan faktual
+                    - Soal bersifat ingatan dan pemahaman sederhana
+                    - Jawaban mudah ditemukan dalam materi dasar",
+        'sedang' => "- Gabungkan beberapa konsep dasar
+                    - Butuh analisis sederhana
+                    - Memerlukan pemahaman konseptual",
+        'sulit' => "- Gunakan analisis kompleks
+                    - Kombinasikan multiple konsep
+                    - Membutuhkan pemecahan masalah
+                    - Aplikasi konsep dalam konteks baru",
+        'sangat_sulit' => "- Membutuhkan analisis sangat mendalam
+                        - Evaluasi dan sintesis konsep
+                        - Penalaran tingkat tinggi
+                        - Pemecahan masalah kompleks",
+        default => ""
+    };
+
+    $prompt .= "\nPanduan tingkat kesulitan:\n" . $difficulty_guidelines . "\n\n";
+
+    //  error log untuk promt
+    error_log("Prompt buat jumlah soal, tipe soal, dan mata pelajaran: " . $prompt);
     
     // Tambahkan daftar materi ke prompt
     if(!empty($materi_list)) {
@@ -48,39 +72,37 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if($tipe_soal == 'pilihan_ganda') {
         $prompt .= "format yang diinginkan:
-    1. setiap soal harus memiliki 4 pilihan jawaban (A, B, C, D)
-    2. sertakan kunci jawaban untuk setiap soal
-    3. sawaban harus bervariasi (tidak selalu A atau B)
-    4. tingkat kesulitan soal harus bervariasi
-    5. soal harus sesuai dengan tingkat pemahaman siswa kelas {$tingkat}
-
-    WAJIB IKUTI FORMAT INI DENGAN SANGAT TEPAT:
-
-    [Soal pertama]
-    Soal: [pertanyaan]
-    A. [jawaban]
-    B. [jawaban] 
-    C. [jawaban]
-    D. [jawaban]
-    Jawaban: [A/B/C/D]
-    ---
-
-    Contoh:
-    Soal: Berapakah hasil dari 5 x 5?
-    A. 15
-    B. 20
-    C. 25
-    D. 30
-    Jawaban: C
-    ---
-    
-    [Soal kedua dst]
-    
-    ATURAN PENTING:
-    - DILARANG menggunakan format lain (contoh: tidak boleh ada '1.', '**', dll)  
-    - WAJIB gunakan separator '---' di antara soal
-    - WAJIB mulai tiap soal dengan kata 'Soal:'
-    - DILARANG memberikan komentar atau teks tambahan";
+            1. setiap soal harus memiliki 4 pilihan jawaban (A, B, C, D)
+            2. sertakan kunci jawaban untuk setiap soal
+            3. jawaban harus bervariasi (tidak selalu A atau B)
+            4. tingkat kesulitan soal harus bervariasi
+            5. soal harus sesuai dengan tingkat pemahaman siswa kelas {$tingkat}
+            
+            WAJIB IKUTI FORMAT INI DENGAN SANGAT TEPAT:
+            
+            Soal: [pertanyaan tanpa nomor]
+            A. [jawaban]
+            B. [jawaban] 
+            C. [jawaban]
+            D. [jawaban]
+            Jawaban: [A/B/C/D]
+            ---
+            
+            Contoh:
+            Soal: Berapakah hasil dari 5 x 5?
+            A. 15
+            B. 20
+            C. 25
+            D. 30
+            Jawaban: C
+            ---
+            
+            ATURAN PENTING:
+            - JANGAN GUNAKAN PENOMORAN PADA SOAL (1., 2., dst)
+            - DILARANG menggunakan format lain (tidak boleh ada '**', 'Soal 1:', dll)
+            - WAJIB gunakan separator '---' di antara soal
+            - WAJIB mulai tiap soal dengan kata 'Soal:' (tanpa nomor)
+            - DILARANG memberikan komentar atau teks tambahan";
 
 
     } 
@@ -186,7 +208,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             $generated_text = trim($generated_text);
         
             // Split berdasarkan "Soal:"
-            $soal_array = preg_split('/(?=Soal:)/', $generated_text, -1, PREG_SPLIT_NO_EMPTY);
+            $soal_array = preg_split('/(?=Soal:\s*[^0-9])/', $generated_text, -1, PREG_SPLIT_NO_EMPTY);
             $soal_array = array_map('trim', $soal_array);
 
             $soal_array = array_slice($soal_array, 0, $jumlah_soal);

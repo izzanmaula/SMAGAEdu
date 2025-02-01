@@ -98,6 +98,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
             padding: 20px;
             margin-bottom: 15px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.1);
         }
         .ai-button {
         position: relative;
@@ -207,308 +208,142 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
     </style>
 </head>
 <body>
-    <div class="container-fluid">
+<?php include 'includes/styles.php'; ?>
+
+<div class="container-fluid">
         <div class="row">
-                <!-- Navbar Mobile -->
-    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
-        <div class="container-fluid">
-            <!-- Logo dan Nama -->
-            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
-                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
-            <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
-                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
-                </div>
-            </a>
+            <!-- Sidebar for desktop -->
+            <?php include 'includes/sidebar.php'; ?>
+
+            <!-- Mobile navigation -->
+            <?php include 'includes/mobile_nav.php'; ?>
+
+            <!-- Settings Modal -->
+            <?php include 'includes/settings_modal.php'; ?>
+
             
-            <!-- Tombol Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
-                <span class="navbar-toggler-icon" style="color:white"></span>
-            </button>
-            
-            <!-- Offcanvas/Sidebar Mobile -->
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <div class="d-flex flex-column gap-2">
-                        <!-- Menu Beranda -->
-                        <a href="beranda_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded color-web p-2">
-                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0 text-white">Beranda</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Cari -->
-                        <a href="cari_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Cari</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Ujian -->
-                        <a href="ujian_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Ujian</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Profil -->
-                        <a href="profil_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Profil</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu AI -->
-                        <a href="ai.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Gemini</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Bantuan -->
-                        <a href="bantuan.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Bantuan</p>
-                            </div>
-                        </a>
-                    </div>
-                    
-                <!-- Profile Dropdown -->
-                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
-                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
-                            style="background-color: #F8F8F7;" 
-                            type="button" 
-                            data-bs-toggle="dropdown" 
-                            aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0  text-truncate" style="font-size: 12px;" aria-expanded="false"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
-                    </button>
-                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
-                    </ul>
-                </div>
-            </div>
         </div>
-    </nav>
-
-     <!-- row col untuk halaman utama -->
-    <div class="container-fluid">
-        <div class="row">
-        <div class="col-auto vh-100 p-2 p-md-4 shadow-sm menu-samping d-none d-md-block" style="background-color:rgb(238, 236, 226)">
-                <style>
-                    .menu-samping {
-                        position: fixed;
-                        width: 13rem;
-                        z-index: 1000;
-                    }
-                    @media (max-width: 768px) {
-                        .menu-samping {
-                            display: none;
-                        }
-                        body {
-                            padding-top: 60px;
-                        }
-                        .custom-card {
-                            max-width: 100%;
-                        }
-                    }
-
-                </style>
-                <div class="row gap-0">
-                    <div class="ps-3 mb-3">
-                        <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px" class="logo_orange">
-                            <div>
-                                <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
-                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
-                            </div>
-                        </a>
-                    </div>  
-                    <div class="col">
-                        <a href="beranda_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
-                            <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Beranda</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="cari_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Cari</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="ujian_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Ujian</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="profil_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Profil</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row gap-0" style="margin-bottom: 15rem;">
-                    <div class="col">
-                        <a href="ai.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Gemini</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="bantuan.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Bantuan</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row dropdown">
-                    <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0  text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
-                    </div>
-                    <!-- dropdown menu option -->
-                    <ul class="dropdown-menu" style="font-size: 12px;">
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
-                      </ul>
-                </div>
-            </div>
+    </div>    
 
 
             <!-- Main Content -->
             <div class="col p-4 col-utama">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3>Buat Soal Ujian</h3>
-                    <div class="d-flex gap-2">
+                    <h3>Buat Soal</h3>
+                    <div class="d-flex gap-1">
+                        <!-- Import dari Word button -->
+                        <button type="button" 
+                                class="rounded-4 btn color-web text-white d-flex align-items-center justify-content-center gap-2 w-100 w-md-auto" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#uploadSoalModal">
+                            <i class="bi bi-file-earmark-word"></i>
+                            <span class="d-none d-md-inline" style="font-size: 12px;">Import dari Word</span>
+                        </button>
 
-                    <button type="button" class="btn btn-success d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#uploadSoalModal">
-                        <i class="bi bi-file-earmark-word"></i>
-                        Import dari Word
-                    </button>
-                        <!-- Tombol Buat Soal dengan AI -->
-                        <button type="button" class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#aiSoalModal">
+                        <!-- Buat Soal dengan AI button -->
+                        <button type="button" 
+                                class="rounded-4 btn color-web text-white d-flex align-items-center justify-content-center gap-2 w-100 w-md-auto" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#aiSoalModal">
                             <i class="bi bi-stars"></i>
-                            Buat Soal dengan AI
+                            <span class="d-none d-md-inline" style="font-size: 12px;">Bantuan SMAGA AI</span>
                         </button>
                         
-                        <!-- Tombol Tambah Soal Manual -->
-                        <button type="button" class="btn color-web text-white d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#pilihTipeModal">
+                        <!-- Tambah Soal Manual button -->
+                        <button type="button" 
+                                class="rounded-4 btn color-web text-white d-flex align-items-center justify-content-center gap-2 w-100 w-md-auto" 
+                                data-bs-toggle="modal" 
+                                onclick="pilihTipeSoal('pilihan_ganda')">
                             <i class="bi bi-plus-lg"></i>
-                            Tambah Soal
+                            <span class="d-none d-md-inline" style="font-size: 12px;">Tambah Soal</span>
                         </button>
                     </div>
                 </div>
-
 
                 <!-- Info Ujian -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-0 mb-md-3">
                             <h5 class="card-title m-0">
                                 <i class="bi bi-journal-text me-2"></i>
                                 <?php echo htmlspecialchars($ujian['judul']); ?>
                             </h5>
-                            <span class="badge <?php 
-                                echo $ujian['status'] == 'draft' ? 'bg-warning' : 
-                                    ($ujian['status'] == 'published' ? 'bg-success' : 'bg-secondary'); 
-                            ?>">
-                                <i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i>
-                                <?php echo ucfirst(htmlspecialchars($ujian['status'])); ?>
-                            </span>
+                            <!-- Toggle button for mobile -->
+                            <button class="btn d-md-none" style="background-color: rgb(218, 119, 86);" type="button" data-bs-toggle="collapse" data-bs-target="#detailUjian" aria-expanded="false" aria-controls="detailUjian">
+                                <i class="bi bi-chevron-down text-white"></i>
+                            </button>
                         </div>
 
-                        <div class="row g-4">
-                            <!-- Informasi Utama -->
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start mb-3">
-                                    <i class="bi bi-book text-primary me-3 fs-5"></i>
-                                    <div>
-                                        <p class="text-muted mb-1" style="font-size: 12px;">Mata Pelajaran</p>
-                                        <p class="mb-0"><?php echo htmlspecialchars($ujian['mata_pelajaran']); ?></p>
+                        <!-- Wrap content in collapse div -->
+                        <div class="collapse d-md-block" id="detailUjian">
+                            <div class="row g-4">
+                                <!-- Informasi Utama -->
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mt-3 mb-3">
+                                        <i class="bi bi-book me-3 fs-5" style="color: rgb(218, 119, 86);"></i>
+                                        <div>
+                                            <p class="text-muted mb-1" style="font-size: 12px;">Mata Pelajaran</p>
+                                            <p class="mb-0"><?php echo htmlspecialchars($ujian['mata_pelajaran']); ?></p>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="d-flex align-items-start mb-3">
-                                    <i class="bi bi-card-text text-primary me-3 fs-5"></i>
-                                    <div>
-                                        <p class="text-muted mb-1" style="font-size: 12px;">Deskripsi</p>
-                                        <p class="mb-0"><?php echo htmlspecialchars($ujian['deskripsi']); ?></p>
+                                    <div class="d-flex align-items-start mb-3">
+                                        <i class="bi bi-card-text me-3 fs-5" style="color: rgb(218, 119, 86);"></i>
+                                        <div>
+                                            <p class="text-muted mb-1" style="font-size: 12px;">Deskripsi</p>
+                                            <p class="mb-0"><?php echo htmlspecialchars($ujian['deskripsi']); ?></p>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <?php if(!empty($ujian['materi'])): ?>
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-list-check text-primary me-3 fs-5"></i>
-                                    <div>
-                                        <p class="text-muted mb-2" style="font-size: 12px;">Materi Ujian</p>
-                                        <ul class="list-unstyled mb-0">
-                                            <?php 
-                                            $materi_list = json_decode($ujian['materi'], true);
-                                            if(is_array($materi_list)) {
-                                                foreach($materi_list as $materi) {
-                                                    echo "<li class='mb-1'><i class='bi bi-dot me-1'></i>" . htmlspecialchars($materi) . "</li>";
+                                    <?php if(!empty($ujian['materi'])): ?>
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-list-check me-3 fs-5" style="color: rgb(218, 119, 86);"></i>
+                                        <div>
+                                            <p class="text-muted mb-2" style="font-size: 12px;">Materi Ujian</p>
+                                            <ul class="list-unstyled mb-0">
+                                                <?php 
+                                                $materi_list = json_decode($ujian['materi'], true);
+                                                if(is_array($materi_list)) {
+                                                    foreach($materi_list as $materi) {
+                                                        echo "<li class='mb-1'><i class='bi bi-dot me-1'></i>" . htmlspecialchars($materi) . "</li>";
+                                                    }
                                                 }
-                                            }
-                                            ?>
-                                        </ul>
+                                                ?>
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                                <?php endif; ?>
-                            </div>
-
-                            <!-- Informasi Waktu -->
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start mb-3">
-                                    <i class="bi bi-calendar-event text-primary me-3 fs-5"></i>
-                                    <div>
-                                        <p class="text-muted mb-1" style="font-size: 12px;">Waktu Pelaksanaan</p>
-                                        <p class="mb-1">
-                                            Mulai: <?php echo date('d M Y - H:i', strtotime($ujian['tanggal_mulai'])); ?> WIB
-                                        </p>
-                                        <p class="mb-0">
-                                            Selesai: <?php echo date('d M Y - H:i', strtotime($ujian['tanggal_selesai'])); ?> WIB
-                                        </p>
-                                    </div>
+                                    <?php endif; ?>
                                 </div>
 
-                                <div class="d-flex align-items-start mb-3">
-                                    <i class="bi bi-hourglass-split text-primary me-3 fs-5"></i>
-                                    <div>
-                                        <p class="text-muted mb-1" style="font-size: 12px;">Durasi</p>
-                                        <p class="mb-0"><?php echo $ujian['durasi']; ?> menit</p>
+                                <!-- Informasi Waktu -->
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <i class="bi bi-calendar-event me-3 fs-5" style="color: rgb(218, 119, 86) ;"></i>
+                                        <div>
+                                            <p class="text-muted mb-1" style="font-size: 12px;">Waktu Pelaksanaan</p>
+                                            <p class="mb-1">
+                                                Mulai: <?php echo date('d M Y - H:i', strtotime($ujian['tanggal_mulai'])); ?> WIB
+                                            </p>
+                                            <p class="mb-0">
+                                                Selesai: <?php echo date('d M Y - H:i', strtotime($ujian['tanggal_selesai'])); ?> WIB
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-question-circle text-primary me-3 fs-5"></i>
-                                    <div>
-                                        <p class="text-muted mb-1" style="font-size: 12px;">Total Soal</p>
-                                        <p class="mb-0"><?php echo $total_soal; ?> soal</p>
+                                    <div class="d-flex align-items-start mb-3">
+                                        <i class="bi bi-hourglass-split me-3 fs-5" style="color: rgb(218, 119, 86) ;"></i>
+                                        <div>
+                                            <p class="text-muted mb-1" style="font-size: 12px;">Durasi</p>
+                                            <p class="mb-0"><?php echo $ujian['durasi']; ?> menit</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-question-circle me-3 fs-5" style="color: rgb(218, 119, 86) ;"></i>
+                                        <div>
+                                            <p class="text-muted mb-1" style="font-size: 12px;">Total Soal</p>
+                                            <p class="mb-0"><?php echo $total_soal; ?> soal</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -516,40 +351,60 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                     </div>
                 </div>
 
-                <!-- Daftar Soal -->
-                <div id="daftarSoal" class="row">
-                    <?php
-                    $query_soal_list = "SELECT * FROM bank_soal WHERE ujian_id = '$ujian_id' ORDER BY id ASC";
-                    $result_soal_list = mysqli_query($koneksi, $query_soal_list);
-                    $no = 1;
-                    while($soal = mysqli_fetch_assoc($result_soal_list)) {
-                    ?>
-                    <div class="col-12">
-                        <div class="soal-card">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <h5>Soal <?php echo $no++; ?></h5>
-                                <div>
-                                    <button class="btn btn-sm btn-primary me-2" onclick="editSoal(<?php echo $soal['id']; ?>)">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="hapusSoal(<?php echo $soal['id']; ?>)">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <p><?php echo htmlspecialchars($soal['pertanyaan']); ?></p>
-                            <?php if($soal['jenis_soal'] == 'pilihan_ganda'): ?>
-                                <div class="ms-3">
-                                    <p class="<?php echo $soal['jawaban_benar'] == 'A' ? 'text-success' : ''; ?>">A. <?php echo htmlspecialchars($soal['jawaban_a']); ?></p>
-                                    <p class="<?php echo $soal['jawaban_benar'] == 'B' ? 'text-success' : ''; ?>">B. <?php echo htmlspecialchars($soal['jawaban_b']); ?></p>
-                                    <p class="<?php echo $soal['jawaban_benar'] == 'C' ? 'text-success' : ''; ?>">C. <?php echo htmlspecialchars($soal['jawaban_c']); ?></p>
-                                    <p class="<?php echo $soal['jawaban_benar'] == 'D' ? 'text-success' : ''; ?>">D. <?php echo htmlspecialchars($soal['jawaban_d']); ?></p>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                    <?php } ?>
+                <script>
+                    // Toggle icon when collapse is shown/hidden
+                    document.getElementById('detailUjian').addEventListener('show.bs.collapse', function () {
+                        document.querySelector('[data-bs-target="#detailUjian"] i').classList.replace('bi-chevron-down', 'bi-chevron-up');
+                    });
+                    
+                    document.getElementById('detailUjian').addEventListener('hide.bs.collapse', function () {
+                        document.querySelector('[data-bs-target="#detailUjian"] i').classList.replace('bi-chevron-up', 'bi-chevron-down');
+                    });
+                </script>
+
+<!-- Daftar Soal -->
+<div id="daftarSoal" class="row">
+    <?php
+    $query_soal_list = "SELECT * FROM bank_soal WHERE ujian_id = '$ujian_id' ORDER BY id ASC";
+    $result_soal_list = mysqli_query($koneksi, $query_soal_list);
+    $no = 1;
+    while($soal = mysqli_fetch_assoc($result_soal_list)) {
+    ?>
+    <div class="col-12">
+        <div class="soal-card">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5>Soal <?php echo $no++; ?></h5>
+                <div>
+                    <button class="btn btn-sm me-2" style="background-color: rgb(218, 119, 86);" onclick="editSoal(<?php echo $soal['id']; ?>)">
+                        <i class="bi bi-pencil" style="color: white;"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" style="background-color: rgb(218, 119, 86);" onclick="hapusSoal(<?php echo $soal['id']; ?>)">
+                        <i class="bi bi-trash" style="color: white;"></i>
+                    </button>
                 </div>
+            </div>
+
+            <?php if(!empty($soal['gambar_soal'])): ?>
+            <div class="mb-3">
+                <img src="<?php echo htmlspecialchars($soal['gambar_soal']); ?>" class="img-fluid rounded" style="max-height: 200px">
+            </div>
+            <?php endif; ?>
+
+            <p><?php echo htmlspecialchars($soal['pertanyaan']); ?></p>
+            
+
+            <?php if($soal['jenis_soal'] == 'pilihan_ganda'): ?>
+                <div class="ms-3">
+                    <div>A. <span class="<?php echo $soal['jawaban_benar'] == 'A' ? 'bg-success text-white fw-bold px-1 rounded' : ''; ?>"><?php echo htmlspecialchars($soal['jawaban_a']); ?></span></div>
+                    <div>B. <span class="<?php echo $soal['jawaban_benar'] == 'B' ? 'bg-success text-white fw-bold px-1 rounded' : ''; ?>"><?php echo htmlspecialchars($soal['jawaban_b']); ?></span></div>
+                    <div>C. <span class="<?php echo $soal['jawaban_benar'] == 'C' ? 'bg-success text-white fw-bold px-1 rounded' : ''; ?>"><?php echo htmlspecialchars($soal['jawaban_c']); ?></span></div>
+                    <div>D. <span class="<?php echo $soal['jawaban_benar'] == 'D' ? 'bg-success text-white fw-bold px-1 rounded' : ''; ?>"><?php echo htmlspecialchars($soal['jawaban_d']); ?></span></div>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php } ?>
+</div>
 
                 <!-- Modal Pilih Tipe Soal -->
                 <div class="modal fade" id="pilihTipeModal" tabindex="-1">
@@ -587,11 +442,11 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Import Soal dari Word</h5>
+                <h5 class="modal-title">Import Soal Word</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-            <form id="formUploadSoal" enctype="multipart/form-data" method="post" action="process_word.php">
+            <form id="formUploadSoal" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="fileSoal" class="form-label">Upload File Soal (.docx)</label>
                     <input type="file" class="form-control" id="fileSoal" name="fileSoal" accept=".docx" required>
@@ -615,7 +470,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
             </div>
             <div class="modal-footer btn-group">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn color-web text-white" onclick="uploadSoalWord()">
+                <button type="button" class="btn color-web text-white" id="uploadButton">
                     <span>Upload</span>
                     <div class="spinner-border spinner-border-sm ms-2 d-none" role="status"></div>
                 </button>
@@ -637,14 +492,24 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                         <div class="mb-3">
                             <label class="form-label">Jumlah Soal</label>
                             <input type="number" class="form-control" name="jumlah_soal" min="1" max="100" value="10">
-                            <div class="form-text">Masukkan jumlah soal (maksimal 100 soal per generate)</div>
-                        </div>                      
+                            <div class="form-text" style="font-size: 12px;">Semakin banyak soal semakin banyak waktu pembuatan soal, tentukan dengan bijak.</div>
+                        </div>          
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Kesulitan</label>
+                            <select class="form-select" name="kesulitan">
+                                <option value="pilihan_ganda">Mudah</option>
+                                <option value="pilihan_ganda">Sedang</option>
+                                <option value="pilihan_ganda">Sulit</option>
+                                <option value="pilihan_ganda">Sangat Sulit</option>
+                            </select>
+                        </div>
+
 
                         <div class="mb-3">
                             <label class="form-label">Tipe Soal</label>
                             <select class="form-select" name="tipe_soal">
                                 <option value="pilihan_ganda">Pilihan Ganda</option>
-                                <option value="uraian">Uraian</option>
                             </select>
                         </div>
                     </form>
@@ -700,6 +565,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                 body: new URLSearchParams({
                     jumlah_soal: formData.get('jumlah_soal'),
                     tipe_soal: formData.get('tipe_soal'),
+                    kesulitan: formData.get('kesulitan'),
                     ujian_id: <?php echo $ujian_id; ?>,
                     mata_pelajaran: "<?php echo addslashes($ujian['mata_pelajaran']); ?>",
                     tingkat: "<?php echo $ujian['tingkat']; ?>"
@@ -755,60 +621,56 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
 
 <!-- script upload soal pake word -->
  <script>
-async function uploadSoalWord() {
+// Separate script section
+document.getElementById('uploadButton').addEventListener('click', function(e) {
     const form = document.getElementById('formUploadSoal');
     const formData = new FormData(form);
+    formData.append('ujian_id', '<?php echo $ujian_id; ?>');
 
-    const button = form.closest('.modal').querySelector('.modal-footer .btn.color-web');
+    // Log form data
+    for (let pair of formData.entries()) {
+    console.log(pair[0], pair[1]); 
+    }
+
+
+    const button = this;
     const spinner = button.querySelector('.spinner-border');
     const buttonText = button.querySelector('span');
     const overlay = document.getElementById('generateOverlay');
 
-    try {
-        button.disabled = true;
-        spinner.classList.remove('d-none');
-        buttonText.textContent = 'Uploading...';
+    button.disabled = true;
+    spinner.classList.remove('d-none');
+    buttonText.textContent = 'Uploading...';
+    overlay.style.display = 'flex';
 
-        overlay.classList.add('fade-in');
-        overlay.style.display = 'flex';
-
-        const response = await fetch('process_word.php', {
-            method: 'POST',
-            body: formData
-        });
-
-        const result = await response.json();
-        
+    fetch('process_word.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
         if (result.status === 'success') {
-            console.log('Upload berhasil:', result);
             location.reload();
         } else {
+            console.error('Upload error:', result);
             throw new Error(result.message || 'Gagal mengupload file');
         }
-        
-    } catch (error) {
-        console.error('Error detail:', error);
-        alert('Gagal mengupload file: ' + (error.message || 'Kesalahan tidak diketahui'));
-    } finally {
-        // Reset button state
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Gagal mengupload file: ' + error.message);
+    })
+    .finally(() => {
         button.disabled = false;
         spinner.classList.add('d-none');
         buttonText.textContent = 'Upload';
-
-        // Sembunyikan overlay
-        overlay.classList.remove('fade-in');
-        overlay.classList.add('fade-out');
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            overlay.classList.remove('fade-out');
-        }, 500);
-
-        // Tutup modal
+        overlay.style.display = 'none';
+        
         const modal = document.getElementById('uploadSoalModal');
         const modalInstance = bootstrap.Modal.getInstance(modal);
         modalInstance.hide();
-    }
-}
+    });
+});
 </script>
 
     <script>
@@ -881,6 +743,7 @@ async function uploadSoalWord() {
             <div class="modal-body px-4">
                 <form id="formSoal">
                     <input type="hidden" name="soal_id" value="">
+                   
                     <div class="mb-4">
                         <label class="form-label small fw-bold">Pertanyaan</label>
                         <div class="d-flex gap-2 position-relative">
@@ -891,6 +754,18 @@ async function uploadSoalWord() {
                                 </button>                                
                         </div>
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Gambar Soal (Opsional)</label>
+                        <div class="d-flex gap-2">
+                            <input type="file" class="form-control" name="gambar_soal" accept="image/*">
+                            <div id="preview_container" class="d-none">
+                                <img id="image_preview" class="img-fluid mb-2" style="max-height: 200px">
+                                <button type="button" class="btn btn-sm btn-danger" onclick="removeImage()">Hapus</button>
+                            </div>
+                        </div>
+                    </div>
+ 
 
                     
                     <div class="mb-4">
@@ -1024,6 +899,31 @@ async function uploadSoalWord() {
         }
     `;
     document.head.appendChild(style);
+}
+
+// Add after existing loadFormSoal() code:
+function previewImage(input) {
+    const preview = document.getElementById('image_preview');
+    const container = document.getElementById('preview_container');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            container.classList.remove('d-none');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function removeImage() {
+    const fileInput = document.querySelector('input[name="gambar_soal"]');
+    const preview = document.getElementById('image_preview');
+    const container = document.getElementById('preview_container');
+    
+    fileInput.value = '';
+    preview.src = '';
+    container.classList.add('d-none');
 }
     
 

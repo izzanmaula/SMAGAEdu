@@ -94,6 +94,7 @@ $result_siswa = mysqli_query($koneksi, $query_siswa_all);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <title>Kelas - SMAGAEdu</title>
 </head>
+<?php include 'includes/styles.php'; ?>
 <style>
         body{ 
             font-family: merriweather;
@@ -120,190 +121,27 @@ $result_siswa = mysqli_query($koneksi, $query_siswa_all);
 
 
     
-    <!-- Navbar Mobile -->
-    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
-        <div class="container-fluid px-0">
-            <!-- Logo dan Nama -->
-            <a class="navbar-brand ms-2 d-flex align-items-center gap-2 text-white" href="<?php echo ($_SESSION['level'] == 'guru') ? 'beranda_guru.php' : 'beranda.php'; ?>">
-                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
-            <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">SMAGAEdu</h1>
-                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
-                </div>
-            </a>
-            
-            <!-- Tombol Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
-                <span class="navbar-toggler-icon" style="color:white"></span>
-            </button>
-            
-            <!-- Offcanvas/Sidebar Mobile -->
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <div class="d-flex flex-column gap-2">
-                        <!-- Menu Beranda -->
-                        <a href="beranda_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded color-web p-2">
-                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0 text-white">Beranda</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Cari -->
-                        <a href="cari_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Cari</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Ujian -->
-                        <a href="ujian_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Ujian</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Profil -->
-                        <a href="profil_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Profil</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu AI -->
-                        <a href="ai.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Gemini</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Bantuan -->
-                        <a href="bantuan.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Bantuan</p>
-                            </div>
-                        </a>
-                    </div>
-                    
-                <!-- Profile Dropdown -->
-                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
-                    <button class="btn btnPrimary d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
-                            style="background-color: #F8F8F7;" 
-                            type="button" 
-                            data-bs-toggle="dropdown" 
-                            aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
-                    </button>
-                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
+<div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar for desktop -->
+            <?php include 'includes/sidebar.php'; ?>
 
-     <!-- row col untuk halaman utama -->
-    <div class="container-fluid px-0">
-        <div class="row g-0">
-        <div class="col-auto vh-100 p-2 p-md-4 shadow-sm menu-samping d-none d-md-block" style="background-color:rgb(238, 236, 226)">
-                <style>
-                    .menu-samping {
-                        position: fixed;
-                        width: 13rem;
-                        z-index: 1000;
-                    }
-                </style>
-                <div class="row gap-0">
-                    <div class="ps-3 mb-3">
-                        <a href="beranda_guru.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px" class="logo_orange">
-                            <div>
-                                <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
-                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
-                            </div>
-                        </a>
-                    </div>  
-                    <div class="col">
-                        <a href="beranda_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
-                            <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Beranda</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="cari_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Cari</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="ujian_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Ujian</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="profil_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Profil</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row gap-0" style="margin-bottom: 15rem;">
-                    <div class="col">
-                        <a href="ai.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Gemini</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="bantuan.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Bantuan</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row dropdown">
-                    <div class="btn btnPrimary d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="assets/pp.png" alt="" class="rounded-circle p-0 m-0" width="30px">
-                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($guru['namaLengkap']); ?></p>
-                    </div>
-                    <!-- dropdown menu option -->
-                    <ul class="dropdown-menu" style="font-size: 12px;">
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
-                      </ul>
-                </div>
-            </div>
+            <!-- Mobile navigation -->
+            <?php include 'includes/mobile_nav.php'; ?>
+
+            <!-- Settings Modal -->
+            <?php include 'includes/settings_modal.php'; ?>
+
+            
+        </div>
+    </div>    
+
 
             <!-- konten inti -->
             <div class="col col-inti p-0 p-md-3">
                 <style>
                     .col-inti {
                         margin-left: 0;
-                        margin-top: 56px; /* Height of mobile navbar */
                         padding-right: 0 !important; /* Remove right padding */
                         max-width: 100%; /* Ensure content doesn't overflow */                            
                     }
@@ -395,42 +233,79 @@ $result_siswa = mysqli_query($koneksi, $query_siswa_all);
 
                     <div class="row mt-4 p-3 m-0 pt-0">
                     <div class="col-12 col-lg-8 p-0">
-                        <div class="buatPosting rounded-3 gap-3 d-flex">
-                            <div class="d-flex">
+                        <!-- Post Creator Card -->
+                        <div class="create-post-card bg-white rounded-3 p-3 mb-4 border">
+                            <!-- Desktop View -->
+                            <div class="d-none d-md-flex align-items-center gap-3">
                                 <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" 
-                                    alt="Profile Image" 
-                                    class="profile-img rounded-4 border-0 bg-white" style="width: 40px; object-fit:cover;">
+                                     alt="Profile" class="rounded-circle" width="45" height="45" style="object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <button class="btn w-100 text-start px-4 rounded-pill border bg-light hover-bg" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#modalTambahPostingan">
+                                        <span class="text-muted">Apa yang ingin Anda diskusikan dengan siswa?</span>
+                                    </button>
+                                </div>
                             </div>
-                            <div style="background-color: rgb(231, 231, 231);" class="rounded-pill flex-fill btn btnPrimary text-start">
-                                <p class="p-2 m-0 text-muted sapa1" data-bs-toggle="modal" data-bs-target="#modalTambahPostingan" style="font-size: 14px;">Halo, topik apa yang ingin Anda diskusikan bersama siswa?</p>
-                                <p class="p-2 m-0 text-muted sapa2" data-bs-toggle="modal" data-bs-target="#modalTambahPostingan" style="font-size: 12px;">Ingin diskusikan tentang apa?</p>
+
+                            <!-- Mobile View -->
+                            <div class="d-flex d-md-none gap-2">
+                                <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>" 
+                                     alt="Profile" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                <button class="flex-grow-1 btn text-start rounded-pill border bg-light" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalTambahPostingan">
+                                    <span class="text-muted" style="font-size: 0.9rem;">Mulai diskusi...</span>
+                                </button>
                             </div>
-                            <!-- style font -->
-                             <style>
-                                @media screen and (max-width: 768px) {
-                                    .sapa1 {
-                                        display: none;
-                                    }
-                                    .sapa2{
-                                        display: block;
-                                    }
-                                    .buatPosting {
-                                        border: none!important;
-                                        box-shadow: none!important;
-                                    }
-                                }
-                                @media screen and (min-width: 768px) {
-                                    .sapa1 {
-                                        display: block;
-                                    }
-                                    .sapa2{
-                                        display: none;
-                                    }
-                                }
-                                
-                             </style>
+
+                            <!-- Quick Actions -->
+                            <div class="d-flex justify-content-around mt-3 pt-2 border-top">
+                                <button class="btn btn-light flex-grow-1 me-2 d-flex align-items-center justify-content-center gap-2" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalTambahPostingan">
+                                    <i class="bi bi-image text-success"></i>
+                                    <span class="d-none d-md-inline">Foto/Video</span>
+                                </button>
+                                <button class="btn btn-light flex-grow-1 me-2 d-flex align-items-center justify-content-center gap-2" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalTambahPostingan">
+                                    <i class="bi bi-file-earmark-text text-primary"></i>
+                                    <span class="d-none d-md-inline">Dokumen</span>
+                                </button>
+                                <button class="btn btn-light flex-grow-1 d-flex align-items-center justify-content-center gap-2" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalTambahPostingan">
+                                    <i class="bi bi-link-45deg text-warning"></i>
+                                    <span class="d-none d-md-inline">Link</span>
+                                </button>
+                            </div>
                         </div>
 
+                        <style>
+                        .create-post-card {
+                            transition: all 0.2s ease;
+                        }
+
+                        .hover-bg:hover {
+                            background-color: #f0f0f0 !important;
+                        }
+
+                        .btn-light:hover {
+                            background-color: #e9ecef;
+                        }
+
+                        @media (max-width: 768px) {
+                            .create-post-card {
+                                padding: 12px !important;
+                                margin-bottom: 12px !important;
+                            }
+                            
+                            .quick-actions button {
+                                padding: 8px !important;
+                            }
+                        }
+                        </style>
 <!-- Modal Edit Background -->
 <div class="modal fade" id="modalEditBackground" tabindex="-1">
     <div class="modal-dialog modal-lg">
@@ -796,13 +671,60 @@ function clearFileInput() {
                                     <p class="p-0 m-0 text-muted" style="font-size: 12px;">Diposting pada <?php echo $tanggal; ?></p>
                                 </div>
                                 <div class="flex-fill text-end dropdown">
-                                    <button class="bg-light border rounded" type="button" data-bs-toggle="dropdown" aria-expanded="false"><img src="assets/dot.png" alt="" width="20px"></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#" onclick="hapusPostingan(<?php echo $post['id']; ?>)">Hapus Pendapat</a></li>
-
+                                    <button class="btn p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi-three-dots-vertical text-muted"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end animate slideIn">
+                                        <li>
+                                            <a class="dropdown-item d-flex align-items-center gap-2" href="#" onclick="hapusPostingan(<?php echo $post['id']; ?>)">
+                                                <i class="fas fa-trash-alt text-danger"></i>
+                                                Hapus Postingan
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
+
+                            <style>
+                            /* Animasi dropdown */
+                            .animate {
+                                animation-duration: 0.2s;
+                                animation-fill-mode: both;
+                                transform-origin: top center;
+                            }
+
+                            @keyframes slideIn {
+                                0% {
+                                    transform: scaleY(0);
+                                    opacity: 0;
+                                }
+                                100% {
+                                    transform: scaleY(1);
+                                    opacity: 1;
+                                }
+                            }
+
+                            .slideIn {
+                                animation-name: slideIn;
+                            }
+
+                            /* Style dropdown */
+                            .dropdown-menu {
+                                padding: 0.5rem 0;
+                                border-radius: 8px;
+                                border: 1px solid rgba(0,0,0,0.08);
+                                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                            }
+
+                            .dropdown-item {
+                                padding: 0.5rem 1rem;
+                                font-size: 14px;
+                            }
+
+                            .dropdown-item:hover {
+                                background-color: #f8f9fa;
+                            }
+                            </style>
                             <div class="">
                                 <div class="mt-3">
                                     <p class="textPostingan"><?php echo nl2br(htmlspecialchars($post['konten'])); ?></p>
@@ -839,11 +761,151 @@ function clearFileInput() {
 
                                     // Tampilkan gambar jika ada
                                     if(!empty($images)) {
-                                        echo '<div id="imageContainer-'.$post['id'].'" class="image-grid mb-3">';
-                                        foreach($images as $image) {
-                                            echo '<img src="'.$image['path_file'].'" alt="Lampiran" class="rounded" onclick="showImage(this.src)">';
+                                        $imageCount = count($images);
+                                        echo '<div class="image-container-'.$imageCount.' mt-2">';
+                                        
+                                        switch($imageCount) {
+                                            case 1:
+                                                // Single image - full width
+                                                echo '<div class="single-image">';
+                                                echo '<img src="'.$images[0]['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                break;
+                                                
+                                            case 2:
+                                                // Two images side by side
+                                                echo '<div class="dual-images">';
+                                                foreach($images as $image) {
+                                                    echo '<img src="'.$image['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                                }
+                                                echo '</div>';
+                                                break;
+                                                
+                                            case 3:
+                                                // Two images top, one bottom
+                                                echo '<div class="triple-images">';
+                                                echo '<div class="top-images">';
+                                                echo '<img src="'.$images[0]['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '<img src="'.$images[1]['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                echo '<div class="bottom-image">';
+                                                echo '<img src="'.$images[2]['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                echo '</div>';
+                                                break;
+                                                
+                                            case 4:
+                                                // Two rows of two images
+                                                echo '<div class="quad-images">';
+                                                echo '<div class="image-row">';
+                                                echo '<img src="'.$images[0]['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '<img src="'.$images[1]['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                echo '<div class="image-row">';
+                                                echo '<img src="'.$images[2]['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '<img src="'.$images[3]['path_file'].'" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                echo '</div>';
+                                                break;
                                         }
                                         echo '</div>';
+                                        
+                                        // Add CSS styles
+                                        echo '<style>
+                                            .single-image img {
+                                                width: 100%;
+                                                border-radius: 15px;
+                                                cursor: pointer;
+                                                height: 400px;
+                                                object-fit: cover;
+                                            }
+                                            .dual-images {
+                                                display: grid;
+                                                grid-template-columns: 1fr 1fr;
+                                                gap: 2px;
+                                            }
+                                            .dual-images img {
+                                                width: 100%;
+                                                height: 300px;
+                                                object-fit: cover;
+                                                cursor: pointer;
+                                            }
+                                            .dual-images img:first-child {
+                                                border-radius: 15px 0 0 15px;
+                                            }
+                                            .dual-images img:last-child {
+                                                border-radius: 0 15px 15px 0;
+                                            }
+                                            .triple-images .top-images {
+                                                display: grid;
+                                                grid-template-columns: 1fr 1fr;
+                                                gap: 2px;
+                                                margin-bottom: 2px;
+                                            }
+                                            .triple-images .top-images img {
+                                                width: 100%;
+                                                height: 200px;
+                                                object-fit: cover;
+                                                cursor: pointer;
+                                            }
+                                            .triple-images .top-images img:first-child {
+                                                border-radius: 15px 0 0 0;
+                                            }
+                                            .triple-images .top-images img:last-child {
+                                                border-radius: 0 15px 0 0;
+                                            }
+                                            .triple-images .bottom-image img {
+                                                width: 100%;
+                                                height: 300px;
+                                                object-fit: cover;
+                                                cursor: pointer;
+                                                border-radius: 0 0 15px 15px;
+                                            }
+                                            .quad-images {
+                                                display: grid;
+                                                gap: 2px;
+                                            }
+                                            .quad-images .image-row {
+                                                display: grid;
+                                                grid-template-columns: 1fr 1fr;
+                                                gap: 2px;
+                                            }
+                                            .quad-images img {
+                                                width: 100%;
+                                                height: 200px;
+                                                object-fit: cover;
+                                                cursor: pointer;
+                                            }
+                                            .quad-images .image-row:first-child img:first-child {
+                                                border-radius: 15px 0 0 0;
+                                            }
+                                            .quad-images .image-row:first-child img:last-child {
+                                                border-radius: 0 15px 0 0;
+                                            }
+                                            .quad-images .image-row:last-child img:first-child {
+                                                border-radius: 0 0 0 15px;
+                                            }
+                                            .quad-images .image-row:last-child img:last-child {
+                                                border-radius: 0 0 15px 0;
+                                            }
+                                            @media (max-width: 768px) {
+                                                .single-image img {
+                                                    height: 250px;
+                                                }
+                                                .dual-images img {
+                                                    height: 200px;
+                                                }
+                                                .triple-images .top-images img {
+                                                    height: 150px;
+                                                }
+                                                .triple-images .bottom-image img {
+                                                    height: 200px;
+                                                }
+                                                .quad-images img {
+                                                    height: 150px;
+                                                }
+                                            }
+                                        </style>';
                                     }
 
                                     // Tampilkan dokumen non-gambar jika ada
@@ -937,21 +999,24 @@ function clearFileInput() {
                                     <p><strong><?php echo $comment_count; ?></strong> Pendapat</p>
                                 </div>
                                 <div class="d-flex gap-2 justify-content-between mt-3 ps-2 pe-2" style="font-size: 14px;">
-                                    <button class="btnPrimary btn <?php echo $is_liked ? 'bi-arrow-up-circle-fill' : 'bi-arrow-up-circle'; ?> text-white flex-fill py-1 py-md-2" 
+                                    <button class="btn btn-light flex-fill py-1 py-md-2 d-flex align-items-center justify-content-center gap-2" 
                                             id="like-btn-<?php echo $post['id']; ?>"
                                             onclick="toggleLike(<?php echo $post['id']; ?>)">
+                                        <i class="bi <?php echo $is_liked ? 'bi-hand-thumbs-up-fill text-primary' : 'bi-hand-thumbs-up'; ?>"></i>
                                         <span class="d-none d-md-inline">Suka</span>
                                     </button>
-                                    <button class="btn btnPrimary bi-chat flex-fill text-white py-1 py-md-2" id="ShowCommentButton" 
-                                            data-bs-toggle="modal" data-bs-target="#commentModal-<?php echo $post['id']; ?>">
-                                        <span class="d-none d-md-inline">Pendapat</span>
+                                    <button class="btn btn-light flex-fill py-1 py-md-2 d-flex align-items-center justify-content-center gap-2" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#commentModal-<?php echo $post['id']; ?>">
+                                        <i class="bi bi-chat"></i>
+                                        <span class="d-none d-md-inline">Komentar</span>
                                     </button>
-                                    <button class="btn btnPrimary bi-share text-white flex-fill py-1 py-md-2" 
+                                    <button class="btn btn-light flex-fill py-1 py-md-2 d-flex align-items-center justify-content-center gap-2" 
                                             onclick='sharePost(<?php echo $post["id"]; ?>, <?php echo json_encode($post["konten"]); ?>)'>
+                                        <i class="bi bi-share"></i>
                                         <span class="d-none d-md-inline">Bagikan</span>
-                                    </button>                                
+                                    </button>
                                 </div>
-
                                 <!-- script aksi like -->
                                 <script>
                                 function toggleLike(postId) {
@@ -1133,12 +1198,19 @@ function clearFileInput() {
                                         <div class="modal-content">
                                             <?php
                                             // Query untuk mengambil komentar di awal
-                                            $query_komentar = "SELECT k.*, COALESCE(g.namaLengkap, s.nama) as nama_user 
-                                                            FROM komentar_postingan k 
-                                                            LEFT JOIN guru g ON k.user_id = g.username 
-                                                            LEFT JOIN siswa s ON k.user_id = s.username 
-                                                            WHERE k.postingan_id = '{$post['id']}' 
-                                                            ORDER BY k.created_at ASC";
+                                            $query_komentar = "SELECT k.*, 
+                                                                CASE 
+                                                                    WHEN g.username IS NOT NULL THEN 'guru'
+                                                                    ELSE 'siswa'
+                                                                END as user_type,
+                                                                g.foto_profil as foto_guru,
+                                                                s.foto_profil as foto_siswa,
+                                                                COALESCE(g.namaLengkap, s.nama) as nama_user 
+                                                                FROM komentar_postingan k 
+                                                                LEFT JOIN guru g ON k.user_id = g.username 
+                                                                LEFT JOIN siswa s ON k.user_id = s.username 
+                                                                WHERE k.postingan_id = '{$post['id']}' 
+                                                                ORDER BY k.created_at ASC";
                                             $result_komentar = mysqli_query($koneksi, $query_komentar);
                                             ?>
 
@@ -1158,34 +1230,15 @@ function clearFileInput() {
                                                         while($komentar = mysqli_fetch_assoc($result_komentar)) {
                                                         ?>
                                                             <div class="d-flex gap-3 mb-3">
-                                                            <div class="flex-shrink-0">
-                                                            <?php
-                                                            $user_id = $komentar['user_id'];
-                                                            $foto_profil = 'assets/pp.png'; // Default image
-
-                                                            // First check guru table
-                                                            $query_guru = "SELECT foto_profil FROM guru WHERE username = '$user_id'";
-                                                            $result_guru = mysqli_query($koneksi, $query_guru);
-                                                            
-                                                            if(mysqli_num_rows($result_guru) > 0) {
-                                                                $user = mysqli_fetch_assoc($result_guru);
-                                                                if(!empty($user['foto_profil'])) {
-                                                                    $foto_profil = 'uploads/profil/' . $user['foto_profil'];
-                                                                }
-                                                            } else {
-                                                                // If not found in guru, check siswa table
-                                                                $query_siswa = "SELECT foto_profil FROM siswa WHERE username = '$user_id'";
-                                                                $result_siswa = mysqli_query($koneksi, $query_siswa);
-                                                                if(mysqli_num_rows($result_siswa) > 0) {
-                                                                    $user = mysqli_fetch_assoc($result_siswa);
-                                                                    if(!empty($user['foto_profil'])) {
-                                                                        $foto_profil = 'uploads/profil/' . $user['foto_profil'];
-                                                                    }
-                                                                }
-                                                            }
-                                                            ?>
-                                                            <img src="<?php echo $foto_profil; ?>" alt="" width="32px" height="32px" class="rounded-circle border">
-                                                        </div>
+                                                                <div class="flex-shrink-0">
+                                                                <?php if($komentar['user_type'] == 'guru'): ?>
+                                                                    <img src="<?php echo $komentar['foto_guru'] ? 'uploads/profil/'.$komentar['foto_guru'] : 'assets/pp.png'; ?>" 
+                                                                        alt="" width="32px" height="32px" class="rounded-circle border">
+                                                                <?php else: ?>
+                                                                    <img src="<?php echo $komentar['foto_siswa'] ? $komentar['foto_siswa'] : 'assets/pp-siswa.png'; ?>" 
+                                                                        alt="" width="32px" height="32px" class="rounded-circle border">
+                                                                <?php endif; ?>
+                                                                </div>
                                                                 <div class="bubble-chat flex-grow-1">
                                                                     <div class="d-flex justify-content-between align-items-start rounded-4 p-3" style="background-color: #f0f2f5;">
                                                                         <div>
@@ -1510,6 +1563,34 @@ function hapusKomentar(komentarId, postId) {
                             </div>
                         </div>
                     </div>
+                    <!-- Button download dibawah gambar -->
+                    <script>
+                    function downloadImage(imageUrl, fileName) {
+                        fetch(imageUrl)
+                            .then(response => response.blob())
+                            .then(blob => {
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.style.display = 'none';
+                                a.href = url;
+                                a.download = fileName || 'download.jpg';
+                                document.body.appendChild(a);
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                                document.body.removeChild(a);
+                            })
+                            .catch(error => console.error('Error downloading image:', error));
+                    }
+
+                    // Add download button to modal
+                    document.getElementById('imageModal').querySelector('.modal-body').innerHTML += `
+                        <div class="text-center mt-3">
+                            <button class="btn btnPrimary text-white" onclick="downloadImage(document.getElementById('modalImage').src)">
+                                <i class="bi bi-download me-2"></i>Download Gambar
+                            </button>
+                        </div>
+                    `;
+                    </script>
                     <div class="col">
                         <!-- modal untuk guru input deskripsi kelas -->
                         <div class="modal fade" id="deskripsimodal" tabindex="-1" aria-labelledby="modaldeskripsi" aria-hidden="true">
@@ -1539,117 +1620,168 @@ function hapusKomentar(komentarId, postId) {
                         </div>
 
 
-                        <div class="catatanGuru p-3 rounded-3 bg-white" style="border: 1px solid rgb(238, 238, 238);">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="m-0"><strong>Catatan Guru</strong></h5>
-        <button class="btn btnPrimary text-white d-flex align-items-center gap-2" 
-                data-bs-toggle="modal" 
-                data-bs-target="#catatanModal">
-            <i class="bi bi-plus-circle"></i>
-        </button>
-    </div>
-
-    <?php
-    // Query untuk mengambil catatan guru
-    $query_catatan = "SELECT * FROM catatan_guru WHERE kelas_id = '$kelas_id' ORDER BY created_at DESC";
-    $result_catatan = mysqli_query($koneksi, $query_catatan);
-    ?>
-
-<?php if(isset($_GET['success'])): ?>
-    <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1050;">
-        <?php 
-        if($_GET['success'] == 'catatan_deleted') {
-            echo "Catatan berhasil dihapus!";
-        }
-        ?>
-    </div>
-<?php endif; ?>
-
-<?php if(isset($_GET['error'])): ?>
-    <div class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1050;">
-        <?php 
-        if($_GET['error'] == 'delete_failed') {
-            echo "Gagal menghapus catatan. Silakan coba lagi.";
-        }
-        ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
-
-<script>
-// Auto hide alerts after 3 seconds
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-        var alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function(alert) {
-            var bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        });
-    }, 3000);
-});
-</script>
-
-    <?php if(mysqli_num_rows($result_catatan) > 0): ?>
-        <div class="catatan-list">
-            <?php while($catatan = mysqli_fetch_assoc($result_catatan)): ?>
-                <div class="catatan-item p-3 rounded-3 mb-3" style="background-color: #f8f9fa; border: 1px solid #e9ecef;">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <h6 class="mb-1"><strong><?php echo htmlspecialchars($catatan['judul']); ?></strong></h6>
-                            <small class="text-muted d-flex align-items-center gap-1">
-                                <i class="bi bi-calendar3"></i>
-                                <?php echo date('d M Y', strtotime($catatan['created_at'])); ?>
-                            </small>
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-light btn-sm" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item text-danger" href="#" 
-                                       onclick="if(confirm('Hapus catatan ini?')) window.location.href='hapus_catatan.php?id=<?php echo $catatan['id']; ?>&kelas_id=<?php echo $kelas_id; ?>'">
-                                        <i class="bi bi-trash me-2"></i>Hapus
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="catatan-content mt-2">
-                        <p class="mb-2" style="font-size: 14px;">
-                            <?php echo nl2br(htmlspecialchars($catatan['konten'])); ?>
-                        </p>
-                        <?php if($catatan['file_lampiran']): ?>
-                            <div class="file-attachment p-2 rounded-2 d-inline-flex align-items-center gap-2" 
-                                 style="background-color: white; border: 1px solid #dee2e6;">
-                                <?php
-                                $ext = pathinfo($catatan['file_lampiran'], PATHINFO_EXTENSION);
-                                $icon = 'bi-file-earmark';
-                                switch($ext) {
-                                    case 'pdf': $icon = 'bi-file-pdf'; break;
-                                    case 'doc': case 'docx': $icon = 'bi-file-word'; break;
-                                    case 'jpg': case 'jpeg': case 'png': $icon = 'bi-file-image'; break;
-                                }
-                                ?>
-                                <i class="bi <?php echo $icon; ?>"></i>
-                                <a href="<?php echo htmlspecialchars($catatan['file_lampiran']); ?>" 
-                                   class="text-decoration-none" target="_blank">
-                                    Lihat Lampiran
-                                </a>
+                        <div class="catatanGuru p-4 rounded-3 bg-white">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-journal-text fs-4" style="color: rgb(218, 119, 86);"></i>
+                                    <h5 class="m-0"><strong>Catatan Guru</strong></h5>
+                                </div>
+                                <button class="btn btnPrimary text-white d-flex align-items-center gap-2 px-3" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#catatanModal">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
                             </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            <?php endwhile; ?>
-        </div>
-    <?php else: ?>
-        <div class="text-center py-4" style="background-color: #f8f9fa; border-radius: 8px;">
-            <p class="text-muted " style="font-size: 18px;">Tidak ada catatan</p>
-            <p class="text-muted mt-2 mb-0" style="font-size: 14px;">Belum ada catatan yang ditambahkan</p>
-        </div>
-    <?php endif; ?>
-</div>
+
+                            <?php
+                            $query_catatan = "SELECT * FROM catatan_guru WHERE kelas_id = '$kelas_id' ORDER BY created_at DESC";
+                            $result_catatan = mysqli_query($koneksi, $query_catatan);
+                            ?>
+
+                            <?php if(isset($_GET['success'])): ?>
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    <?php echo ($_GET['success'] == 'catatan_deleted') ? "Catatan berhasil dihapus!" : ""; ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if(isset($_GET['error'])): ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-exclamation-circle me-2"></i>
+                                    <?php echo ($_GET['error'] == 'delete_failed') ? "Gagal menghapus catatan" : ""; ?>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if(mysqli_num_rows($result_catatan) > 0): ?>
+                                <div class="catatan-list">
+                                    <?php while($catatan = mysqli_fetch_assoc($result_catatan)): ?>
+                                        <div class="catatan-item p-4 rounded-4 mb-3 bg-light border">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="mb-2 fw-bold"><?php echo htmlspecialchars($catatan['judul']); ?></h6>
+                                                    <div class="d-flex align-items-center text-muted mb-3" style="font-size: 0.85rem;">
+                                                        <i class="bi bi-calendar3 me-2"></i>
+                                                        <?php echo date('d F Y', strtotime($catatan['created_at'])); ?>
+                                                    </div>
+                                                </div>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-light btn-sm rounded-circle" type="button" data-bs-toggle="dropdown">
+                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm animate slideIn">
+                                                        <li>
+                                                            <a class="dropdown-item text-danger d-flex align-items-center" href="#" 
+                                                               onclick="return confirm('Apakah Anda yakin ingin menghapus catatan ini?') && 
+                                                                       (window.location.href='hapus_catatan.php?id=<?php echo $catatan['id']; ?>&kelas_id=<?php echo $kelas_id; ?>')">
+                                                                <i class="bi bi-trash me-2"></i>Hapus Catatan
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                                <style>
+                                                /* Animasi dropdown */
+                                                .animate {
+                                                    animation-duration: 0.2s;
+                                                    animation-fill-mode: both;
+                                                    transform-origin: top center;
+                                                }
+
+                                                @keyframes slideIn {
+                                                    0% {
+                                                        transform: scaleY(0);
+                                                        opacity: 0;
+                                                    }
+                                                    100% {
+                                                        transform: scaleY(1);
+                                                        opacity: 1;
+                                                    }
+                                                }
+
+                                                .slideIn {
+                                                    animation-name: slideIn;
+                                                }
+                                                </style>
+                                            </div>
+                                            
+                                            <div class="catatan-content">
+                                                <p class="mb-3 text-secondary" style="font-size: 0.95rem; line-height: 1.6;">
+                                                    <?php echo nl2br(htmlspecialchars($catatan['konten'])); ?>
+                                                </p>
+                                                <?php if($catatan['file_lampiran']): ?>
+                                                    <a href="<?php echo htmlspecialchars($catatan['file_lampiran']); ?>" 
+                                                       class="text-decoration-none d-inline-flex align-items-center gap-2 px-3 py-2 rounded-3 bg-white border hover-shadow"
+                                                       target="_blank">
+                                                        <?php
+                                                        $ext = pathinfo($catatan['file_lampiran'], PATHINFO_EXTENSION);
+                                                        $icon = match($ext) {
+                                                            'pdf' => 'bi-file-pdf-fill text-danger',
+                                                            'doc','docx' => 'bi-file-word-fill text-primary',
+                                                            'jpg','jpeg','png' => 'bi-file-image-fill text-success',
+                                                            default => 'bi-file-earmark-fill text-secondary'
+                                                        };
+                                                        ?>
+                                                        <i class="bi <?php echo $icon; ?>"></i>
+                                                        <span>Lihat Lampiran</span>
+                                                    </a>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    <?php endwhile; ?>
+                                </div>
+                            <?php else: ?>
+                                <div class="text-center py-5 bg-light rounded-4">
+                                    <i class="bi bi-journal-x fs-1 text-muted mb-3"></i>
+                                    <h6 class="fw-bold mb-2">Belum Ada Catatan</h6>
+                                    <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                                        Mulai tambahkan catatan untuk kelas ini
+                                    </p>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <style>
+                        .catatan-item {
+                            transition: all 0.2s ease;
+                        }
+
+                        .catatan-item:hover {
+                            transform: translateY(-2px);
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                        }
+
+                        .hover-shadow {
+                            transition: all 0.2s ease;
+                        }
+
+                        .hover-shadow:hover {
+                            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                        }
+
+                        .catatanGuru {
+                            border: 1px solid #dee2e6;
+                        }
+
+                        @media (max-width: 768px) {
+                            .catatanGuru {
+                                display: none;
+                            }
+                        }
+                        </style>
+
+                        <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Auto hide alerts
+                            setTimeout(() => {
+                                document.querySelectorAll('.alert').forEach(alert => {
+                                    const bsAlert = new bootstrap.Alert(alert);
+                                    bsAlert.close();
+                                });
+                            }, 3000);
+                        });
+                        </script>
 
 <style>
 .catatan-item {
@@ -1680,74 +1812,514 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 
 <!-- Daftar Siswa -->
-<div class="daftarSiswa p-3 rounded-3 bg-white mt-3" style="border: 1px solid rgb(238, 238, 238);">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="m-0"><strong>Daftar Siswa</strong></h5>
-        <p class="m-0 text-muted"><?php echo $jumlah_siswa; ?> siswa</p>
+<div class="daftarSiswa p-4 rounded-3 bg-white mt-3 border">
+    <!-- Header dengan statistik -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center" 
+                 style="width: 42px; height: 42px; background-color: rgba(218, 119, 86, 0.1);">
+                <i class="bi bi-people fs-5" style="color: rgb(218, 119, 86);"></i>
+            </div>
+            <div>
+                <h6 class="mb-1">Daftar Siswa</h6>
+                <p class="m-0 text-muted" style="font-size: 14px;"><?php echo $jumlah_siswa; ?> siswa terdaftar</p>
+            </div>
+        </div>
+        
+        <!-- Dropdown menu aksi -->
+        <div class="dropdown">
+            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-gear me-1"></i> Kelola
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm animate slideIn">
+            <li>
+                <button class="dropdown-item d-flex align-items-center gap-2" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#tambahSiswaModal">
+                <i class="bi bi-person-plus"></i> 
+                <span class="menu-text">Tambah Siswa</span>
+                </button>
+            </li>
+            <li>
+                <button class="dropdown-item d-flex align-items-center gap-2" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#hapusSiswaModal">
+                <i class="bi bi-person-x text-danger"></i>
+                <span class="menu-text">Keluarkan Siswa</span>
+                </button>
+            </li>
+            </ul>
+
+            <style>
+            .animate {
+            animation-duration: 0.12s;
+            animation-timing-function: ease-out;
+            animation-fill-mode: both;
+            transform-origin: top center;
+            }
+
+            .slideIn {
+            animation-name: windowsDropdown;
+            }
+
+            @keyframes windowsDropdown {
+            0% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            }
+
+            .dropdown-menu {
+            padding: 4px 0;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+            .dropdown-item {
+            padding: 8px 16px;
+            transition: background 0.1s;
+            }
+
+            .dropdown-item:hover {
+            background-color: #f0f0f0;
+            }
+
+            .dropdown-item:active {
+            background-color: #e5e5e5;
+            }
+
+            .menu-text {
+            margin-left: 8px;
+            }
+            </style>
+        </div>
     </div>
 
     <?php if(mysqli_num_rows($result_siswa) > 0): ?>
-        <div class="student-list">
-            <div class="row g-2">
-                <?php 
-                // Mengambil 4 siswa terbaru
-                $query_siswa_terbaru = "SELECT s.nama, s.foto_profil FROM siswa s 
-                                      JOIN kelas_siswa ks ON s.id = ks.siswa_id 
-                                      WHERE ks.kelas_id = '$kelas_id'
-                                      ORDER BY ks.created_at DESC LIMIT 4";
-                $result_siswa_terbaru = mysqli_query($koneksi, $query_siswa_terbaru);
-                
-                while($siswa = mysqli_fetch_assoc($result_siswa_terbaru)): 
-                ?>
-                    <div class="col-6">
-                        <div class="student-card p-2 rounded-3 d-flex align-items-center gap-2" 
-                             style="background-color: #f8f9fa;">
-                            <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp.png'; ?>" 
-                                 alt="Profile" class="rounded-circle" width="32" height="32">
-                            <span class="student-name" style="font-size: 14px;">
-                                <?php echo htmlspecialchars($siswa['nama']); ?>
-                            </span>
-                        </div>
+        <!-- Grid siswa -->
+        <div class="student-grid mb-3">
+            <?php 
+            $query_siswa_terbaru = "SELECT s.nama, s.foto_profil, s.tingkat 
+                                   FROM siswa s 
+                                   JOIN kelas_siswa ks ON s.id = ks.siswa_id 
+                                   WHERE ks.kelas_id = '$kelas_id'
+                                   ORDER BY ks.created_at DESC LIMIT 6";
+            $result_siswa_terbaru = mysqli_query($koneksi, $query_siswa_terbaru);
+            
+            while($siswa = mysqli_fetch_assoc($result_siswa_terbaru)): 
+            ?>
+                <div class="student-card p-2 rounded-3 d-flex align-items-center gap-2">
+                    <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp.png'; ?>" 
+                         alt="Profile" class="rounded-circle" width="36" height="36"
+                         style="object-fit: cover;">
+                    <div class="student-info">
+                        <div class="student-name"><?php echo htmlspecialchars($siswa['nama']); ?></div>
+                        <small class="text-muted">Kelas <?php echo htmlspecialchars($siswa['tingkat']); ?></small>
                     </div>
-                <?php endwhile; ?>
-            </div>
+                </div>
+            <?php endwhile; ?>
         </div>
 
-        <!-- Button Group -->
-        <div class="d-flex gap-2 mt-3">
-            <button class="btn color-web btn-light text-center flex-grow-1" 
+        <!-- Tombol lihat semua -->
+        <?php if($jumlah_siswa > 6): ?>
+            <button class="btn btn-light w-100 text-center" 
                     data-bs-toggle="modal" 
                     data-bs-target="#lihatSemuaSiswaModal">
-                <i class="bi bi-people text-white"></i>
+                Lihat Semua Siswa <i class="bi bi-arrow-right ms-1"></i>
             </button>
-            <button class="btn color-web btn-light text-center flex-grow-1" 
+        <?php endif; ?>
+
+    <?php else: ?>
+        <!-- State kosong -->
+        <div class="text-center py-4">
+            <div class="empty-state mb-3">
+                <i class="bi bi-people fs-1 text-muted"></i>
+            </div>
+            <h6 class="fw-bold mb-2">Belum Ada Siswa</h6>
+            <p class="text-muted mb-3" style="font-size: 14px;">
+                Mulai tambahkan siswa ke dalam kelas ini
+            </p>
+            <button class="btn btnPrimary text-white d-inline-flex align-items-center gap-2" 
                     data-bs-toggle="modal" 
                     data-bs-target="#tambahSiswaModal">
-                <i class="bi bi-person-plus text-white"></i>
+                <i class="bi bi-person-plus"></i>
+                Tambah Siswa
             </button>
-            <button class="btn btn-danger text-center flex-grow-1" 
-            data-bs-toggle="modal" 
-            data-bs-target="#hapusSiswaModal">
-            <i class="bi bi-person-x"></i>
-        </button>
         </div>
-    <?php else: ?>
-        <div class="text-center py-4" style="background-color: #f8f9fa; border-radius: 8px;">
-            <span><i class="bi bi-x-circle"></i> Tidak ada siswa</span>
-            <p class="text-muted mt-2 mb-0" style="font-size: 14px;">Belum ada siswa dalam kelas ini</p>
-            
-            <!-- Hanya tampilkan tombol tambah -->
-            <div class="mt-3">
-                <button class="btn color-web text-white d-flex align-items-center gap-2 mx-auto" 
+    <?php endif; ?>
+</div>
+
+<style>
+.student-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.student-card {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+.student-card:hover {
+    background-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.student-info {
+    overflow: hidden;
+}
+
+.student-name {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empty-state {
+    opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+    .student-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+</style>
+<!-- Floating Action Button -->
+<div class="floating-action-button d-block d-md-none">
+    <!-- Main FAB -->
+    <button class="btn btn-lg main-fab rounded-circle shadow" id="mainFab">
+        <i class="bi bi-gear"></i>
+    </button>
+    
+    <!-- Mini FABs -->
+    <div class="mini-fabs">
+        <!-- Catatan Button -->
+        <button class="btn mini-fab rounded-circle shadow" 
+                data-bs-toggle="modal" 
+                data-bs-target="#semuaCatatanModal"
+                title="Catatan">
+            <i class="bi bi-journal-text"></i>
+            <span class="fab-label">Catatan</span>
+        </button>
+        
+        <!-- Siswa Button -->
+        <button class="btn mini-fab rounded-circle shadow"
+                data-bs-toggle="modal" 
+                data-bs-target="#kelolaSiswaModal" 
+                title="Kelola Siswa">
+            <i class="bi bi-people"></i>
+            <span class="fab-label">Kelola Siswa</span>
+        </button>
+    </div>
+
+    <!-- Backdrop for FAB -->
+    <div class="fab-backdrop"></div>
+</div>
+
+<style>
+.floating-action-button {
+    position: fixed;
+    bottom: 6rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+.main-fab {
+    width: 56px;
+    height: 56px;
+    background-color: rgb(218, 119, 86);
+    color: white;
+    transition: transform 0.3s;
+    position: relative;
+    z-index: 1002;
+}
+
+.main-fab:hover {
+    background-color: rgb(219, 106, 68);
+    color: white;
+}
+
+.main-fab.active {
+    transform: rotate(45deg);
+}
+
+.mini-fabs {
+    position: absolute;
+    bottom: 70px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 1002;
+}
+
+.mini-fabs.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.mini-fab {
+    width: 40px;
+    height: 40px;
+    background-color: white;
+    color: rgb(218, 119, 86);
+    border: 1px solid rgb(218, 119, 86);
+    position: relative;
+}
+
+.mini-fab:hover {
+    background-color: rgb(218, 119, 86);
+    color: white;
+}
+
+/* Label style */
+.fab-label {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 1003;
+}
+
+.mini-fabs.show .mini-fab:hover .fab-label {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Backdrop style */
+.fab-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+    z-index: 1001;
+}
+
+.fab-backdrop.show {
+    opacity: 1;
+    visibility: visible;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mainFab = document.getElementById('mainFab');
+    const miniFabs = document.querySelector('.mini-fabs');
+    const backdrop = document.querySelector('.fab-backdrop');
+    
+    mainFab.addEventListener('click', function() {
+        this.classList.toggle('active');
+        miniFabs.classList.toggle('show');
+        backdrop.classList.toggle('show');
+    });
+    
+    // Close FAB menu when clicking backdrop
+    backdrop.addEventListener('click', function() {
+        mainFab.classList.remove('active');
+        miniFabs.classList.remove('show');
+        backdrop.classList.remove('show');
+    });
+    
+    // Close FAB menu when clicking outside
+    document.addEventListener('click', function(event) {
+        const isClickInsideFAB = event.target.closest('.floating-action-button');
+        if (!isClickInsideFAB && miniFabs.classList.contains('show')) {
+            mainFab.classList.remove('active');
+            miniFabs.classList.remove('show');
+            backdrop.classList.remove('show');
+        }
+    });
+});
+</script>
+
+<!-- Modal Seluruh Catatan -->
+<div class="modal fade" id="semuaCatatanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Catatan Kelas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3">
+                <?php
+                $query_all_catatan = "SELECT * FROM catatan_guru WHERE kelas_id = '$kelas_id' ORDER BY created_at DESC";
+                $result_all_catatan = mysqli_query($koneksi, $query_all_catatan);
+                
+                if(mysqli_num_rows($result_all_catatan) > 0):
+                ?>
+                    <div class="catatan-list">
+                        <?php while($catatan = mysqli_fetch_assoc($result_all_catatan)): ?>
+                            <div class="catatan-item p-3 rounded-3 mb-3 bg-light border">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-2 fw-bold"><?php echo htmlspecialchars($catatan['judul']); ?></h6>
+                                        <div class="d-flex align-items-center text-muted mb-2" style="font-size: 0.85rem;">
+                                            <i class="bi bi-calendar3 me-2"></i>
+                                            <?php echo date('d F Y', strtotime($catatan['created_at'])); ?>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-light btn-sm rounded-circle" type="button" data-bs-toggle="dropdown">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                            <li>
+                                                <a class="dropdown-item text-danger d-flex align-items-center gap-2" 
+                                                   href="#" 
+                                                   onclick="return confirm('Apakah Anda yakin ingin menghapus catatan ini?') && 
+                                                           (window.location.href='hapus_catatan.php?id=<?php echo $catatan['id']; ?>&kelas_id=<?php echo $kelas_id; ?>')">
+                                                    <i class="bi bi-trash"></i>
+                                                    Hapus Catatan
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <p class="mb-3 text-secondary" style="font-size: 0.95rem;">
+                                    <?php echo nl2br(htmlspecialchars($catatan['konten'])); ?>
+                                </p>
+                                
+                                <?php if($catatan['file_lampiran']): ?>
+                                    <a href="<?php echo htmlspecialchars($catatan['file_lampiran']); ?>" 
+                                       class="text-decoration-none d-inline-flex align-items-center gap-2 px-3 py-2 rounded-3 bg-white border"
+                                       target="_blank">
+                                        <?php
+                                        $ext = pathinfo($catatan['file_lampiran'], PATHINFO_EXTENSION);
+                                        $icon = match($ext) {
+                                            'pdf' => 'bi-file-pdf-fill text-danger',
+                                            'doc','docx' => 'bi-file-word-fill text-primary',
+                                            'jpg','jpeg','png' => 'bi-file-image-fill text-success',
+                                            default => 'bi-file-earmark-fill text-secondary'
+                                        };
+                                        ?>
+                                        <i class="bi <?php echo $icon; ?>"></i>
+                                        <span>Lihat Lampiran</span>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                        <?php endwhile; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center py-4">
+                        <i class="bi bi-journal-x fs-1 text-muted mb-3"></i>
+                        <h6 class="fw-bold mb-2">Belum Ada Catatan</h6>
+                        <p class="text-muted mb-0" style="font-size: 0.9rem;">
+                            Mulai tambahkan catatan untuk kelas ini
+                        </p>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" 
+                        class="btn btnPrimary text-white w-100"
                         data-bs-toggle="modal" 
-                        data-bs-target="#tambahSiswaModal">
-                    <i class="bi bi-person-plus"></i>
-                    Tambah Siswa
+                        data-bs-target="#catatanModal">
+                    <i class="bi bi-plus-lg me-2"></i>
+                    Tambah Catatan Baru
                 </button>
             </div>
         </div>
-        <?php endif; ?>
+    </div>
 </div>
+
+<script>
+// Update event listener for FAB catatan button
+document.querySelector('.mini-fab[title="Catatan"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    const semuaCatatanModal = new bootstrap.Modal(document.getElementById('semuaCatatanModal'));
+    semuaCatatanModal.show();
+});
+
+// Add event listener for modal close
+document.getElementById('semuaCatatanModal').addEventListener('hidden.bs.modal', function () {
+    // Remove backdrop manually
+    const backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+    // Remove modal-open class from body
+    document.body.classList.remove('modal-open');
+    // Remove inline styles from body
+    document.body.style.removeProperty('padding-right');
+    document.body.style.removeProperty('overflow');
+});
+</script>
+<!-- Modal Kelola Siswa -->
+<div class="modal fade" id="kelolaSiswaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Kelola Siswa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-light border d-flex align-items-center gap-2 p-3" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#lihatSemuaSiswaModal">
+                        <i class="bi bi-people-fill fs-4"></i>
+                        <div class="text-start">
+                            <h6 class="mb-0">Lihat Semua Siswa</h6>
+                            <small class="text-muted">Lihat daftar lengkap siswa dalam kelas</small>
+                        </div>
+                    </button>
+                    
+                    <button class="btn btn-light border d-flex align-items-center gap-2 p-3" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#tambahSiswaModal">
+                        <i class="bi bi-person-plus-fill fs-4"></i>
+                        <div class="text-start">
+                            <h6 class="mb-0">Tambah Siswa</h6>
+                            <small class="text-muted">Tambahkan siswa baru ke kelas</small>
+                        </div>
+                    </button>
+                    
+                    <button class="btn btn-light border d-flex align-items-center gap-2 p-3" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#hapusSiswaModal">
+                        <i class="bi bi-person-x-fill fs-4 text-danger"></i>
+                        <div class="text-start">
+                            <h6 class="mb-0">Keluarkan Siswa</h6>
+                            <small class="text-muted">Keluarkan siswa dari kelas ini</small>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Modal Tambah Siswa -->
 <div class="modal fade" id="tambahSiswaModal" tabindex="-1" aria-hidden="true">
