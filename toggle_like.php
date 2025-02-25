@@ -1,49 +1,108 @@
 <?php
 session_start();
-require "koneksi.php";
+require 'koneksi.php';
+header('Content-Type: application/json; charset=utf8mb4');
 
+// Ensure proper character encoding
+mysqli_set_charset($koneksi, "utf8mb4");
+
+// Basic validation
 if(!isset($_SESSION['userid'])) {
-    die(json_encode(['status' => 'error', 'message' => 'Unauthorized']));
+    error_log("Error: User not logged in");
+    echo json_encode(['success' => false, 'message' => 'User not logged in']);
+    exit;
 }
 
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $postingan_id = mysqli_real_escape_string($koneksi, $_POST['postingan_id']);
-    $user_id = $_SESSION['userid'];
-
-    // Cek apakah user sudah like postingan ini
-    $check_query = "SELECT id FROM likes_postingan 
-                   WHERE postingan_id = '$postingan_id' AND user_id = '$user_id'";
-    $check_result = mysqli_query($koneksi, $check_query);
-
-    if(mysqli_num_rows($check_result) > 0) {
-        // User sudah like, maka unlike
-        $query = "DELETE FROM likes_postingan 
-                 WHERE postingan_id = '$postingan_id' AND user_id = '$user_id'";
-        $is_liked = false;
-    } else {
-        // User belum like, maka like
-        $query = "INSERT INTO likes_postingan (postingan_id, user_id) 
-                 VALUES ('$postingan_id', '$user_id')";
-        $is_liked = true;
-    }
-
-    if(mysqli_query($koneksi, $query)) {
-        // Hitung jumlah like terbaru
-        $count_query = "SELECT COUNT(*) as total FROM likes_postingan 
-                       WHERE postingan_id = '$postingan_id'";
-        $count_result = mysqli_query($koneksi, $count_query);
-        $count_data = mysqli_fetch_assoc($count_result);
-        
-        echo json_encode([
-            'status' => 'success',
-            'is_liked' => $is_liked,
-            'like_count' => $count_data['total']
-        ]);
-    } else {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Gagal memproses like'
-        ]);
-    }
+if(!isset($_POST['postingan_id'])) {
+    error_log("Error: Missing postingan_id");
+    echo json_encode(['success' => false, 'message' => 'Missing postingan_id']);
+    exit;
 }
+
+$postingan_id = $_POST['postingan_id'];
+$user_id = $_SESSION['userid'];
+$emoji = isset($_POST['emoji']) ? $_POST['emoji'] : '👍';
+
+mysqli_begin_transaction($koneksi);
+
+try {
+    // Check if user already reacted
+    $check_query = "SELECT emoji FROM emoji_reactions WHERE postingan_id = ? AND user_id = ?";
+    $stmt = mysqli_prepare($koneksi, $check_query);
+    mysqli_stmt_bind_param($stmt, "is", $postingan_id, $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $existing_reaction = mysqli_fetch_assoc($result);
+
+    if($existing_reaction) {
+        if($existing_reaction['emoji'] === $emoji) {
+            // If clicking the same emoji, remove the reaction (unlike)
+            $delete_query = "DELETE FROM emoji_reactions WHERE postingan_id = ? AND user_id = ?";
+            $stmt = mysqli_prepare($koneksi, $delete_query);
+            mysqli_stmt_bind_param($stmt, "is", $postingan_id, $user_id);
+            mysqli_stmt_execute($stmt);
+        } else {
+            // If clicking different emoji, update the reaction
+            $update_query = "UPDATE emoji_reactions SET emoji = ? WHERE postingan_id = ? AND user_id = ?";
+            $stmt = mysqli_prepare($koneksi, $update_query);
+            mysqli_stmt_bind_param($stmt, "sis", $emoji, $postingan_id, $user_id);
+            mysqli_stmt_execute($stmt);
+        }
+    } else {
+        // If no existing reaction, add new one
+        $insert_query = "INSERT INTO emoji_reactions (postingan_id, user_id, emoji) VALUES (?, ?, ?)";
+        $stmt = mysqli_prepare($koneksi, $insert_query);
+        mysqli_stmt_bind_param($stmt, "iss", $postingan_id, $user_id, $emoji);
+        mysqli_stmt_execute($stmt);
+    }
+
+    // Get updated reaction counts
+    $get_reactions = "SELECT emoji, COUNT(*) as count 
+                     FROM emoji_reactions 
+                     WHERE postingan_id = ? 
+                     GROUP BY emoji";
+    $stmt = mysqli_prepare($koneksi, $get_reactions);
+    mysqli_stmt_bind_param($stmt, "i", $postingan_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    $reactions = [];
+    $total = 0;
+    $emoji_stack = [];
+
+    while($row = mysqli_fetch_assoc($result)) {
+        $reactions[$row['emoji']] = (int)$row['count'];
+        $total += $row['count'];
+        $emoji_stack[] = $row['emoji'];
+    }
+
+    // Get user's current reaction after update
+    $current_reaction_query = "SELECT emoji FROM emoji_reactions 
+                             WHERE postingan_id = ? AND user_id = ?";
+    $stmt = mysqli_prepare($koneksi, $current_reaction_query);
+    mysqli_stmt_bind_param($stmt, "is", $postingan_id, $user_id);
+    mysqli_stmt_execute($stmt);
+    $current_reaction = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+    mysqli_commit($koneksi);
+
+    echo json_encode([
+        'success' => true,
+        'total' => $total,
+        'emoji_stack' => array_slice($emoji_stack, 0, 3),
+        'reactions' => $reactions,
+        'current_emoji' => $current_reaction ? $current_reaction['emoji'] : null,
+        'is_liked' => $current_reaction ? true : false
+    ]);
+
+} catch (Exception $e) {
+    mysqli_rollback($koneksi);
+    error_log("Error in toggle_like: " . $e->getMessage());
+    echo json_encode([
+        'success' => false,
+        'message' => 'An error occurred while processing your reaction'
+    ]);
+}
+
+mysqli_close($koneksi);
 ?>

@@ -3,7 +3,7 @@ session_start();
 require "koneksi.php";
 
 
-if(!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
+if (!isset($_SESSION['userid']) || $_SESSION['level'] != 'siswa') {
     header("Location: index.php");
     exit();
 }
@@ -28,12 +28,13 @@ $result = mysqli_query($koneksi, $query);
 
 
 // function untuk waktu ujian
-function getExamStatus($startTime, $endTime) {
+function getExamStatus($startTime, $endTime)
+{
     date_default_timezone_set('Asia/Jakarta');
     $now = time();
     $start = strtotime($startTime);
     $end = strtotime($endTime);
-    
+
     if ($now < $start) {
         $diffSeconds = $start - $now;
         $hours = floor($diffSeconds / 3600);
@@ -70,6 +71,7 @@ $siswa = mysqli_fetch_assoc($result_siswa);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -77,379 +79,377 @@ $siswa = mysqli_fetch_assoc($result_siswa);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    <title>Masuk - Smagaedu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <title>Beranda - SMAGAEdu</title>
 </head>
 <style>
-        .custom-card {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);        
-        }
+    body {
+        font-family: merriweather;
+    }
 
-        @media (max-width: 768px) {
-            .menu-samping {
-                display: none;
-            }
-            body {
-                padding-top: 60px;
-            }
-            .custom-card {
-                max-width: 100%;
-            }
-        }
-        .custom-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-        .custom-card .profile-img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border: 3px solid white;
-            margin-top: -40px;
-        }
-        .custom-card .card-body {
-            text-align: left;
-        }
+    .color-web {
+        background-color: rgb(218, 119, 86);
+    }
 
-        body{ 
-            font-family: merriweather;
-        }
-        .color-web {
-            background-color: rgb(218, 119, 86);
-        }
+    /* modal */
+    .modal-content {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
 
+    .modal .btn {
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .modal .btn:active {
+        transform: scale(0.98);
+    }
+
+    .modal.fade .modal-dialog {
+        transform: scale(0.95);
+        transition: transform 0.2s ease-out;
+    }
+
+    .modal.show .modal-dialog {
+        transform: scale(1);
+    }
 </style>
+
 <body>
-    
-    <!-- Navbar Mobile -->
-    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
-        <div class="container-fluid">
-            <!-- Logo dan Nama -->
-            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
-                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
-            <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">Ujian</h1>
-                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
-                </div>
-            </a>
-            
-            <!-- Tombol Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
-                <span class="navbar-toggler-icon" style="color:white"></span>
-            </button>
-            
-            <!-- Offcanvas/Sidebar Mobile -->
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                </div>
-                <div class="offcanvas-body d-flex justify-content-between flex-column">
-                    <div class="d-flex flex-column gap-2">
-                        <!-- Menu Beranda -->
-                        <a href="beranda.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded  p-2">
-                                <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Beranda</p>
-                            </div>
-                        </a>
-                        
-                        
-                        <!-- Menu Ujian -->
-                        <a href="ujian.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center color-web rounded p-2">
-                                <img src="assets/ujian_fill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0 text-white">Ujian</p>
-                            </div>
-                        </a>
 
-                        <!-- Menu ai -->
-                        <a href="ai.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">SMAGA AI</p>
-                            </div>
-                        </a>
+    <?php include 'includes/styles.php'; ?>
 
-                        
-                        <!-- Menu Profil -->
-                        <a href="profil.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Profil</p>
-                            </div>
-                        </a>
-                        
-                        
-                        <!-- Menu Bantuan -->
-                        <a href="bantuan.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Bantuan</p>
-                            </div>
-                        </a>
-                    </div>
-                    
-                <!-- Profile Dropdown -->
-                <div class="mt-3 dropup"> <!-- Tambahkan class dropdown di sini -->
-                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
-                            style="background-color:rgb(255, 252, 248);" 
-                            type="button" 
-                            data-bs-toggle="dropdown" 
-                            aria-expanded="false">
-                            <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
-                                    alt="Profile Picture" 
-                                    class="rounded-circle" 
-                                    style="width: 25px; height: 25px;object-fit: cover; z-index: 99999;">
-                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?></p>
-                    </button>
-                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php" style="color: red;">Keluar</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-     <!-- row col untuk halaman utama -->
-     <div class="container-fluid">
+    <div class="container-fluid">
         <div class="row">
-        <div class="col-auto vh-100 p-2 p-md-4 shadow-sm menu-samping d-none d-md-block" style="background-color:rgb(238, 236, 226)">
-                <style>
-                .menu-samping {
-                    position: fixed;
-                    width: 13rem;
-                    z-index: 1000;
-                    /* Tambahkan flexbox dan height */
-                    display: flex;
-                    flex-direction: column;
-                    height: 100vh;
-                    
-                }
-                .menu-content {
-                    flex: 1;
-                    display: flex;
-                    flex-direction: column;
-                }
-                .menu-atas {
-                    height: calc(100vh - 80px); /* 80px adalah perkiraan tinggi dropdown */
+            <!-- Sidebar for desktop -->
+            <?php include 'includes/sidebar_siswa.php'; ?>
 
-                }
-                .menu-bawah {
-                    position: fixed;
-                    bottom: 1rem;
-                    width: 10rem; /* Sesuaikan dengan lebar menu */
-                }
-                .col-utama {
-                    margin-left: 0;
-                }
-                @media (min-width: 768px) {
-                    .col-utama {
-                        margin-left: 13rem;
-                    }
-                }
-                </style>
-                <div class="menu-atas">
-                    <div class="ps-1 mb-3">
-                        <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px" class="logo_orange">
-                            <div>
-                                <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
-                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
-                            </div>
-                        </a>
-                    </div>  
-                    <div class="col">
-                        <a href="beranda.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Beranda</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="ujian.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center bg-white shadow-sm  rounded p-2" style="">
-                            <img src="assets/ujian_fill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Ujian</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="profil.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Profil</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="ai.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">SMAGA AI</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="bantuan.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Bantuan</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="menu-bawah">
-                    <div class="row dropdown">
-                        <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
-                                    alt="Profile Picture" 
-                                    class="rounded-circle" 
-                                    style="width: 30px; height: 30px;object-fit: cover; z-index: 99999;">
-                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($_SESSION['nama']); ?></p>
-                        </div>
-                        <!-- dropdown menu option -->
-                        <ul class="dropdown-menu" style="font-size: 12px;">
-                            <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                            <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            <!-- Mobile navigation -->
+            <?php include 'includes/mobile_nav siswa.php'; ?>
+
+            <!-- Settings Modal -->
+            <?php include 'includes/settings_modal.php'; ?>
 
 
-            <!-- ini isi kontennya -->
-<!-- Isi konten -->
-<div class="col p-4 col-utama mt-1 mt-md-0">
-    <div class="row justify-content-between align-items-center mb-1">
-        <div class="col-12 col-mobile col-md-auto mb-3 mb-md-0">
-            <h3 style="font-weight: bold;">Ujian</h3>
         </div>
     </div>
-    
-    <style>
-        @media (max-width: 768px) {
-            .col-mobile {
-                display: none;
-            }
+
+
+    <!-- ini isi kontennya -->
+    <!-- Isi konten -->
+    <div class="col col-utama mt-1 mt-md-0">
+        <div class="p-md-3 pb-md-0 d-md-flex salam">
+            <div mt-2>
+                <h3 class="fw-bold mb-0">Ujian</h3>
+            </div>
+        </div>
+
+
+        <style>
             .col-utama {
-                padding-top: 0px !important;
+                padding-top: 0.7rem;
+                padding-left: 14rem !important;
             }
-        }
-    </style>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 m-0">
-    <?php if(mysqli_num_rows($result) > 0): 
-        while($ujian = mysqli_fetch_assoc($result)):
-        // Get teacher data inside the loop
-            $guru_id = $ujian['guru_id'];
-            $query_guru = "SELECT foto_profil FROM guru WHERE username = '$guru_id'";
-            $result_guru = mysqli_query($koneksi, $query_guru);
-            $data_guru = mysqli_fetch_assoc($result_guru);
-    ?>
-        <div class="col ps-0">
-            <div class="custom-card w-100">
-                <!-- Jika ada background image, tampilkan. Jika tidak, gunakan default -->
-                <?php if(!empty($ujian['background_image'])): ?>
-                                    <img src="<?php echo htmlspecialchars($ujian['background_image']); ?>" 
-                                        alt="Background Image" 
-                                        class="card-img-top">
-                                <?php else: ?>
-                                    <img src="assets/bg.jpg" 
-                                        alt="Default Background Image" 
-                                        class="card-img-top">
-                                <?php endif; ?>         
-                
-                <div class="card-body" style="text-align: right; padding-right: 30px; background-color: white;">
-                <img src="<?php echo !empty($data_guru['foto_profil']) ? 'uploads/profil/'.$data_guru['foto_profil'] : 'assets/pp.png'; ?>" 
-                    alt="Profile Image" 
-                    class="profile-img rounded-4 border-0 bg-white">
-                </div>
 
-                <!-- data guru -->
-                 <?php
-
-                $guru_id = $ujian['guru_id'];
-                $query_guru = "SELECT namaLengkap, foto_profil FROM guru WHERE username = '$guru_id'";
-                $result_guru = mysqli_query($koneksi, $query_guru);
-                $data_guru = mysqli_fetch_assoc($result_guru);
-
-                // Tambahkan pengecekan sebelum mendefinisikan fungsi
-                if (!function_exists('formatDurasi')) {
-                    function formatDurasi($menit) {
-                        if($menit >= 60) {
-                            $jam = floor($menit / 60);
-                            $sisa_menit = $menit % 60;
-                            
-                            if($sisa_menit > 0) {
-                                return $jam . " jam " . $sisa_menit . " menit";
-                            } else {
-                                return $jam . " jam";
-                            }
-                        } else {
-                            return $menit . " menit";
-                        }
-                    }
+            @media (max-width: 768px) {
+                .col-utama {
+                    padding-left: 0rem !important;
                 }
 
-                ?>
+                .judul {
+                    display: none;
+                }
 
-                <div class="ps-3">
-                    <!-- Tambahkan info guru di sini -->
-                    <h5 class="mt-3 p-0 mb-1" style="font-weight: bold; font-size: 20px;">
-                        <?php echo htmlspecialchars($ujian['mata_pelajaran']); ?>
-                    </h5>
-                    <p class="p-0 m-0" style="font-size: 12px;">
-                        Dibuat oleh: <?php echo htmlspecialchars($data_guru['namaLengkap']); ?>
-                    </p>
-                    <p class="p-0 m-0" style="font-size: 12px;">
-                        Ujian dimulai: <?php echo date('d/m/Y H:i', strtotime($ujian['tanggal_mulai'])); ?>
-                    </p>
-                    <p class="p-0 m-0" style="font-size: 12px;">
-                        Durasi Ujian: <?php echo $ujian['durasi']; ?> menit 
-                    </p>
+                .salam {
+                    display: block;
+                    margin-left: 1.5rem;
+                    margin-bottom: 1rem;
+                }
+            }
+        </style>
+        <style>
+            .class-card {
+                border-radius: 12px;
+                overflow: hidden;
+                background: white;
+                opacity: 0;
+                transform: translateY(20px);
+                animation: fadeInUp 0.5s ease forwards;
+                will-change: transform;
+            }
+
+            .class-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .class-banner {
+                height: 160px;
+                background-size: cover;
+                background-position: center;
+                position: relative;
+            }
+
+            .profile-circle {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                border: 3px solid #fff;
+                position: absolute;
+                bottom: -35px;
+                right: 20px;
+                object-fit: cover;
+                background: #fff;
+            }
+
+            .class-content {
+                padding: 20px;
+            }
+
+            .class-title {
+                font-size: 18px;
+                font-weight: 600;
+            }
+
+            /* Add delay for each card */
+            .col-12:nth-child(1) .class-card {
+                animation-delay: 0.1s;
+            }
+
+            .col-12:nth-child(2) .class-card {
+                animation-delay: 0.2s;
+            }
+
+            .col-12:nth-child(3) .class-card {
+                animation-delay: 0.3s;
+            }
+
+            .col-12:nth-child(4) .class-card {
+                animation-delay: 0.4s;
+            }
+
+            .col-12:nth-child(5) .class-card {
+                animation-delay: 0.5s;
+            }
+
+            .col-12:nth-child(6) .class-card {
+                animation-delay: 0.6s;
+            }
+
+            .btn-enter {
+                background: rgb(218, 119, 86);
+                color: #fff;
+                padding: 8px 20px;
+                border-radius: 6px;
+                display: inline-flex;
+                align-items: center;
+                transition: background 0.3s;
+            }
+
+            .btn-enter:hover {
+                background: rgb(198, 99, 66);
+                color: #fff;
+            }
+
+            .btn-more {
+                background: none;
+                border: none;
+                padding: 8px;
+                color: #666;
+            }
+        </style>
+
+        <div class="row g-4 m-0">
+            <?php if (mysqli_num_rows($result) > 0):
+                while ($ujian = mysqli_fetch_assoc($result)):
+                    $guru_id = $ujian['guru_id'];
+                    $query_guru = "SELECT foto_profil, namaLengkap FROM guru WHERE username = '$guru_id'";
+                    $result_guru = mysqli_query($koneksi, $query_guru);
+                    $guru = mysqli_fetch_assoc($result_guru);
+                    $bg_image = !empty($ujian['background_image']) ? $ujian['background_image'] : 'assets/bg.jpg';
+
+
+                    // Tambahkan pengecekan sebelum mendefinisikan fungsi
+                    if (!function_exists('formatDurasi')) {
+                        function formatDurasi($menit)
+                        {
+                            if ($menit >= 60) {
+                                $jam = floor($menit / 60);
+                                $sisa_menit = $menit % 60;
+
+                                if ($sisa_menit > 0) {
+                                    return $jam . " jam " . $sisa_menit . " menit";
+                                } else {
+                                    return $jam . " jam";
+                                }
+                            } else {
+                                return $menit . " menit";
+                            }
+                        }
+                    }
+            ?>
+                    <div class="col-12 col-md-6 p-3 mt-1 p-md-3 col-lg-4">
+                        <div class="class-card border" style="transition: all 0.3s ease;">
+                            <div class="class-banner" style="background-image: url('<?php echo $bg_image; ?>')">
+                                <style>
+                                    /* Animasi terpisah untuk fade-in awal */
+                                    @keyframes fadeInUp {
+                                        from {
+                                            opacity: 0;
+                                            transform: translateY(20px);
+                                        }
+
+                                        to {
+                                            opacity: 1;
+                                            transform: translateY(0);
+                                        }
+                                    }
+
+                                    [data-aos="fade-up"] {
+                                        opacity: 0;
+                                        animation: fadeInUp 0.6s ease forwards;
+                                    }
+                                </style>
+                                <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/' . $guru['foto_profil'] : 'assets/pp.png'; ?>"
+                                    class="profile-circle" data-aos="fade-up">
+                            </div>
+                            <div class="class-content">
+                                <h4 class="class-title mb-3"><?php echo htmlspecialchars($ujian['judul']); ?></h4>
+
+                                <div class="class-meta" style="font-size: 12px;">
+                                    <div class="row g-2">
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-book me-2 text-muted"></i>
+                                                <span class="text-dark"><?php echo htmlspecialchars($ujian['mata_pelajaran']); ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-mortarboard me-2 text-muted"></i>
+                                                <span class="text-dark">Kelas <?php echo htmlspecialchars($ujian['tingkat']); ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-person me-2 text-muted"></i>
+                                                <span class="text-secondary"><?php echo htmlspecialchars($guru['namaLengkap']); ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-calendar-event me-2 text-muted"></i>
+                                                <span class="text-secondary"><?php echo date('l, d F Y', strtotime($ujian['tanggal_mulai'])); ?></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-clock me-2 text-muted"></i>
+                                                <span class="text-secondary">Waktu Ujian <?php echo formatDurasi($ujian['durasi']); ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <?php
+                                    $examStatus = getExamStatus($ujian['tanggal_mulai'], $ujian['tanggal_selesai']);
+                                    if ($examStatus['status'] === 'ongoing'): ?>
+                                        <?php if ($ujian['sudah_ujian'] > 0): ?>
+                                            <button class="btn btn-secondary px-3 py-2 w-100"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#ujianSelesaiModal">
+                                                <i class="bi bi-check-circle me-1"></i> Sudah Ujian
+                                            </button>
+                                        <?php else: ?>
+                                            <a href="mulai_ujian.php?id=<?php echo $ujian['id']; ?>"
+                                                class="btn btn-primary px-3 py-2 w-100"
+                                                style="background: rgb(218, 119, 86); border: none;">
+                                                <i class="bi bi-play-circle me-1"></i> Mulai Ujian
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <button class="btn btn-light px-3 py-2 w-100 border"
+                                            <?php if ($examStatus['status'] === 'ended'): ?>
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#ujianSelesaiModal"
+                                            <?php elseif ($examStatus['status'] === 'waiting'): ?>
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#waitingModal"
+                                            <?php endif; ?>>
+                                            <i class="bi bi-clock me-1"></i>
+                                            <?php
+                                            if ($examStatus['status'] === 'waiting'): ?>
+                                                <?php echo $examStatus['countdown'] . " tersisa"; ?>
+                                            <?php else: ?>
+                                                Ujian Selesai
+                                            <?php endif; ?>
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endwhile;
+            else: ?>
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-journal-x" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-3">Belum ada ujian tersedia saat ini</p>
                 </div>
+            <?php endif; ?>
+        </div>
+        <style>
 
-                <script>
-                </script>
+        </style>
 
-                <div class="d-flex btn-group gap-2 p-3">
-                    <?php 
-                    $examStatus = getExamStatus($ujian['tanggal_mulai'], $ujian['tanggal_selesai']);
-                    if ($examStatus['status'] === 'ongoing'): ?>
-                        <?php if ($ujian['sudah_ujian'] > 0): ?>
-                            <button class="btn btn-secondary w-100 rounded" disabled>
-                                Sudah Ujian
-                            </button>
-                        <?php else: ?>
-                            <a href="mulai_ujian.php?id=<?php echo $ujian['id']; ?>" 
-                            class="btn color-web w-100 rounded text-white">
-                                Mulai Ujian
-                            </a>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <button class="btn btn-secondary w-100 rounded" disabled>
-                            <?php echo $examStatus['status'] === 'waiting' ? $examStatus['countdown'] : 'Ujian Selesai'; ?>
-                        </button>
-                    <?php endif; ?>
+        <!-- Modal Ujian Selesai -->
+        <div class="modal fade" id="ujianSelesaiModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px;">
+                <div class="modal-body text-center p-4">
+                <i class="bi bi-dash-circle-fill" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
+                <h5 class="mt-3 fw-bold">Sesi ujian kadaluarsa</h5>
+                <p class="mb-4">Kamu tidak dapat mengakses ujian ini karena sudah menyelesaikan ujian atau sesi ujian telah berakhir.</p>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn px-4 w-100 flex-fill" style="background-color: rgb(218, 119, 86); color:white; border-radius: 12px;" data-bs-dismiss="modal">Ok</button>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Modal Ujian belum dimulai -->
+        <div class="modal fade" id="waitingModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 16px;">
+                    <div class="modal-body text-center p-4">
+                        <i class="bi bi-dash-circle-fill" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
+                        <h5 class="mt-3 fw-bold">Ujian belum di mulai</h5>
+                        <p class="mb-4">Kamu terlalu bersemngat, cek lagi kalau sudah waktu ujian jadi manfaatkan waktumu untuk belajar. Ok?</p>
+                        <div class="d-flex gap-2 btn-group">
+                            <button type="button" class="btn px-4 w-100" style="background-color: rgb(218, 119, 86); color:white; border-radius: 12px;" data-bs-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    <?php endwhile; 
-    else: ?>
-        <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
-            <p class="text-muted">Guru belum membuat ujian untuk kamu.</p>
-        </div>
-    <?php endif; ?>
-</div>
+
+
 
 </body>
+
 </html>

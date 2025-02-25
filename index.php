@@ -1,10 +1,11 @@
-<?php 
+<?php
 require "koneksi.php";
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,187 +13,250 @@ require "koneksi.php";
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    <title>Masuk - Smagaedu</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <title>Masuk - Smagaedu</title>
 </head>
 <style>
-.merriweather-light {
-  font-family: "Merriweather", serif;
-  font-weight: 300;
-  font-style: normal;
-}
-
-.merriweather-regular {
-  font-family: "Merriweather", serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.merriweather-bold {
-  font-family: "Merriweather", serif;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.merriweather-black {
-  font-family: "Merriweather", serif;
-  font-weight: 900;
-  font-style: normal;
-}
-
-.merriweather-light-italic {
-  font-family: "Merriweather", serif;
-  font-weight: 300;
-  font-style: italic;
-}
-
-.merriweather-regular-italic {
-  font-family: "Merriweather", serif;
-  font-weight: 400;
-  font-style: italic;
-}
-
-.merriweather-bold-italic {
-  font-family: "Merriweather", serif;
-  font-weight: 700;
-  font-style: italic;
-}
-
-.merriweather-black-italic {
-  font-family: "Merriweather", serif;
-  font-weight: 900;
-  font-style: italic;
-}
-
-
-body{ 
-    font-family: merriweather;
-}
-.color-web {
-    background-color: rgb(218, 119, 86);
-}
-
-body {
-  background-color: rgb(238, 236, 226);
-}
-
-.logo {
-  width: 60px;
-  padding:10px;
-}
-
-@media screen and (max-width: 768px) {
     body {
-        background-color: white;
+        font-family: merriweather;
     }
+
+    .color-web {
+        background-color: rgb(218, 119, 86);
+    }
+
+    .color-web:hover {
+        background-color: rgb(231, 95, 50);
+    }
+
+    body {
+        background-color: rgb(238, 236, 226);
+    }
+
     .logo {
-      width: 40px;
-      padding:5px;
+        width: 60px;
+        padding: 10px;
     }
-}
 
+    @media screen and (max-width: 768px) {
+        body {
+            background-color: white;
+        }
+
+        .logo {
+            width: 40px;
+            padding: 5px;
+        }
+    }
 </style>
-<body class="d-flex align-content-center justify-content-center">
-    <!-- Container utama dengan width yang responsif -->
-    <div class="row mt-4 w-100 w-md-75 w-lg-75 mx-auto" style="max-width: 1200px;">
-        <!-- Kolom kiri - Form login -->
-        <div class="form col-12 col-md-6 bg-white p-3 p-md-4 p-lg-5 rounded-start-3 rounded-end-3 rounded-end-md-0 shadow-sm">
-            <!-- Logo -->
-            <div class="mb-md-2 mb-2">
-              <img src="assets/smagaedu.png" alt="SMAGA Edu Logo" class="bg-white border rounded-circle logo">
-                <img src="assets/logo.png" alt="Logo" class="bg-white border rounded-circle logo">
+
+<!-- animasi modal -->
+<style>
+    .modal-content {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal .btn {
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .modal .btn:active {
+        transform: scale(0.98);
+    }
+
+    .modal.fade .modal-dialog {
+        transform: scale(0.95);
+        transition: transform 0.2s ease-out;
+    }
+
+    .modal.show .modal-dialog {
+        transform: scale(1);
+    }
+</style>
+
+
+<body class="min-vh-100">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-10">
+                <div class="card shadow-sm" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
+                    <div class="row g-0">
+                        <div class="col-md-6">
+                            <div class="card-body p-4">
+                                <!-- Logo -->
+                                <div class="text-center mb-4">
+                                    <img src="assets/smagaedu.png" alt="SMAGA Edu Logo" class="bg-white rounded-circle logo me-2">
+                                    <img src="assets/logo.png" alt="Logo" class="bg-white rounded-circle logo">
+                                </div>
+
+                                <!-- Header -->
+                                <div class="text-center mb-4">
+                                    <p class="mb-1">Halo, Selamat Datang</p>
+                                    <h5 class="fw-bold">Portal SMAGAEdu LMS</h5>
+                                </div>
+
+                                <!-- Alert Modal -->
+                                <?php if (isset($_GET['pesan'])) { ?>
+                                    <div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content" style="border-radius: 15px;">
+                                                <div class="modal-body text-center p-4">
+                                                    <div class="mb-3">
+                                                        <i class="bi bi-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+                                                    </div>
+                                                    <h5 class="mb-3">Gagal Masuk</h5>
+                                                    <p class="mb-4">
+                                                        <?php
+                                                        if ($_GET['pesan'] == "password_salah") {
+                                                            echo "Password yang Anda masukkan salah!";
+                                                        } else if ($_GET['pesan'] == "user_tidak_ditemukan") {
+                                                            echo "User ID tidak ditemukan!";
+                                                        }
+                                                        ?>
+                                                    </p>
+                                                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" style="border-radius: 10px;">OK</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var alertModal = new bootstrap.Modal(document.getElementById('alertModal'));
+                                            alertModal.show();
+                                        });
+                                    </script>
+                                <?php } ?>
+
+                                <!-- Form -->
+                                <form method="POST" action="login_back.php">
+                                    <div class="mb-3">
+                                        <input type="text" name="userid" class="form-control form-control-lg" placeholder="Nama ID" style="border-radius: 12px;">
+                                    </div>
+                                    <div class="mb-4">
+                                        <input type="password" name="password" class="form-control form-control-lg" placeholder="Kata Sandi" style="border-radius: 12px;">
+                                    </div>
+                                    <button type="submit" class="btn w-100 text-white" style="background: rgb(218, 119, 86); border-radius: 12px; padding: 12px;">Masuk</button>
+                                </form>
+
+                                <!-- Lupa Sandi Link -->
+                                <div class="text-center mt-3">
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#lupaPasswordModal" class="text-decoration-none" style="color: #666;">
+                                        <small>Butuh Bantuan?</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Image Column -->
+                        <div class="col-md-6 d-none d-md-block" style="min-height: 500px;">
+                            <div id="loginCarousel" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
+                                <div class="carousel-inner h-100">
+                                    <div class="carousel-item active h-100">
+                                        <div class="position-relative h-100">
+                                            <div class="position-absolute w-100 h-100" style="background: rgba(0,0,0,0.3);  border-radius: 0 20px 20px 0;"></div>
+                                            <img src="assets/bg/bg1.jpg" alt="Login Image" class="w-100 h-100" style="object-fit: cover; border-radius: 0 20px 20px 0;">
+                                            <div class="carousel-caption text-start" style="bottom: 20px; left: 20px;">
+                                                <h5 class="p-0 m-0 fw-bold">Pelatihan Baris Berbaris</h5>
+                                                <p class="p-0 m-0">Pelatihan PBB yang langsung dikomandoi oleh Rakanda dan Adinda Hizbul Wathan</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item h-100">
+                                        <div class="position-relative h-100">
+                                            <div class="position-absolute w-100 h-100" style="background: rgba(0,0,0,0.3);  border-radius: 0 20px 20px 0;"></div>
+                                            <img src="assets/bg/bg2.jpg" alt="Login Image" class="w-100 h-100" style="object-fit: cover; border-radius: 0 20px 20px 0;">
+                                            <div class="carousel-caption text-start" style="bottom: 20px; left: 20px;">
+                                                <h5 class="p-0 m-0 fw-bold">Swafoto Guru</h5>
+                                                <p class="p-0 m-0">Potret Interaksi lingkungan sekolah antar guru</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item h-100">
+                                        <div class="position-relative h-100">
+                                            <div class="position-absolute w-100 h-100" style="background: rgba(0,0,0,0.3);  border-radius: 0 20px 20px 0;"></div>
+                                            <img src="assets/bg/bg3.jpg" alt="Login Image" class="w-100 h-100" style="object-fit: cover; border-radius: 0 20px 20px 0;">
+                                            <div class="carousel-caption text-start" style="bottom: 20px; left: 20px;">
+                                                <h5 class="p-0 m-0 fw-bold">Ekstrakulikuler Air Softgun</h5>
+                                                <p class="p-0 m-0">Suasana pelatihan ekstrakulikuler siswa Air Softgun yang tegang dan penuh konsentrasi</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item h-100">
+                                        <div class="position-relative h-100">
+                                            <div class="position-absolute w-100 h-100" style="background: rgba(0,0,0,0.3);  border-radius: 0 20px 20px 0;"></div>
+                                            <img src="assets/bg/bg4.jpg" alt="Login Image" class="w-100 h-100" style="object-fit: cover; border-radius: 0 20px 20px 0;">
+                                            <div class="carousel-caption text-start" style="bottom: 20px; left: 20px;">
+                                                <h5 class="p-0 m-0 fw-bold">Outing Class</h5>
+                                                <p class="p-0 m-0">Kegiatan pembelajaran luar ruangan kelas dalam pengenalan sejarah budaya keris di Indonesia, Museum Keris.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item h-100">
+                                        <div class="position-relative h-100">
+                                            <div class="position-absolute w-100 h-100" style="background: rgba(0,0,0,0.3);  border-radius: 0 20px 20px 0;"></div>
+                                            <img src="assets/bg/bg5.jpg" alt="Login Image" class="w-100 h-100" style="object-fit: cover; border-radius: 0 20px 20px 0;">
+                                            <div class="carousel-caption text-start" style="bottom: 20px; left: 20px;">
+                                                <h5 class="p-0 m-0 fw-bold">Ekstrakulikuler Memasak</h5>
+                                                <p class="p-0 m-0">Potret bahagia siswa berkolaborasi bersama dalam memasak</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Navigation buttons -->
+                                <button class="carousel-control-prev" type="button" data-bs-target="#loginCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#loginCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var myCarousel = new bootstrap.Carousel(document.getElementById('loginCarousel'), {
+        interval: 3000,
+        ride: 'carousel'
+    });
+});
+</script>
+                    </div>
+                </div>
             </div>
-
-            
-            <!-- Header text -->
-            <div class="mb-4">
-                <p class="p-0 m-0 fs-6">Selamat Datang</p>
-                <h5 class="mb-2 p-0 m-0 fs-5 fw-bold">Aplikasi SMAGAEdu</h5>
-            </div>
-
-            <!-- Alert error -->
-            <?php if(isset($_GET['pesan'])) { ?>
-                <div class="alert alert-danger fs-6 fade show animate-alert" role="alert">
-                    <?php 
-                        if($_GET['pesan'] == "password_salah") {
-                            echo "Password yang Anda masukkan salah!";
-                        } else if($_GET['pesan'] == "user_tidak_ditemukan") {
-                            echo "User ID tidak ditemukan!";
-                        }
-                    ?>
-                </div>
-            <?php } ?>
-            
-            <!-- style untuk alert -->
-            <style>
-              .animate-alert {
-                  animation: fadeIn 0.5s ease-in;
-              }
-
-              @keyframes fadeIn {
-                  0% {
-                      opacity: 0;
-                      transform: translateY(-10px);
-                  }
-                  100% {
-                      opacity: 1;
-                      transform: translateY(0);
-                  }
-              }
-            </style>
-
-            <!-- Form -->
-            <form method="POST" action="login_back.php">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label fs-6">Nama ID</label>
-                    <input type="text" name="userid" class="form-control" id="exampleInputEmail1" 
-                           aria-describedby="emailHelp" placeholder="Masukkan ID kamu">
-                </div>
-                <div class="mb-4">
-                    <label for="exampleInputPassword1" class="form-label fs-6">Kata Sandi</label>
-                    <input type="password" name="password" class="form-control" id="exampleInputPassword1" 
-                           placeholder="Masukkan Kata Sandi kamu">
-                </div>
-
-                <div class="d-flex">
-                    <button type="submit" class="flex-fill color-web text-white p-2 rounded">Masuk</button>
-                </div>
-            </form>
-
-            <!-- Footer -->
-            <div class="pt-3">
-                <p class="text-muted" style="font-size: 10px;">©️ Dikelola dan dikembangkan oleh Tim IT SMAGA - 2025</p>
-            </div>
-        </div>  
-
-        <!-- Kolom kanan - Banner -->
-        <div class="col-12 col-md-6 rounded-end-3 shadow p-3 p-md-4 p-lg-5 color-web d-none d-md-flex align-items-end">
-            <h1 class="text-white text-end fs-1 fw-bold flex-fill">
-                Satu <br>Platform <br>Ciptakan <br> Peluang.
-            </h1>
         </div>
     </div>
 
+
     <style>
-        .color-web {
-            background-color: your-color-here;
+        body {
+            background:rgb(244, 232, 220);
         }
-        button {
-            transition: background-color 0.3s ease;
-            border: 0;
+
+        .form-control {
+            border: 1px solid #eee;
+            padding: 12px;
         }
-        button:hover {
-            background-color: rgb(219, 106, 68);
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #FF9F43;
         }
+
         @media (max-width: 768px) {
             body {
-                padding: 1rem;
+                background: white;
             }
-            .fs-6 {
-                font-size: 0.875rem !important;
+            .card {
+                border: none;
+                box-shadow: none !important;
             }
-            .form {
-              border: 0!important;
-              box-shadow: none!important;
+            .container {
+                padding: 0;
             }
         }
     </style>

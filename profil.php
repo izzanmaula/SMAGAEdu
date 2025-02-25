@@ -41,6 +41,8 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $siswa = mysqli_fetch_assoc($result);
 
+
+
 // Function to get grade label and class
 function getNilaiLabel($value) {
     if ($value >= 80) return ['Baik', 'text-success'];
@@ -112,264 +114,434 @@ function getGrade($value) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
     <title>Profil - SMAGAEdu</title>
 </head>
 <style>
-        body{ 
-            font-family: merriweather;
-        }
-        .color-web {
-            background-color: rgb(218, 119, 86);
-        }
-        .btn {
-                                transition: background-color 0.3s ease;
-                                border: 0;
-                                border-radius: 5px;
-                            }
-                            .btn:hover{
-                                background-color: rgb(219, 106, 68);
-                                color: white;
-                            }
+    @media (max-width: 767px) {
+    .fab-container {
+        z-index: 1030; /* Memastikan FAB selalu di atas modal */
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .modal {
+        z-index: 1055;
+    }
+
+    .modal-backdrop {
+        z-index: 1050;
+    }
+    
+    .modal-content {
+        border-radius: 1rem;
+    }
+    
+    .speech-bubble {
+        width: 280px; /* Sedikit lebih besar untuk mobile */
+        right: 10px;
+    }
+}
+
+/* Animasi untuk modal */
+.modal.fade .modal-dialog {
+    transform: scale(0.95);
+    transition: transform 0.2s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+ </style>
+<style>
+/* Tambahkan atau update CSS berikut */
+body {
+    font-family: merriweather;
+    overflow-x: hidden; /* Mencegah scroll horizontal */
+    width: 100%;
+}
+
+.menu-samping {
+    padding-left:35px !important;
+    margin-right: 50px !important;
+}
+
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+    overflow-x: hidden;
+}
+
+.color-web {
+    background-color: rgb(218, 119, 86);
+}
+
+
+/* Override padding default untuk mobile */
+@media (max-width: 767px) {
+    .col-utama {
+        padding: 0rem !important; /* Mengurangi padding di mobile */
+        margin: 0 !important; /* Reset margin di mobile */
+    }
+    
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+.col-utama {
+    margin-left: 12rem;
+}
+
+
+
+
+/* Memastikan mobile nav tetap */
+.mobile-nav {
+    position: fixed;
+    width: 100%;
+    z-index: 1030;
+    left: 0;
+    top: 0;
+}
+
+/* buatkan animasi semua col */
+.col-utama, .col-sekunder {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.col-utama.show, .col-sekunder.show {
+    opacity: 1;
+    transform: translateY(0);
+}
 
 
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.querySelectorAll('.col-utama, .col-sekunder').forEach(function(el) {
+            el.classList.add('show');
+        });
+    }, 100);
+});
+</script>
 <body>
     
-    <!-- Navbar Mobile -->
-    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
-        <div class="container-fluid">
-            <!-- Logo dan Nama -->
-            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="#">
-                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
-            <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">Profil</h1>
-                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
-                </div>
-            </a>
-            
-            <!-- Tombol Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
-                <span class="navbar-toggler-icon" style="color:white"></span>
-            </button>
-            
-            <!-- Offcanvas/Sidebar Mobile -->
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                </div>
-                <div class="offcanvas-body d-flex justify-content-between flex-column">
-                    <div class="d-flex flex-column gap-2">
-                        <!-- Menu Beranda -->
-                        <a href="beranda.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded  p-2">
-                                <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Beranda</p>
-                            </div>
-                        </a>
-                        
-                        
-                        <!-- Menu Ujian -->
-                        <a href="ujian.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center  rounded p-2">
-                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Ujian</p>
-                            </div>
-                        </a>
+<?php include 'includes/styles.php'; ?>
 
-                        <!-- Menu ai -->
-                        <a href="ai.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">SMAGA AI</p>
-                            </div>
-                        </a>
-
-                        
-                        <!-- Menu Profil -->
-                        <a href="profil.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center color-web rounded p-2">
-                                <img src="assets/profil_fill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0 text-white">Profil</p>
-                            </div>
-                        </a>
-                        
-                        
-                        <!-- Menu Bantuan -->
-                        <a href="bantuan.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Bantuan</p>
-                            </div>
-                        </a>
-                    </div>
-                    
-                <!-- Profile Dropdown -->
-                <div class="mt-3 dropup"> <!-- Tambahkan class dropdown di sini -->
-                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
-                            style="background-color:rgb(255, 252, 248);" 
-                            type="button" 
-                            data-bs-toggle="dropdown" 
-                            aria-expanded="false">
-                            <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
-                                    alt="Profile Picture" 
-                                    class="rounded-circle" 
-                                    style="width: 25px; height: 25px;object-fit: cover; z-index: 99999;">
-                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;">Halo, <?php echo htmlspecialchars($_SESSION['nama']); ?></p>
-                    </button>
-                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php" style="color: red;">Keluar</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-     <!-- row col untuk halaman utama -->
-     <div class="container-fluid">
+<div class="container-fluid">
         <div class="row">
-        <div class="col-auto vh-100 p-2 p-md-4 shadow-sm menu-samping d-none d-md-block" style="background-color:rgb(238, 236, 226)">
-                <style>
-                .menu-samping {
-                    position: fixed;
-                    width: 13rem;
-                    z-index: 1000;
-                    /* Tambahkan flexbox dan height */
-                    display: flex;
-                    flex-direction: column;
-                    height: 100vh;
-                    
-                }
-                .menu-content {
-                    flex: 1;
-                    display: flex;
-                    flex-direction: column;
-                }
-                .menu-atas {
-                    height: calc(100vh - 80px); /* 80px adalah perkiraan tinggi dropdown */
+            <!-- Sidebar for desktop -->
+            <?php include 'includes/sidebar_siswa.php'; ?>
 
-                }
-                .menu-bawah {
-                    position: fixed;
-                    bottom: 1rem;
-                    width: 10rem; /* Sesuaikan dengan lebar menu */
-                }
-                .col-utama {
-                    margin-left: 0;
-                }
-                @media (min-width: 768px) {
-                    .col-utama {
-                        margin-left: 13rem;
-                    }
-                }
-                </style>
-                <div class="menu-atas">
-                    <div class="ps-1 mb-3">
-                        <a href="beranda.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px" class="logo_orange">
-                            <div>
-                                <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
-                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
-                            </div>
-                        </a>
-                    </div>  
-                    <div class="col">
-                        <a href="beranda.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Beranda</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="ujian.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Ujian</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="profil.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center bg-white shadow-sm rounded p-2" style="">
-                            <img src="assets/profil_fill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Profil</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="ai.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">SMAGA AI</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="bantuan.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Bantuan</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="menu-bawah">
-                    <div class="row dropdown">
-                        <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo $siswa['foto_profil'] ? $siswa['foto_profil'] : 'assets/pp-siswa.png'; ?>" 
-                                    alt="Profile Picture" 
-                                    class="rounded-circle" 
-                                    style="width: 30px; height: 30px;object-fit: cover; z-index: 99999;">
-                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo htmlspecialchars($_SESSION['nama']); ?></p>
-                        </div>
-                        <!-- dropdown menu option -->
-                        <ul class="dropdown-menu" style="font-size: 12px;">
-                            <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                            <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            <!-- Mobile navigation -->
+            <?php include 'includes/mobile_nav siswa.php'; ?>
+
+            <!-- Settings Modal -->
+            <?php include 'includes/settings_modal.php'; ?>
+
+            
+        </div>
+    </div>    
 
 
-            <!-- ini isi kontennya -->
+
+<!-- ini isi kontennya -->
 <div class="col pt-0 p-2 p-md-4 col-utama">
     <div class="row g-4">
         <!-- Kolom Kiri (Profil dan Nilai) -->
-        <div class="col-md-8">
+        <div class="col-md-8 ">
             <div class="row mb-4">
-                <!-- Profile Card -->
                 <div class="col-12">
-                    <div class="profile-header rounded-4 p-4" style="background-color: rgb(218, 119, 86);">
-                        <div class="row align-items-center">
-                            <div class="col-md-3 text-center">
-                                <img src="<?php echo !empty($siswa['foto_profil']) ? 'uploads/profil/'.$siswa['foto_profil'] : 'assets/pp.png'; ?>" 
-                                    class="rounded-circle" width="100" height="100" style="object-fit: cover;">
-                            </div>
-                            <div class="col-md-9 text-white mt-4 mt-md-0">
-                                <h2 class="fw-bold mb-1"><?php echo htmlspecialchars($siswa['nama']); ?></h2>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <p class="mb-1"><i class="bi bi-person-badge me-2"></i>NIS: <?php echo htmlspecialchars($siswa['nis']); ?></p>
-                                        <p class="mb-1"><i class="bi bi-mortarboard me-2"></i>Kelas/Fase <?php echo htmlspecialchars($siswa['tingkat']); ?></p>
-                                        <p class="mb-1"><i class="bi bi-calendar me-2"></i>Tahun Masuk: <?php echo htmlspecialchars($siswa['tahun_masuk']); ?></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p class="mb-1"><i class="bi bi-telephone me-2"></i><?php echo htmlspecialchars($siswa['no_hp']); ?></p>
-                                        <p class="mb-1"><i class="bi bi-geo-alt me-2"></i><?php echo htmlspecialchars($siswa['alamat']); ?></p>
+                    <div class="card border-md-1 border-0 p-0 m-0 shadow-md-sm  rounded-4">
+                        <div class="card-body p-4 body-identitas">
+                            <div class="d-flex flex-column">
+                                <!-- Profile Settings -->
+                                <div class="d-flex flex-column">
+                                    <!-- Header with profile image -->
+                                    <div class="text-center mb-4">
+                                        <div class="position-relative d-inline-block">
+                                        <img src="<?php 
+                                            if (!empty($siswa['photo_type'])) {
+                                                if ($siswa['photo_type'] === 'avatar') {
+                                                    echo $siswa['photo_url']; // Tampilkan avatar Dicebear
+                                                } else if ($siswa['photo_type'] === 'upload') {
+                                                    echo 'uploads/profil/' . $siswa['foto_profil']; // Tampilkan foto upload
+                                                }
+                                            } else {
+                                                echo 'assets/pp.png'; // Tampilkan foto default
+                                            }
+                                        ?>" 
+                                        class="rounded-circle border shadow-sm" 
+                                        width="150px" height="150px"
+                                        style="object-fit: cover;">
+                                         
+                                        </div>
+                                        
+                                        <h4 class="mt-3 mb-1">
+                                            Halo, <?php 
+                                                $nama_depan = explode(' ', $siswa['nama'])[0];
+                                                echo ucwords(htmlspecialchars($nama_depan)); 
+                                            ?>
+                                        </h4>
+                                        <p class="text-muted  mb-3">
+                                            Informasi tentangmu dan preferensimu <br> di berbagai layanan SMAGAEdu
+                                        </p>
                                     </div>
                                 </div>
+
+
+                                <!-- Profile Info -->
+                                <div class="flex-grow-1">
+                                <div class="d-flex align-items-center gap-2 mb-0">
+                                        <div class="m-0 p-0">
+                                            <span class="bi bi-person-check" style="color:#c56a4d; font-size: 40px;"></span>
+                                        </div>
+                                        <div>
+                                            <h5 class="p-0 m-0 judul" style="font-size: 16px; font-weight:bold;">Identitas Siswa</h5>
+                                            <p style="font-size: 14px;" class="p-0 m-0 desc text-muted">Data kamu dikelola oleh Wali Kelas dan Guru BK. <a href="">Info selengkapnya.</a></p>
+                                        </div>
+                                        <style>
+                                            @media screen and (max-width: 768px) {
+                                                .desc {
+                                                    font-size: 10px;
+                                                }
+                                                
+                                            }
+                                        </style>
+                                    </div>
+                                    <hr class="mb-3 mt-1">
+
+                                    <!-- Settings List -->
+                                    <div class="settings-list">
+                                        <!-- Profile Photo & Name Section -->
+                                        <div class="settings-section">
+                                            <!-- Name Setting -->
+                                            <div class="settings-item d-flex align-items-center p-3 rounded-3 mb-2">
+                                                <i class="bi bi-person fs-4 me-3" style="color:#c56a4d;"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">Nama Lengkap</p>
+                                                    <span class="text-muted small"><?php echo ucwords(strtolower(htmlspecialchars($siswa['nama']))); ?></span>
+                                                </div>
+                                                <button class="btn btn-light btn-sm rounded-3 border shadow-sm" 
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" 
+                                                        title="Terkunci">
+                                                    <i class="bi bi-lock"></i>
+                                                </button>
+                                            </div>
+
+                                            <!-- Profile Photo Setting -->
+                                            <div class="settings-item d-flex align-items-center p-3 rounded-3 mb-2">
+                                                <i class="bi bi-camera fs-4 me-3" style="color:#c56a4d;"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">Foto Profil</p>
+                                                    <span class="text-muted small">Gambar profil membantu personalisasi akunmu</span>
+                                                </div>
+                                                <button class="btn btn-light d-flex gap-2 btn-sm rounded-3 border shadow-sm"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#editProfileModal">
+                                                    <i class="bi bi-pencil"></i>
+                                                    <!-- <p class="p-0 m-0">Edit</p> -->
+                                                </button>  
+                                            </div>
+
+
+
+                                            <!-- Personal Info Section -->
+                                            <div class="settings-item d-flex align-items-center p-3 rounded-3 mb-2">
+                                                <i class="bi bi-person-badge fs-4 me-3" style="color:#c56a4d;"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">NIS</p>
+                                                    <span class="text-muted small"><?php echo htmlspecialchars($siswa['nis']); ?></span>
+                                                </div>
+                                                <button class="btn btn-light btn-sm rounded-3 border shadow-sm" 
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" 
+                                                        title="Terkunci">
+                                                    <i class="bi bi-lock"></i>
+                                                </button>
+                                            </div>
+
+                                            <div class="settings-item d-flex align-items-center p-3 rounded-3 mb-2">
+                                                <i class="bi bi-mortarboard fs-4 me-3" style="color:#c56a4d;"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">Kelas/Fase</p>
+                                                    <span class="text-muted small"><?php echo htmlspecialchars($siswa['tingkat']); ?></span>
+                                                </div>
+                                                <button class="btn btn-light btn-sm rounded-3 border shadow-sm" 
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" 
+                                                        title="Terkunci">
+                                                    <i class="bi bi-lock"></i>
+                                                </button>
+                                            </div>
+
+                                            <div class="settings-item d-flex align-items-center p-3 rounded-3 mb-2">
+                                                <i class="bi bi-calendar fs-4 me-3" style="color:#c56a4d;"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">Tahun Masuk</p>
+                                                    <span class="text-muted small"><?php echo htmlspecialchars($siswa['tahun_masuk']); ?></span>
+                                                </div>
+                                                <button class="btn btn-light btn-sm rounded-3 border shadow-sm" 
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" 
+                                                        title="Terkunci">
+                                                    <i class="bi bi-lock"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Contact Info Section -->
+                                        <div class="settings-section mt-2">
+                                            <div class="settings-item d-flex align-items-center p-3 rounded-3 mb-2">
+                                                <i class="bi bi-telephone fs-4 me-3" style="color:#c56a4d;"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">No. Telepon</p>
+                                                    <span class="text-muted small"><?php echo htmlspecialchars($siswa['no_hp']); ?></span>
+                                                </div>
+                                                <button class="btn btn-light btn-sm rounded-3 border shadow-sm" 
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" 
+                                                        title="Terkunci">
+                                                    <i class="bi bi-lock"></i>
+                                                </button>
+                                            </div>
+
+                                            <div class="settings-item d-flex align-items-center p-3 rounded-3 mb-2">
+                                                <i class="bi bi-geo-alt fs-4 me-3" style="color:#c56a4d;"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">Alamat</p>
+                                                    <span class="text-muted small"><?php echo htmlspecialchars($siswa['alamat']); ?></span>
+                                                </div>
+                                                <button class="btn btn-light btn-sm rounded-3 border shadow-sm" 
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" 
+                                                        title="Terkunci">
+                                                    <i class="bi bi-lock"></i>
+                                                </button>
+                                            </div>
+
+                                            <div class="settings-item d-flex align-items-center p-3 rounded-3">
+                                                <i class="bi bi-key fs-4 me-3" style="color:#c56a4d;"></i>
+                                                <div class="flex-grow-1">
+                                                    <p class="mb-0 fw-medium">Password</p>
+                                                    <div class="d-flex align-items-center">
+                                                        <span id="password" class="text-muted small">•••••••</span>
+                                                        <button class="btn btn-link btn-sm p-0 ms-2" onclick="togglePassword()">
+                                                            <i class="bi bi-eye"></i>
+                                                        </button>
+                                                    </div>  
+                                                </div>
+                                                <button class="btn btn-light btn-sm rounded-3 border shadow-sm" 
+                                                        data-bs-toggle="tooltip"
+                                                        data-bs-placement="top" 
+                                                        title="Terkunci">
+                                                    <i class="bi bi-lock"></i>
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <style>
+                                .settings-item {
+                                    background: #fff;
+                                    transition: background-color 0.2s;
+                                    border: 1px solid #eee;
+                                }
+
+                                .settings-item:hover {
+                                    background: #f8f9fa;
+                                    cursor: pointer;
+                                }
+
+                                @media screen and (max-width: 768px) {
+                                    .desc {
+                                        font-size: 10px;
+                                    }
+                                    .settings-item {
+                                        padding: 0.75rem !important;
+                                    }
+                                    .settings-item i {
+                                        font-size: 1.25rem !important;
+                                    }
+                                }
+                                </style>
+                                <style>
+                                .icon-border {
+                                    border: 1px solid #e9ecef;
+                                    padding: 10px;
+                                    border-radius: 15px;
+                                }
+                                 @media screen and (max-width: 768px) {
+                                    .body-identitas {
+                                        padding: 0 !important;
+                                        margin-top: 30px !important;
+                                    }
+                                    
+                                } 
+                                </style>
+                                <!-- script buat tampilkan popup -->
+                                <script>
+                                // Initialize tooltips
+                                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                                })
+                                </script>
+                                <script>
+                                function toggleUsername() {
+                                    const usernameSpan = document.getElementById('username');
+                                    const hidden = usernameSpan.textContent === '•••••••';
+                                    usernameSpan.textContent = hidden ? '<?php echo $siswa["username"]; ?>' : '•••••••';
+                                }
+
+                                function togglePassword() {
+                                    const passwordSpan = document.getElementById('password');
+                                    const hidden = passwordSpan.textContent === '•••••••';
+                                    passwordSpan.textContent = hidden ? '<?php echo $siswa["password"]; ?>' : '•••••••';
+                                }
+                                </script>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+
             <!-- grafik chart -->
             <!-- Dropdown and Charts Container -->
-            <div class="row mb-4">
+            <div class="row p-0 p-md-2 p-md-4">
+            <div class="d-flex align-items-center mt-4 mt-mb-0 gap-2 mb-0">
+                <div class="m-0 p-0">
+                    <span class="bi bi-lightbulb" style="color:#c56a4d; font-size: 40px;"></span>
+                </div>
+                <div>
+                    <h5 class="p-0 m-0 judul" style="font-size: 16px; font-weight:bold;">Progressive Guidance</h5>
+                    <p style="font-size: 14px;" class="p-0 m-0 desc text-muted">Penilaian aktifitas kamu sesuai dengan kriteria Progressive Guidance. <a href="">Info selengkapnya.</a></p>
+                </div>
+                <style>
+                @media screen and (max-width: 768px) {
+                    .desc {
+                        font-size: 10px;
+                        }
+                                                
+                    }
+                </style>
+                </div>
+
+                <hr class="mb-3 mt-1">
+
                 <div class="col-12">
                     <div class="border rounded-4 p-4 shadow-sm">
                         <div style="height: 200px">
@@ -422,7 +594,7 @@ function getGrade($value) {
             </div>
 
 <!-- Content Grid -->
-<div class="row g-4">
+<div class="row g-4 p-md-4">
     <!-- Behavior & Character -->
     <div class="col-md-4">
         <div class="border rounded-4 p-4 shadow-sm">
@@ -592,90 +764,78 @@ function getGrade($value) {
         </div>
 
         <!-- Kolom Kanan (AI Assistant) -->
-        <div class="col-md-4 ai-col">
+        <div class="col-md-4 ai-col d-flex d-none d-md-block">
             <div class="sticky-top" style="top: 20px;">
-                <!-- AI Assistant Card -->
-                <div class="border rounded-4 shadow-sm" style="height: 36rem;">
-                    <!-- AI Header -->
-                    <div class="p-3 border-bottom d-flex align-items-center gap-2">
-                        <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="background-color: #da775620; width: 40px; height: 40px;">
-                            <i class="bi bi-stars text-primary" style="color: #da7756 !important; font-size: 1.2rem;"></i>
-                        </div>
-                        <div>
-                            <h5 class="m-0" style="color: #da7756;">SMAGA AI</h5>
-                            <small class="text-muted">Analisis Profil SMAGA AI</small>
-                        </div>
-                    </div>
 
-                    <div class="p-3">
-                    <?php
-                    $groq_api_key = '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';
-                    $http_code = 0; // Inisialisasi variabel
-                    
-                    if(!empty($groq_api_key)) {
-                        // Format data untuk prompt
-                    $categories = [
-                        'Belajar' => [
-                            'Nilai Akademik' => $siswa['nilai_akademik'],
-                            'Keaktifan' => $siswa['keaktifan'],
-                            'Pemahaman' => $siswa['pemahaman']
-                        ],
-                        'Ibadah' => [
-                            'Kehadiran Ibadah' => $siswa['kehadiran_ibadah'],
-                            'Kualitas Ibadah' => $siswa['kualitas_ibadah'],
-                            'Pemahaman Agama' => $siswa['pemahaman_agama']
-                        ],
-                        'Pengembangan' => [
-                            'Minat Bakat' => $siswa['minat_bakat'],
-                            'Prestasi' => $siswa['prestasi'],
-                            'Keaktifan Ekstrakurikuler' => $siswa['keaktifan_ekskul']
-                        ],
-                        'Sosial' => [
-                            'Partisipasi Sosial' => $siswa['partisipasi_sosial'],
-                            'Empati' => $siswa['empati'],
-                            'Kerja Sama' => $siswa['kerja_sama']
-                        ],
-                        'Kesehatan' => [
-                            'Kebersihan Diri' => $siswa['kebersihan_diri'],
-                            'Aktivitas Fisik' => $siswa['aktivitas_fisik'],
-                            'Pola Makan' => $siswa['pola_makan']
-                        ],
-                        'Karakter' => [
-                            'Kejujuran' => $siswa['kejujuran'],
-                            'Tanggung Jawab' => $siswa['tanggung_jawab'],
-                            'Kedisiplinan' => $siswa['kedisiplinan']
-                        ]
-                    ];
+<!-- AI Assistant Card -->
+<div class="border rounded-4 shadow-sm" >
+    <div class="p-3 d-flex justify-content-center align-items-center" style="height: 36rem;">
+        <?php 
+        $groq_api_key = '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';
+        $should_analyze = isset($_POST['start_analysis']) && $_POST['start_analysis'] === 'true';
+        
+        if ($should_analyze) {
+            if(!empty($groq_api_key)) {
+                // Format data untuk prompt
+                $categories = [
+                    'Belajar' => [
+                        'Nilai Akademik' => $siswa['nilai_akademik'],
+                        'Keaktifan' => $siswa['keaktifan'],
+                        'Pemahaman' => $siswa['pemahaman']
+                    ],
+                    'Ibadah' => [
+                        'Kehadiran Ibadah' => $siswa['kehadiran_ibadah'],
+                        'Kualitas Ibadah' => $siswa['kualitas_ibadah'],
+                        'Pemahaman Agama' => $siswa['pemahaman_agama']
+                    ],
+                    'Pengembangan' => [
+                        'Minat Bakat' => $siswa['minat_bakat'],
+                        'Prestasi' => $siswa['prestasi'],
+                        'Keaktifan Ekstrakurikuler' => $siswa['keaktifan_ekskul']
+                    ],
+                    'Sosial' => [
+                        'Partisipasi Sosial' => $siswa['partisipasi_sosial'],
+                        'Empati' => $siswa['empati'],
+                        'Kerja Sama' => $siswa['kerja_sama']
+                    ],
+                    'Kesehatan' => [
+                        'Kebersihan Diri' => $siswa['kebersihan_diri'],
+                        'Aktivitas Fisik' => $siswa['aktivitas_fisik'],
+                        'Pola Makan' => $siswa['pola_makan']
+                    ],
+                    'Karakter' => [
+                        'Kejujuran' => $siswa['kejujuran'],
+                        'Tanggung Jawab' => $siswa['tanggung_jawab'],
+                        'Kedisiplinan' => $siswa['kedisiplinan']
+                    ]
+                ];
 
-                    // Modifikasi bagian prompt
-                    $prompt = "Halo {$siswa['nama']}! Aku akan bantu analisis perkembanganmu di SMAGAEdu. Berikut datanya:\n\n";
+                $prompt = "Halo {$siswa['nama']}! Aku akan bantu analisis perkembanganmu di SMAGAEdu. Berikut datanya:\n\n";
 
-                    foreach($categories as $category => $subjects) {
-                        $prompt .= "- {$category}: ";
-                        $prompt .= implode(', ', array_map(
-                            fn($subject, $value) => "$subject (" . round($value) . "%)",
-                            array_keys($subjects), 
-                            $subjects
-                        ));
-                        $prompt .= "\n";
-                    }
+                foreach($categories as $category => $subjects) {
+                    $prompt .= "- {$category}: ";
+                    $prompt .= implode(', ', array_map(
+                        fn($subject, $value) => "$subject (" . round($value) . "%)",
+                        array_keys($subjects), 
+                        $subjects
+                    ));
+                    $prompt .= "\n";
+                }
 
-                    $prompt .= "\nBuatkan analisis dengan struktur:
-                    1. Salam penyemangat menggunakan nama panggilan
-                    2. 1 kalimat positif tentang prestasi terbaik
-                    3. 2 area perlu perbaikan dengan bahasa kasual
-                    4. 2 saran konkret untuk perbaikan
-                    5. Kalimat penutup motivasi
+                $prompt .= "\nBuatkan analisis dengan struktur:
+                1. Salam penyemangat menggunakan nama panggilan
+                2. 1 kalimat positif tentang prestasi terbaik
+                3. 2 area perlu perbaikan dengan bahasa kasual
+                4. 2 saran konkret untuk perbaikan
+                5. Kalimat penutup motivasi
 
-                    Gunakan:
-                    - Bahasa Indonesia santai seperti teman sebaya
-                    - Emoji yang relevan
-                    - Fokus beri saran siswa harus ngapain
-                    - Kalimat pendek maksimal 10 kata
-                    - Hindari istilah teknis
-                    - Gunakan hashtag #BelajarBersamaSMAGAEdu";
+                Gunakan:
+                - Bahasa Indonesia santai
+                - 1-2 emoji yang relevan
+                - Saran yang konkret
+                - Kalimat pendek dan jelas
+                - Tagar #BelajarBersamaSMAGAEdu";
 
-                // eksekusi api
                 $ch = curl_init();
                 curl_setopt_array($ch, [
                     CURLOPT_URL => 'https://api.groq.com/openai/v1/chat/completions',
@@ -698,123 +858,933 @@ function getGrade($value) {
                 curl_close($ch);
 
                 if($http_code == 200) {
-                            $response_data = json_decode($response, true);
-                            $raw_text = $response_data['choices'][0]['message']['content'];
-                            $formatted_text = nl2br(htmlspecialchars($raw_text));
-                            $formatted_text = preg_replace(
-                                '/(Halo|Hai|Wah|Nilai|Saran|Rekomendasi|Tips|Solusi|Yuk|Ayo|Perhatian|Poin|Kesimpulan)(.*?)(:|!)/', 
-                                '<strong>$1$2$3</strong>', 
-                                $formatted_text
-                            );
-                            $formatted_text = str_replace('*', '•', $formatted_text);
-                            $full_text = htmlspecialchars($response_data['choices'][0]['message']['content']);
-                            $words = explode(' ', strip_tags($raw_text));
+                    $response_data = json_decode($response, true);
+                    $raw_text = $response_data['choices'][0]['message']['content'];
+                    $full_text = $raw_text;
+                    $formatted_text = nl2br(htmlspecialchars($raw_text));
+                    $formatted_text = preg_replace(
+                        '/(Halo|Hai|Wah|Nilai|Saran|Rekomendasi|Tips|Solusi|Yuk|Ayo|Perhatian|Poin|Kesimpulan)(.*?)(:|!)/', 
+                        '<strong>$1$2$3</strong>', 
+                        $formatted_text
+                    );
+                    $formatted_text = str_replace('*', '•', $formatted_text);
+                    $words = explode(' ', strip_tags($raw_text));
                     ?>
-                        <style>
-                            .ai-col {
-                                animation: fadeIn 1s ease-in-out;
-                            }
-                            @keyframes fadeIn {
-                                0% {
-                                    opacity: 0;
-                                }
-                                100% {
-                                    opacity: 1;
-                                }
-                            }
-                            #aiResponseContainer {
-                                white-space: pre-wrap;
-                                padding: 1rem;
-                                background-color: #fff;
-                                border-radius: 0.5rem;
-                                font-size: 0.9rem;
-                                line-height: 1.6;
-                            }
-                            #aiResponseContainer strong {
-                                color: #da7756;
-                                font-weight: 600;
-                            }
-                            .ai-expand-btn {
-                                background-color: #da7756;
-                                color: white;
-                                border: none;
-                                padding: 0.5rem 1rem;
-                                border-radius: 0.5rem;
-                                font-size: 0.9rem;
-                                transition: all 0.3s ease;
-                            }
-                            .ai-expand-btn:hover {
-                                background-color: #c56a4d;
-                            }
-                        </style>
+                    <div id="aiResponseContainer" style="height: 25rem; overflow-y: auto;"></div>
+                    
 
-                        <div id="aiResponseContainer" style="height: 25rem; overflow-y: auto;"></div>
+
+                    <script>
+                    (function() {
+                        const container = document.getElementById('aiResponseContainer');
+                        const words = <?= json_encode($words) ?>;
+                        let index = 0;
                         
-                        <div class="mt-3 d-flex">
-                            <button class="ai-expand-btn flex-fill" data-bs-toggle="modal" data-bs-target="#aiDetailModal">
-                                <i class="bi bi-arrows-angle-expand"></i> Lihat Detail
-                            </button>
-                        </div>
-
-                        <script>
-                        (function() {
-                            const container = document.getElementById('aiResponseContainer');
-                            const words = <?= json_encode($words) ?>;
-                            let index = 0;
-                            
-                            function typeWord() {
-                                if(index < words.length) {
-                                    container.innerHTML += (index > 0 ? ' ' : '') + words[index];
-                                    container.scrollTop = container.scrollHeight;
-                                    index++;
-                                    setTimeout(typeWord, 50);
-                                }
+                        function typeWord() {
+                            if(index < words.length) {
+                                container.innerHTML += (index > 0 ? ' ' : '') + words[index];
+                                container.scrollTop = container.scrollHeight;
+                                index++;
+                                setTimeout(typeWord, 50);
                             }
-                            
-                            typeWord();
-                        })();
-                        </script>
-                    <?php
-                        } else {
-                            echo "<div class='alert alert-warning rounded-3'>
-                                    <i class='bi bi-exclamation-triangle me-2'></i>
-                                    Asisten sedang offline. Kode error: {$http_code}
-                                  </div>";
                         }
-                    } else {
-                        echo "<div class='alert alert-warning rounded-3'>
-                                <i class='bi bi-exclamation-triangle me-2'></i>
-                                Fitur AI belum dikonfigurasi
-                              </div>";
-                    }
+                        
+                        typeWord();
+                    })();
+                    </script>
+                    <?php
+                } else {
                     ?>
+                    <div class='alert alert-warning rounded-3'>
+                        <i class='bi bi-exclamation-triangle me-2'></i>
+                        Asisten sedang offline. Kode error: <?php echo $http_code; ?>
                     </div>
+                    <?php
+                }
+            } else {
+                ?>
+                <div class='alert alert-warning rounded-3'>
+                    <i class='bi bi-exclamation-triangle me-2'></i>
+                    Fitur AI belum dikonfigurasi
                 </div>
+                <?php
+            }
+        } else {
+            // Initial state with button
+            ?>
+            <div id="initialState" class="text-center p-4">
+                <i class="bi bi-stars display-1" style="color: #da7756;"></i>
+                <h5 class="mt-3" style="color: #da7756;">Mulai Analisis SAGA?</h5>
+                <p class="text-muted small mb-3">SAGA AI akan menganalisis performa dan memberikan saran personal untukmu</p>
+                <form method="POST">
+                    <input type="hidden" name="start_analysis" value="true">
+                    <button type="submit" class="btn btn-sm px-4 rounded-3" style="background-color: #da7756; color: white;">
+                        <i class="bi bi-magic me-2"></i>Analisis Sekarang
+                    </button>
+                </form>
+                <p style="font-size: 10px;" class="mt-1 text-muted">Diperlukan memuat ulang halaman</p>
+            </div>
+            <?php
+        }
+        ?>
+    </div>
+</div>
+
+<style>
+.ai-col {
+    animation: fadeIn 1s ease-in-out;
+}
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+#aiResponseContainer {
+    white-space: pre-wrap;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+#aiResponseContainer strong {
+    color: #da7756;
+    font-weight: 600;
+}
+.ai-expand-btn {
+    background-color: #da7756;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+.ai-expand-btn:hover {
+    background-color: #c56a4d;
+}
+</style>
+
             </div>
         </div>
     </div>
 </div>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="aiDetailModal" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header text-white" style="background-color: #c56a4d;">
-                                        <h5 class="modal-title">
-                                            <i class="bi bi-robot me-2"></i>
-                                            Analisis Lengkap SMAGA AI
-                                        </h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body" style="height: calc(100vh - 200px); overflow-y: auto;">
-                                        <div class="p-3">
-                                            <?= nl2br($full_text) ?>
-                                        </div>
-                                    </div>
+
+
+
+
+                       <!-- Tambahkan sebelum closing body tag -->
+
+<!-- FAB dengan Speech Bubble -->
+<div class="fab-container d-md-none">
+    <!-- Speech Bubble -->
+    <div class="speech-bubble border" id="aiBubble">
+        <?php if (!isset($_POST['start_analysis'])) { ?>
+            <p class="p-0 m-0">Ingin SAGA mengevaluasi hasil pantauanmu di sekolah?</p>
+            <p style="font-size: 12px;" class="text-muted mb-2">Kami akan memuat ulang halaman untuk memuat analisis</p>
+            <form method="POST" style="display: contents;">
+                <input type="hidden" name="start_analysis" value="true">
+                <button type="submit" class="btn btn-sm w-100 color-web text-white">
+                    <i class="bi bi-magic me-2"></i>Mulai Analisis
+                </button>
+            </form>
+        <?php } else { ?>
+            <p class="mb-2">Hasil analisis SAGA sudah siap!</p>
+            <button class="btn btn-sm w-100 color-web text-white" data-bs-toggle="modal" data-bs-target="#aiDetailModal" onclick="hideBubble()">
+                Lihat Analisis
+            </button>
+        <?php } ?>
+    </div>
+    
+    <!-- FAB Button -->
+    <button class="fab-button" id="fabAI">
+        <i class="bi bi-stars"></i>
+    </button>
+</div>
+
+<!-- style modal mobile -->
+
+
+<!-- Modal for Mobile -->
+<div class="modal fade" id="aiDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #c56a4d;">
+                <h5 class="modal-title">
+                    <i class="bi bi-stars me-2"></i>
+                    <?php echo !isset($_POST['start_analysis']) ? 'Mulai Analisis SAGA' : 'Analisis Lengkap SAGA'; ?>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="height: calc(100vh - 200px); overflow-y: auto;">
+                <?php if (!isset($_POST['start_analysis'])) { ?>
+                    <!-- Initial State untuk Mobile -->
+                    <div class="text-center p-4">
+                        <img src="/api/placeholder/200/200" alt="SAGA AI Icon" class="mb-4">
+                        <h4 class="mb-3" style="color: #da7756;">Ingin Tahu Perkembanganmu?</h4>
+                        <p class="text-muted mb-4">SAGA AI akan menganalisis profilmu dan memberikan saran yang personal untuk kemajuanmu!</p>
+                        <form method="POST">
+                            <input type="hidden" name="start_analysis" value="true">
+                            <button type="submit" class="btn px-4 py-2 rounded-3" style="background-color: #da7756; color: white;">
+                                <i class="bi bi-magic me-2"></i>Mulai Analisis SAGA
+                            </button>
+                        </form>
+                    </div>
+                <?php } else { ?>
+                    <div class="p-3">
+                        <?php echo isset($full_text) ? nl2br(htmlspecialchars($full_text)) : 'Memuat analisis...'; ?>
+                    </div>
+                <?php } ?>
+            </div>
+            <div class="modal-footer d-flex">
+                <button type="button" class="btn color-web flex-fill text-white" data-bs-dismiss="modal">
+                    <?php echo !isset($_POST['start_analysis']) ? 'Tutup' : 'Baik, saya mengerti'; ?>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.fab-container {
+    position: fixed;
+    bottom: 6rem;
+    right: 2rem;
+}
+
+.fab-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgb(218, 119, 86);
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.fab-button:hover {
+    background: rgb(219, 106, 68);
+}
+
+/* Speech Bubble Styling */
+.speech-bubble {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    background: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+    font-size: 0.9rem;
+}
+
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: 20px;
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: white transparent transparent;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.fab-button {
+    animation: pulse 2s infinite;
+}
+
+/* Show/Hide Speech Bubble */
+.speech-bubble.show {
+    display: block;
+}
+</style>
+
+<script>
+let bubbleTimeout;
+
+function showBubble() {
+    const bubble = document.getElementById('aiBubble');
+    bubble.classList.add('show');
+    
+    // Auto hide after 5 seconds
+    bubbleTimeout = setTimeout(() => {
+        hideBubble();
+    }, 5000);
+}
+
+function hideBubble (){
+    const bubble = document.getElementById('aiBubble');
+    if (bubble) {
+        bubble.classList.remove('show');
+        clearTimeout(bubbleTimeout);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const fab = document.getElementById('fabAI');
+    
+    // Automatically show bubble after 2 seconds
+    setTimeout(() => {
+        showBubble();
+    }, 2000);
+    
+    fab.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const bubble = document.getElementById('aiBubble');
+        
+        if (bubble.classList.contains('show')) {
+            hideBubble();
+        } else {
+            showBubble();
+        }
+    });
+    
+    // Hide bubble when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.fab-container')) {
+            hideBubble();
+        }
+    });
+});
+</script> 
+
+<!-- Modal Edit Profile -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-body p-4">
+                <!-- Simplified Tab Navigation -->
+                <ul class="nav nav-tabs d-flex gap-3 mb-4 border-0">
+                    <li class="nav-item flex-grow-1">
+                        <button class="btn w-100 position-relative tab-btn active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab" aria-controls="upload" aria-selected="true">
+                            <i class="bi bi-upload me-2"></i>Upload
+                            <div class="tab-indicator"></div>
+                        </button>
+                    </li>
+                    <li class="nav-item flex-grow-1">
+                        <button class="btn w-100 position-relative tab-btn" id="avatar-tab" data-bs-toggle="tab" data-bs-target="#avatar" type="button" role="tab" aria-controls="avatar" aria-selected="false">
+                            <i class="bi bi-person-bounding-box me-2"></i>Avatar
+                            <div class="tab-indicator"></div>
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="profileTabContent">
+                    <!-- Upload Photo Tab -->
+                    <div class="tab-pane fade show active" id="upload">
+                        <!-- Alert untuk sopan -->
+                        <div class="alert alert-warning d-flex align-items-center rounded-3 mb-3" role="alert">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <div>
+                                <p class="fw-bold p-0 m-0">Perhatian!</p>
+                                <p class="p-0 m-0 desc-profil" style="font-size: 12px;">Pastikan foto profil yang kamu gunakan sopan dan sesuai dengan aturan.
+                                </p>
+                                <style>
+                                    @media screen and (min-width: 767px) {
+                                        .desc-profil {
+                                            font-size: 14px !important;
+                                        }
+                                        
+                                    }
+                                </style>
+                            </div>
+                        </div>
+                        <form id="uploadForm">
+                            <input type="hidden" name="siswa_id" value="<?php echo $siswa['id']; ?>">
+                            <div class="upload-area" id="uploadArea">
+                                <i class="bi bi-cloud-upload display-4" style="color: rgb(218, 119, 86);"></i>
+                                <p class="mt-2 mb-1">Drag & drop foto di sini</p>
+                                <span class="text-muted small">atau</span>
+                                <button type="button" class="btn btn-light mt-2" onclick="document.getElementById('photoInput').click()">
+                                    Pilih File
+                                </button>
+                            </div>
+                            <input type="file" class="d-none" id="photoInput" accept="image/*">
+
+                            <!-- Cropper Container -->
+                            <div class="cropper-container mt-4" style="display: none;">
+                                <div class="img-container mb-3">
+                                    <img id="cropperImage" src="" style="max-width: 100%;">
                                 </div>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button type="button" class="btn btn-tool" onclick="rotateImage(-90)" title="Putar kiri">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" onclick="rotateImage(90)" title="Putar kanan">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-tool" onclick="resetCropper()" title="Reset">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Avatar Tab -->
+                    <div class="tab-pane fade" id="avatar">
+                        <!-- Alert untuk sopan -->
+                        <div class="alert alert-warning d-flex align-items-center rounded-3 mb-3" role="alert">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <div>
+                                <p class="fw-bold p-0 m-0">Perhatian!</p>
+                                <p class="p-0 m-0 desc-profil" style="font-size: 12px;">Pilih foto profil yang akan kamu gunakan sopan dan sesuai dengan aturan.
+                                </p>
+                                <style>
+                                    @media screen and (min-width: 767px) {
+                                        .desc-profil {
+                                            font-size: 14px !important;
+                                        }
+                                        
+                                    }
+                                </style>
                             </div>
                         </div>
 
-            
+                        <select class="form-select form-select-sm mb-3" id="avatarStyle" onchange="updateAvatars()">
+                            <option value="avataaars">Headshot</option>
+                            <option value="bottts">Robot</option>
+                            <option value="adventurer">Petualang</option>
+                            <option value="fun-emoji">Emoji</option>
+                            <option value="pixel-art">Pixel Art</option>
+                            <option value="initials">Inisial</option>
+                            <option value="croodles-neutral">Doodle</option>
+                            <option value="icons">Simbol</option>
+                            <option value="identicon">Identicon</option>
+                            <option value="lorelei">Notion</option>
+                            <option value="notionists-neutral">Notion II</option>
+                            <option value="notionists">Notion III</option>
+                            <option value="thumbs">Jempol</option>
+                            <option value="shapes">Bentuk Ruang</option>
+                        </select>
+                        <div class="avatar-grid" id="avatarGrid"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer btn-group border-0 px-4 pb-4">
+                <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn text-white" id="saveButton" onclick="saveProfilePhoto()" disabled 
+                        style="background-color: rgb(218, 119, 86);">
+                    <i class="bi bi-check2 me-1"></i>Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.upload-area:hover {
+    border-color: rgb(218, 119, 86);
+    background-color: #fff5f2;
+}
+
+.upload-area.dragover {
+    border-color: rgb(218, 119, 86);
+    background-color: #fff5f2;
+    transform: scale(0.98);
+}
+
+.btn-tool {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s;
+}
+
+.btn-tool:hover {
+    background: #fff5f2;
+    border-color: rgb(218, 119, 86);
+    color: rgb(218, 119, 86);
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.avatar-item {
+    aspect-ratio: 1;
+    cursor: pointer;
+    padding: 0.25rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.avatar-item:hover {
+    transform: translateY(-2px);
+    border-color: rgb(218, 119, 86);
+}
+
+.avatar-item.selected {
+    border-color: rgb(218, 119, 86);
+    background-color: #fff5f2;
+}
+
+.tab-btn {
+    border: none;
+    background: transparent;
+    padding: 0.5rem;
+    color: #6c757d;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    color: rgb(218, 119, 86);
+}
+
+.tab-btn.active {
+    color: rgb(218, 119, 86);
+}
+
+.tab-indicator {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgb(218, 119, 86);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tab-btn.active .tab-indicator {
+    opacity: 1;
+}
+
+/* Custom scrollbar for avatar grid */
+.avatar-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.avatar-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.avatar-grid::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+.avatar-grid::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+}
+</style>
+
+<style>
+.upload-container {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: #0d6efd;
+    background-color: #f1f3f5;
+}
+
+.upload-area.dragover {
+    border-color: #0d6efd;
+    background-color: #e9ecef;
+}
+
+.btn-tool {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.btn-tool:hover {
+    background: #e9ecef;
+}
+
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.avatar-item {
+    cursor: pointer;
+    padding: 0.5rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.avatar-item:hover {
+    transform: translateY(-2px);
+    border-color: #6c757d;
+}
+
+.avatar-item.selected {
+    border-color: #0d6efd;
+    background-color: #f8f9fa;
+}
+
+.avatar-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.nav-tabs .nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+}
+
+.nav-tabs .nav-link.active {
+    font-weight: 500;
+}
+
+/* Cropper customization */
+.cropper-view-box,
+.cropper-face {
+    border-radius: 50%;
+}
+</style>
+
+<script>
+let cropper = null;
+let selectedAvatar = null;
+let currentMode = 'upload'; // 'upload' or 'avatar'
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function() {
+    initializeUpload();
+    initializeTabs();
+    updateAvatars();
+});
+
+function initializeTabs() {
+    const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+    tabs.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', (e) => {
+            currentMode = e.target.id === 'upload-tab' ? 'upload' : 'avatar';
+            updateSaveButton();
+        });
+    });
+}
+
+function initializeUpload() {
+    const uploadArea = document.getElementById('uploadArea');
+    const photoInput = document.getElementById('photoInput');
+
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        if (e.dataTransfer.files[0]) {
+            handleImageUpload(e.dataTransfer.files[0]);
+        }
+    });
+
+    // Click upload
+    uploadArea.addEventListener('click', () => photoInput.click());
+    photoInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) {
+            handleImageUpload(e.target.files[0]);
+        }
+    });
+
+    // Reset on modal hide
+    const modal = document.getElementById('editProfileModal');
+    modal.addEventListener('hidden.bs.modal', resetModal);
+}
+
+function handleImageUpload(file) {
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!validTypes.includes(file.type)) {
+        showToast('Error', 'Harap upload file gambar yang valid (JPG, PNG)', 'error');
+        return;
+    }
+
+    if (file.size > maxSize) {
+        showToast('Error', 'Ukuran file tidak boleh lebih dari 5MB', 'error');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById('uploadArea').style.display = 'none';
+        document.querySelector('.cropper-container').style.display = 'block';
+        
+        const image = document.getElementById('cropperImage');
+        image.src = e.target.result;
+
+        if (cropper) {
+            cropper.destroy();
+        }
+
+        cropper = new Cropper(image, {
+            aspectRatio: 1,
+            viewMode: 2,
+            dragMode: 'move',
+            autoCropArea: 1,
+            restore: false,
+            guides: true,
+            center: true,
+            highlight: false,
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            toggleDragModeOnDblclick: false,
+        });
+
+        updateSaveButton();
+    };
+    reader.readAsDataURL(file);
+}
+
+function updateAvatars() {
+    const grid = document.getElementById('avatarGrid');
+    const style = document.getElementById('avatarStyle').value;
+    
+    // Show loading
+    grid.innerHTML = '<div class="text-center p-4"><div class="spinner-border text-primary"></div></div>';
+    
+    // Generate avatars
+    let avatarsHTML = '';
+    for(let i = 0; i < 20; i++) {
+        const seed = Math.random().toString(36).substring(7);
+        const avatarUrl = `https://api.dicebear.com/7.x/${style}/svg?seed=${seed}`;
+        
+        avatarsHTML += `
+            <div class="avatar-item" onclick="selectAvatar(this, '${avatarUrl}')">
+                <img src="${avatarUrl}" alt="Avatar option ${i+1}">
+            </div>
+        `;
+    }
+    
+    grid.innerHTML = avatarsHTML;
+}
+
+function selectAvatar(element, avatarUrl) {
+    document.querySelectorAll('.avatar-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    element.classList.add('selected');
+    selectedAvatar = avatarUrl;
+    updateSaveButton();
+}
+
+function updateSaveButton() {
+    const saveButton = document.getElementById('saveButton');
+    if (currentMode === 'upload') {
+        saveButton.disabled = !cropper;
+    } else {
+        saveButton.disabled = !selectedAvatar;
+    }
+}
+
+function saveProfilePhoto() {
+    const saveButton = document.getElementById('saveButton');
+    saveButton.disabled = true;
+    saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+
+    if (currentMode === 'upload') {
+        // Save uploaded photo
+        cropper.getCroppedCanvas().toBlob((blob) => {
+            const formData = new FormData();
+            formData.append('siswa_id', document.querySelector('input[name="siswa_id"]').value);
+            formData.append('photo_type', 'upload');
+            formData.append('photo', blob, 'profile.jpg');
+
+            sendToServer(formData);
+        }, 'image/jpeg', 0.8);
+    } else {
+        // Save selected avatar
+        const formData = new FormData();
+        formData.append('siswa_id', document.querySelector('input[name="siswa_id"]').value);
+        formData.append('photo_type', 'avatar');
+        formData.append('avatar_url', selectedAvatar);
+
+        sendToServer(formData);
+    }
+}
+
+function sendToServer(formData) {
+    fetch('update_foto_siswa.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Sukses', 'Foto profil berhasil diperbarui', 'success');
+            location.reload();
+        } else {
+            throw new Error(data.message || 'Gagal memperbarui foto profil');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Error', error.message, 'error');
+        const saveButton = document.getElementById('saveButton');
+        saveButton.disabled = false;
+        saveButton.innerHTML = 'Simpan';
+    });
+}
+
+function rotateImage(degree) {
+    if (cropper) {
+        cropper.rotate(degree);
+    }
+}
+
+function resetCropper() {
+    if (cropper) {
+        cropper.reset();
+    }
+}
+
+function resetModal() {
+    // Reset cropper
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+    
+    // Reset upload
+    document.getElementById('cropperImage').src = '';
+    document.getElementById('photoInput').value = '';
+    document.getElementById('uploadArea').style.display = 'block';
+    document.querySelector('.cropper-container').style.display = 'none';
+    
+    // Reset avatar selection
+    selectedAvatar = null;
+    document.querySelectorAll('.avatar-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Reset tab to upload
+    const uploadTab = document.getElementById('upload-tab');
+    const tab = new bootstrap.Tab(uploadTab);
+    tab.show();
+    
+    // Reset save button
+    const saveButton = document.getElementById('saveButton');
+    saveButton.disabled = true;
+    saveButton.innerHTML = 'Simpan';
+}
+
+function showToast(title, message, type = 'info') {
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        document.body.appendChild(toastContainer);
+    }
+
+    const toastHtml = `
+        <div class="toast align-items-center border-0 ${getToastClass(type)}" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <strong>${title}</strong><br>
+                    <span>${message}</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+
+    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+    const toastElement = toastContainer.lastElementChild;
+    const toast = new bootstrap.Toast(toastElement, {
+        animation: true,
+        autohide: true,
+        delay: 3000
+    });
+    toast.show();
+
+    toastElement.addEventListener('hidden.bs.toast', () => {
+        toastElement.remove();
+    });
+}
+
+function getToastClass(type) {
+    switch (type) {
+        case 'success':
+            return 'bg-success text-white';
+        case 'error':
+            return 'bg-danger text-white';
+        case 'warning':
+            return 'bg-warning text-dark';
+        default:
+            return 'bg-info text-white';
+    }
+}
+</script>
 </body>
 </html>

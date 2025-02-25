@@ -30,6 +30,9 @@ $query_peserta = "
     SELECT 
         s.id as siswa_id,
         s.nama,
+        s.photo_type,
+        s.photo_url,
+        s.foto_profil,
         COUNT(DISTINCT ju.id) as attempted_questions,
         SUM(CASE WHEN ju.jawaban = bs.jawaban_benar THEN 1 ELSE 0 END) as correct_answers,
         SUM(CASE WHEN ju.jawaban != bs.jawaban_benar AND ju.jawaban IS NOT NULL THEN 1 ELSE 0 END) as wrong_answers
@@ -73,398 +76,794 @@ $query = "SELECT * FROM guru WHERE username = '$userid'";
 $result = mysqli_query($koneksi, $query);
 $guru = mysqli_fetch_assoc($result);
 
+
+// ambil soal 
+// Query untuk mendapatkan statistik jawaban per soal
+// Query untuk mendapatkan statistik jawaban per soal
+// Query untuk mendapatkan statistik jawaban per soal
+$query_soal_stats = "
+    SELECT 
+        bs.id as soal_id,
+        bs.pertanyaan,
+        bs.jawaban_benar,
+        bs.jawaban_a,
+        bs.jawaban_b,
+        bs.jawaban_c,
+        bs.jawaban_d,
+        bs.gambar_soal,
+        COUNT(ju.id) as total_menjawab,
+        COUNT(CASE WHEN UPPER(ju.jawaban) = UPPER(bs.jawaban_benar) THEN 1 END) as total_benar,
+        COUNT(CASE WHEN ju.jawaban IS NOT NULL AND UPPER(ju.jawaban) != UPPER(bs.jawaban_benar) THEN 1 END) as total_salah,
+        COUNT(CASE WHEN UPPER(ju.jawaban) = 'A' THEN 1 END) as jawab_a,
+        COUNT(CASE WHEN UPPER(ju.jawaban) = 'B' THEN 1 END) as jawab_b,
+        COUNT(CASE WHEN UPPER(ju.jawaban) = 'C' THEN 1 END) as jawab_c,
+        COUNT(CASE WHEN UPPER(ju.jawaban) = 'D' THEN 1 END) as jawab_d
+    FROM bank_soal bs
+    LEFT JOIN jawaban_ujian ju ON bs.id = ju.soal_id AND ju.ujian_id = '$ujian_id'
+    WHERE bs.ujian_id = '$ujian_id'
+    GROUP BY bs.id
+    ORDER BY total_salah DESC";
+
+$result_soal_stats = mysqli_query($koneksi, $query_soal_stats);
+$soal_stats = [];
+while ($row = mysqli_fetch_assoc($result_soal_stats)) {
+    $soal_stats[] = $row;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hasil Ujian</title>
+
     <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- CSS kustom setelah Bootstrap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- CSS kustom setelah Bootstrap -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
     <body>
 
-    <style>
-        .navbar {
-            display: none;
-        }
-        body{
-            font-family: 'Merriweather', serif;
-        }
-        @media screen and (max-width: 768px) {
+        <style>
             .navbar {
-                display: block !important;
-            }
-            .menu-samping {
                 display: none;
             }
-        }
-        @media screen and (max-width: 768px) {
-            .container-fluid {
-                display: none;
-                } 
+
+            body {
+                font-family: 'Merriweather', serif;
             }
-    </style>
+
+            @media screen and (max-width: 768px) {
+                .navbar {
+                    display: block !important;
+                }
+
+                .menu-samping {
+                    display: none;
+                }
+            }
+
+            @media screen and (max-width: 768px) {
+                .container-fluid {
+                    display: none;
+                }
+            }
+        </style>
 
 
+        <?php include 'includes/styles.php'; ?>
 
-    <!-- Navbar Mobile -->
-    <nav class="navbar navbar-dark d-md-none color-web fixed-top">
         <div class="container-fluid">
-            <!-- Logo dan Nama -->
-            <a class="navbar-brand d-flex align-items-center gap-2 text-white" href="beranda_guru.php">
-                <img src="assets/logo_white.png" alt="" width="30px" class="logo_putih">
-            <div>
-                    <h1 class="p-0 m-0" style="font-size: 20px;">Ujian</h1>
-                    <p class="p-0 m-0 d-none d-md-block" style="font-size: 12px;">LMS</p>
-                </div>
-            </a>
-            
-            <!-- Tombol Toggle -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
-                <span class="navbar-toggler-icon" style="color:white"></span>
-            </button>
-            
-            <!-- Offcanvas/Sidebar Mobile -->
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" style="font-size: 30px;">Menu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                </div>
-                <div class="offcanvas-body d-flex justify-content-between flex-column">
-                    <div class="d-flex flex-column gap-2">
-                        <!-- Menu Beranda -->
-                        <a href="beranda_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded  p-2">
-                                <img src="assets/beranda_fill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0 ">Beranda</p>
+            <div class="row">
+                <!-- Sidebar for desktop -->
+                <?php include 'includes/sidebar.php'; ?>
+
+                <!-- Mobile navigation -->
+                <?php include 'includes/mobile_nav.php'; ?>
+
+                <!-- Settings Modal -->
+                <?php include 'includes/settings_modal.php'; ?>
+
+
+            </div>
+        </div>
+
+<!-- animasi modal -->
+         <!-- style animasi modal -->
+         <style>
+            .modal-content {
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .modal .btn {
+                font-weight: 500;
+                transition: all 0.2s;
+            }
+
+            .modal .btn:active {
+                transform: scale(0.98);
+            }
+
+            .modal.fade .modal-dialog {
+                transform: scale(0.95);
+                transition: transform 0.2s ease-out;
+            }
+
+            .modal.show .modal-dialog {
+                transform: scale(1);
+            }
+        </style>
+
+
+
+        <!-- ini isi kontennya -->
+        <div class="col p-4 col-utama">
+            <style>
+                .col-utama {
+                    margin-left: 13rem;
+                    animation: fadeInUp 0.5s;
+                    opacity: 1;
+                }
+
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .col-utama {
+                        margin-left: 0;
+                        margin-top: 10px;
+                        /* Untuk memberikan space dari fixed navbar mobile */
+                    }
+                }
+            </style>
+
+            <!-- Top Section -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 mb-4">
+                            <div class="card-header bg-white border-0 pb-0">
+                                <div class="d-flex border-0 justify-content-between align-items-center">
+                                    <div>
+                                        <h3 class="mb-0"><?php echo htmlspecialchars($ujian['mata_pelajaran']); ?></h3>
+                                        <p class="text-muted mb-0">
+                                            <?php echo htmlspecialchars($ujian['judul']); ?> |
+                                            Kelas <?php echo htmlspecialchars($ujian['tingkat']); ?>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <button onclick="window.print()" class="btn bg-white border me-2">
+                                            <i class="bi bi-printer"></i> Print
+                                        </button>
+                                    </div>
+                                </div>
+
                             </div>
-                        </a>
-                        
-                        <!-- Menu Cari -->
-                        <a href="cari_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Cari</p>
+
+
+                            <div class="card-body">
+                                <?php if ($total_questions > 0): ?>
+                                    <div class="row mb-4 g-3">
+                                        <div class="col-md-3">
+                                            <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                                <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                                    <i class="bi bi-people" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <div>
+                                                        <h6 class="mb-2">Total Peserta</h6>
+                                                        <h3 class="m-0 fw-bold">
+                                                            <?php echo mysqli_num_rows($result_peserta); ?>
+                                                            <span class="fs-6 fw-normal text-muted">Siswa</span>
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                                <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                                    <i class="bi bi-spellcheck" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <div>
+                                                        <h6 class="mb-2">Rata-rata Nilai</h6>
+                                                        <h3 class="m-0 fw-bold">
+                                                            <?php echo number_format($rata_rata, 1); ?>
+                                                            <span class="fs-6 fw-normal text-muted">/100</span>
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                                <div style="position: absolute; right: -20px; bottom: -100px; opacity: 0.1;">
+                                                    <i class="bi bi-trophy" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <div>
+                                                        <h6 class="mb-2">Nilai Tertinggi</h6>
+                                                        <h3 class="m-0 fw-bold">
+                                                            <?php echo number_format($nilai_tertinggi, 1); ?>
+                                                            <span class="fs-6 fw-normal text-muted">/100</span>
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                                <div style="position: absolute; right: -20px; bottom: -100px; opacity: 0.1;">
+                                                    <i class="bi bi-flag" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
+                                                </div>
+                                                <div class="card-body p-4">
+                                                    <div>
+                                                        <h6 class="mb-2">Nilai Terendah</h6>
+                                                        <h3 class="m-0 fw-bold">
+                                                            <?php echo number_format($nilai_terendah, 1); ?>
+                                                            <span class="fs-6 fw-normal text-muted">/100</span>
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Grafik Analisis Soal -->
+                                    <div class="mt-4">
+                                        <div class="card border" style="border-radius: 15px;">
+                                            <div class="card-body p-4">
+                                                <div class="chart-container">
+                                                    <canvas id="soalChart"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <style>
+                                        .chart-container {
+                                            position: relative;
+                                            height: 200px;
+                                            overflow-x: auto;
+                                            overflow-y: hidden;
+                                            border-radius: 12px;
+                                        }
+
+                                        #soalChart {
+                                            min-width: 100px;
+                                            height: 100% !important;
+                                        }
+
+                                        .btn-group .btn {
+                                            transition: all 0.3s ease;
+                                        }
+
+                                        .btn-group .btn.active {
+                                            background-color: rgb(218, 119, 86);
+                                            color: white;
+                                            transform: scale(1.02);
+                                            box-shadow: 0 2px 8px rgba(218, 119, 86, 0.3);
+                                        }
+
+                                        .btn-group .btn:not(.active) {
+                                            color: #666;
+                                        }
+
+                                        .btn-group .btn:hover:not(.active) {
+                                            background-color: rgba(218, 119, 86, 0.1);
+                                            color: rgb(218, 119, 86);
+                                        }
+
+                                        /* Custom scrollbar for chart container */
+                                        .chart-container::-webkit-scrollbar {
+                                            height: 8px;
+                                        }
+
+                                        .chart-container::-webkit-scrollbar-track {
+                                            background: #f1f1f1;
+                                            border-radius: 4px;
+                                        }
+
+                                        .chart-container::-webkit-scrollbar-thumb {
+                                            background: rgba(218, 119, 86, 0.5);
+                                            border-radius: 4px;
+                                        }
+
+                                        .chart-container::-webkit-scrollbar-thumb:hover {
+                                            background: rgba(218, 119, 86, 0.7);
+                                        }
+                                    </style>
+                                    <!-- Modal Detail Soal -->
+                                    <div class="modal fade" id="detailSoalModal" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header border-0 pb-0">
+                                                    <h6 class="modal-title fw-semibold">Detail Soal</h6>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body px-4">
+                                                    <!-- Pertanyaan -->
+                                                    <div class="mb-3">
+                                                        <div id="modalPertanyaan" class="text-dark"></div>
+                                                    </div>
+
+                                                    <!-- Statistik -->
+                                                    <div class="mb-3">
+                                                        <ul class="list-group" id="pilihanJawaban">
+                                                            <!-- Pilihan jawaban akan diisi oleh JavaScript -->
+                                                        </ul>
+                                                    </div>
+
+                                                    <!-- Chart -->
+                                                    <div class="chart-container">
+                                                        <canvas id="jawabanChart" height="150"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <style>
+                                        .modal-content {
+                                            border-radius: 16px;
+                                            border: none;
+                                            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                                        }
+
+                                        .modal-header .btn-close {
+                                            background-size: 12px;
+                                            opacity: 0.5;
+                                        }
+
+                                        .list-group-item {
+                                            border: none;
+                                            background: #f8f9fa;
+                                            margin-bottom: 4px;
+                                            border-radius: 10px !important;
+                                            font-size: 0.9rem;
+                                            padding: 0.5rem 0.75rem;
+                                        }
+
+                                        .list-group-item-success {
+                                            background-color: rgba(218, 119, 86, 0.1);
+                                            color: rgb(218, 119, 86);
+                                        }
+
+                                        .badge {
+                                            font-size: 0.75rem;
+                                            font-weight: 500;
+                                            padding: 0.25rem 0.5rem;
+                                            border-radius: 8px;
+                                        }
+
+                                        .chart-container {
+                                            position: relative;
+                                            height: 150px;
+                                            margin-top: 1rem;
+                                        }
+
+                                        .progress {
+                                            height: 6px;
+                                            border-radius: 3px;
+                                        }
+
+                                        .progress-bar {
+                                            border-radius: 3px;
+                                        }
+
+                                        @media (max-width: 576px) {
+                                            .modal-dialog {
+                                                margin: 0.5rem;
+                                            }
+                                        }
+                                    </style>
+                                    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                                    <script>
+                                        // Data dari PHP
+                                        const soalData = <?php echo json_encode($soal_stats); ?>;
+                                        let soalChart;
+
+                                        // Fungsi untuk menginisialisasi grafik batang
+                                        function initSoalChart() {
+                                            const ctx = document.getElementById('soalChart').getContext('2d');
+
+                                            if (soalChart) {
+                                                soalChart.destroy();
+                                            }
+
+                                            const labels = soalData.map((_, index) => `Soal ${index + 1}`);
+                                            const correctData = soalData.map(item => parseInt(item.total_benar));
+                                            const incorrectData = soalData.map(item => parseInt(item.total_salah));
+
+                                            soalChart = new Chart(ctx, {
+                                                type: 'bar',
+                                                data: {
+                                                    labels: labels,
+                                                    datasets: [{
+                                                            label: 'Jawaban Benar',
+                                                            data: correctData,
+                                                            backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                                            borderWidth: 1
+                                                        },
+                                                        {
+                                                            label: 'Jawaban Salah',
+                                                            data: incorrectData,
+                                                            backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                                                            borderColor: 'rgba(255, 99, 132, 1)',
+                                                            borderWidth: 1
+                                                        }
+                                                    ]
+                                                },
+                                                options: {
+                                                    responsive: true,
+                                                    maintainAspectRatio: false,
+                                                    scales: {
+                                                        y: {
+                                                            beginAtZero: true,
+                                                            ticks: {
+                                                                stepSize: 1
+                                                            }
+                                                        },
+                                                        x: {
+                                                            grid: {
+                                                                display: false
+                                                            }
+                                                        }
+                                                    },
+                                                    plugins: {
+                                                        tooltip: {
+                                                            callbacks: {
+                                                                label: function(context) {
+                                                                    const total = parseInt(soalData[context.dataIndex].total_menjawab);
+                                                                    const value = context.raw;
+                                                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                                                    return [
+                                                                        `${context.dataset.label}: ${value} siswa`,
+                                                                        `Persentase: ${percentage}%`
+                                                                    ];
+                                                                }
+                                                            }
+                                                        },
+                                                        legend: {
+                                                            position: 'top',
+                                                            labels: {
+                                                                usePointStyle: true,
+                                                                padding: 20
+                                                            }
+                                                        }
+                                                    },
+                                                    onClick: (event, elements) => {
+                                                        if (elements.length > 0) {
+                                                            const index = elements[0].index;
+                                                            showSoalDetail(soalData[index]);
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+
+                                        // Inisialisasi grafik
+                                        initSoalChart();
+
+                                        // Fungsi untuk menampilkan detail soal
+                                        function showSoalDetail(soal) {
+                                            console.log('Detail soal:', soal);
+
+                                            const modalElement = document.getElementById('detailSoalModal');
+                                            if (!modalElement) {
+                                                console.error('Modal element not found!');
+                                                return;
+                                            }
+
+                                            // Inisialisasi modal menggunakan Bootstrap 5
+                                            const modal = new bootstrap.Modal(modalElement);
+
+                                            // Set pertanyaan
+                                            let pertanyaanHtml = soal.pertanyaan;
+                                            if (soal.gambar_soal) {
+                                                pertanyaanHtml += `<br><img src="${soal.gambar_soal}" class="img-fluid mt-2" alt="Gambar Soal">`;
+                                            }
+
+                                            // Hitung persentase
+                                            const totalMenjawab = parseInt(soal.total_menjawab) || 0;
+                                            const persentaseBenar = totalMenjawab > 0 ?
+                                                ((parseInt(soal.total_benar) / totalMenjawab) * 100).toFixed(1) : 0;
+                                            const persentaseSalah = totalMenjawab > 0 ?
+                                                ((parseInt(soal.total_salah) / totalMenjawab) * 100).toFixed(1) : 0;
+
+                                            pertanyaanHtml += `
+                                                    <div class="card mt-3" style="border-radius: 16px; border: none; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                                                        <div class="card-body p-4">
+                                                            <h6 class="fw-bold mb-3" style="color: rgb(218, 119, 86);">Statistik Jawaban</h6>
+                                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                <span class="text-muted">Total Menjawab</span>
+                                                                <span class="fw-bold">${totalMenjawab} siswa</span>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                                    <span class="text-muted">Benar</span>
+                                                                    <span class="fw-bold" style="color: rgb(218, 119, 86);">${soal.total_benar || 0} siswa</span>
+                                                                </div>
+                                                                <div class="progress" style="height: 8px; border-radius: 4px; background-color: #f0f0f0;">
+                                                                    <div class="progress-bar" style="width: ${persentaseBenar}%; background-color: rgb(218, 119, 86); border-radius: 4px;"></div>
+                                                                </div>
+                                                                <div class="text-end mt-1">
+                                                                    <small style="color: rgb(218, 119, 86);">${persentaseBenar}%</small>
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                                    <span class="text-muted">Salah</span>
+                                                                    <span class="fw-bold" style="color: #dc3545;">${soal.total_salah || 0} siswa</span>
+                                                                </div>
+                                                                <div class="progress" style="height: 8px; border-radius: 4px; background-color: #f0f0f0;">
+                                                                    <div class="progress-bar bg-danger" style="width: ${persentaseSalah}%; border-radius: 4px;"></div>
+                                                                </div>
+                                                                <div class="text-end mt-1">
+                                                                    <small class="text-danger">${persentaseSalah}%</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                `;
+
+                                            const pertanyaanElement = document.getElementById('modalPertanyaan');
+                                            if (pertanyaanElement) {
+                                                pertanyaanElement.innerHTML = pertanyaanHtml;
+                                            }
+
+                                            // Set pilihan jawaban dengan informasi jumlah pemilih
+                                            const pilihanList = document.getElementById('pilihanJawaban');
+                                            if (pilihanList) {
+                                                pilihanList.innerHTML = `
+            <li class="list-group-item ${soal.jawaban_benar === 'A' ? 'list-group-item-success' : ''}">
+                A. ${soal.jawaban_a} 
+                <span class="badge bg-secondary float-end">${soal.jawab_a || 0} siswa</span>
+            </li>
+            <li class="list-group-item ${soal.jawaban_benar === 'B' ? 'list-group-item-success' : ''}">
+                B. ${soal.jawaban_b}
+                <span class="badge bg-secondary float-end">${soal.jawab_b || 0} siswa</span>
+            </li>
+            <li class="list-group-item ${soal.jawaban_benar === 'C' ? 'list-group-item-success' : ''}">
+                C. ${soal.jawaban_c}
+                <span class="badge bg-secondary float-end">${soal.jawab_c || 0} siswa</span>
+            </li>
+            <li class="list-group-item ${soal.jawaban_benar === 'D' ? 'list-group-item-success' : ''}">
+                D. ${soal.jawaban_d}
+                <span class="badge bg-secondary float-end">${soal.jawab_d || 0} siswa</span>
+            </li>
+        `;
+                                            }
+
+                                            // Perbarui chart setelah modal ditampilkan
+                                            modalElement.addEventListener('shown.bs.modal', function() {
+                                                updateJawabanChart(soal);
+                                            });
+
+                                            // Tampilkan modal
+                                            modal.show();
+                                        }
+
+                                        function updateJawabanChart(soal) {
+                                            const chartCanvas = document.getElementById('jawabanChart');
+                                            if (!chartCanvas) {
+                                                console.error('jawabanChart canvas not found!');
+                                                return;
+                                            }
+
+                                            // Destroy chart lama jika ada
+                                            if (jawabanChart instanceof Chart) {
+                                                jawabanChart.destroy();
+                                            }
+
+                                            const ctx = chartCanvas.getContext('2d');
+                                            jawabanChart = new Chart(ctx, {
+                                                type: 'bar',
+                                                data: {
+                                                    labels: ['A', 'B', 'C', 'D'],
+                                                    datasets: [{
+                                                        label: 'Jumlah Siswa',
+                                                        data: [
+                                                            parseInt(soal.jawab_a) || 0,
+                                                            parseInt(soal.jawab_b) || 0,
+                                                            parseInt(soal.jawab_c) || 0,
+                                                            parseInt(soal.jawab_d) || 0
+                                                        ],
+                                                        backgroundColor: [
+                                                            'rgba(75, 192, 192, 0.8)',
+                                                            'rgba(255, 159, 64, 0.8)',
+                                                            'rgba(54, 162, 235, 0.8)',
+                                                            'rgba(153, 102, 255, 0.8)'
+                                                        ]
+                                                    }]
+                                                },
+                                                options: {
+                                                    responsive: true,
+                                                    maintainAspectRatio: false,
+                                                    plugins: {
+                                                        legend: {
+                                                            display: false // Sembunyikan legend karena tidak terlalu diperlukan
+                                                        }
+                                                    },
+                                                    scales: {
+                                                        y: {
+                                                            beginAtZero: true,
+                                                            ticks: {
+                                                                stepSize: 1
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    </script>
+                                    <div class="table-responsive">
+                                        <style>
+                                            .ios-table {
+                                                border-radius: 16px;
+                                                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                                                background: white;
+                                                overflow: hidden;
+                                            }
+                                            
+                                            .ios-table thead th {
+                                                background: #f8f9fa;
+                                                font-weight: 600;
+                                                font-size: 0.9rem;
+                                                padding: 16px;
+                                                border: none;
+                                            }
+
+                                            .ios-table tbody td {
+                                                padding: 16px;
+                                                border-bottom: 1px solid #f1f1f1;
+                                                vertical-align: middle;
+                                            }
+
+                                            .ios-table tbody tr:last-child td {
+                                                border-bottom: none;
+                                            }
+
+                                            .ios-badge {
+                                                padding: 6px 12px;
+                                                border-radius: 20px;
+                                                font-size: 0.8rem;
+                                                font-weight: 500;
+                                            }
+
+                                            .ios-btn {
+                                                padding: 8px 16px;
+                                                border-radius: 15px;
+                                                border: none;
+                                                font-size: 0.9rem;
+                                                font-weight: 500;
+                                                transition: all 0.2s;
+                                            }
+
+                                            .ios-btn:active {
+                                                transform: scale(0.95);
+                                            }
+
+                                            .profile-pic {
+                                                width: 40px;
+                                                height: 40px;
+                                                border-radius: 50%;
+                                                object-fit: cover;
+                                                margin-right: 12px;
+                                            }
+
+                                            .student-info {
+                                                display: flex;
+                                                align-items: center;
+                                            }
+                                        </style>
+
+                                        <div class="ios-table">
+                                            <table class="table table-hover align-middle mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Siswa</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Benar</th>
+                                                        <th class="text-center">Salah</th>
+                                                        <th class="text-center">Belum</th>
+                                                        <th class="text-center">Nilai</th>
+                                                        <th class="text-center">Detail</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                    $result_peserta = mysqli_query($koneksi, $query_peserta);
+                                                    while ($peserta = mysqli_fetch_assoc($result_peserta)):
+                                                        $unattempted = $total_questions - ($peserta['correct_answers'] + $peserta['wrong_answers']);
+                                                        $nilai = ($peserta['correct_answers'] / $total_questions) * 100;
+                                                    ?>
+                                                        <tr>
+                                                            <td>
+                                                                <div class="student-info">
+                                                                    <img src="<?php
+                                                                        if (!empty($peserta['photo_type'])) {
+                                                                            if ($peserta['photo_type'] === 'avatar') {
+                                                                                echo $peserta['photo_url'];
+                                                                            } else if ($peserta['photo_type'] === 'upload') {
+                                                                                echo 'uploads/profil/' . $peserta['foto_profil'];
+                                                                            }
+                                                                        } else {
+                                                                            echo 'assets/pp.png';
+                                                                        }
+                                                                    ?>" 
+                                                                    class="profile-pic rounded-circle border shadow-sm" 
+                                                                    alt="Profile"
+                                                                    style="object-fit: cover;">
+                                                                    <span class="fw-medium"><?php echo htmlspecialchars($peserta['nama']); ?></span>
+                                                                </div>
+                                                            </td>
+
+                                                            <td class="text-center">
+                                                                <?php if ($peserta['attempted_questions'] > 0): ?>
+                                                                    <span class="ios-badge" style="background-color: #e8f5e9; color: #2e7d32;">Selesai</span>
+                                                                <?php else: ?>
+                                                                    <span class="ios-badge" style="background-color: #f5f5f5; color: #757575;">Belum</span>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span style="color: #2e7d32; font-weight: 600;"><?php echo $peserta['correct_answers']; ?></span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span style="color: #d32f2f; font-weight: 600;"><?php echo $peserta['wrong_answers']; ?></span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span style="color: #757575; font-weight: 600;"><?php echo $unattempted; ?></span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span class="ios-badge" style="background-color: #fff3e0; color: rgb(218, 119, 86);">
+                                                                    <?php echo number_format($nilai, 1); ?>
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <button class="ios-btn" style="background-color: rgb(218, 119, 86); color: white;"
+                                                                    onclick="window.location.href='detail_jawaban.php?ujian_id=<?php echo $ujian_id; ?>&siswa_id=<?php echo $peserta['siswa_id']; ?>'">
+                                                                    Lihat Detail
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endwhile; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                             </div>
-                        </a>
-                        
-                        <!-- Menu Ujian -->
-                        <a href="ujian_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center color-web rounded p-2">
-                                <img src="assets/ujian_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0 text-white">Ujian</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Profil -->
-                        <a href="profil_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Profil</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu AI -->
-                        <a href="ai_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">SMAGA AI</p>
-                            </div>
-                        </a>
-                        
-                        <!-- Menu Bantuan -->
-                        <a href="bantuan_guru.php" class="text-decoration-none text-black">
-                            <div class="d-flex align-items-center rounded p-2">
-                                <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                                <p class="p-0 m-0">Bantuan</p>
-                            </div>
-                        </a>
+                        </div>
                     </div>
-                    
-                <!-- Profile Dropdown -->
-                <div class="mt-3 dropdown"> <!-- Tambahkan class dropdown di sini -->
-                    <button class="btn d-flex align-items-center gap-3 p-2 rounded-3 border w-100" 
-                            style="background-color: #F8F8F7;" 
-                            type="button" 
-                            data-bs-toggle="dropdown" 
-                            aria-expanded="false">
-                            <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
-                            <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
-                    </button>
-                    <ul class="dropdown-menu w-100" style="font-size: 12px;"> <!-- Tambahkan w-100 agar lebar sama -->
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="logout.php">Keluar</a></li>
-                    </ul>
                 </div>
             </div>
         </div>
-    </nav>
-
-    
-     <!-- row col untuk halaman utama -->
-     <div class="container-fluid">
-        <div class="row">
-            <div class="col-3 col-md-2 vh-100 p-4 shadow-sm menu-samping" style="background-color:rgb(238, 236, 226)">
-                <style>
-                    .menu-samping {
-                        position: fixed;
-                        width: 13rem;
-                        z-index: 1000;
-                    }
-                    @media (max-width: 768px) {
-                        .menu-samping {
-                            display: none;
-                        }
-                    }                
-                </style>
-                <div class="row gap-0">
-                    <div class="ps-3 mb-3">
-                        <a href="beranda_guru.php" style="text-decoration: none; color: black;" class="d-flex align-items-center gap-2">
-                            <img src="assets/smagaedu.png" alt="" width="30px">
-                            <div>
-                                <h1 class="display-5  p-0 m-0" style="font-size: 20px; text-decoration: none;">SMAGAEdu</h1>
-                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">LMS</p>
-                            </div>
-                        </a>
-                    </div>  
-                    <div class="col">
-                        <a href="beranda_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/beranda_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Beranda</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="cari_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/pencarian.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Cari</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="ujian_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded bg-white shadow-sm p-2" style="">
-                            <img src="assets/ujian_fill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Ujian</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="profil_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/profil_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Profil</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row gap-0" style="margin-bottom: 15rem;">
-                    <div class="col">
-                        <a href="ai_guru.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/ai.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">SMAGA AI</p>
-                        </div>
-                        </a>
-                    </div>
-                    <div class="col">
-                        <a href="bantuan.php" class="text-decoration-none text-black">
-                        <div class="d-flex align-items-center rounded p-2" style="">
-                            <img src="assets/bantuan_outfill.png" alt="" width="50px" class="pe-4">
-                            <p class="p-0 m-0">Bantuan</p>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="row dropdown">
-                    <div class="btn d-flex align-items-center gap-3 p-2 rounded-3 border dropdown-toggle" style="background-color: #F8F8F7;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/'.$guru['foto_profil'] : 'assets/pp.png'; ?>"  width="30px" class="rounded-circle" style="background-color: white;">
-                        <p class="p-0 m-0 text-truncate" style="font-size: 12px;"><?php echo $guru['namaLengkap']; ?></p>
-                    </div>
-                    <!-- dropdown menu option -->
-                    <ul class="dropdown-menu" style="font-size: 12px;">
-                        <li><a class="dropdown-item" href="#">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="#">Keluar</a></li>
-                      </ul>
-                </div>
-            </div>
-
-
-
-
-
-<!-- ini isi kontennya -->
-<div class="col p-4 col-utama">
-    <style>
-                            .col-utama{
-                        margin-left: 13rem;
-                    }
-                    @media (max-width: 768px) {
-                            .col-utama {
-                                margin-left: 0;
-                                margin-top: 10px; /* Untuk memberikan space dari fixed navbar mobile */
-                            }
-                    }
-
-    </style>
-
-<!-- Top Section -->
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 mb-4">
-                <div class="card-header bg-white border-0 pb-0">
-                    <div class="d-flex border-0 justify-content-between align-items-center">
-                        <div>
-                            <h3 class="mb-0"><?php echo htmlspecialchars($ujian['mata_pelajaran']); ?></h3>
-                            <p class="text-muted mb-0">
-                                <?php echo htmlspecialchars($ujian['judul']); ?> | 
-                                Kelas <?php echo htmlspecialchars($ujian['tingkat']); ?>
-                            </p>
-                        </div>
-                        <div>
-                            <button onclick="window.print()" class="btn btn-outline-secondary me-2">
-                                <i class="bi bi-printer"></i> Print
-                            </button>
-                            <a href="ujian_guru.php" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left"></i> Kembali
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
-
-
-                <div class="card-body">
-                <?php if ($total_questions > 0): ?>
-                    <div class="row mb-4 g-3">
-                        <div class="col-md-3">
-                            <div class="card rounded-4 border-1 h-100">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="rounded p-2 bg-primary bg-opacity-10 me-3">
-                                            <i class="bi bi-people text-primary"></i>
-                                        </div>
-                                        <h6 class="mb-0">Total Peserta</h6>
-                                    </div>
-                                    <h3 class="mb-0 fw-bold"><?php echo mysqli_num_rows($result_peserta); ?> <span class="fs-6 fw-normal text-muted">Siswa</span></h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card rounded-4 border-1 h-100">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="rounded p-2 bg-success bg-opacity-10 me-3">
-                                            <i class="bi bi-graph-up text-success"></i>
-                                        </div>
-                                        <h6 class="mb-0">Rata-rata Nilai</h6>
-                                    </div>
-                                    <h3 class="mb-0 fw-bold"><?php echo number_format($rata_rata, 1); ?>/100</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card rounded-4 border-1 h-100">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="rounded p-2 bg-warning bg-opacity-10 me-3">
-                                            <i class="bi bi-trophy text-warning"></i>
-                                        </div>
-                                        <h6 class="mb-0">Nilai Tertinggi</h6>
-                                    </div>
-                                    <h3 class="mb-0 fw-bold"><?php echo number_format($nilai_tertinggi, 1); ?>/100</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card rounded-4 border-1 h-100">
-                                <div class="card-body p-4">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="rounded p-2 bg-danger bg-opacity-10 me-3">
-                                            <i class="bi bi-flag text-danger"></i>
-                                        </div>
-                                        <h6 class="mb-0">Nilai Terendah</h6>
-                                    </div>
-                                    <h3 class="mb-0 fw-bold"><?php echo number_format($nilai_terendah, 1); ?>/100</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-    <table class="table table-hover align-middle">
-        <thead class="bg-light">
-            <tr>
-                <th>Nama Siswa</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Benar</th>
-                <th class="text-center">Salah</th>
-                <th class="text-center">Tidak Dijawab</th>
-                <th class="text-center">Nilai</th>
-                <th class="text-center">Detail</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php 
-            $result_peserta = mysqli_query($koneksi, $query_peserta);
-            while($peserta = mysqli_fetch_assoc($result_peserta)): 
-                $unattempted = $total_questions - ($peserta['correct_answers'] + $peserta['wrong_answers']);
-                $nilai = ($peserta['correct_answers'] / $total_questions) * 100;
-            ?>
-            <tr>
-                <td class="fw-medium"><?php echo htmlspecialchars($peserta['nama']); ?></td>
-                <td class="text-center">
-                    <?php if($peserta['attempted_questions'] > 0): ?>
-                        <span class="badge bg-success">Selesai</span>
-                    <?php else: ?>
-                        <span class="badge bg-warning">Belum Mengerjakan</span>
-                    <?php endif; ?>
-                </td>
-                <td class="text-center">
-                    <span class="text-success fw-medium"><?php echo $peserta['correct_answers']; ?></span>
-                </td>
-                <td class="text-center">
-                    <span class="text-danger fw-medium"><?php echo $peserta['wrong_answers']; ?></span>
-                </td>
-                <td class="text-center">
-                    <span class="text-muted fw-medium"><?php echo $unattempted; ?></span>
-                </td>
-                <td class="text-center">
-                    <span class="fw-medium"><?php echo number_format($nilai, 1); ?></span>
-                </td>
-                <td class="text-center">
-                    <button class="btn btn-sm btn-outline-primary" 
-                            onclick="window.location.href='detail_jawaban.php?ujian_id=<?php echo $ujian_id; ?>&siswa_id=<?php echo $peserta['siswa_id']; ?>'">
-                        Lihat Detail
-                    </button>
-                </td>
-            </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
-</div>
-                </div>
+    <?php else: ?>
+        <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Data tidak tersedia</h4>
+                <p>Tidak ada hasil ujian untuk ujian ini, pastikan ujian Anda telah selesai.</p>
             </div>
         </div>
-    </div>
-</div>
-</div>
-<?php else: ?>
-                <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
-                    <div class="alert alert-danger" role="alert">
-                        <h4 class="alert-heading">Data tidak tersedia</h4>
-                        <p>Tidak ada hasil ujian untuk ujian ini, pastikan ujian Anda telah selesai.</p>
-                    </div>
-                </div>
-            <?php endif; ?>
+    <?php endif; ?>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+
 </html>

@@ -41,7 +41,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Set foto profil berdasarkan tipe user
         $komentar['foto_profil'] = $komentar['user_type'] == 'guru' ? 
             ($komentar['foto_guru'] ? 'uploads/profil/'.$komentar['foto_guru'] : 'assets/pp.png') :
-            ($komentar['foto_siswa'] ? $komentar['foto_siswa'] : 'assets/pp-siswa.png');
+            ($komentar['foto_siswa'] ? 'uploads/profil/'.$komentar['foto_siswa'] : 'assets/pp.png');
             
         $komentar['nama_user'] = $komentar['user_type'] == 'guru' ? 
             $komentar['nama_guru'] : $komentar['nama_siswa'];
