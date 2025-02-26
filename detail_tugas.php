@@ -106,6 +106,11 @@ mysqli_data_seek($result_pengumpulan, 0);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Set PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
     <style>
         body {
             font-family: 'Merriweather', serif;
@@ -224,27 +229,43 @@ mysqli_data_seek($result_pengumpulan, 0);
 
         <div class="container-fluid">
             <div class="row">
-                <!-- Sidebar for desktop -->
-                <?php include 'includes/sidebar.php'; ?>
+            <!-- Sidebar for desktop -->
+            <?php include 'includes/sidebar.php'; ?>
 
-                <!-- Mobile navigation -->
-                <?php include 'includes/mobile_nav.php'; ?>
+            <!-- Mobile navigation -->
+            <?php include 'includes/mobile_nav.php'; ?>
 
-                <!-- Settings Modal -->
-                <?php include 'includes/settings_modal.php'; ?>
-
-
+            <!-- Settings Modal -->
+            <?php include 'includes/settings_modal.php'; ?>
             </div>
         </div>
 
+        <!-- Mobile view blocker (iOS style) -->
+        <div class="mobile-blocker d-md-none position-fixed top-0 start-0 w-100 h-100 bg-white" style="z-index: 9999;">
+            <div class="d-flex flex-column justify-content-center align-items-center h-100 px-4">
+            <div class="text-center mb-4">
+                <i class="bi bi-laptop display-1 text-secondary"></i>
+            </div>
+            <h4 class="mb-3 fw-bold text-dark">Akses Ditolak</h4>
+            <p class="text-center text-secondary mb-4" style="font-size: 12px;">
+                Halaman detail tugas hanya dapat diakses pada perangkat laptop atau tablet.
+                Silakan gunakan perangkat dengan layar yang lebih besar.
+            </p>
+            <a href="kelas_guru.php?id=<?php echo $kelas_id; ?>" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" style="background-color: rgb(218, 119, 86); border: none;">
+                <i class="bi bi-arrow-left me-2"></i>
+                Kembali ke Kelas
+            </a>
+            </div>
+        </div>
 
-        <div class="container col-utama mt-4 mb-5">
+        <!-- Main content (only visible on desktop) -->
+        <div class="container col-utama mt-4 mb-5 d-none d-md-block">
             <div class="row">
-                <div class="col-12 mb-4">
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div class="col-12 mb-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
                         <h2 class="p-0 m-0"><?php echo htmlspecialchars($data_tugas['judul']); ?></h2>
                         <a href="kelas_guru.php?id=<?php echo $kelas_id; ?>" class="btn bg-white btn-outline-secondary" style="border-radius: 15px;">
-                            <i class="bi bi-arrow-left"></i> Kembali 
+                            <i class="bi bi-arrow-left"></i> Kembali
                         </a>
                     </div>
                 </div>
@@ -1239,12 +1260,28 @@ mysqli_data_seek($result_pengumpulan, 0);
                     document.querySelectorAll('#filePreview > div').forEach(div => div.classList.add('d-none'));
 
                     // Show appropriate viewer based on file extension
+                    // Show appropriate viewer based on file extension
                     if (fileName.endsWith('.pdf')) {
-                        const pdfViewer = document.getElementById('pdfViewer');
-                        pdfViewer.classList.remove('d-none');
-                        const pdfFrame = document.getElementById('pdfFrame');
-                        pdfFrame.src = file.url;
-                    } else if (/\.(jpg|jpeg|png|gif)$/i.test(fileName)) {
+    const pdfViewer = document.getElementById('pdfViewer');
+    pdfViewer.classList.remove('d-none');
+    
+    // Direct embedding - lets browser handle PDF display
+    const pdfContainer = document.createElement('div');
+    pdfContainer.style.width = '100%';
+    pdfContainer.style.height = '100%';
+    pdfContainer.style.overflow = 'hidden';
+    
+    const pdfEmbed = document.createElement('embed');
+    pdfEmbed.src = file.url;
+    pdfEmbed.type = 'application/pdf';
+    pdfEmbed.style.width = '100%';
+    pdfEmbed.style.height = '100%';
+    pdfEmbed.style.border = 'none';
+    
+    pdfContainer.appendChild(pdfEmbed);
+    pdfViewer.innerHTML = '';
+    pdfViewer.appendChild(pdfContainer);
+} else if (/\.(jpg|jpeg|png|gif)$/i.test(fileName)) {
                         const imageViewer = document.getElementById('imageViewer');
                         imageViewer.classList.remove('d-none');
                         initImageViewer(file.url);
