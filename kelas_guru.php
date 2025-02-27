@@ -1215,7 +1215,7 @@ function getProfilePhoto($user_type, $data)
 
                                     <!-- Text Area -->
                                     <div class="position-relative mb-3">
-                                        <textarea class="form-control bg-light border-0"
+                                        <textarea class="form-control bg-white border"
                                             name="konten"
                                             id="postContent"
                                             placeholder="Apa yang ingin Anda bagikan?"
@@ -1873,7 +1873,6 @@ function getProfilePhoto($user_type, $data)
                                     }
 
                                     .btn:hover {
-                                        background: rgba(218, 119, 86, 0.9) !important;
                                         transform: translateY(-1px);
                                     }
 

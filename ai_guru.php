@@ -252,7 +252,7 @@ $guru = mysqli_fetch_assoc($result);
                             onclick="window.location.reload()"
                             style="border-radius: 15px;">
                             <i class="bi bi-arrow-clockwise"></i>
-                            <span class="button-text d-none d-md-inline" style="font-size: 13px;">Hapus</span>
+                            <span class="button-text d-none d-md-inline" style="font-size: 13px;">Baru</span>
                         </button>
                         <button class="btn bg-white text-black d-flex align-items-center gap-2 px-3 py-2 border"
                             data-bs-toggle="modal"

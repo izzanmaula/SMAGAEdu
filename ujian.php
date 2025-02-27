@@ -150,8 +150,22 @@ $siswa = mysqli_fetch_assoc($result_siswa);
             .col-utama {
                 padding-top: 0.7rem;
                 padding-left: 14rem !important;
+                animation: fadeInUp 0.5s;
+                opacity: 1;
+
             }
 
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
             @media (max-width: 768px) {
                 .col-utama {
                     padding-left: 0rem !important;

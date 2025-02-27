@@ -196,6 +196,21 @@ function formatFileSize($bytes)
                         /* Remove right padding */
                         max-width: 100%;
                         /* Ensure content doesn't overflow */
+                        animation: fadeInUp 0.5s;
+                        opacity: 1;
+
+                    }
+
+                    @keyframes fadeInUp {
+                        from {
+                            opacity: 0;
+                            transform: translateY(20px);
+                        }
+
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
                     }
 
                     @media (min-width: 768px) {
@@ -2147,8 +2162,18 @@ function formatFileSize($bytes)
                                                                         </div>
                                                                     </div>
 
-                                                            <?php
+                                                                <?php
                                                                 }
+                                                            } else {
+                                                                ?>
+
+                                                                <div class="text-center py-4">
+                                                                    <div class="mb-3">
+                                                                        <i class="fas fa-comments text-muted" style="font-size: 48px;"></i>
+                                                                    </div>
+                                                                    <p class="text-muted">Belum ada komentar</p>
+                                                                </div>
+                                                            <?php
                                                             }
                                                             ?>
                                                         </div>
