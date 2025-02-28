@@ -23,7 +23,7 @@ $is_admin = $_SESSION['level'] == 'admin';
                 ['url' => 'beranda_admin.php', 'icon' => 'bi-house-door', 'text' => 'Beranda'],
                 ['url' => 'guru_admin.php', 'icon' => 'bi-person-badge', 'text' => 'Guru'],
                 ['url' => 'siswa_admin.php', 'icon' => 'bi-people', 'text' => 'Siswa'],
-                ['url' => 'raport_admin.php', 'icon' => 'bi-journal-text', 'text' => 'Raport', 'subtitle' => 'P. GUIDENCE'],
+                ['url' => 'pg_admin.php', 'icon' => 'bi-journal-text', 'text' => 'Raport', 'subtitle' => 'P. GUIDENCE'],
                 ['url' => 'bantuan.php', 'icon' => 'bantuan_outfill.png', 'text' => 'Bantuan', 'is_image' => true]
             ];
         } elseif ($is_guru) {
