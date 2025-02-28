@@ -1,30 +1,43 @@
 <?php
 session_start();
-require "koneksi.php"; // Tambahkan ini
+require "koneksi.php"; 
 
-// Cek session
-if (!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
+// Cek session - izinkan guru dan admin
+if (!isset($_SESSION['userid']) || ($_SESSION['level'] != 'guru' && $_SESSION['level'] != 'admin')) {
     header("Location: index.php");
     exit();
 }
 
 // Ambil ID kelas dari parameter URL
 if (!isset($_GET['id'])) {
-    header("Location: beranda_guru.php");
+    header("Location: " . ($_SESSION['level'] == 'admin' ? 'beranda_admin.php' : 'beranda_guru.php'));
     exit();
 }
 
 $kelas_id = mysqli_real_escape_string($koneksi, $_GET['id']);
-// Query untuk mengambil informasi kelas
-$query_kelas = "SELECT * FROM kelas WHERE id = '$kelas_id' AND guru_id = '{$_SESSION['userid']}'";
+
+
+// Query untuk mengambil informasi kelas (jika admin, hilangkan filter guru_id)
+if ($_SESSION['level'] == 'admin') {
+    $query_kelas = "SELECT * FROM kelas WHERE id = '$kelas_id'";
+} else {
+    $query_kelas = "SELECT * FROM kelas WHERE id = '$kelas_id' AND guru_id = '{$_SESSION['userid']}'";
+}
+
 $result_kelas = mysqli_query($koneksi, $query_kelas);
 
 if (mysqli_num_rows($result_kelas) == 0) {
-    header("Location: beranda_guru.php");
+    header("Location: " . ($_SESSION['level'] == 'admin' ? 'beranda_admin.php' : 'beranda_guru.php'));
     exit();
 }
 
 $data_kelas = mysqli_fetch_assoc($result_kelas);
+
+$guru_id = $data_kelas['guru_id']; // Ambil guru_id dari data kelas
+$query_guru_pengampu = "SELECT * FROM guru WHERE username = '$guru_id'";
+$result_guru_pengampu = mysqli_query($koneksi, $query_guru_pengampu);
+$guru_pengampu = mysqli_fetch_assoc($result_guru_pengampu);
+
 
 // Query untuk mengambil postingan dari kelas ini
 $query_postingan = "SELECT 
@@ -185,6 +198,68 @@ function getProfilePhoto($user_type, $data)
 <body>
 
 
+<?php 
+// Check if cookie exists to hide admin notification
+$showAdminModal = true;
+if(isset($_COOKIE['hide_admin_notification']) && $_COOKIE['hide_admin_notification'] == 'true') {
+    $showAdminModal = false;
+}
+
+// Get teacher's name for admin view
+if($_SESSION['level'] == 'admin') {
+    $query_guru_info = "SELECT g.namaLengkap as nama_guru FROM kelas k JOIN guru g ON k.guru_id = g.username WHERE k.id = '$kelas_id'";
+    $result_guru_info = mysqli_query($koneksi, $query_guru_info);
+    $guru_info = mysqli_fetch_assoc($result_guru_info);
+    $nama_guru = $guru_info['nama_guru'] ?? 'Tidak diketahui';
+    
+    if($showAdminModal):
+?>
+    <!-- Admin Mode Modal -->
+    <div class="modal fade" id="adminModeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px;">
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-eye" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
+                    <h5 class="mt-3 fw-bold">Vision Mode</h5>
+                    <p class="mb-4" style="font-size: 14px;">Saat ini Anda hanya dapat memantau kondisi kelas. Agar dapat mengedit, menambahkan, atau menghapus kelas silahkan untuk 
+                    menunggu pembaruan selanjutnya.
+                    </p>
+                    <div class="form-check mt-3 mb-4 d-flex justify-content-center">
+                        <input class="form-check-input" type="checkbox" id="dontShowAgain">
+                        <label class="form-check-label text-muted ms-2" style="font-size: 14px;" for="dontShowAgain">
+                            Jangan tampilkan pesan ini lagi
+                        </label>
+                    </div>
+                    <div class="d-flex gap-2 btn-group">
+                        <button type="button" class="btn btn-primary px-4" id="closeAdminModal" style="border-radius: 12px;">Saya Mengerti</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show the modal when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminModal = new bootstrap.Modal(document.getElementById('adminModeModal'));
+            adminModal.show();
+            
+            // Handle the "don't show again" checkbox
+            document.getElementById('closeAdminModal').addEventListener('click', function() {
+                if(document.getElementById('dontShowAgain').checked) {
+                    // Set cookie to hide notification for 30 days
+                    const expiryDate = new Date();
+                    expiryDate.setDate(expiryDate.getDate() + 30);
+                    document.cookie = "hide_admin_notification=true; expires=" + expiryDate.toUTCString() + "; path=/";
+                }
+                adminModal.hide();
+            });
+        });
+    </script>
+<?php 
+    endif;
+} 
+?>
 
     <div class="container-fluid">
         <div class="row">
@@ -1732,9 +1807,9 @@ function getProfilePhoto($user_type, $data)
                             <div class="d-flex gap-3">
                                 <div>
                                     <a href="profil_guru.php">
-                                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/' . $guru['foto_profil'] : 'assets/pp.png'; ?>"
-                                            alt="Profile Image"
-                                            class="profile-img rounded-4 border-0 bg-white" style="width: 40px;">
+                                    <img src="<?php echo !empty($guru_pengampu['foto_profil']) ? 'uploads/profil/' . $guru_pengampu['foto_profil'] : 'assets/pp.png'; ?>"
+    alt="Profile Image"
+    class="profile-img rounded-4 border-0 bg-white" style="width: 40px;">
                                     </a>
                                 </div>
                                 <div class="">

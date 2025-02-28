@@ -722,7 +722,9 @@ $report = generateAIReport($koneksi, $_SESSION['userid'], $_SESSION['level']);
                                         'Wali Kelas',
                                         'Bag. Ekonomi Bisnis',
                                         'Staf IT',
-                                        'Staf TU'
+                                        'Staf TU',
+                                        'Guru Mapel',
+                                        'Guru BImbingan Konseling'
                                     ];
                                     foreach ($jabatan_options as $option) {
                                         $selected = ($guru['jabatan'] == $option) ? 'selected' : '';

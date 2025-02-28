@@ -420,9 +420,12 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                     </div>
                 <?php endwhile;
             else: ?>
-                <div class="col-12 text-center py-5">
-                    <i class="bi bi-journal-x" style="font-size: 3rem;"></i>
-                    <p class="text-muted mt-3">Belum ada ujian tersedia saat ini</p>
+                <div class="col-12 py-5" style="position: relative; min-height: 250px;">
+                    <div style="position: absolute; top: 15rem; left: 35rem; transform: translate(-50%, -50%); text-align: center; width: 100%;">
+                        <i class="bi bi-journal-x" style="font-size: 3rem; color: #6c757d;"></i>
+                        <h5 style="margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Belum Ada Ujian</h5>
+                        <p style="color: #6c757d; margin-bottom: 0; font-size: 0.9rem;">Belum ada ujian tersedia saat ini</p>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>

@@ -471,11 +471,11 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                             </div>
                         <?php endwhile;
                     else: ?>
-                        <div class="col-12 text-center py-5">
-                            <i class="bi bi-journal-x text-muted" style="font-size: 3rem;"></i>
-                            <h5 class="mt-3 mb-2">Belum Ada Kelas</h5>
-                            <p class="text-muted mb-0">Hubungi guru untuk bergabung ke dalam kelas</p>
-                        </div>
+                            <div class="text-center my-5 py-5 w-100">
+                                <i class="bi bi-journal-x d-block mx-auto mb-3" style="font-size: 3rem; color: #6c757d;"></i>
+                                <h5 class="fw-bold">Belum Ada Kelas</h5>
+                                <p class="text-muted">Hubungi guru untuk bergabung ke dalam kelas</p>
+                            </div>
                     <?php endif; ?>
                 </div>
 

