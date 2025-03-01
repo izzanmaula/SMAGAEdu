@@ -31,9 +31,6 @@ if (!$guru) {
 if (isset($_POST['update_guru'])) {
     $namaLengkap = mysqli_real_escape_string($koneksi, $_POST['namaLengkap']);
     $jabatan = mysqli_real_escape_string($koneksi, $_POST['jabatan']);
-    $pendidikan_s1 = mysqli_real_escape_string($koneksi, $_POST['pendidikan_s1']);
-    $pendidikan_s2 = mysqli_real_escape_string($koneksi, $_POST['pendidikan_s2']);
-    $pendidikan_lainnya = mysqli_real_escape_string($koneksi, $_POST['pendidikan_lainnya']);
 
     // Update password jika diisi
     $password_update = "";
@@ -44,10 +41,7 @@ if (isset($_POST['update_guru'])) {
 
     $update_query = "UPDATE guru SET 
                      namaLengkap = '$namaLengkap',
-                     jabatan = '$jabatan',
-                     pendidikan_s1 = '$pendidikan_s1',
-                     pendidikan_s2 = '$pendidikan_s2',
-                     pendidikan_lainnya = '$pendidikan_lainnya'
+                     jabatan = '$jabatan'
                      $password_update
                      WHERE username = '$username'";
 

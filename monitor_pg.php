@@ -1,7 +1,7 @@
 <?php
 session_start();
 require "koneksi.php";
-if (!isset($_SESSION['userid']) || $_SESSION['level'] != 'admin') {
+if (!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
     header("Location: index.php");
     exit();
 }
@@ -413,6 +413,7 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
             <div class="d-flex align-items-center">
                 <div>
                     <h4 class="mb-1 fw-bold">Progressive Guidance Monitoring</h4>
+                    <p class="text-muted mb-0">Pantau perkembangan siswa di semua aspek Kurikulum Progressive Guidance</p>
                 </div>
             </div>
 

@@ -2,6 +2,12 @@
 session_start();
 require "koneksi.php";
 
+// Cek session - izinkan guru dan admin
+if (!isset($_SESSION['userid']) || ($_SESSION['level'] != 'guru' && $_SESSION['level'] != 'admin')) {
+    header("Location: index.php");
+    exit();
+}
+
 $ujian_id = $_GET['ujian_id'];
 
 // Query informasi ujian
@@ -390,28 +396,55 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                     </style>
                                     <!-- Modal Detail Soal -->
                                     <div class="modal fade" id="detailSoalModal" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header border-0 pb-0">
-                                                    <h6 class="modal-title fw-semibold">Detail Soal</h6>
+                                                    <h5 class="modal-title fw-semibold">Detail Soal</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body px-4">
-                                                    <!-- Pertanyaan -->
-                                                    <div class="mb-3">
-                                                        <div id="modalPertanyaan" class="text-dark"></div>
+                                                    <!-- Pertanyaan dengan header yang jelas -->
+                                                    <div class="card mb-4">
+                                                        <div class="card-header bg-light">
+                                                            <h6 class="mb-0"><i class="bi bi-question-circle me-2"></i>Pertanyaan</h6>
+                                                        </div>
+                                                        <div class="card-body">
+                                                            <div id="modalPertanyaan" class="text-dark"></div>
+                                                        </div>
                                                     </div>
 
-                                                    <!-- Statistik -->
-                                                    <div class="mb-3">
-                                                        <ul class="list-group" id="pilihanJawaban">
-                                                            <!-- Pilihan jawaban akan diisi oleh JavaScript -->
-                                                        </ul>
-                                                    </div>
-
-                                                    <!-- Chart -->
-                                                    <div class="chart-container">
-                                                        <canvas id="jawabanChart" height="150"></canvas>
+                                                    <div class="row">
+                                                        <!-- Statistik jawaban -->
+                                                        <div class="col-lg-6">
+                                                            <div class="card mb-4">
+                                                                <div class="card-header bg-light">
+                                                                    <h6 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Statistik Jawaban</h6>
+                                                                </div>
+                                                                <div class="card-body shadow-none border">
+                                                                    <!-- Chart jawaban -->
+                                                                    <div class="chart-container mb-3">
+                                                                        <canvas id="jawabanChart" height="200"></canvas>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- Pilihan jawaban -->
+                                                        <div class="col-lg-6">
+                                                            <div class="card mb-4">
+                                                                <div class="card-header bg-light">
+                                                                    <h6 class="mb-0"><i class="bi bi-list-check me-2"></i>Pilihan Jawaban</h6>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <ul class="list-group" id="pilihanJawaban">
+                                                                        <!-- Pilihan jawaban akan diisi oleh JavaScript -->
+                                                                    </ul>
+                                                                    <div class="mt-3 small text-muted">
+                                                                        <i class="bi bi-info-circle"></i> Pilihan yang benar ditandai dengan warna.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -422,7 +455,10 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                         .modal-content {
                                             border-radius: 16px;
                                             border: none;
-                                            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+                                        }
+
+                                        .modal-header {
+                                            padding: 1.25rem 1.5rem;
                                         }
 
                                         .modal-header .btn-close {
@@ -430,45 +466,62 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                             opacity: 0.5;
                                         }
 
+                                        .card {
+                                            border-radius: 12px;
+                                            border: 1px solid rgba(0,0,0,0.08);
+                                            overflow: hidden;
+                                        }
+
+                                        .card-header {
+                                            padding: 0.75rem 1.25rem;
+                                            background-color: white !important;
+                                            border-bottom: 1px solid rgba(0,0,0,0.05);
+                                        }
+
                                         .list-group-item {
                                             border: none;
                                             background: #f8f9fa;
-                                            margin-bottom: 4px;
+                                            margin-bottom: 8px;
                                             border-radius: 10px !important;
-                                            font-size: 0.9rem;
-                                            padding: 0.5rem 0.75rem;
+                                            font-size: 0.95rem;
+                                            padding: 0.75rem 1rem;
+                                            display: flex;
+                                            justify-content: space-between;
+                                            align-items: center;
                                         }
 
                                         .list-group-item-success {
                                             background-color: rgba(218, 119, 86, 0.1);
                                             color: rgb(218, 119, 86);
+                                            border-left: 4px solid rgb(218, 119, 86);
                                         }
 
                                         .badge {
                                             font-size: 0.75rem;
                                             font-weight: 500;
-                                            padding: 0.25rem 0.5rem;
+                                            padding: 0.35rem 0.65rem;
                                             border-radius: 8px;
                                         }
 
                                         .chart-container {
                                             position: relative;
-                                            height: 150px;
-                                            margin-top: 1rem;
+                                            height: 200px;
                                         }
 
                                         .progress {
-                                            height: 6px;
-                                            border-radius: 3px;
+                                            height: 8px;
+                                            border-radius: 4px;
+                                            margin-bottom: 8px;
                                         }
 
                                         .progress-bar {
-                                            border-radius: 3px;
+                                            border-radius: 4px;
                                         }
 
-                                        @media (max-width: 576px) {
+                                        @media (max-width: 992px) {
                                             .modal-dialog {
-                                                margin: 0.5rem;
+                                                max-width: 95%;
+                                                margin: 1rem auto;
                                             }
                                         }
                                     </style>
@@ -686,10 +739,10 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                                             parseInt(soal.jawab_d) || 0
                                                         ],
                                                         backgroundColor: [
-                                                            'rgba(75, 192, 192, 0.8)',
-                                                            'rgba(255, 159, 64, 0.8)',
-                                                            'rgba(54, 162, 235, 0.8)',
-                                                            'rgba(153, 102, 255, 0.8)'
+                                                            'rgba(218, 119, 86, 0.9)',
+                                                            'rgba(218, 119, 86, 0.7)',
+                                                            'rgba(218, 119, 86, 0.5)',
+                                                            'rgba(218, 119, 86, 0.3)'
                                                         ]
                                                     }]
                                                 },
