@@ -1,6 +1,6 @@
 <?php
 session_start();
-require "koneksi.php"; 
+require "koneksi.php";
 
 // Cek session - izinkan guru dan admin
 if (!isset($_SESSION['userid']) || ($_SESSION['level'] != 'guru' && $_SESSION['level'] != 'admin')) {
@@ -198,68 +198,68 @@ function getProfilePhoto($user_type, $data)
 <body>
 
 
-<?php 
-// Check if cookie exists to hide admin notification
-$showAdminModal = true;
-if(isset($_COOKIE['hide_admin_notification']) && $_COOKIE['hide_admin_notification'] == 'true') {
-    $showAdminModal = false;
-}
+    <?php
+    // Check if cookie exists to hide admin notification
+    $showAdminModal = true;
+    if (isset($_COOKIE['hide_admin_notification']) && $_COOKIE['hide_admin_notification'] == 'true') {
+        $showAdminModal = false;
+    }
 
-// Get teacher's name for admin view
-if($_SESSION['level'] == 'admin') {
-    $query_guru_info = "SELECT g.namaLengkap as nama_guru FROM kelas k JOIN guru g ON k.guru_id = g.username WHERE k.id = '$kelas_id'";
-    $result_guru_info = mysqli_query($koneksi, $query_guru_info);
-    $guru_info = mysqli_fetch_assoc($result_guru_info);
-    $nama_guru = $guru_info['nama_guru'] ?? 'Tidak diketahui';
-    
-    if($showAdminModal):
-?>
-    <!-- Admin Mode Modal -->
-    <div class="modal fade" id="adminModeModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px;">
-                <div class="modal-body text-center p-4">
-                    <i class="bi bi-eye" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
-                    <h5 class="mt-3 fw-bold">Vision Mode</h5>
-                    <p class="mb-4" style="font-size: 14px;">Saat ini Anda hanya dapat memantau kondisi kelas. Agar dapat mengedit, menambahkan, atau menghapus kelas silahkan untuk 
-                    menunggu pembaruan selanjutnya.
-                    </p>
-                    <div class="form-check mt-3 mb-4 d-flex justify-content-center">
-                        <input class="form-check-input" type="checkbox" id="dontShowAgain">
-                        <label class="form-check-label text-muted ms-2" style="font-size: 14px;" for="dontShowAgain">
-                            Jangan tampilkan pesan ini lagi
-                        </label>
-                    </div>
-                    <div class="d-flex gap-2 btn-group">
-                        <button type="button" class="btn btn-primary px-4" id="closeAdminModal" style="border-radius: 12px;">Saya Mengerti</button>
+    // Get teacher's name for admin view
+    if ($_SESSION['level'] == 'admin') {
+        $query_guru_info = "SELECT g.namaLengkap as nama_guru FROM kelas k JOIN guru g ON k.guru_id = g.username WHERE k.id = '$kelas_id'";
+        $result_guru_info = mysqli_query($koneksi, $query_guru_info);
+        $guru_info = mysqli_fetch_assoc($result_guru_info);
+        $nama_guru = $guru_info['nama_guru'] ?? 'Tidak diketahui';
+
+        if ($showAdminModal):
+    ?>
+            <!-- Admin Mode Modal -->
+            <div class="modal fade" id="adminModeModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="border-radius: 16px;">
+                        <div class="modal-body text-center p-4">
+                            <i class="bi bi-eye" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
+                            <h5 class="mt-3 fw-bold">Vision Mode</h5>
+                            <p class="mb-4" style="font-size: 14px;">Saat ini Anda hanya dapat memantau kondisi kelas. Agar dapat mengedit, menambahkan, atau menghapus kelas silahkan untuk
+                                menunggu pembaruan selanjutnya.
+                            </p>
+                            <div class="form-check mt-3 mb-4 d-flex justify-content-center">
+                                <input class="form-check-input" type="checkbox" id="dontShowAgain">
+                                <label class="form-check-label text-muted ms-2" style="font-size: 14px;" for="dontShowAgain">
+                                    Jangan tampilkan pesan ini lagi
+                                </label>
+                            </div>
+                            <div class="d-flex gap-2 btn-group">
+                                <button type="button" class="btn btn-primary px-4" id="closeAdminModal" style="border-radius: 12px;">Saya Mengerti</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <script>
-        // Show the modal when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            const adminModal = new bootstrap.Modal(document.getElementById('adminModeModal'));
-            adminModal.show();
-            
-            // Handle the "don't show again" checkbox
-            document.getElementById('closeAdminModal').addEventListener('click', function() {
-                if(document.getElementById('dontShowAgain').checked) {
-                    // Set cookie to hide notification for 30 days
-                    const expiryDate = new Date();
-                    expiryDate.setDate(expiryDate.getDate() + 30);
-                    document.cookie = "hide_admin_notification=true; expires=" + expiryDate.toUTCString() + "; path=/";
-                }
-                adminModal.hide();
-            });
-        });
-    </script>
-<?php 
-    endif;
-} 
-?>
+            <script>
+                // Show the modal when page loads
+                document.addEventListener('DOMContentLoaded', function() {
+                    const adminModal = new bootstrap.Modal(document.getElementById('adminModeModal'));
+                    adminModal.show();
+
+                    // Handle the "don't show again" checkbox
+                    document.getElementById('closeAdminModal').addEventListener('click', function() {
+                        if (document.getElementById('dontShowAgain').checked) {
+                            // Set cookie to hide notification for 30 days
+                            const expiryDate = new Date();
+                            expiryDate.setDate(expiryDate.getDate() + 30);
+                            document.cookie = "hide_admin_notification=true; expires=" + expiryDate.toUTCString() + "; path=/";
+                        }
+                        adminModal.hide();
+                    });
+                });
+            </script>
+    <?php
+        endif;
+    }
+    ?>
 
     <div class="container-fluid">
         <div class="row">
@@ -339,7 +339,14 @@ if($_SESSION['level'] == 'admin') {
                 <div>
                     <h5 class="display-5 p-0 m-0 text-white"
                         style="font-weight: bold; font-size: 28px; font-size: clamp(24px, 5vw, 35px);">
-                        <?php echo htmlspecialchars($data_kelas['mata_pelajaran']); ?>
+                        <?php 
+    if ($data_kelas['is_public']) {
+        echo htmlspecialchars($data_kelas['nama_kelas']); 
+    } else {
+        echo htmlspecialchars($data_kelas['mata_pelajaran']); 
+    }
+    ?>
+
                     </h5>
                     <h4 class="p-0 m-0 pb-3 text-white" style="font-size: clamp(16px, 4vw, 24px);">
                         Kelas <?php echo htmlspecialchars($data_kelas['tingkat']); ?>
@@ -475,33 +482,33 @@ if($_SESSION['level'] == 'admin') {
                                 <h5 class="modal-title fw-semibold">Tambah Tugas</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            
+
                             <div class="modal-body p-4">
                                 <form action="tambah_tugas.php" method="POST" enctype="multipart/form-data">
                                     <input type="hidden" name="kelas_id" value="<?php echo $kelas_id; ?>">
-                                    
+
                                     <!-- Judul Tugas -->
                                     <div class="form-group-ios mb-4">
                                         <label class="form-label mb-2">Judul Tugas</label>
-                                        <input type="text" class="form-control form-control-ios" 
-                                               name="judul_tugas" placeholder="Masukkan judul tugas" required>
+                                        <input type="text" class="form-control form-control-ios"
+                                            name="judul_tugas" placeholder="Masukkan judul tugas" required>
                                     </div>
-                                    
+
                                     <!-- Deskripsi -->
                                     <div class="form-group-ios mb-4">
                                         <label class="form-label mb-2">Deskripsi</label>
-                                        <textarea class="form-control form-control-ios" 
-                                                name="deskripsi_tugas" rows="4" 
-                                                placeholder="Jelaskan detail tugas" required></textarea>
+                                        <textarea class="form-control form-control-ios"
+                                            name="deskripsi_tugas" rows="4"
+                                            placeholder="Jelaskan detail tugas" required></textarea>
                                     </div>
-                                    
+
                                     <!-- Poin -->
                                     <div class="form-group-ios mb-4">
                                         <label class="form-label mb-2">Poin Maksimal</label>
-                                        <input type="number" class="form-control form-control-ios" 
-                                               name="poin_tugas" value="100" min="0" required>
+                                        <input type="number" class="form-control form-control-ios"
+                                            name="poin_tugas" value="100" min="0" required>
                                     </div>
-                                    
+
                                     <!-- Batas Waktu -->
                                     <div class="deadline-container bg-light p-3 rounded-4 mb-4">
                                         <div class="d-flex align-items-center mb-3">
@@ -510,22 +517,22 @@ if($_SESSION['level'] == 'admin') {
                                         </div>
                                         <div class="row g-3">
                                             <div class="col-6">
-                                                <input type="date" class="form-control form-control-ios" 
-                                                       name="batas_tanggal" required>
+                                                <input type="date" class="form-control form-control-ios"
+                                                    name="batas_tanggal" required>
                                             </div>
                                             <div class="col-6">
-                                                <input type="time" class="form-control form-control-ios" 
-                                                       name="batas_jam" required>
+                                                <input type="time" class="form-control form-control-ios"
+                                                    name="batas_jam" required>
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- File Upload -->
                                     <div class="form-group-ios mb-4">
                                         <label class="form-label mb-2">Lampiran</label>
                                         <div class="attachment-box" onclick="document.getElementById('file_tugas').click()">
-                                            <input type="file" id="file_tugas" name="file_tugas[]" 
-                                                   class="d-none" multiple onchange="showSelectedFiles(this)">
+                                            <input type="file" id="file_tugas" name="file_tugas[]"
+                                                class="d-none" multiple onchange="showSelectedFiles(this)">
                                             <div class="attachment-placeholder text-center p-4">
                                                 <i class="bi bi-cloud-upload fs-3 mb-2" style="color: rgb(218, 119, 86);"></i>
                                                 <p class="mb-0 text-muted">Klik untuk menambah lampiran</p>
@@ -534,7 +541,7 @@ if($_SESSION['level'] == 'admin') {
                                             <div id="selectedFiles" class="selected-files mt-2"></div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Submit Button -->
                                     <div class="d-grid">
                                         <button type="submit" class="btn btn-primary py-2 rounded-4">
@@ -548,141 +555,141 @@ if($_SESSION['level'] == 'admin') {
                 </div>
 
                 <style>
-                /* iOS Style Modal */
-                .modal-content {
-                    border-radius: 16px;
-                }
-
-                .modal-header {
-                    padding: 16px 20px;
-                }
-
-                .modal-title {
-                    font-size: 18px;
-                    color: #000;
-                }
-
-
-                .form-group-ios label {
-                    font-size: 14px;
-                    font-weight: 500;
-                    color: #374151;
-                }
-
-                .attachment-box {
-                    border: 2px dashed #E5E5EA;
-                    border-radius: 12px;
-                    transition: all 0.2s;
-                    cursor: pointer;
-                }
-
-                .attachment-box:hover {
-                    border-color: rgb(218, 119, 86);
-                    background-color: rgba(0,122,255,0.05);
-                }
-
-                .selected-files {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 8px;
-                    padding: 8px;
-                }
-
-                .file-item {
-                    background: #F0F0F0;
-                    padding: 4px 12px;
-                    border-radius: 16px;
-                    font-size: 13px;
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                }
-
-                .btn-primary {
-                    background-color: rgb(218, 119, 86);
-                    border: none;
-                }
-
-                .btn-primary:hover {
-                    background-color: #0056b3;
-                }
-
-                /* Animation */
-                .modal.fade .modal-dialog {
-                    transition: transform 0.2s ease-out;
-                    transform: scale(0.95);
-                }
-
-                .modal.show .modal-dialog {
-                    transform: scale(1);
-                }
-
-                /* Responsive */
-                @media (max-width: 576px) {
-                    .modal-dialog {
-                        margin: 1rem;
-                    }
-                    
+                    /* iOS Style Modal */
                     .modal-content {
-                        border-radius: 14px;
+                        border-radius: 16px;
                     }
-                }
+
+                    .modal-header {
+                        padding: 16px 20px;
+                    }
+
+                    .modal-title {
+                        font-size: 18px;
+                        color: #000;
+                    }
+
+
+                    .form-group-ios label {
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #374151;
+                    }
+
+                    .attachment-box {
+                        border: 2px dashed #E5E5EA;
+                        border-radius: 12px;
+                        transition: all 0.2s;
+                        cursor: pointer;
+                    }
+
+                    .attachment-box:hover {
+                        border-color: rgb(218, 119, 86);
+                        background-color: rgba(0, 122, 255, 0.05);
+                    }
+
+                    .selected-files {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        padding: 8px;
+                    }
+
+                    .file-item {
+                        background: #F0F0F0;
+                        padding: 4px 12px;
+                        border-radius: 16px;
+                        font-size: 13px;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                    }
+
+                    .btn-primary {
+                        background-color: rgb(218, 119, 86);
+                        border: none;
+                    }
+
+                    .btn-primary:hover {
+                        background-color: #0056b3;
+                    }
+
+                    /* Animation */
+                    .modal.fade .modal-dialog {
+                        transition: transform 0.2s ease-out;
+                        transform: scale(0.95);
+                    }
+
+                    .modal.show .modal-dialog {
+                        transform: scale(1);
+                    }
+
+                    /* Responsive */
+                    @media (max-width: 576px) {
+                        .modal-dialog {
+                            margin: 1rem;
+                        }
+
+                        .modal-content {
+                            border-radius: 14px;
+                        }
+                    }
                 </style>
 
                 <script>
-                function showSelectedFiles(input) {
-                    const container = document.getElementById('selectedFiles');
-                    container.innerHTML = '';
-                    
-                    Array.from(input.files).forEach(file => {
-                        const fileItem = document.createElement('div');
-                        fileItem.className = 'file-item';
-                        fileItem.innerHTML = `
+                    function showSelectedFiles(input) {
+                        const container = document.getElementById('selectedFiles');
+                        container.innerHTML = '';
+
+                        Array.from(input.files).forEach(file => {
+                            const fileItem = document.createElement('div');
+                            fileItem.className = 'file-item';
+                            fileItem.innerHTML = `
                             <i class="bi bi-paperclip"></i>
                             <span>${file.name}</span>
                         `;
-                        container.appendChild(fileItem);
+                            container.appendChild(fileItem);
+                        });
+                    }
+
+                    // Drag and drop functionality
+                    const dropZone = document.querySelector('.attachment-box');
+
+                    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                        dropZone.addEventListener(eventName, preventDefaults, false);
                     });
-                }
 
-                // Drag and drop functionality
-                const dropZone = document.querySelector('.attachment-box');
+                    function preventDefaults(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
 
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, preventDefaults, false);
-                });
+                    ['dragenter', 'dragover'].forEach(eventName => {
+                        dropZone.addEventListener(eventName, highlight, false);
+                    });
 
-                function preventDefaults (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
+                    ['dragleave', 'drop'].forEach(eventName => {
+                        dropZone.addEventListener(eventName, unhighlight, false);
+                    });
 
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, highlight, false);
-                });
+                    function highlight(e) {
+                        dropZone.classList.add('border-primary', 'bg-light');
+                    }
 
-                ['dragleave', 'drop'].forEach(eventName => {
-                    dropZone.addEventListener(eventName, unhighlight, false);
-                });
+                    function unhighlight(e) {
+                        dropZone.classList.remove('border-primary', 'bg-light');
+                    }
 
-                function highlight(e) {
-                    dropZone.classList.add('border-primary', 'bg-light');
-                }
+                    dropZone.addEventListener('drop', handleDrop, false);
 
-                function unhighlight(e) {
-                    dropZone.classList.remove('border-primary', 'bg-light');
-                }
+                    function handleDrop(e) {
+                        const dt = e.dataTransfer;
+                        const files = dt.files;
+                        const fileInput = document.getElementById('file_tugas');
 
-                dropZone.addEventListener('drop', handleDrop, false);
-
-                function handleDrop(e) {
-                    const dt = e.dataTransfer;
-                    const files = dt.files;
-                    const fileInput = document.getElementById('file_tugas');
-                    
-                    fileInput.files = files;
-                    showSelectedFiles(fileInput);
-                }
+                        fileInput.files = files;
+                        showSelectedFiles(fileInput);
+                    }
                 </script>
 
 
@@ -1807,9 +1814,9 @@ if($_SESSION['level'] == 'admin') {
                             <div class="d-flex gap-3">
                                 <div>
                                     <a href="profil_guru.php">
-                                    <img src="<?php echo !empty($guru_pengampu['foto_profil']) ? 'uploads/profil/' . $guru_pengampu['foto_profil'] : 'assets/pp.png'; ?>"
-    alt="Profile Image"
-    class="profile-img rounded-4 border-0 bg-white" style="width: 40px;">
+                                        <img src="<?php echo !empty($guru_pengampu['foto_profil']) ? 'uploads/profil/' . $guru_pengampu['foto_profil'] : 'assets/pp.png'; ?>"
+                                            alt="Profile Image"
+                                            class="profile-img rounded-4 border-0 bg-white" style="width: 40px;">
                                     </a>
                                 </div>
                                 <div class="">
@@ -1924,9 +1931,9 @@ if($_SESSION['level'] == 'admin') {
                                             </div>
 
                                             <!-- Tombol Detail -->
-                                            <a href="detail_tugas.php?id=<?php echo $tugas_id; ?>" 
-                                               class="btn w-100 d-flex align-items-center justify-content-center gap-2 mt-4" 
-                                               style="background: rgb(218, 119, 86); color: white; border-radius: 12px; padding: 12px; font-weight: 500;">
+                                            <a href="detail_tugas.php?id=<?php echo $tugas_id; ?>"
+                                                class="btn w-100 d-flex align-items-center justify-content-center gap-2 mt-4"
+                                                style="background: rgb(218, 119, 86); color: white; border-radius: 12px; padding: 12px; font-weight: 500;">
                                                 Lihat Detail
                                                 <i class="bi bi-arrow-right"></i>
                                             </a>
@@ -1934,32 +1941,32 @@ if($_SESSION['level'] == 'admin') {
                                     </div>
 
                                     <style>
-                                    .tugas-info-box {
-                                        transition: all 0.3s ease;
-                                    }
-
-                                    .tugas-info-box:hover {
-                                        transform: translateY(-2px);
-                                        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-                                    }
-
-                                    .btn {
-                                        transition: all 0.2s ease;
-                                    }
-
-                                    .btn:hover {
-                                        transform: translateY(-1px);
-                                    }
-
-                                    .btn:active {
-                                        transform: translateY(0);
-                                    }
-
-                                    @media (max-width: 768px) {
                                         .tugas-info-box {
-                                            padding: 16px !important;
+                                            transition: all 0.3s ease;
                                         }
-                                    }
+
+                                        .tugas-info-box:hover {
+                                            transform: translateY(-2px);
+                                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                                        }
+
+                                        .btn {
+                                            transition: all 0.2s ease;
+                                        }
+
+                                        .btn:hover {
+                                            transform: translateY(-1px);
+                                        }
+
+                                        .btn:active {
+                                            transform: translateY(0);
+                                        }
+
+                                        @media (max-width: 768px) {
+                                            .tugas-info-box {
+                                                padding: 16px !important;
+                                            }
+                                        }
                                     </style>
 
                                 <?php else: ?>
@@ -1968,90 +1975,90 @@ if($_SESSION['level'] == 'admin') {
                                         <p class="textPostingan"><?php echo nl2br(htmlspecialchars($post['konten'])); ?></p>
                                     </div>
 
-                                    <?php endif; ?>
-                                    <!-- style untk text postingan -->
-                                    <style>
-                                        @media screen and (max-width: 768px) {
-                                            .textPostingan {
-                                                font-size: 14px;
-                                            }
+                                <?php endif; ?>
+                                <!-- style untk text postingan -->
+                                <style>
+                                    @media screen and (max-width: 768px) {
+                                        .textPostingan {
+                                            font-size: 14px;
                                         }
-                                    </style>
+                                    }
+                                </style>
 
-                                    <?php
-                                    // Query untuk mengambil lampiran
-                                    $postingan_id = $post['id'];
-                                    $query_lampiran = "SELECT * FROM lampiran_postingan WHERE postingan_id = '$postingan_id'";
-                                    $result_lampiran = mysqli_query($koneksi, $query_lampiran);
+                                <?php
+                                // Query untuk mengambil lampiran
+                                $postingan_id = $post['id'];
+                                $query_lampiran = "SELECT * FROM lampiran_postingan WHERE postingan_id = '$postingan_id'";
+                                $result_lampiran = mysqli_query($koneksi, $query_lampiran);
 
-                                    if (mysqli_num_rows($result_lampiran) > 0) {
-                                        echo '<div class="container mt-3 p-2 bg-light rounded">';
+                                if (mysqli_num_rows($result_lampiran) > 0) {
+                                    echo '<div class="container mt-3 p-2 bg-light rounded">';
 
-                                        // Array untuk memisahkan gambar dan dokumen
-                                        $images = [];
-                                        $documents = [];
+                                    // Array untuk memisahkan gambar dan dokumen
+                                    $images = [];
+                                    $documents = [];
 
-                                        while ($lampiran = mysqli_fetch_assoc($result_lampiran)) {
-                                            if (strpos($lampiran['tipe_file'], 'image') !== false) {
-                                                $images[] = $lampiran;
-                                            } else {
-                                                $documents[] = $lampiran;
-                                            }
+                                    while ($lampiran = mysqli_fetch_assoc($result_lampiran)) {
+                                        if (strpos($lampiran['tipe_file'], 'image') !== false) {
+                                            $images[] = $lampiran;
+                                        } else {
+                                            $documents[] = $lampiran;
                                         }
+                                    }
 
-                                        // Tampilkan gambar jika ada
-                                        if (!empty($images)) {
-                                            $imageCount = count($images);
-                                            echo '<div class="image-container-' . $imageCount . ' mt-2">';
+                                    // Tampilkan gambar jika ada
+                                    if (!empty($images)) {
+                                        $imageCount = count($images);
+                                        echo '<div class="image-container-' . $imageCount . ' mt-2">';
 
-                                            switch ($imageCount) {
-                                                case 1:
-                                                    // Single image - full width
-                                                    echo '<div class="single-image">';
-                                                    echo '<img src="' . $images[0]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
-                                                    echo '</div>';
-                                                    break;
+                                        switch ($imageCount) {
+                                            case 1:
+                                                // Single image - full width
+                                                echo '<div class="single-image">';
+                                                echo '<img src="' . $images[0]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                break;
 
-                                                case 2:
-                                                    // Two images side by side
-                                                    echo '<div class="dual-images">';
-                                                    foreach ($images as $image) {
-                                                        echo '<img src="' . $image['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
-                                                    }
-                                                    echo '</div>';
-                                                    break;
+                                            case 2:
+                                                // Two images side by side
+                                                echo '<div class="dual-images">';
+                                                foreach ($images as $image) {
+                                                    echo '<img src="' . $image['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
+                                                }
+                                                echo '</div>';
+                                                break;
 
-                                                case 3:
-                                                    // Two images top, one bottom
-                                                    echo '<div class="triple-images">';
-                                                    echo '<div class="top-images">';
-                                                    echo '<img src="' . $images[0]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
-                                                    echo '<img src="' . $images[1]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
-                                                    echo '</div>';
-                                                    echo '<div class="bottom-image">';
-                                                    echo '<img src="' . $images[2]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
-                                                    echo '</div>';
-                                                    echo '</div>';
-                                                    break;
+                                            case 3:
+                                                // Two images top, one bottom
+                                                echo '<div class="triple-images">';
+                                                echo '<div class="top-images">';
+                                                echo '<img src="' . $images[0]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '<img src="' . $images[1]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                echo '<div class="bottom-image">';
+                                                echo '<img src="' . $images[2]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                echo '</div>';
+                                                break;
 
-                                                case 4:
-                                                    // Two rows of two images
-                                                    echo '<div class="quad-images">';
-                                                    echo '<div class="image-row">';
-                                                    echo '<img src="' . $images[0]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
-                                                    echo '<img src="' . $images[1]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
-                                                    echo '</div>';
-                                                    echo '<div class="image-row">';
-                                                    echo '<img src="' . $images[2]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
-                                                    echo '<img src="' . $images[3]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
-                                                    echo '</div>';
-                                                    echo '</div>';
-                                                    break;
-                                            }
-                                            echo '</div>';
+                                            case 4:
+                                                // Two rows of two images
+                                                echo '<div class="quad-images">';
+                                                echo '<div class="image-row">';
+                                                echo '<img src="' . $images[0]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '<img src="' . $images[1]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                echo '<div class="image-row">';
+                                                echo '<img src="' . $images[2]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '<img src="' . $images[3]['path_file'] . '" alt="Lampiran" onclick="showImage(this.src)">';
+                                                echo '</div>';
+                                                echo '</div>';
+                                                break;
+                                        }
+                                        echo '</div>';
 
-                                            // Add CSS styles
-                                            echo '<style>
+                                        // Add CSS styles
+                                        echo '<style>
                                             .single-image img {
                                                 width: 100%;
                                                 border-radius: 15px;
@@ -2146,417 +2153,421 @@ if($_SESSION['level'] == 'admin') {
                                                 }
                                             }
                                         </style>';
-                                        }
+                                    }
 
-                                        // Tampilkan dokumen non-gambar jika ada
-                                        if (!empty($documents)) {
-                                            echo '<div class="document-list">';
-                                            foreach ($documents as $doc) {
-                                                $extension = pathinfo($doc['nama_file'], PATHINFO_EXTENSION);
-                                                $icon = '';
+                                    // Tampilkan dokumen non-gambar jika ada
+                                    if (!empty($documents)) {
+                                        echo '<div class="document-list">';
+                                        foreach ($documents as $doc) {
+                                            $extension = pathinfo($doc['nama_file'], PATHINFO_EXTENSION);
+                                            $icon = '';
 
-                                                // Set icon berdasarkan tipe file
-                                                switch (strtolower($extension)) {
-                                                    case 'pdf':
-                                                        $icon = 'bi-file-pdf-fill text-danger';
-                                                        break;
-                                                    case 'doc':
-                                                    case 'docx':
-                                                        $icon = 'bi-file-word-fill text-primary';
-                                                        break;
-                                                    case 'xls':
-                                                    case 'xlsx':
-                                                        $icon = 'bi-file-excel-fill text-success';
-                                                        break;
-                                                    case 'ppt':
-                                                    case 'pptx':
-                                                        $icon = 'bi-file-ppt-fill text-warning';
-                                                        break;
-                                                    default:
-                                                        $icon = 'bi-file-text-fill text-secondary';
-                                                }
-
-                                                echo '<div class="doc-item mb-2 p-2 bg-white rounded border">';
-                                                echo '<a href="' . $doc['path_file'] . '" class="text-decoration-none text-dark d-flex align-items-center gap-2" target="_blank">';
-                                                echo '<i class="bi ' . $icon . ' fs-4"></i>';
-                                                echo '<div>';
-                                                echo '<div class="doc-name">' . htmlspecialchars($doc['nama_file']) . '</div>';
-                                                echo '<small class="text-muted">' . strtoupper($extension) . ' file</small>';
-                                                echo '</div>';
-                                                echo '</a>';
-                                                echo '</div>';
+                                            // Set icon berdasarkan tipe file
+                                            switch (strtolower($extension)) {
+                                                case 'pdf':
+                                                    $icon = 'bi-file-pdf-fill text-danger';
+                                                    break;
+                                                case 'doc':
+                                                case 'docx':
+                                                    $icon = 'bi-file-word-fill text-primary';
+                                                    break;
+                                                case 'xls':
+                                                case 'xlsx':
+                                                    $icon = 'bi-file-excel-fill text-success';
+                                                    break;
+                                                case 'ppt':
+                                                case 'pptx':
+                                                    $icon = 'bi-file-ppt-fill text-warning';
+                                                    break;
+                                                default:
+                                                    $icon = 'bi-file-text-fill text-secondary';
                                             }
+
+                                            echo '<div class="doc-item mb-2 p-2 bg-white rounded border">';
+                                            echo '<a href="' . $doc['path_file'] . '" class="text-decoration-none text-dark d-flex align-items-center gap-2" target="_blank">';
+                                            echo '<i class="bi ' . $icon . ' fs-4"></i>';
+                                            echo '<div>';
+                                            echo '<div class="doc-name">' . htmlspecialchars($doc['nama_file']) . '</div>';
+                                            echo '<small class="text-muted">' . strtoupper($extension) . ' file</small>';
+                                            echo '</div>';
+                                            echo '</a>';
                                             echo '</div>';
                                         }
-
                                         echo '</div>';
                                     }
-                                    ?>
 
-                                    <style>
-                                        .doc-item {
-                                            transition: all 0.2s ease;
-                                        }
+                                    echo '</div>';
+                                }
+                                ?>
 
-                                        .doc-item:hover {
-                                            background-color: #f8f9fa !important;
-                                        }
+                                <style>
+                                    .doc-item {
+                                        transition: all 0.2s ease;
+                                    }
 
+                                    .doc-item:hover {
+                                        background-color: #f8f9fa !important;
+                                    }
+
+                                    .doc-name {
+                                        max-width: 200px;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                        white-space: nowrap;
+                                    }
+
+                                    @media (max-width: 768px) {
                                         .doc-name {
-                                            max-width: 200px;
-                                            overflow: hidden;
-                                            text-overflow: ellipsis;
-                                            white-space: nowrap;
+                                            max-width: 150px;
                                         }
+                                    }
+                                </style>
 
-                                        @media (max-width: 768px) {
-                                            .doc-name {
-                                                max-width: 150px;
-                                            }
-                                        }
-                                    </style>
-
-                                    <!-- query untuk mendapatkan jumlah like, komen, dan status like user sedang login -->
-                                    <?php
-                                    // Query untuk mendapatkan jumlah dan detail reaksi
-                                    $query_reactions = "SELECT emoji, COUNT(*) as count 
+                                <!-- query untuk mendapatkan jumlah like, komen, dan status like user sedang login -->
+                                <?php
+                                // Query untuk mendapatkan jumlah dan detail reaksi
+                                $query_reactions = "SELECT emoji, COUNT(*) as count 
                                 FROM emoji_reactions 
                                 WHERE postingan_id = '{$post['id']}' 
                                 GROUP BY emoji";
-                                    $result_reactions = mysqli_query($koneksi, $query_reactions);
+                                $result_reactions = mysqli_query($koneksi, $query_reactions);
 
-                                    $reactions_html = '';
-                                    $total_reactions = 0;
-                                    while ($reaction = mysqli_fetch_assoc($result_reactions)) {
-                                        $reactions_html .= "{$reaction['emoji']} {$reaction['count']} ";
-                                        $total_reactions += $reaction['count'];
-                                    }
+                                $reactions_html = '';
+                                $total_reactions = 0;
+                                while ($reaction = mysqli_fetch_assoc($result_reactions)) {
+                                    $reactions_html .= "{$reaction['emoji']} {$reaction['count']} ";
+                                    $total_reactions += $reaction['count'];
+                                }
 
-                                    // Cek reaksi user yang sedang login
-                                    $check_reaction = "SELECT emoji FROM emoji_reactions 
+                                // Cek reaksi user yang sedang login
+                                $check_reaction = "SELECT emoji FROM emoji_reactions 
                                 WHERE postingan_id = '{$post['id']}' 
                                 AND user_id = '$userid'";
-                                    $reaction_result = mysqli_query($koneksi, $check_reaction);
-                                    $user_reaction = mysqli_fetch_assoc($reaction_result);
-                                    $current_emoji = $user_reaction ? $user_reaction['emoji'] : null;
+                                $reaction_result = mysqli_query($koneksi, $check_reaction);
+                                $user_reaction = mysqli_fetch_assoc($reaction_result);
+                                $current_emoji = $user_reaction ? $user_reaction['emoji'] : null;
 
-                                    // Cek reaksi user yang sudah ada //button like
-                                    $check_emoji = "SELECT emoji FROM emoji_reactions WHERE postingan_id = '{$post['id']}' AND user_id = '$userid'";
-                                    $emoji_result = mysqli_query($koneksi, $check_emoji);
-                                    $user_emoji = mysqli_fetch_assoc($emoji_result);
-                                    $current_emoji = $user_emoji ? $user_emoji['emoji'] : null;
+                                // Cek reaksi user yang sudah ada //button like
+                                $check_emoji = "SELECT emoji FROM emoji_reactions WHERE postingan_id = '{$post['id']}' AND user_id = '$userid'";
+                                $emoji_result = mysqli_query($koneksi, $check_emoji);
+                                $user_emoji = mysqli_fetch_assoc($emoji_result);
+                                $current_emoji = $user_emoji ? $user_emoji['emoji'] : null;
 
-                                    // Query untuk mendapatkan jumlah komentar
-                                    $query_comment_count = "SELECT COUNT(*) as total FROM komentar_postingan WHERE postingan_id = '{$post['id']}'";
-                                    $result_comment_count = mysqli_query($koneksi, $query_comment_count);
-                                    $comment_count = mysqli_fetch_assoc($result_comment_count)['total'];
-                                    ?>
-                                    <!-- informasi like dan komen -->
-                                    <div class="d-flex gap-2" style="font-size: 14px;">
-                                        <div class="badge rounded-pill bg-light border px-3 py-2">
-                                            <span id="reactions-count-<?php echo $post['id']; ?>" class="reactions-count text-black">
-                                                <?php echo $reactions_html ?: "<i class='bi bi-hand-thumbs-up me-1'></i>$total_reactions"; ?>
-                                            </span>
-                                        </div>
-                                        <div class="badge rounded-pill bg-light text-black border px-3 py-2">
-                                            <i class="bi bi-chat me-1"></i>
-                                            <span><strong><?php echo $comment_count; ?></strong></span>
-                                        </div>
+                                // Query untuk mendapatkan jumlah komentar
+                                $query_comment_count = "SELECT COUNT(*) as total FROM komentar_postingan WHERE postingan_id = '{$post['id']}'";
+                                $result_comment_count = mysqli_query($koneksi, $query_comment_count);
+                                $comment_count = mysqli_fetch_assoc($result_comment_count)['total'];
+                                ?>
+                                <!-- informasi like dan komen -->
+                                <div class="d-flex gap-2" style="font-size: 14px;">
+                                    <div class="badge rounded-pill bg-light border px-3 py-2">
+                                        <span id="reactions-count-<?php echo $post['id']; ?>" class="reactions-count text-black">
+                                            <?php echo $reactions_html ?: "<i class='bi bi-hand-thumbs-up me-1'></i>$total_reactions"; ?>
+                                        </span>
                                     </div>
-
-
-                                    <!-- Ganti bagian tombol like dengan yang lebih sederhana -->
-                                    <div class="d-flex gap-2 justify-content-between mt-3 ps-2 pe-2" style="font-size: 14px;">
-                                        <button class="btn btn-light flex-fill py-1 py-md-2 d-flex align-items-center justify-content-center gap-2"
-                                            id="like-btn-<?php echo $post['id']; ?>"
-                                            onclick="toggleLike(<?php echo $post['id']; ?>)">
-                                            <?php if ($current_emoji): ?>
-                                                <i class="bi bi-hand-thumbs-up-fill text-primary"></i>
-                                            <?php else: ?>
-                                                <i class="bi bi-hand-thumbs-up"></i>
-                                            <?php endif; ?>
-                                            <span class="d-none d-md-inline">Suka</span>
-                                        </button>
-
-                                        <button class="btn btn-light flex-fill py-1 py-md-2 d-flex align-items-center justify-content-center gap-2"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#commentModal-<?php echo $post['id']; ?>">
-                                            <i class="bi bi-chat"></i>
-                                            <span class="d-none d-md-inline">Komentar</span>
-                                        </button>
-
-                                        <button class="btn btn-light flex-fill py-1 py-md-2 d-flex align-items-center justify-content-center gap-2"
-                                            onclick='sharePost(<?php echo $post["id"]; ?>, <?php echo json_encode($post["konten"]); ?>)'>
-                                            <i class="bi bi-share"></i>
-                                            <span class="d-none d-md-inline">Bagikan</span>
-                                        </button>
+                                    <div class="badge rounded-pill bg-light text-black border px-3 py-2">
+                                        <i class="bi bi-chat me-1"></i>
+                                        <span><strong><?php echo $comment_count; ?></strong></span>
                                     </div>
+                                </div>
 
-                                    <!-- script dan animasi aksi like dan emoji -->
 
-                                    <style>
-                                        .reaction-bar {
-                                            /* Style yang sudah ada */
-                                            position: absolute;
-                                            bottom: 100%;
-                                            left: 50%;
-                                            transform: translateX(-50%);
-                                            background: white;
-                                            border-radius: 20px;
-                                            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                                            margin-bottom: 10px;
-                                            z-index: 1000;
-                                            width: max-content;
-                                            min-width: 200px;
+                                <!-- Ganti bagian tombol like dengan yang lebih sederhana -->
+                                <div class="d-flex gap-2 justify-content-between mt-3 ps-2 pe-2" style="font-size: 14px;">
+                                    <button class="btn btn-light flex-fill py-1 py-md-2 d-flex align-items-center justify-content-center gap-2"
+                                        id="like-btn-<?php echo $post['id']; ?>"
+                                        onclick="toggleLike(<?php echo $post['id']; ?>)">
+                                        <?php if ($current_emoji): ?>
+                                            <i class="bi bi-hand-thumbs-up-fill text-primary"></i>
+                                        <?php else: ?>
+                                            <i class="bi bi-hand-thumbs-up"></i>
+                                        <?php endif; ?>
+                                        <span class="d-none d-md-inline">Suka</span>
+                                    </button>
 
-                                            /* Tambahkan animasi */
-                                            opacity: 0;
-                                            transform: translateX(-50%) scale(0.5);
-                                            transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-                                        }
+                                    <button class="btn btn-light flex-fill py-1 py-md-2 d-flex align-items-center justify-content-center gap-2"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#commentModal-<?php echo $post['id']; ?>">
+                                        <i class="bi bi-chat"></i>
+                                        <span class="d-none d-md-inline">Komentar</span>
+                                    </button>
 
-                                        .reaction-bar.show {
-                                            opacity: 1;
-                                            transform: translateX(-50%) scale(1);
-                                        }
+                                    <button class="btn btn-light flex-fill py-1 py-md-2 d-flex align-items-center justify-content-center gap-2"
+                                        onclick='sharePost(<?php echo $post["id"]; ?>, <?php echo json_encode($post["konten"]); ?>)'>
+                                        <i class="bi bi-share"></i>
+                                        <span class="d-none d-md-inline">Bagikan</span>
+                                    </button>
+                                </div>
 
-                                        .reaction-emoji {
-                                            cursor: pointer;
-                                            padding: 5px 10px;
-                                            font-size: 1.5rem;
-                                            opacity: 0;
-                                            transform: translateY(20px);
-                                            transition: all 0.2s ease-out;
-                                        }
+                                <!-- script dan animasi aksi like dan emoji -->
 
-                                        /* Animasi untuk setiap emoji */
-                                        .reaction-bar.show .reaction-emoji:nth-child(1) {
-                                            transition-delay: 0.1s;
-                                        }
+                                <style>
+                                    .reaction-bar {
+                                        /* Style yang sudah ada */
+                                        position: absolute;
+                                        bottom: 100%;
+                                        left: 50%;
+                                        transform: translateX(-50%);
+                                        background: white;
+                                        border-radius: 20px;
+                                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                        margin-bottom: 10px;
+                                        z-index: 1000;
+                                        width: max-content;
+                                        min-width: 200px;
 
-                                        .reaction-bar.show .reaction-emoji:nth-child(2) {
-                                            transition-delay: 0.15s;
-                                        }
+                                        /* Tambahkan animasi */
+                                        opacity: 0;
+                                        transform: translateX(-50%) scale(0.5);
+                                        transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+                                    }
 
-                                        .reaction-bar.show .reaction-emoji:nth-child(3) {
-                                            transition-delay: 0.2s;
-                                        }
+                                    .reaction-bar.show {
+                                        opacity: 1;
+                                        transform: translateX(-50%) scale(1);
+                                    }
 
-                                        .reaction-bar.show .reaction-emoji:nth-child(4) {
-                                            transition-delay: 0.25s;
-                                        }
+                                    .reaction-emoji {
+                                        cursor: pointer;
+                                        padding: 5px 10px;
+                                        font-size: 1.5rem;
+                                        opacity: 0;
+                                        transform: translateY(20px);
+                                        transition: all 0.2s ease-out;
+                                    }
 
-                                        .reaction-bar.show .reaction-emoji:nth-child(5) {
-                                            transition-delay: 0.3s;
-                                        }
+                                    /* Animasi untuk setiap emoji */
+                                    .reaction-bar.show .reaction-emoji:nth-child(1) {
+                                        transition-delay: 0.1s;
+                                    }
 
-                                        .reaction-bar.show .reaction-emoji {
-                                            opacity: 1;
-                                            transform: translateY(0);
-                                        }
+                                    .reaction-bar.show .reaction-emoji:nth-child(2) {
+                                        transition-delay: 0.15s;
+                                    }
 
-                                        .reaction-emoji:hover {
-                                            transform: scale(1.3);
-                                        }
-                                    </style>
+                                    .reaction-bar.show .reaction-emoji:nth-child(3) {
+                                        transition-delay: 0.2s;
+                                    }
 
-                                    <script>
-                                        function updateReactionDisplay(postId, reactions, currentEmoji) {
-                                            const button = document.getElementById(`like-btn-${postId}`);
-                                            const countElement = document.getElementById(`like-count-${postId}`);
-                                            const reactionBar = document.getElementById(`reaction-bar-${postId}`);
+                                    .reaction-bar.show .reaction-emoji:nth-child(4) {
+                                        transition-delay: 0.25s;
+                                    }
 
-                                            let totalCount = 0;
-                                            let displayText = '';
+                                    .reaction-bar.show .reaction-emoji:nth-child(5) {
+                                        transition-delay: 0.3s;
+                                    }
 
-                                            for (const [emoji, count] of Object.entries(reactions)) {
-                                                totalCount += count;
-                                                if (count > 0) {
-                                                    displayText += `${emoji} ${count} `;
-                                                }
+                                    .reaction-bar.show .reaction-emoji {
+                                        opacity: 1;
+                                        transform: translateY(0);
+                                    }
+
+                                    .reaction-emoji:hover {
+                                        transform: scale(1.3);
+                                    }
+                                </style>
+
+                                <script>
+                                    function updateReactionDisplay(postId, reactions, currentEmoji) {
+                                        const button = document.getElementById(`like-btn-${postId}`);
+                                        const countElement = document.getElementById(`like-count-${postId}`);
+                                        const reactionBar = document.getElementById(`reaction-bar-${postId}`);
+
+                                        let totalCount = 0;
+                                        let displayText = '';
+
+                                        for (const [emoji, count] of Object.entries(reactions)) {
+                                            totalCount += count;
+                                            if (count > 0) {
+                                                displayText += `${emoji} ${count} `;
                                             }
+                                        }
 
-                                            const buttonText = button.querySelector('span');
-                                            if (currentEmoji) {
-                                                if (buttonText) {
-                                                    buttonText.textContent = `${currentEmoji} Suka`;
-                                                }
-                                                button.querySelector('i').classList.add('text-primary');
-                                            } else {
-                                                if (buttonText) {
-                                                    buttonText.textContent = 'Suka';
-                                                }
-                                                button.querySelector('i').classList.remove('text-primary');
+                                        const buttonText = button.querySelector('span');
+                                        if (currentEmoji) {
+                                            if (buttonText) {
+                                                buttonText.textContent = `${currentEmoji} Suka`;
                                             }
+                                            button.querySelector('i').classList.add('text-primary');
+                                        } else {
+                                            if (buttonText) {
+                                                buttonText.textContent = 'Suka';
+                                            }
+                                            button.querySelector('i').classList.remove('text-primary');
+                                        }
 
-                                            countElement.innerHTML = displayText || `${totalCount} Suka`;
+                                        countElement.innerHTML = displayText || `${totalCount} Suka`;
 
+                                        reactionBar.classList.remove('show');
+                                        setTimeout(() => {
+                                            reactionBar.style.display = 'none';
+                                        }, 300);
+                                    }
+
+                                    function updateReactionDisplay(postId, reactions, currentEmoji) {
+                                        const button = document.getElementById(`like-btn-${postId}`);
+                                        const countElement = document.getElementById(`reactions-count-${postId}`);
+
+                                        // Set reaction text based on current emoji
+                                        let reactionText = 'Suka';
+                                        if (currentEmoji) {
+                                            switch (currentEmoji) {
+                                                case '👍':
+                                                    reactionText = 'Ok';
+                                                    break;
+                                                case '❤️':
+                                                    reactionText = 'Cinta';
+                                                    break;
+                                                case '😂':
+                                                    reactionText = 'Wkwk';
+                                                    break;
+                                                case '😮':
+                                                    reactionText = 'GG';
+                                                    break;
+                                                case '😢':
+                                                    reactionText = 'Ya Allah';
+                                                    break;
+                                            }
+                                            button.innerHTML = `<span>${currentEmoji} ${reactionText}</span>`;
+                                        } else {
+                                            button.innerHTML = `<i class="bi bi-hand-thumbs-up"></i>`;
+                                        }
+
+                                        // Display total reactions count
+                                        let displayText = '';
+                                        for (const [emoji, count] of Object.entries(reactions)) {
+                                            if (count > 0) {
+                                                displayText += `${emoji} ${count} `;
+                                            }
+                                        }
+                                        countElement.innerHTML = displayText || `<i class='bi bi-hand-thumbs-up me-1'></i>0`;
+                                    }
+
+                                    function showReactionBar(event, postId) {
+                                        event.preventDefault();
+                                        const reactionBar = document.getElementById(`reaction-bar-${postId}`);
+
+                                        document.querySelectorAll('.reaction-bar').forEach(bar => {
+                                            if (bar.id !== `reaction-bar-${postId}`) {
+                                                bar.classList.remove('show');
+                                                setTimeout(() => {
+                                                    bar.style.display = 'none';
+                                                }, 300);
+                                            }
+                                        });
+
+                                        if (reactionBar.style.display === 'none') {
+                                            reactionBar.style.display = 'block';
+                                            requestAnimationFrame(() => {
+                                                reactionBar.classList.add('show');
+                                            });
+
+                                            setTimeout(() => {
+                                                document.addEventListener('click', function closeReactionBar(e) {
+                                                    if (!reactionBar.contains(e.target) &&
+                                                        !document.getElementById(`like-btn-${postId}`).contains(e.target)) {
+                                                        reactionBar.classList.remove('show');
+                                                        setTimeout(() => {
+                                                            reactionBar.style.display = 'none';
+                                                        }, 300);
+                                                        document.removeEventListener('click', closeReactionBar);
+                                                    }
+                                                });
+                                            }, 0);
+                                        } else {
                                             reactionBar.classList.remove('show');
                                             setTimeout(() => {
                                                 reactionBar.style.display = 'none';
                                             }, 300);
                                         }
+                                    }
 
-                                        function updateReactionDisplay(postId, reactions, currentEmoji) {
-                                            const button = document.getElementById(`like-btn-${postId}`);
-                                            const countElement = document.getElementById(`reactions-count-${postId}`);
+                                    function toggleLike(postId, emoji = '👍') {
+                                        const button = document.getElementById(`like-btn-${postId}`);
+                                        const icon = button.querySelector('i');
 
-                                            // Set reaction text based on current emoji
-                                            let reactionText = 'Suka';
-                                            if (currentEmoji) {
-                                                switch (currentEmoji) {
-                                                    case '👍':
-                                                        reactionText = 'Ok';
-                                                        break;
-                                                    case '❤️':
-                                                        reactionText = 'Cinta';
-                                                        break;
-                                                    case '😂':
-                                                        reactionText = 'Wkwk';
-                                                        break;
-                                                    case '😮':
-                                                        reactionText = 'GG';
-                                                        break;
-                                                    case '😢':
-                                                        reactionText = 'Ya Allah';
-                                                        break;
-                                                }
-                                                button.innerHTML = `<span>${currentEmoji} ${reactionText}</span>`;
-                                            } else {
-                                                button.innerHTML = `<i class="bi bi-hand-thumbs-up"></i>`;
-                                            }
+                                        // Add sound effect when clicking like
+                                        const likeSound = new Audio('assets/like_rev.mp3');
+                                        likeSound.play();
 
-                                            // Display total reactions count
-                                            let displayText = '';
-                                            for (const [emoji, count] of Object.entries(reactions)) {
-                                                if (count > 0) {
-                                                    displayText += `${emoji} ${count} `;
-                                                }
-                                            }
-                                            countElement.innerHTML = displayText || `<i class='bi bi-hand-thumbs-up me-1'></i>0`;
-                                        }
-
-                                        function showReactionBar(event, postId) {
-                                            event.preventDefault();
-                                            const reactionBar = document.getElementById(`reaction-bar-${postId}`);
-
-                                            document.querySelectorAll('.reaction-bar').forEach(bar => {
-                                                if (bar.id !== `reaction-bar-${postId}`) {
-                                                    bar.classList.remove('show');
-                                                    setTimeout(() => {
-                                                        bar.style.display = 'none';
-                                                    }, 300);
-                                                }
-                                            });
-
-                                            if (reactionBar.style.display === 'none') {
-                                                reactionBar.style.display = 'block';
-                                                requestAnimationFrame(() => {
-                                                    reactionBar.classList.add('show');
-                                                });
-
-                                                setTimeout(() => {
-                                                    document.addEventListener('click', function closeReactionBar(e) {
-                                                        if (!reactionBar.contains(e.target) &&
-                                                            !document.getElementById(`like-btn-${postId}`).contains(e.target)) {
-                                                            reactionBar.classList.remove('show');
-                                                            setTimeout(() => {
-                                                                reactionBar.style.display = 'none';
-                                                            }, 300);
-                                                            document.removeEventListener('click', closeReactionBar);
-                                                        }
-                                                    });
-                                                }, 0);
-                                            } else {
-                                                reactionBar.classList.remove('show');
-                                                setTimeout(() => {
-                                                    reactionBar.style.display = 'none';
-                                                }, 300);
-                                            }
-                                        }
-
-                                        function toggleLike(postId, emoji = '👍') {
-                                            const button = document.getElementById(`like-btn-${postId}`);
-                                            const icon = button.querySelector('i');
-
-                                            fetch('toggle_like.php', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                                    },
-                                                    body: `postingan_id=${postId}&emoji=${emoji}`
-                                                })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    if (data.success) {
-                                                        // Update icon
-                                                        if (data.is_liked) {
-                                                            icon.classList.replace('bi-hand-thumbs-up', 'bi-hand-thumbs-up-fill');
-                                                            icon.classList.add('text-primary');
-                                                            // Add like animation
-                                                            icon.style.transform = 'scale(1.2)';
-                                                            setTimeout(() => icon.style.transform = 'scale(1)', 200);
-                                                        } else {
-                                                            icon.classList.replace('bi-hand-thumbs-up-fill', 'bi-hand-thumbs-up');
-                                                            icon.classList.remove('text-primary');
-                                                            // Add unlike animation
-                                                            icon.style.transform = 'translateX(2px)';
-                                                            setTimeout(() => icon.style.transform = 'translateX(-2px)', 50);
-                                                            setTimeout(() => icon.style.transform = 'translateX(0)', 100);
-                                                        }
-
-                                                        // Update reaction display
-                                                        const countElement = document.getElementById(`reactions-count-${postId}`);
-                                                        if (data.reactions) {
-                                                            let displayText = '';
-                                                            for (const [emoji, count] of Object.entries(data.reactions)) {
-                                                                if (count > 0) {
-                                                                    displayText += `${emoji} ${count} `;
-                                                                }
-                                                            }
-                                                            countElement.innerHTML = displayText || `<i class='bi bi-hand-thumbs-up me-1'></i>0`;
-                                                        }
+                                        fetch('toggle_like.php', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                                },
+                                                body: `postingan_id=${postId}&emoji=${emoji}`
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    // Update icon
+                                                    if (data.is_liked) {
+                                                        icon.classList.replace('bi-hand-thumbs-up', 'bi-hand-thumbs-up-fill');
+                                                        icon.classList.add('text-primary');
+                                                        // Add like animation
+                                                        icon.style.transform = 'scale(1.2)';
+                                                        setTimeout(() => icon.style.transform = 'scale(1)', 200);
+                                                    } else {
+                                                        icon.classList.replace('bi-hand-thumbs-up-fill', 'bi-hand-thumbs-up');
+                                                        icon.classList.remove('text-primary');
+                                                        // Add unlike animation
+                                                        icon.style.transform = 'translateX(2px)';
+                                                        setTimeout(() => icon.style.transform = 'translateX(-2px)', 50);
+                                                        setTimeout(() => icon.style.transform = 'translateX(0)', 100);
                                                     }
-                                                })
-                                                .catch(error => console.error('Error:', error));
-                                        }
-                                    </script>
 
-
-
-                                    <!-- script untuk berbagi -->
-                                    <script>
-                                        async function sharePost(postId, content) {
-                                            // Buat URL untuk postingan
-                                            const postUrl = `${window.location.origin}/smagaBelajar/kelas_guru.php?id=${getUrlParameter('id')}&post=${postId}`;
-
-                                            // Potong konten jika terlalu panjang
-                                            const shortContent = content.length > 100 ? content.substring(0, 97) + '...' : content;
-
-                                            // Cek apakah Web Share API tersedia (biasanya di mobile)
-                                            if (navigator.share) {
-                                                try {
-                                                    await navigator.share({
-                                                        title: 'Bagikan Postingan',
-                                                        text: shortContent,
-                                                        url: postUrl
-                                                    });
-                                                } catch (err) {
-                                                    console.log('Error sharing:', err);
+                                                    // Update reaction display
+                                                    const countElement = document.getElementById(`reactions-count-${postId}`);
+                                                    if (data.reactions) {
+                                                        let displayText = '';
+                                                        for (const [emoji, count] of Object.entries(data.reactions)) {
+                                                            if (count > 0) {
+                                                                displayText += `${emoji} ${count} `;
+                                                            }
+                                                        }
+                                                        countElement.innerHTML = displayText || `<i class='bi bi-hand-thumbs-up me-1'></i>0`;
+                                                    }
                                                 }
-                                            } else {
-                                                // Jika Web Share API tidak tersedia (desktop), gunakan modal
-                                                showShareModal(postId, postUrl);
+                                            })
+                                            .catch(error => console.error('Error:', error));
+                                    }
+                                </script>
+
+
+
+                                <!-- script untuk berbagi -->
+                                <script>
+                                    async function sharePost(postId, content) {
+                                        // Buat URL untuk postingan
+                                        const postUrl = `${window.location.origin}/smagaBelajar/kelas_guru.php?id=${getUrlParameter('id')}&post=${postId}`;
+
+                                        // Potong konten jika terlalu panjang
+                                        const shortContent = content.length > 100 ? content.substring(0, 97) + '...' : content;
+
+                                        // Cek apakah Web Share API tersedia (biasanya di mobile)
+                                        if (navigator.share) {
+                                            try {
+                                                await navigator.share({
+                                                    title: 'Bagikan Postingan',
+                                                    text: shortContent,
+                                                    url: postUrl
+                                                });
+                                            } catch (err) {
+                                                console.log('Error sharing:', err);
                                             }
+                                        } else {
+                                            // Jika Web Share API tidak tersedia (desktop), gunakan modal
+                                            showShareModal(postId, postUrl);
                                         }
+                                    }
 
-                                        function showShareModal(postId, postUrl) {
-                                            // Cek apakah modal sudah ada
-                                            let shareModal = document.getElementById(`shareModal-${postId}`);
+                                    function showShareModal(postId, postUrl) {
+                                        // Cek apakah modal sudah ada
+                                        let shareModal = document.getElementById(`shareModal-${postId}`);
 
-                                            if (!shareModal) {
-                                                // Buat modal jika belum ada
-                                                const modalHtml = `
+                                        if (!shareModal) {
+                                            // Buat modal jika belum ada
+                                            const modalHtml = `
                                             <div class="modal fade" id="shareModal-${postId}" tabindex="-1" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered">
                                                     <div class="modal-content">
@@ -2581,69 +2592,69 @@ if($_SESSION['level'] == 'admin') {
                                                 </div>
                                             </div>
                                         `;
-                                                document.body.insertAdjacentHTML('beforeend', modalHtml);
-                                                shareModal = document.getElementById(`shareModal-${postId}`);
-                                            }
-
-                                            // Tampilkan modal
-                                            new bootstrap.Modal(shareModal).show();
+                                            document.body.insertAdjacentHTML('beforeend', modalHtml);
+                                            shareModal = document.getElementById(`shareModal-${postId}`);
                                         }
 
-                                        // Fungsi helper untuk mendapatkan parameter dari URL
-                                        function getUrlParameter(name) {
-                                            const params = new URLSearchParams(window.location.search);
-                                            return params.get(name);
-                                        }
+                                        // Tampilkan modal
+                                        new bootstrap.Modal(shareModal).show();
+                                    }
 
-                                        // Fungsi untuk berbagi ke platform spesifik
-                                        function shareToWhatsApp(url) {
-                                            window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
-                                        }
+                                    // Fungsi helper untuk mendapatkan parameter dari URL
+                                    function getUrlParameter(name) {
+                                        const params = new URLSearchParams(window.location.search);
+                                        return params.get(name);
+                                    }
 
-                                        function shareToTelegram(url) {
-                                            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}`, '_blank');
-                                        }
+                                    // Fungsi untuk berbagi ke platform spesifik
+                                    function shareToWhatsApp(url) {
+                                        window.open(`https://wa.me/?text=${encodeURIComponent(url)}`, '_blank');
+                                    }
 
-                                        function copyLink(url) {
-                                            navigator.clipboard.writeText(url).then(() => {
-                                                // Tampilkan toast atau alert bahwa link berhasil disalin
-                                                alert('Link berhasil disalin!');
-                                            });
-                                        }
-                                    </script>
+                                    function shareToTelegram(url) {
+                                        window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}`, '_blank');
+                                    }
 
-                                    <!-- style modal berbagi -->
-                                    <style>
-                                        .share-option {
-                                            transition: all 0.2s ease;
-                                        }
+                                    function copyLink(url) {
+                                        navigator.clipboard.writeText(url).then(() => {
+                                            // Tampilkan toast atau alert bahwa link berhasil disalin
+                                            alert('Link berhasil disalin!');
+                                        });
+                                    }
+                                </script>
 
-                                        .share-option:hover {
-                                            transform: translateY(-2px);
-                                        }
+                                <!-- style modal berbagi -->
+                                <style>
+                                    .share-option {
+                                        transition: all 0.2s ease;
+                                    }
 
-                                        /* Animasi untuk toast */
+                                    .share-option:hover {
+                                        transform: translateY(-2px);
+                                    }
+
+                                    /* Animasi untuk toast */
+                                    .toast {
+                                        position: fixed;
+                                        bottom: 20px;
+                                        right: 20px;
+                                        z-index: 1050;
+                                    }
+
+                                    @media (max-width: 768px) {
                                         .toast {
-                                            position: fixed;
-                                            bottom: 20px;
+                                            left: 20px;
                                             right: 20px;
-                                            z-index: 1050;
                                         }
-
-                                        @media (max-width: 768px) {
-                                            .toast {
-                                                left: 20px;
-                                                right: 20px;
-                                            }
-                                        }
-                                    </style>
-                                    <!-- modal komentar -->
-                                    <div class="modal fade" id="commentModal-<?php echo $post['id']; ?>" tabindex="-1" aria-labelledby="modalKomentar" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-                                            <div class="modal-content">
-                                                <?php
-                                                // Query untuk mengambil komentar di awal
-                                                $query_komentar = "SELECT k.*, 
+                                    }
+                                </style>
+                                <!-- modal komentar -->
+                                <div class="modal fade" id="commentModal-<?php echo $post['id']; ?>" tabindex="-1" aria-labelledby="modalKomentar" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+                                        <div class="modal-content">
+                                            <?php
+                                            // Query untuk mengambil komentar di awal
+                                            $query_komentar = "SELECT k.*, 
                                                                 CASE 
                                                                     WHEN g.username IS NOT NULL THEN 'guru'
                                                                     ELSE 'siswa'
@@ -2658,549 +2669,549 @@ if($_SESSION['level'] == 'admin') {
                                                                 LEFT JOIN siswa s ON k.user_id = s.username 
                                                                 WHERE k.postingan_id = '{$post['id']}' 
                                                                 ORDER BY k.created_at ASC";
-                                                $result_komentar = mysqli_query($koneksi, $query_komentar);
-                                                ?>
+                                            $result_komentar = mysqli_query($koneksi, $query_komentar);
+                                            ?>
 
-                                                <div class="modal-header border-0">
-                                                    <h1 class="modal-title fs-5" id="modalKomentar" style="z-index: 1; ">
-                                                        <div class="d-flex flex-column">
-                                                            <strong>Komentar</strong>
-                                                            <span class="text-muted fs-6" style="font-size: 12px !important;">Total <?php echo mysqli_num_rows($result_komentar); ?> Komentar</span>
-                                                        </div>
-                                                    </h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
+                                            <div class="modal-header border-0">
+                                                <h1 class="modal-title fs-5" id="modalKomentar" style="z-index: 1; ">
+                                                    <div class="d-flex flex-column">
+                                                        <strong>Komentar</strong>
+                                                        <span class="text-muted fs-6" style="font-size: 12px !important;">Total <?php echo mysqli_num_rows($result_komentar); ?> Komentar</span>
+                                                    </div>
+                                                </h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
 
-                                                <!-- Body Komentar dengan Scroll -->
-                                                <div class="modal-body p-0">
-                                                    <div class="komentar-container px-3" style="max-height: 60vh; overflow-y: auto;">
-                                                        <?php
-                                                        if (mysqli_num_rows($result_komentar) > 0) {
-                                                            while ($komentar = mysqli_fetch_assoc($result_komentar)) {
-                                                        ?>
-                                                                <div class="comment-thread mb-3">
-                                                                    <!-- Main comment -->
-                                                                    <div class="d-flex gap-3">
-                                                                        <div class="flex-shrink-0">
-                                                                            <img src="<?php echo getProfilePhoto($komentar['user_type'], $komentar); ?>"
-                                                                                alt=""
-                                                                                width="32px"
-                                                                                height="32px"
-                                                                                class="rounded-circle border"
-                                                                                style="object-fit: cover;">
-                                                                        </div>
-                                                                        <div class="flex-grow-1">
-                                                                            <div class="d-flex justify-content-between align-items-start">
-                                                                                <div class="comment-bubble p-2 rounded-3" style="background-color: #f0f2f5;">
-                                                                                    <div class="fw-semibold" style="font-size: 13px;">
-                                                                                        <?php echo htmlspecialchars($komentar['nama_user']); ?>
-                                                                                    </div>
-                                                                                    <div style="font-size: 13px;">
-                                                                                        <?php echo nl2br(htmlspecialchars($komentar['konten'])); ?>
-                                                                                    </div>
+                                            <!-- Body Komentar dengan Scroll -->
+                                            <div class="modal-body p-0">
+                                                <div class="komentar-container px-3" style="max-height: 60vh; overflow-y: auto;">
+                                                    <?php
+                                                    if (mysqli_num_rows($result_komentar) > 0) {
+                                                        while ($komentar = mysqli_fetch_assoc($result_komentar)) {
+                                                    ?>
+                                                            <div class="comment-thread mb-3">
+                                                                <!-- Main comment -->
+                                                                <div class="d-flex gap-3">
+                                                                    <div class="flex-shrink-0">
+                                                                        <img src="<?php echo getProfilePhoto($komentar['user_type'], $komentar); ?>"
+                                                                            alt=""
+                                                                            width="32px"
+                                                                            height="32px"
+                                                                            class="rounded-circle border"
+                                                                            style="object-fit: cover;">
+                                                                    </div>
+                                                                    <div class="flex-grow-1">
+                                                                        <div class="d-flex justify-content-between align-items-start">
+                                                                            <div class="comment-bubble p-2 rounded-3" style="background-color: #f0f2f5;">
+                                                                                <div class="fw-semibold" style="font-size: 13px;">
+                                                                                    <?php echo htmlspecialchars($komentar['nama_user']); ?>
                                                                                 </div>
-                                                                                <!-- Add three dots menu -->
-                                                                                <?php if ($komentar['user_id'] == $_SESSION['userid']): ?>
-                                                                                    <div class="dropdown">
-                                                                                        <button class="btn btn-sm p-0 px-1 text-muted" type="button" data-bs-toggle="dropdown">
-                                                                                            <i class="bi bi-three-dots-vertical"></i>
-                                                                                        </button>
-                                                                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm animate fadeIn">
-                                                                                            <li>
-                                                                                                <a class="dropdown-item text-danger" href="#"
-                                                                                                    onclick="hapusKomentar(<?php echo $komentar['id']; ?>, <?php echo $post['id']; ?>)">
-                                                                                                    <i class="bi bi-trash me-2"></i>Hapus Komentar
-                                                                                                </a>
-                                                                                            </li>
-                                                                                        </ul>
-                                                                                    </div>
-
-                                                                                    <style>
-                                                                                        .animate {
-                                                                                            animation-duration: 0.2s;
-                                                                                            animation-fill-mode: both;
-                                                                                        }
-
-                                                                                        @keyframes fadeIn {
-                                                                                            from {
-                                                                                                opacity: 0;
-                                                                                                transform: translateY(-10px);
-                                                                                            }
-
-                                                                                            to {
-                                                                                                opacity: 1;
-                                                                                                transform: translateY(0);
-                                                                                            }
-                                                                                        }
-
-                                                                                        .fadeIn {
-                                                                                            animation-name: fadeIn;
-                                                                                        }
-
-                                                                                        .dropdown-menu {
-                                                                                            margin-top: 0.5rem;
-                                                                                            border: 1px solid rgba(0, 0, 0, 0.08);
-                                                                                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
-                                                                                        }
-
-                                                                                        .dropdown-item {
-                                                                                            padding: 0.5rem 1rem;
-                                                                                            font-size: 14px;
-                                                                                            transition: all 0.2s;
-                                                                                        }
-
-                                                                                        .dropdown-item:hover {
-                                                                                            background-color: #f8f9fa;
-                                                                                        }
-
-                                                                                        .dropdown-item i {
-                                                                                            font-size: 14px;
-                                                                                        }
-                                                                                    </style>
-                                                                                <?php endif; ?>
+                                                                                <div style="font-size: 13px;">
+                                                                                    <?php echo nl2br(htmlspecialchars($komentar['konten'])); ?>
+                                                                                </div>
                                                                             </div>
-                                                                            <div class="comment-actions d-flex gap-3 mt-1" style="font-size: 12px; opacity: 1;">
-                                                                                <div class="comment-reactions position-relative">
-                                                                                    <div class="d-flex align-items-center">
-                                                                                        <button class="btn btn-sm text-muted p-0"
-                                                                                            id="comment-like-btn-<?php echo $komentar['id']; ?>"
-                                                                                            onclick="showCommentReactionBar(event, <?php echo $komentar['id']; ?>)">
-                                                                                            <?php
-                                                                                            // Get user's current reaction
-                                                                                            $user_reaction_query = "SELECT emoji FROM comment_reactions WHERE comment_id = ? AND user_id = ?";
-                                                                                            $stmt = mysqli_prepare($koneksi, $user_reaction_query);
-                                                                                            mysqli_stmt_bind_param($stmt, "is", $komentar['id'], $_SESSION['userid']);
-                                                                                            mysqli_stmt_execute($stmt);
-                                                                                            $user_reaction = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-
-                                                                                            if ($user_reaction) {
-                                                                                                echo "<p class='p-0 m-0' style='font-size: 12px;'>{$user_reaction['emoji']} ";
-                                                                                                switch ($user_reaction['emoji']) {
-                                                                                                    case '👍':
-                                                                                                        echo "Ok";
-                                                                                                        break;
-                                                                                                    case '❤️':
-                                                                                                        echo "Cinta";
-                                                                                                        break;
-                                                                                                    case '😂':
-                                                                                                        echo "Wkwk";
-                                                                                                        break;
-                                                                                                    case '😮':
-                                                                                                        echo "GG";
-                                                                                                        break;
-                                                                                                    case '😢':
-                                                                                                        echo "Ya Allah";
-                                                                                                        break;
-                                                                                                }
-                                                                                                echo "</p>";
-                                                                                            } else {
-                                                                                                echo "<p class='p-0 m-0' style='font-size: 12px;'>Suka</p>";
-                                                                                            }
-                                                                                            ?>
-                                                                                        </button>
-
-                                                                                        <!-- reaction bar -->
-                                                                                        <!-- Add this right after the button -->
-                                                                                        <div id="comment-reaction-bar-<?php echo $komentar['id']; ?>"
-                                                                                            class="reaction-bar-comment"
-                                                                                            style="display: none;">
-                                                                                            <div class="d-flex justify-content-around p-2">
-                                                                                                <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '👍')" class="reaction-emoji">👍</span>
-                                                                                                <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '❤️')" class="reaction-emoji">❤️</span>
-                                                                                                <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '😂')" class="reaction-emoji">😂</span>
-                                                                                                <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '😮')" class="reaction-emoji">😮</span>
-                                                                                                <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '😢')" class="reaction-emoji">😢</span>
-                                                                                            </div>
-                                                                                        </div>
-
-                                                                                        <!-- Reaction counts -->
-                                                                                        <?php
-                                                                                        $count_query = "SELECT emoji, COUNT(*) as count FROM comment_reactions WHERE comment_id = ? GROUP BY emoji";
-                                                                                        $stmt = mysqli_prepare($koneksi, $count_query);
-                                                                                        mysqli_stmt_bind_param($stmt, "i", $komentar['id']);
-                                                                                        mysqli_stmt_execute($stmt);
-                                                                                        $reactions = mysqli_stmt_get_result($stmt);
-
-                                                                                        if (mysqli_num_rows($reactions) > 0) {
-                                                                                        ?>
-                                                                                            <div class='ms-2 reaction-counts position-relative'>
-                                                                                                <div class='d-flex align-items-center' onclick="toggleReactionPopover(<?php echo $komentar['id']; ?>)">
-                                                                                                    <?php
-                                                                                                    $total = 0;
-                                                                                                    $emoji_stack = [];
-                                                                                                    while ($row = mysqli_fetch_assoc($reactions)) {
-                                                                                                        $total += $row['count'];
-                                                                                                        $emoji_stack[] = $row['emoji'];
-                                                                                                    }
-                                                                                                    foreach (array_slice($emoji_stack, 0, 3) as $emoji) {
-                                                                                                        echo "<span class='reaction-icon'>$emoji</span>";
-                                                                                                    }
-                                                                                                    echo "<span class='ms-1 reaction-count'>$total</span>";
-                                                                                                    ?>
-                                                                                                </div>
-
-                                                                                                <!-- Popover for reactions -->
-                                                                                                <div id="reaction-popover-<?php echo $komentar['id']; ?>" class="reaction-popover" style="z-index: 1080 !important;">
-                                                                                                    <div id="reaction-content-<?php echo $komentar['id']; ?>" class="p-2">
-                                                                                                        <!-- Content will be loaded here -->
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-
-                                                                                        <?php
-                                                                                        }
-                                                                                        ?>
-
-                                                                                    </div>
+                                                                            <!-- Add three dots menu -->
+                                                                            <?php if ($komentar['user_id'] == $_SESSION['userid']): ?>
+                                                                                <div class="dropdown">
+                                                                                    <button class="btn btn-sm p-0 px-1 text-muted" type="button" data-bs-toggle="dropdown">
+                                                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                                                    </button>
+                                                                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm animate fadeIn">
+                                                                                        <li>
+                                                                                            <a class="dropdown-item text-danger" href="#"
+                                                                                                onclick="hapusKomentar(<?php echo $komentar['id']; ?>, <?php echo $post['id']; ?>)">
+                                                                                                <i class="bi bi-trash me-2"></i>Hapus Komentar
+                                                                                            </a>
+                                                                                        </li>
+                                                                                    </ul>
                                                                                 </div>
 
-
-                                                                                <!-- Style for reaction bar -->
                                                                                 <style>
-                                                                                    .comment-reactions {
-                                                                                        position: relative;
+                                                                                    .animate {
+                                                                                        animation-duration: 0.2s;
+                                                                                        animation-fill-mode: both;
                                                                                     }
 
-                                                                                    .reaction-bar-comment {
-                                                                                        position: absolute;
-                                                                                        top: -40px;
-                                                                                        left: 0;
-                                                                                        background: white;
-                                                                                        border-radius: 20px;
-                                                                                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                                                                                        z-index: 1000;
-                                                                                        width: max-content;
-                                                                                        min-width: 200px;
-                                                                                        opacity: 0;
-                                                                                        transform: translateY(10px);
-                                                                                        transition: all 0.3s ease;
+                                                                                    @keyframes fadeIn {
+                                                                                        from {
+                                                                                            opacity: 0;
+                                                                                            transform: translateY(-10px);
+                                                                                        }
+
+                                                                                        to {
+                                                                                            opacity: 1;
+                                                                                            transform: translateY(0);
+                                                                                        }
                                                                                     }
 
-                                                                                    .reaction-bar-comment.show {
-                                                                                        opacity: 1;
-                                                                                        transform: translateY(0);
+                                                                                    .fadeIn {
+                                                                                        animation-name: fadeIn;
                                                                                     }
 
-                                                                                    .reaction-emoji {
-                                                                                        cursor: pointer;
-                                                                                        padding: 5px 10px;
-                                                                                        font-size: 1.2rem;
-                                                                                        transition: all 0.2s ease;
-                                                                                        opacity: 0;
-                                                                                        transform: translateY(10px);
+                                                                                    .dropdown-menu {
+                                                                                        margin-top: 0.5rem;
+                                                                                        border: 1px solid rgba(0, 0, 0, 0.08);
+                                                                                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
                                                                                     }
 
-                                                                                    .reaction-bar-comment.show .reaction-emoji {
-                                                                                        opacity: 1;
-                                                                                        transform: translateY(0);
-                                                                                    }
-
-                                                                                    .reaction-emoji:hover {
-                                                                                        transform: scale(1.4);
-                                                                                    }
-
-                                                                                    .reaction-bar-comment.show .reaction-emoji:nth-child(1) {
-                                                                                        transition-delay: 0.1s;
-                                                                                    }
-
-                                                                                    .reaction-bar-comment.show .reaction-emoji:nth-child(2) {
-                                                                                        transition-delay: 0.15s;
-                                                                                    }
-
-                                                                                    .reaction-bar-comment.show .reaction-emoji:nth-child(3) {
-                                                                                        transition-delay: 0.2s;
-                                                                                    }
-
-                                                                                    .reaction-bar-comment.show .reaction-emoji:nth-child(4) {
-                                                                                        transition-delay: 0.25s;
-                                                                                    }
-
-                                                                                    .reaction-bar-comment.show .reaction-emoji:nth-child(5) {
-                                                                                        transition-delay: 0.3s;
-                                                                                    }
-
-                                                                                    .reaction-counts {
-                                                                                        display: flex;
-                                                                                        align-items: center;
-                                                                                        background: #f0f2f5;
-                                                                                        padding: 2px 8px;
-                                                                                        border-radius: 10px;
-                                                                                        cursor: pointer;
-                                                                                    }
-
-                                                                                    .reaction-icon {
-                                                                                        margin-left: -4px;
-                                                                                        font-size: 12px;
-                                                                                    }
-
-                                                                                    .reaction-count {
-                                                                                        font-size: 12px;
-                                                                                        color: #65676b;
-                                                                                    }
-
-                                                                                    .reaction-icon:first-child {
-                                                                                        margin-left: 0;
-                                                                                    }
-                                                                                </style>
-
-                                                                                <!-- style untuk popup emoji -->
-                                                                                <style>
-                                                                                    .reaction-popover {
-                                                                                        position: fixed;
-                                                                                        top: 50%;
-                                                                                        left: 50%;
-                                                                                        transform: translate(-50%, -50%);
-                                                                                        background: white;
-                                                                                        border-radius: 12px;
-                                                                                        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-                                                                                        width: 250px;
-                                                                                        max-height: 300px;
-                                                                                        overflow-y: auto;
-                                                                                        z-index: 1080;
-                                                                                        opacity: 0;
-                                                                                        visibility: hidden;
-                                                                                        transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
-                                                                                    }
-
-                                                                                    /* Add backdrop styling with fade */
-                                                                                    .popover-backdrop {
-                                                                                        position: fixed;
-                                                                                        top: 0;
-                                                                                        left: 0;
-                                                                                        right: 0;
-                                                                                        bottom: 0;
-                                                                                        background: rgba(0, 0, 0, 0.5) !important;
-                                                                                        z-index: 1070;
-                                                                                        opacity: 0;
-                                                                                        visibility: hidden;
-                                                                                        transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
-                                                                                    }
-
-                                                                                    /* Modal backdrop darker */
-                                                                                    .modal-backdrop {
-                                                                                        background-color: rgba(0, 0, 0, 0.7) !important;
-                                                                                    }
-
-                                                                                    .reaction-popover .p-2 {
-                                                                                        padding: 8px !important;
-                                                                                    }
-
-                                                                                    .reaction-popover h6 {
-                                                                                        font-size: 13px;
-                                                                                        color: #666;
-                                                                                        margin: 0;
-                                                                                    }
-
-                                                                                    /* Clean scrollbar */
-                                                                                    .reaction-popover::-webkit-scrollbar {
-                                                                                        width: 4px;
-                                                                                    }
-
-                                                                                    .reaction-popover::-webkit-scrollbar-track {
-                                                                                        background: transparent;
-                                                                                    }
-
-                                                                                    .reaction-popover::-webkit-scrollbar-thumb {
-                                                                                        background: #ddd;
-                                                                                        border-radius: 4px;
-                                                                                    }
-
-                                                                                    /* Reaction groups styling */
-                                                                                    .reaction-group {
-                                                                                        padding: 4px 0;
-                                                                                    }
-
-                                                                                    .reaction-group-header {
-                                                                                        display: flex;
-                                                                                        align-items: center;
-                                                                                        gap: 6px;
-                                                                                        padding: 4px 8px;
-                                                                                    }
-
-                                                                                    .reaction-group-emoji {
-                                                                                        font-size: 16px;
-                                                                                    }
-
-                                                                                    .reaction-group-count {
-                                                                                        font-size: 12px;
-                                                                                        color: #888;
-                                                                                    }
-
-                                                                                    /* User list */
-                                                                                    .reaction-user {
-                                                                                        display: flex;
-                                                                                        align-items: center;
-                                                                                        padding: 6px 8px;
+                                                                                    .dropdown-item {
+                                                                                        padding: 0.5rem 1rem;
+                                                                                        font-size: 14px;
                                                                                         transition: all 0.2s;
                                                                                     }
 
-                                                                                    .reaction-user:hover {
-                                                                                        background-color: #f8f8f8;
+                                                                                    .dropdown-item:hover {
+                                                                                        background-color: #f8f9fa;
                                                                                     }
 
-                                                                                    .reaction-user img {
-                                                                                        width: 28px;
-                                                                                        height: 28px;
-                                                                                        border-radius: 50%;
-                                                                                        margin-right: 8px;
-                                                                                    }
-
-                                                                                    .reaction-user-name {
-                                                                                        font-size: 13px;
-                                                                                        color: #333;
-                                                                                    }
-
-                                                                                    /* Show states for fade effect */
-                                                                                    .reaction-popover.show {
-                                                                                        opacity: 1;
-                                                                                        visibility: visible;
-                                                                                    }
-
-                                                                                    .popover-backdrop.show {
-                                                                                        opacity: 1;
-                                                                                        visibility: visible;
+                                                                                    .dropdown-item i {
+                                                                                        font-size: 14px;
                                                                                     }
                                                                                 </style>
+                                                                            <?php endif; ?>
+                                                                        </div>
+                                                                        <div class="comment-actions d-flex gap-3 mt-1" style="font-size: 12px; opacity: 1;">
+                                                                            <div class="comment-reactions position-relative">
+                                                                                <div class="d-flex align-items-center">
+                                                                                    <button class="btn btn-sm text-muted p-0"
+                                                                                        id="comment-like-btn-<?php echo $komentar['id']; ?>"
+                                                                                        onclick="showCommentReactionBar(event, <?php echo $komentar['id']; ?>)">
+                                                                                        <?php
+                                                                                        // Get user's current reaction
+                                                                                        $user_reaction_query = "SELECT emoji FROM comment_reactions WHERE comment_id = ? AND user_id = ?";
+                                                                                        $stmt = mysqli_prepare($koneksi, $user_reaction_query);
+                                                                                        mysqli_stmt_bind_param($stmt, "is", $komentar['id'], $_SESSION['userid']);
+                                                                                        mysqli_stmt_execute($stmt);
+                                                                                        $user_reaction = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
-                                                                                <!-- script suka komentar -->
-                                                                                <script>
-                                                                                    function showCommentReactionBar(event, commentId) {
-                                                                                        event.preventDefault();
-                                                                                        event.stopPropagation(); // Prevent click from bubbling up
-                                                                                        const reactionBar = document.getElementById(`comment-reaction-bar-${commentId}`);
-
-                                                                                        // Close all other reaction bars first
-                                                                                        document.querySelectorAll('.reaction-bar-comment.show').forEach(bar => {
-                                                                                            if (bar.id !== `comment-reaction-bar-${commentId}`) {
-                                                                                                closeReactionBar(bar);
+                                                                                        if ($user_reaction) {
+                                                                                            echo "<p class='p-0 m-0' style='font-size: 12px;'>{$user_reaction['emoji']} ";
+                                                                                            switch ($user_reaction['emoji']) {
+                                                                                                case '👍':
+                                                                                                    echo "Ok";
+                                                                                                    break;
+                                                                                                case '❤️':
+                                                                                                    echo "Cinta";
+                                                                                                    break;
+                                                                                                case '😂':
+                                                                                                    echo "Wkwk";
+                                                                                                    break;
+                                                                                                case '😮':
+                                                                                                    echo "GG";
+                                                                                                    break;
+                                                                                                case '😢':
+                                                                                                    echo "Ya Allah";
+                                                                                                    break;
                                                                                             }
-                                                                                        });
-
-                                                                                        if (reactionBar.style.display === 'none') {
-                                                                                            reactionBar.style.display = 'block';
-                                                                                            requestAnimationFrame(() => {
-                                                                                                reactionBar.classList.add('show');
-                                                                                            });
-
-                                                                                            // Add click event listener to document
-                                                                                            setTimeout(() => {
-                                                                                                document.addEventListener('click', closeOnClickOutside);
-                                                                                            }, 0);
+                                                                                            echo "</p>";
                                                                                         } else {
-                                                                                            closeReactionBar(reactionBar);
+                                                                                            echo "<p class='p-0 m-0' style='font-size: 12px;'>Suka</p>";
                                                                                         }
-                                                                                    }
+                                                                                        ?>
+                                                                                    </button>
 
-                                                                                    function closeReactionBar(reactionBar) {
-                                                                                        reactionBar.classList.remove('show');
-                                                                                        setTimeout(() => {
-                                                                                            reactionBar.style.display = 'none';
-                                                                                        }, 300);
-                                                                                        document.removeEventListener('click', closeOnClickOutside);
-                                                                                    }
+                                                                                    <!-- reaction bar -->
+                                                                                    <!-- Add this right after the button -->
+                                                                                    <div id="comment-reaction-bar-<?php echo $komentar['id']; ?>"
+                                                                                        class="reaction-bar-comment"
+                                                                                        style="display: none;">
+                                                                                        <div class="d-flex justify-content-around p-2">
+                                                                                            <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '👍')" class="reaction-emoji">👍</span>
+                                                                                            <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '❤️')" class="reaction-emoji">❤️</span>
+                                                                                            <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '😂')" class="reaction-emoji">😂</span>
+                                                                                            <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '😮')" class="reaction-emoji">😮</span>
+                                                                                            <span onclick="toggleCommentReaction(<?php echo $komentar['id']; ?>, '😢')" class="reaction-emoji">😢</span>
+                                                                                        </div>
+                                                                                    </div>
 
-                                                                                    function closeOnClickOutside(event) {
-                                                                                        const openBars = document.querySelectorAll('.reaction-bar-comment.show');
-                                                                                        openBars.forEach(bar => {
-                                                                                            if (!bar.contains(event.target) &&
-                                                                                                !event.target.closest('.btn-sm')) {
-                                                                                                closeReactionBar(bar);
-                                                                                            }
-                                                                                        });
-                                                                                    }
+                                                                                    <!-- Reaction counts -->
+                                                                                    <?php
+                                                                                    $count_query = "SELECT emoji, COUNT(*) as count FROM comment_reactions WHERE comment_id = ? GROUP BY emoji";
+                                                                                    $stmt = mysqli_prepare($koneksi, $count_query);
+                                                                                    mysqli_stmt_bind_param($stmt, "i", $komentar['id']);
+                                                                                    mysqli_stmt_execute($stmt);
+                                                                                    $reactions = mysqli_stmt_get_result($stmt);
 
-                                                                                    // Prevent reaction bar clicks from closing itself
-                                                                                    document.querySelectorAll('.reaction-bar-comment').forEach(bar => {
-                                                                                        bar.addEventListener('click', (e) => e.stopPropagation());
-                                                                                    });
-
-                                                                                    function toggleCommentReaction(commentId, emoji) {
-                                                                                        fetch('toggle_comment_reaction.php', {
-                                                                                                method: 'POST',
-                                                                                                headers: {
-                                                                                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                                                                                },
-                                                                                                body: `comment_id=${commentId}&emoji=${emoji}`
-                                                                                            })
-                                                                                            .then(response => response.json())
-                                                                                            .then(data => {
-                                                                                                if (data.success) {
-                                                                                                    const button = document.getElementById(`comment-like-btn-${commentId}`);
-                                                                                                    const reactionBar = document.getElementById(`comment-reaction-bar-${commentId}`);
-
-                                                                                                    let reactionText;
-                                                                                                    switch (emoji) {
-                                                                                                        case '👍':
-                                                                                                            reactionText = 'Ok';
-                                                                                                            break;
-                                                                                                        case '❤️':
-                                                                                                            reactionText = 'Cinta';
-                                                                                                            break;
-                                                                                                        case '😂':
-                                                                                                            reactionText = 'Wkwk';
-                                                                                                            break;
-                                                                                                        case '😮':
-                                                                                                            reactionText = 'GG';
-                                                                                                            break;
-                                                                                                        case '😢':
-                                                                                                            reactionText = 'Ya Allah';
-                                                                                                            break;
-                                                                                                        default:
-                                                                                                            reactionText = 'Suka';
-                                                                                                    }
-
-                                                                                                    button.innerHTML = ` <p class="p-0 m-0" style="font-size: 12px; me-2 "> ${emoji} ${reactionText}</p>`;
-                                                                                                    closeReactionBar(reactionBar);
-
+                                                                                    if (mysqli_num_rows($reactions) > 0) {
+                                                                                    ?>
+                                                                                        <div class='ms-2 reaction-counts position-relative'>
+                                                                                            <div class='d-flex align-items-center' onclick="toggleReactionPopover(<?php echo $komentar['id']; ?>)">
+                                                                                                <?php
+                                                                                                $total = 0;
+                                                                                                $emoji_stack = [];
+                                                                                                while ($row = mysqli_fetch_assoc($reactions)) {
+                                                                                                    $total += $row['count'];
+                                                                                                    $emoji_stack[] = $row['emoji'];
                                                                                                 }
-                                                                                            });
+                                                                                                foreach (array_slice($emoji_stack, 0, 3) as $emoji) {
+                                                                                                    echo "<span class='reaction-icon'>$emoji</span>";
+                                                                                                }
+                                                                                                echo "<span class='ms-1 reaction-count'>$total</span>";
+                                                                                                ?>
+                                                                                            </div>
+
+                                                                                            <!-- Popover for reactions -->
+                                                                                            <div id="reaction-popover-<?php echo $komentar['id']; ?>" class="reaction-popover" style="z-index: 1080 !important;">
+                                                                                                <div id="reaction-content-<?php echo $komentar['id']; ?>" class="p-2">
+                                                                                                    <!-- Content will be loaded here -->
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    <?php
                                                                                     }
+                                                                                    ?>
 
-                                                                                    function toggleReactionPopover(commentId) {
-                                                                                        const popover = document.getElementById(`reaction-popover-${commentId}`);
-                                                                                        const content = document.getElementById(`reaction-content-${commentId}`);
-
-                                                                                        document.querySelectorAll('.reaction-popover.show').forEach(p => {
-                                                                                            if (p.id !== `reaction-popover-${commentId}`) {
-                                                                                                p.classList.remove('show');
-                                                                                            }
-                                                                                        });
-
-                                                                                        if (!popover.classList.contains('show')) {
-                                                                                            fetch(`get_reaction_details.php?comment_id=${commentId}`)
-                                                                                                .then(response => response.text())
-                                                                                                .then(html => {
-                                                                                                    content.innerHTML = html;
-                                                                                                    popover.classList.add('show');
-                                                                                                    setTimeout(() => {
-                                                                                                        document.addEventListener('click', closePopoverOutside);
-                                                                                                    }, 0);
-                                                                                                });
-                                                                                        } else {
-                                                                                            popover.classList.remove('show');
-                                                                                            document.removeEventListener('click', closePopoverOutside);
-                                                                                        }
-                                                                                    }
-
-                                                                                    function closePopoverOutside(event) {
-                                                                                        const popover = document.querySelector('.reaction-popover.show');
-                                                                                        if (popover && !popover.contains(event.target) &&
-                                                                                            !event.target.closest('.reaction-counts')) {
-                                                                                            popover.classList.remove('show');
-                                                                                            document.removeEventListener('click', closePopoverOutside);
-                                                                                        }
-                                                                                    }
-                                                                                </script>
-                                                                                <!-- script untuk  -->
-                                                                                <button class="btn btn-sm p-0 text-muted text-decoration-none" onclick="replyToComment(<?php echo $komentar['id']; ?>, '<?php echo $komentar['nama_user']; ?>', <?php echo $post['id']; ?>)">
-                                                                                    <p class="p-0 m-0" style="font-size: 12px;">Balas</p>
-                                                                                </button>
+                                                                                </div>
                                                                             </div>
 
-                                                                            <!-- Reply section -->
-                                                                            <div class="replies-section mt-2">
-                                                                                <?php
-                                                                                $query_replies = "SELECT r.*, COALESCE(g.namaLengkap, s.nama) as nama_user,
+
+                                                                            <!-- Style for reaction bar -->
+                                                                            <style>
+                                                                                .comment-reactions {
+                                                                                    position: relative;
+                                                                                }
+
+                                                                                .reaction-bar-comment {
+                                                                                    position: absolute;
+                                                                                    top: -40px;
+                                                                                    left: 0;
+                                                                                    background: white;
+                                                                                    border-radius: 20px;
+                                                                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                                                                    z-index: 1000;
+                                                                                    width: max-content;
+                                                                                    min-width: 200px;
+                                                                                    opacity: 0;
+                                                                                    transform: translateY(10px);
+                                                                                    transition: all 0.3s ease;
+                                                                                }
+
+                                                                                .reaction-bar-comment.show {
+                                                                                    opacity: 1;
+                                                                                    transform: translateY(0);
+                                                                                }
+
+                                                                                .reaction-emoji {
+                                                                                    cursor: pointer;
+                                                                                    padding: 5px 10px;
+                                                                                    font-size: 1.2rem;
+                                                                                    transition: all 0.2s ease;
+                                                                                    opacity: 0;
+                                                                                    transform: translateY(10px);
+                                                                                }
+
+                                                                                .reaction-bar-comment.show .reaction-emoji {
+                                                                                    opacity: 1;
+                                                                                    transform: translateY(0);
+                                                                                }
+
+                                                                                .reaction-emoji:hover {
+                                                                                    transform: scale(1.4);
+                                                                                }
+
+                                                                                .reaction-bar-comment.show .reaction-emoji:nth-child(1) {
+                                                                                    transition-delay: 0.1s;
+                                                                                }
+
+                                                                                .reaction-bar-comment.show .reaction-emoji:nth-child(2) {
+                                                                                    transition-delay: 0.15s;
+                                                                                }
+
+                                                                                .reaction-bar-comment.show .reaction-emoji:nth-child(3) {
+                                                                                    transition-delay: 0.2s;
+                                                                                }
+
+                                                                                .reaction-bar-comment.show .reaction-emoji:nth-child(4) {
+                                                                                    transition-delay: 0.25s;
+                                                                                }
+
+                                                                                .reaction-bar-comment.show .reaction-emoji:nth-child(5) {
+                                                                                    transition-delay: 0.3s;
+                                                                                }
+
+                                                                                .reaction-counts {
+                                                                                    display: flex;
+                                                                                    align-items: center;
+                                                                                    background: #f0f2f5;
+                                                                                    padding: 2px 8px;
+                                                                                    border-radius: 10px;
+                                                                                    cursor: pointer;
+                                                                                }
+
+                                                                                .reaction-icon {
+                                                                                    margin-left: -4px;
+                                                                                    font-size: 12px;
+                                                                                }
+
+                                                                                .reaction-count {
+                                                                                    font-size: 12px;
+                                                                                    color: #65676b;
+                                                                                }
+
+                                                                                .reaction-icon:first-child {
+                                                                                    margin-left: 0;
+                                                                                }
+                                                                            </style>
+
+                                                                            <!-- style untuk popup emoji -->
+                                                                            <style>
+                                                                                .reaction-popover {
+                                                                                    position: fixed;
+                                                                                    top: 50%;
+                                                                                    left: 50%;
+                                                                                    transform: translate(-50%, -50%);
+                                                                                    background: white;
+                                                                                    border-radius: 12px;
+                                                                                    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+                                                                                    width: 250px;
+                                                                                    max-height: 300px;
+                                                                                    overflow-y: auto;
+                                                                                    z-index: 1080;
+                                                                                    opacity: 0;
+                                                                                    visibility: hidden;
+                                                                                    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+                                                                                }
+
+                                                                                /* Add backdrop styling with fade */
+                                                                                .popover-backdrop {
+                                                                                    position: fixed;
+                                                                                    top: 0;
+                                                                                    left: 0;
+                                                                                    right: 0;
+                                                                                    bottom: 0;
+                                                                                    background: rgba(0, 0, 0, 0.5) !important;
+                                                                                    z-index: 1070;
+                                                                                    opacity: 0;
+                                                                                    visibility: hidden;
+                                                                                    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+                                                                                }
+
+                                                                                /* Modal backdrop darker */
+                                                                                .modal-backdrop {
+                                                                                    background-color: rgba(0, 0, 0, 0.7) !important;
+                                                                                }
+
+                                                                                .reaction-popover .p-2 {
+                                                                                    padding: 8px !important;
+                                                                                }
+
+                                                                                .reaction-popover h6 {
+                                                                                    font-size: 13px;
+                                                                                    color: #666;
+                                                                                    margin: 0;
+                                                                                }
+
+                                                                                /* Clean scrollbar */
+                                                                                .reaction-popover::-webkit-scrollbar {
+                                                                                    width: 4px;
+                                                                                }
+
+                                                                                .reaction-popover::-webkit-scrollbar-track {
+                                                                                    background: transparent;
+                                                                                }
+
+                                                                                .reaction-popover::-webkit-scrollbar-thumb {
+                                                                                    background: #ddd;
+                                                                                    border-radius: 4px;
+                                                                                }
+
+                                                                                /* Reaction groups styling */
+                                                                                .reaction-group {
+                                                                                    padding: 4px 0;
+                                                                                }
+
+                                                                                .reaction-group-header {
+                                                                                    display: flex;
+                                                                                    align-items: center;
+                                                                                    gap: 6px;
+                                                                                    padding: 4px 8px;
+                                                                                }
+
+                                                                                .reaction-group-emoji {
+                                                                                    font-size: 16px;
+                                                                                }
+
+                                                                                .reaction-group-count {
+                                                                                    font-size: 12px;
+                                                                                    color: #888;
+                                                                                }
+
+                                                                                /* User list */
+                                                                                .reaction-user {
+                                                                                    display: flex;
+                                                                                    align-items: center;
+                                                                                    padding: 6px 8px;
+                                                                                    transition: all 0.2s;
+                                                                                }
+
+                                                                                .reaction-user:hover {
+                                                                                    background-color: #f8f8f8;
+                                                                                }
+
+                                                                                .reaction-user img {
+                                                                                    width: 28px;
+                                                                                    height: 28px;
+                                                                                    border-radius: 50%;
+                                                                                    margin-right: 8px;
+                                                                                }
+
+                                                                                .reaction-user-name {
+                                                                                    font-size: 13px;
+                                                                                    color: #333;
+                                                                                }
+
+                                                                                /* Show states for fade effect */
+                                                                                .reaction-popover.show {
+                                                                                    opacity: 1;
+                                                                                    visibility: visible;
+                                                                                }
+
+                                                                                .popover-backdrop.show {
+                                                                                    opacity: 1;
+                                                                                    visibility: visible;
+                                                                                }
+                                                                            </style>
+
+                                                                            <!-- script suka komentar -->
+                                                                            <script>
+                                                                                function showCommentReactionBar(event, commentId) {
+                                                                                    event.preventDefault();
+                                                                                    event.stopPropagation(); // Prevent click from bubbling up
+                                                                                    const reactionBar = document.getElementById(`comment-reaction-bar-${commentId}`);
+
+                                                                                    // Close all other reaction bars first
+                                                                                    document.querySelectorAll('.reaction-bar-comment.show').forEach(bar => {
+                                                                                        if (bar.id !== `comment-reaction-bar-${commentId}`) {
+                                                                                            closeReactionBar(bar);
+                                                                                        }
+                                                                                    });
+
+                                                                                    if (reactionBar.style.display === 'none') {
+                                                                                        reactionBar.style.display = 'block';
+                                                                                        requestAnimationFrame(() => {
+                                                                                            reactionBar.classList.add('show');
+                                                                                        });
+
+                                                                                        // Add click event listener to document
+                                                                                        setTimeout(() => {
+                                                                                            document.addEventListener('click', closeOnClickOutside);
+                                                                                        }, 0);
+                                                                                    } else {
+                                                                                        closeReactionBar(reactionBar);
+                                                                                    }
+                                                                                }
+
+                                                                                function closeReactionBar(reactionBar) {
+                                                                                    reactionBar.classList.remove('show');
+                                                                                    setTimeout(() => {
+                                                                                        reactionBar.style.display = 'none';
+                                                                                    }, 300);
+                                                                                    document.removeEventListener('click', closeOnClickOutside);
+                                                                                }
+
+                                                                                function closeOnClickOutside(event) {
+                                                                                    const openBars = document.querySelectorAll('.reaction-bar-comment.show');
+                                                                                    openBars.forEach(bar => {
+                                                                                        if (!bar.contains(event.target) &&
+                                                                                            !event.target.closest('.btn-sm')) {
+                                                                                            closeReactionBar(bar);
+                                                                                        }
+                                                                                    });
+                                                                                }
+
+                                                                                // Prevent reaction bar clicks from closing itself
+                                                                                document.querySelectorAll('.reaction-bar-comment').forEach(bar => {
+                                                                                    bar.addEventListener('click', (e) => e.stopPropagation());
+                                                                                });
+
+                                                                                function toggleCommentReaction(commentId, emoji) {
+                                                                                    fetch('toggle_comment_reaction.php', {
+                                                                                            method: 'POST',
+                                                                                            headers: {
+                                                                                                'Content-Type': 'application/x-www-form-urlencoded',
+                                                                                            },
+                                                                                            body: `comment_id=${commentId}&emoji=${emoji}`
+                                                                                        })
+                                                                                        .then(response => response.json())
+                                                                                        .then(data => {
+                                                                                            if (data.success) {
+                                                                                                const button = document.getElementById(`comment-like-btn-${commentId}`);
+                                                                                                const reactionBar = document.getElementById(`comment-reaction-bar-${commentId}`);
+
+                                                                                                let reactionText;
+                                                                                                switch (emoji) {
+                                                                                                    case '👍':
+                                                                                                        reactionText = 'Ok';
+                                                                                                        break;
+                                                                                                    case '❤️':
+                                                                                                        reactionText = 'Cinta';
+                                                                                                        break;
+                                                                                                    case '😂':
+                                                                                                        reactionText = 'Wkwk';
+                                                                                                        break;
+                                                                                                    case '😮':
+                                                                                                        reactionText = 'GG';
+                                                                                                        break;
+                                                                                                    case '😢':
+                                                                                                        reactionText = 'Ya Allah';
+                                                                                                        break;
+                                                                                                    default:
+                                                                                                        reactionText = 'Suka';
+                                                                                                }
+
+                                                                                                button.innerHTML = ` <p class="p-0 m-0" style="font-size: 12px; me-2 "> ${emoji} ${reactionText}</p>`;
+                                                                                                closeReactionBar(reactionBar);
+
+                                                                                            }
+                                                                                        });
+                                                                                }
+
+                                                                                function toggleReactionPopover(commentId) {
+                                                                                    const popover = document.getElementById(`reaction-popover-${commentId}`);
+                                                                                    const content = document.getElementById(`reaction-content-${commentId}`);
+
+                                                                                    document.querySelectorAll('.reaction-popover.show').forEach(p => {
+                                                                                        if (p.id !== `reaction-popover-${commentId}`) {
+                                                                                            p.classList.remove('show');
+                                                                                        }
+                                                                                    });
+
+                                                                                    if (!popover.classList.contains('show')) {
+                                                                                        fetch(`get_reaction_details.php?comment_id=${commentId}`)
+                                                                                            .then(response => response.text())
+                                                                                            .then(html => {
+                                                                                                content.innerHTML = html;
+                                                                                                popover.classList.add('show');
+                                                                                                setTimeout(() => {
+                                                                                                    document.addEventListener('click', closePopoverOutside);
+                                                                                                }, 0);
+                                                                                            });
+                                                                                    } else {
+                                                                                        popover.classList.remove('show');
+                                                                                        document.removeEventListener('click', closePopoverOutside);
+                                                                                    }
+                                                                                }
+
+                                                                                function closePopoverOutside(event) {
+                                                                                    const popover = document.querySelector('.reaction-popover.show');
+                                                                                    if (popover && !popover.contains(event.target) &&
+                                                                                        !event.target.closest('.reaction-counts')) {
+                                                                                        popover.classList.remove('show');
+                                                                                        document.removeEventListener('click', closePopoverOutside);
+                                                                                    }
+                                                                                }
+                                                                            </script>
+                                                                            <!-- script untuk  -->
+                                                                            <button class="btn btn-sm p-0 text-muted text-decoration-none" onclick="replyToComment(<?php echo $komentar['id']; ?>, '<?php echo $komentar['nama_user']; ?>', <?php echo $post['id']; ?>)">
+                                                                                <p class="p-0 m-0" style="font-size: 12px;">Balas</p>
+                                                                            </button>
+                                                                        </div>
+
+                                                                        <!-- Reply section -->
+                                                                        <div class="replies-section mt-2">
+                                                                            <?php
+                                                                            $query_replies = "SELECT r.*, COALESCE(g.namaLengkap, s.nama) as nama_user,
                                                                             CASE WHEN g.username IS NOT NULL THEN g.foto_profil ELSE s.foto_profil END as foto_profil,
                                                                             CASE WHEN g.username IS NOT NULL THEN 'guru' ELSE 'siswa' END as user_type
                                                                             FROM komentar_replies r
@@ -3208,128 +3219,128 @@ if($_SESSION['level'] == 'admin') {
                                                                             LEFT JOIN siswa s ON r.user_id = s.username
                                                                             WHERE r.komentar_id = {$komentar['id']}
                                                                             ORDER BY r.created_at ASC";
-                                                                                $result_replies = mysqli_query($koneksi, $query_replies);
-                                                                                while ($reply = mysqli_fetch_assoc($result_replies)) {
-                                                                                ?>
-                                                                                    <div class="d-flex gap-2 mb-2">
-                                                                                        <div class="flex-shrink-0">
-                                                                                            <img src="<?php echo $reply['foto_profil'] ? 'uploads/profil/' . $reply['foto_profil'] : 'assets/pp.png'; ?>"
-                                                                                                alt="" width="24px" height="24px" class="rounded-circle">
+                                                                            $result_replies = mysqli_query($koneksi, $query_replies);
+                                                                            while ($reply = mysqli_fetch_assoc($result_replies)) {
+                                                                            ?>
+                                                                                <div class="d-flex gap-2 mb-2">
+                                                                                    <div class="flex-shrink-0">
+                                                                                        <img src="<?php echo $reply['foto_profil'] ? 'uploads/profil/' . $reply['foto_profil'] : 'assets/pp.png'; ?>"
+                                                                                            alt="" width="24px" height="24px" class="rounded-circle">
+                                                                                    </div>
+                                                                                    <div class="flex-grow-1">
+                                                                                        <div class="reply-bubble p-2 rounded-3" style="background-color: #f0f2f5; font-size: 12px;">
+                                                                                            <div class="fw-semibold">
+                                                                                                <?php echo htmlspecialchars($reply['nama_user']); ?>
+                                                                                            </div>
+                                                                                            <?php echo nl2br(htmlspecialchars($reply['konten'])); ?>
                                                                                         </div>
-                                                                                        <div class="flex-grow-1">
-                                                                                            <div class="reply-bubble p-2 rounded-3" style="background-color: #f0f2f5; font-size: 12px;">
-                                                                                                <div class="fw-semibold">
-                                                                                                    <?php echo htmlspecialchars($reply['nama_user']); ?>
-                                                                                                </div>
-                                                                                                <?php echo nl2br(htmlspecialchars($reply['konten'])); ?>
-                                                                                            </div>
-                                                                                            <div class="reply-actions mt-1" style="font-size: 11px;">
-                                                                                                <button class="btn btn-sm p-0 text-muted me-2">Reaksi</button>
-                                                                                                <button class="btn btn-sm p-0 text-muted">Balas</button>
-                                                                                            </div>
+                                                                                        <div class="reply-actions mt-1" style="font-size: 11px;">
+                                                                                            <button class="btn btn-sm p-0 text-muted me-2">Reaksi</button>
+                                                                                            <button class="btn btn-sm p-0 text-muted">Balas</button>
                                                                                         </div>
                                                                                     </div>
-                                                                                <?php
-                                                                                }
-                                                                                ?>
-                                                                            </div>
+                                                                                </div>
+                                                                            <?php
+                                                                            }
+                                                                            ?>
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                            </div>
 
-                                                        <?php
-                                                            }
-                                                        } else {
-                                                            echo '<div class="text-center p-5 rounded-4">
+                                                    <?php
+                                                        }
+                                                    } else {
+                                                        echo '<div class="text-center p-5 rounded-4">
                                                             <i class="bi bi-chat fs-1 text-muted mb-3"></i>
                                                             <h6 class="fw-bold mb-2">Belum Ada Komentar</h6>
                                                             <p class="text-muted mb-0" style="font-size: 0.7rem;">
                                                                 Jadilah yang pertama memberikan komentar!
                                                             </p>
                                                         </div>';
-                                                        }
-                                                        ?>
-                                                    </div>
+                                                    }
+                                                    ?>
+                                                </div>
 
-                                                    <style>
-                                                        .replies-section {
-                                                            margin-left: 32px;
-                                                        }
+                                                <style>
+                                                    .replies-section {
+                                                        margin-left: 32px;
+                                                    }
 
-                                                        .comment-bubble,
-                                                        .reply-bubble {
-                                                            display: inline-block;
-                                                            max-width: 100%;
-                                                            word-wrap: break-word;
-                                                        }
+                                                    .comment-bubble,
+                                                    .reply-bubble {
+                                                        display: inline-block;
+                                                        max-width: 100%;
+                                                        word-wrap: break-word;
+                                                    }
 
-                                                        .comment-actions,
-                                                        .reply-actions {
-                                                            opacity: 1;
-                                                        }
+                                                    .comment-actions,
+                                                    .reply-actions {
+                                                        opacity: 1;
+                                                    }
 
-                                                        .comment-actions:hover,
-                                                        .reply-actions:hover {
-                                                            opacity: 1;
-                                                        }
+                                                    .comment-actions:hover,
+                                                    .reply-actions:hover {
+                                                        opacity: 1;
+                                                    }
 
-                                                        .reply-bubble {
-                                                            background-color: #f0f2f5;
-                                                        }
-                                                    </style>
+                                                    .reply-bubble {
+                                                        background-color: #f0f2f5;
+                                                    }
+                                                </style>
 
 
-                                                    <script>
-                                                        function replyToComment(commentId, userName) {
-                                                            const textarea = document.querySelector(`#commentModal-${postId} textarea`);
-                                                            textarea.value = `@${userName} `;
-                                                            textarea.focus();
+                                                <script>
+                                                    function replyToComment(commentId, userName) {
+                                                        const textarea = document.querySelector(`#commentModal-${postId} textarea`);
+                                                        textarea.value = `@${userName} `;
+                                                        textarea.focus();
 
-                                                            // Store the comment ID for reply
-                                                            textarea.dataset.replyTo = commentId;
-                                                        }
+                                                        // Store the comment ID for reply
+                                                        textarea.dataset.replyTo = commentId;
+                                                    }
 
-                                                        function submitComment(postId) {
-                                                            const form = document.querySelector(`#commentModal-${postId} .komentar-form`);
-                                                            const textarea = form.querySelector('textarea');
-                                                            const replyTo = textarea.dataset.replyTo;
+                                                    function submitComment(postId) {
+                                                        const form = document.querySelector(`#commentModal-${postId} .komentar-form`);
+                                                        const textarea = form.querySelector('textarea');
+                                                        const replyTo = textarea.dataset.replyTo;
 
-                                                            const data = new FormData();
-                                                            data.append('postingan_id', postId);
-                                                            data.append('konten', textarea.value);
+                                                        const data = new FormData();
+                                                        data.append('postingan_id', postId);
+                                                        data.append('konten', textarea.value);
 
-                                                            const endpoint = replyTo ? 'tambah_balasan.php' : 'tambah_komentar.php';
-                                                            if (replyTo) {
-                                                                data.append('komentar_id', replyTo);
-                                                            }
-
-                                                            fetch(endpoint, {
-                                                                    method: 'POST',
-                                                                    body: data
-                                                                })
-                                                                .then(response => response.json())
-                                                                .then(data => {
-                                                                    if (data.status === 'success') {
-                                                                        location.reload();
-                                                                    }
-                                                                });
-                                                        }
-                                                    </script>
-                                                    <script>
-                                                        let currentPostId; // Store current post ID globally
-
-                                                        function replyToComment(commentId, userName, postId) {
-                                                            currentPostId = postId;
-                                                            const textarea = document.querySelector(`#commentModal-${postId} textarea`);
-                                                            textarea.value = `@${userName} `;
-                                                            textarea.focus();
-                                                            textarea.dataset.replyTo = commentId;
+                                                        const endpoint = replyTo ? 'tambah_balasan.php' : 'tambah_komentar.php';
+                                                        if (replyTo) {
+                                                            data.append('komentar_id', replyTo);
                                                         }
 
-                                                        function toggleReaction(commentId) {
-                                                            const reactionBar = document.createElement('div');
-                                                            reactionBar.className = 'reaction-bar bg-white shadow rounded p-2';
-                                                            reactionBar.innerHTML = `
+                                                        fetch(endpoint, {
+                                                                method: 'POST',
+                                                                body: data
+                                                            })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.status === 'success') {
+                                                                    location.reload();
+                                                                }
+                                                            });
+                                                    }
+                                                </script>
+                                                <script>
+                                                    let currentPostId; // Store current post ID globally
+
+                                                    function replyToComment(commentId, userName, postId) {
+                                                        currentPostId = postId;
+                                                        const textarea = document.querySelector(`#commentModal-${postId} textarea`);
+                                                        textarea.value = `@${userName} `;
+                                                        textarea.focus();
+                                                        textarea.dataset.replyTo = commentId;
+                                                    }
+
+                                                    function toggleReaction(commentId) {
+                                                        const reactionBar = document.createElement('div');
+                                                        reactionBar.className = 'reaction-bar bg-white shadow rounded p-2';
+                                                        reactionBar.innerHTML = `
         <div class="d-flex gap-2">
             <span onclick="addReaction(${commentId}, '👍')" class="reaction-emoji">👍</span>
             <span onclick="addReaction(${commentId}, '❤️')" class="reaction-emoji">❤️</span>
@@ -3338,184 +3349,184 @@ if($_SESSION['level'] == 'admin') {
         </div>
     `;
 
-                                                            const button = event.currentTarget;
-                                                            if (button.nextElementSibling?.classList.contains('reaction-bar')) {
-                                                                button.nextElementSibling.remove();
-                                                            } else {
-                                                                button.parentElement.insertBefore(reactionBar, button.nextElementSibling);
-                                                            }
-                                                        }
-
-                                                        function addReaction(commentId, emoji) {
-                                                            // Add reaction handling logic here
-                                                            console.log(`Added ${emoji} to comment ${commentId}`);
-                                                        }
-                                                    </script>
-
-
-
-                                                    <style>
-                                                        .replies-section {
-                                                            font-size: 0.9em;
-                                                        }
-
-                                                        .reply-content {
-                                                            background-color: #f8f9fa;
-                                                            border-radius: 12px;
-                                                            padding: 8px 12px;
-                                                            margin-left: 40px;
-                                                        }
-
-                                                        .comment-actions {
-                                                            opacity: 0;
-                                                            transition: opacity 0.2s;
-                                                        }
-
-                                                        .comment-content:hover .comment-actions {
-                                                            opacity: 1;
-                                                        }
-
-                                                        .reaction-emoji {
-                                                            cursor: pointer;
-                                                            padding: 4px;
-                                                            transition: transform 0.2s;
-                                                        }
-
-                                                        .reaction-emoji:hover {
-                                                            transform: scale(1.2);
-                                                        }
-
-                                                        .reaction-bar {
-                                                            position: absolute;
-                                                            margin-top: -40px;
-                                                            z-index: 1000;
-                                                        }
-                                                    </style>
-
-                                                </div>
-
-                                                <!-- Footer dengan Input Komentar -->
-
-                                                <script>
-                                                    function hapusKomentar(komentarId, postId) {
-                                                        if (confirm('Apakah Anda yakin ingin menghapus komentar ini?')) {
-                                                            fetch('hapus_komentar.php', {
-                                                                    method: 'POST',
-                                                                    headers: {
-                                                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                                                    },
-                                                                    body: `komentar_id=${komentarId}&post_id=${postId}`
-                                                                })
-                                                                .then(response => response.json())
-                                                                .then(data => {
-                                                                    if (data.success) {
-                                                                        // Refresh modal content
-                                                                        location.reload();
-                                                                    } else {
-                                                                        alert('Gagal menghapus komentar: ' + data.message);
-                                                                    }
-                                                                })
-                                                                .catch(error => {
-                                                                    console.error('Error:', error);
-                                                                    alert('Terjadi kesalahan saat menghapus komentar');
-                                                                });
+                                                        const button = event.currentTarget;
+                                                        if (button.nextElementSibling?.classList.contains('reaction-bar')) {
+                                                            button.nextElementSibling.remove();
+                                                        } else {
+                                                            button.parentElement.insertBefore(reactionBar, button.nextElementSibling);
                                                         }
                                                     }
+
+                                                    function addReaction(commentId, emoji) {
+                                                        // Add reaction handling logic here
+                                                        console.log(`Added ${emoji} to comment ${commentId}`);
+                                                    }
                                                 </script>
-                                                <div class="modal-footer p-2 border-top">
-                                                    <div class="d-flex gap-2 align-items-end w-100">
-                                                        <div class="flex-shrink-0">
-                                                            <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/' . $guru['foto_profil'] : 'assets/pp.png'; ?>"
-                                                                alt="Profile Image"
-                                                                class="profile-img rounded-4 border-0 bg-white"
-                                                                style="width: 35px;;">
-                                                        </div>
-                                                        <div class="flex-grow-1">
-                                                            <form class="komentar-form" data-postid="<?php echo $post['id']; ?>">
-                                                                <div class="form-group">
-                                                                    <textarea class="form-control bg-light border-0"
-                                                                        rows="1"
-                                                                        placeholder="Tulis pendapat Anda..."
-                                                                        style="resize: none; font-size: 14px;"
-                                                                        oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
-                                                                        required></textarea>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                        <div class="flex-shrink-0">
-                                                            <button class="btn color-web text-white rounded-circle d-flex align-items-center justify-content-center"
-                                                                style="width: 35px; height: 35px;"
-                                                                onclick="submitKomentar(<?php echo $post['id']; ?>)">
-                                                                <i class="bi bi-send-fill"></i>
-                                                            </button>
-                                                        </div>
+
+
+
+                                                <style>
+                                                    .replies-section {
+                                                        font-size: 0.9em;
+                                                    }
+
+                                                    .reply-content {
+                                                        background-color: #f8f9fa;
+                                                        border-radius: 12px;
+                                                        padding: 8px 12px;
+                                                        margin-left: 40px;
+                                                    }
+
+                                                    .comment-actions {
+                                                        opacity: 0;
+                                                        transition: opacity 0.2s;
+                                                    }
+
+                                                    .comment-content:hover .comment-actions {
+                                                        opacity: 1;
+                                                    }
+
+                                                    .reaction-emoji {
+                                                        cursor: pointer;
+                                                        padding: 4px;
+                                                        transition: transform 0.2s;
+                                                    }
+
+                                                    .reaction-emoji:hover {
+                                                        transform: scale(1.2);
+                                                    }
+
+                                                    .reaction-bar {
+                                                        position: absolute;
+                                                        margin-top: -40px;
+                                                        z-index: 1000;
+                                                    }
+                                                </style>
+
+                                            </div>
+
+                                            <!-- Footer dengan Input Komentar -->
+
+                                            <script>
+                                                function hapusKomentar(komentarId, postId) {
+                                                    if (confirm('Apakah Anda yakin ingin menghapus komentar ini?')) {
+                                                        fetch('hapus_komentar.php', {
+                                                                method: 'POST',
+                                                                headers: {
+                                                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                                                },
+                                                                body: `komentar_id=${komentarId}&post_id=${postId}`
+                                                            })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    // Refresh modal content
+                                                                    location.reload();
+                                                                } else {
+                                                                    alert('Gagal menghapus komentar: ' + data.message);
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Error:', error);
+                                                                alert('Terjadi kesalahan saat menghapus komentar');
+                                                            });
+                                                    }
+                                                }
+                                            </script>
+                                            <div class="modal-footer p-2 border-top">
+                                                <div class="d-flex gap-2 align-items-end w-100">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/' . $guru['foto_profil'] : 'assets/pp.png'; ?>"
+                                                            alt="Profile Image"
+                                                            class="profile-img rounded-4 border-0 bg-white"
+                                                            style="width: 35px;;">
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <form class="komentar-form" data-postid="<?php echo $post['id']; ?>">
+                                                            <div class="form-group">
+                                                                <textarea class="form-control bg-light border-0"
+                                                                    rows="1"
+                                                                    placeholder="Tulis pendapat Anda..."
+                                                                    style="resize: none; font-size: 14px;"
+                                                                    oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                                                                    required></textarea>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <button class="btn color-web text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                            style="width: 35px; height: 35px;"
+                                                            onclick="submitKomentar(<?php echo $post['id']; ?>)">
+                                                            <i class="bi bi-send-fill"></i>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <style>
-                                        /* Style untuk modal komentar */
+                                </div>
+                                <style>
+                                    /* Style untuk modal komentar */
+                                    .modal-fullscreen-sm-down {
+                                        padding: 0;
+                                    }
+
+                                    @media (max-width: 576px) {
                                         .modal-fullscreen-sm-down {
-                                            padding: 0;
+                                            margin: 0;
                                         }
 
-                                        @media (max-width: 576px) {
-                                            .modal-fullscreen-sm-down {
-                                                margin: 0;
-                                            }
-
-                                            .modal-fullscreen-sm-down .modal-content {
-                                                border-radius: 0;
-                                                min-height: 100vh;
-                                                display: flex;
-                                                flex-direction: column;
-                                            }
-
-                                            .modal-fullscreen-sm-down .modal-body {
-                                                flex: 1;
-                                            }
+                                        .modal-fullscreen-sm-down .modal-content {
+                                            border-radius: 0;
+                                            min-height: 100vh;
+                                            display: flex;
+                                            flex-direction: column;
                                         }
 
-                                        /* Style untuk textarea yang auto-expand */
-                                        .form-control {
-                                            min-height: 40px;
-                                            padding: 8px 12px;
+                                        .modal-fullscreen-sm-down .modal-body {
+                                            flex: 1;
                                         }
+                                    }
 
-                                        .form-control:focus {
-                                            box-shadow: none;
-                                            border-color: #ced4da;
-                                        }
+                                    /* Style untuk textarea yang auto-expand */
+                                    .form-control {
+                                        min-height: 40px;
+                                        padding: 8px 12px;
+                                    }
 
-                                        /* Style untuk bubble chat */
-                                        .bubble-chat {
-                                            max-width: 85%;
-                                        }
+                                    .form-control:focus {
+                                        box-shadow: none;
+                                        border-color: #ced4da;
+                                    }
 
-                                        /* Custom scrollbar */
-                                        .komentar-container::-webkit-scrollbar {
-                                            width: 6px;
-                                        }
+                                    /* Style untuk bubble chat */
+                                    .bubble-chat {
+                                        max-width: 85%;
+                                    }
 
-                                        .komentar-container::-webkit-scrollbar-track {
-                                            background: #f1f1f1;
-                                        }
+                                    /* Custom scrollbar */
+                                    .komentar-container::-webkit-scrollbar {
+                                        width: 6px;
+                                    }
 
-                                        .komentar-container::-webkit-scrollbar-thumb {
-                                            background: #ddd;
-                                            border-radius: 3px;
-                                        }
+                                    .komentar-container::-webkit-scrollbar-track {
+                                        background: #f1f1f1;
+                                    }
 
-                                        .komentar-container::-webkit-scrollbar-thumb:hover {
-                                            background: #ccc;
-                                        }
-                                    </style>
-                                    <!-- logika komentar -->
-                                    <script>
-                                        // Tambahkan style untuk animasi
-                                        const styleSheet = document.createElement("style");
-                                        styleSheet.textContent = `
+                                    .komentar-container::-webkit-scrollbar-thumb {
+                                        background: #ddd;
+                                        border-radius: 3px;
+                                    }
+
+                                    .komentar-container::-webkit-scrollbar-thumb:hover {
+                                        background: #ccc;
+                                    }
+                                </style>
+                                <!-- logika komentar -->
+                                <script>
+                                    // Tambahkan style untuk animasi
+                                    const styleSheet = document.createElement("style");
+                                    styleSheet.textContent = `
 @keyframes highlightComment {
     0% {
         background-color: rgba(218, 119, 86, 0.2);
@@ -3538,37 +3549,37 @@ if($_SESSION['level'] == 'admin') {
     animation: highlightComment 2s ease-out forwards;
 }
 `;
-                                        document.head.appendChild(styleSheet);
+                                    document.head.appendChild(styleSheet);
 
-                                        function submitKomentar(postId) {
-                                            const form = document.querySelector(`.komentar-form[data-postid="${postId}"]`);
-                                            const textarea = form.querySelector('textarea');
-                                            const konten = textarea.value.trim();
+                                    function submitKomentar(postId) {
+                                        const form = document.querySelector(`.komentar-form[data-postid="${postId}"]`);
+                                        const textarea = form.querySelector('textarea');
+                                        const konten = textarea.value.trim();
 
-                                            if (!konten) return;
+                                        if (!konten) return;
 
-                                            fetch('tambah_komentar.php', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                                    },
-                                                    body: `postingan_id=${postId}&konten=${encodeURIComponent(konten)}`
-                                                })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    if (data.status === 'success') {
-                                                        const container = document.querySelector(`#commentModal-${postId} .komentar-container`);
+                                        fetch('tambah_komentar.php', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                                },
+                                                body: `postingan_id=${postId}&konten=${encodeURIComponent(konten)}`
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.status === 'success') {
+                                                    const container = document.querySelector(`#commentModal-${postId} .komentar-container`);
 
-                                                        // Remove "No Comments" message if it exists
-                                                        const noCommentsMessage = container.querySelector('.text-center.p-5');
-                                                        if (noCommentsMessage) {
-                                                            noCommentsMessage.remove();
-                                                        }
+                                                    // Remove "No Comments" message if it exists
+                                                    const noCommentsMessage = container.querySelector('.text-center.p-5');
+                                                    if (noCommentsMessage) {
+                                                        noCommentsMessage.remove();
+                                                    }
 
-                                                        // Get the correct profile photo URL  
-                                                        let photoUrl = data.komentar.foto_profil || 'assets/pp.png';
+                                                    // Get the correct profile photo URL  
+                                                    let photoUrl = data.komentar.foto_profil || 'assets/pp.png';
 
-                                                        const komentarHTML = `
+                                                    const komentarHTML = `
                 <div class="d-flex gap-3 mb-3 new-comment">
                     <div class="flex-shrink-0">
                         <img src="${photoUrl}" 
@@ -3594,34 +3605,34 @@ if($_SESSION['level'] == 'admin') {
                 </div>
             `;
 
-                                                        // Tambahkan komentar baru di bagian bawah
-                                                        container.insertAdjacentHTML('beforeend', komentarHTML);
+                                                    // Tambahkan komentar baru di bagian bawah
+                                                    container.insertAdjacentHTML('beforeend', komentarHTML);
 
-                                                        // Ambil elemen komentar yang baru ditambahkan
-                                                        const newComment = container.lastElementChild;
+                                                    // Ambil elemen komentar yang baru ditambahkan
+                                                    const newComment = container.lastElementChild;
 
-                                                        // Scroll ke komentar baru dengan animasi smooth
-                                                        setTimeout(() => {
-                                                            newComment.scrollIntoView({
-                                                                behavior: 'smooth',
-                                                                block: 'center'
-                                                            });
-                                                        }, 100);
+                                                    // Scroll ke komentar baru dengan animasi smooth
+                                                    setTimeout(() => {
+                                                        newComment.scrollIntoView({
+                                                            behavior: 'smooth',
+                                                            block: 'center'
+                                                        });
+                                                    }, 100);
 
-                                                        // Reset textarea
-                                                        textarea.value = '';
-                                                        textarea.style.height = 'auto';
+                                                    // Reset textarea
+                                                    textarea.value = '';
+                                                    textarea.style.height = 'auto';
 
-                                                        // Update jumlah komentar di modal
-                                                        const countElement = document.querySelector(`#commentModal-${postId} .modal-title .text-muted`);
-                                                        if (countElement) {
-                                                            const currentCount = parseInt(countElement.textContent.match(/\d+/)[0]) + 1;
-                                                            countElement.textContent = `Total ${currentCount} Komentar`;
-                                                        }
+                                                    // Update jumlah komentar di modal
+                                                    const countElement = document.querySelector(`#commentModal-${postId} .modal-title .text-muted`);
+                                                    if (countElement) {
+                                                        const currentCount = parseInt(countElement.textContent.match(/\d+/)[0]) + 1;
+                                                        countElement.textContent = `Total ${currentCount} Komentar`;
                                                     }
-                                                });
-                                        }
-                                    </script>
+                                                }
+                                            });
+                                    }
+                                </script>
                             </div>
                         </div>
                 <?php
@@ -5217,7 +5228,7 @@ if($_SESSION['level'] == 'admin') {
                                     <input type="hidden" name="kelas_id" value="<?php echo $kelas_id; ?>">
                                 </div>
                                 <div class="modal-footer btn-group">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                                     <button type="submit" class="btn btnPrimary text-white">Simpan Catatan</button>
                                 </div>
                             </form>

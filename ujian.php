@@ -116,37 +116,7 @@ $siswa = mysqli_fetch_assoc($result_siswa);
     }
 </style>
 
-<body>
-
-    <?php include 'includes/styles.php'; ?>
-
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar for desktop -->
-            <?php include 'includes/sidebar_siswa.php'; ?>
-
-            <!-- Mobile navigation -->
-            <?php include 'includes/mobile_nav siswa.php'; ?>
-
-            <!-- Settings Modal -->
-            <?php include 'includes/settings_modal.php'; ?>
-
-
-        </div>
-    </div>
-
-
-    <!-- ini isi kontennya -->
-    <!-- Isi konten -->
-    <div class="col col-utama mt-1 mt-md-0">
-        <div class="p-md-3 pb-md-0 d-md-flex salam">
-            <div mt-2>
-                <h3 class="fw-bold mb-0">Ujian</h3>
-            </div>
-        </div>
-
-
-        <style>
+<style>
             .col-utama {
                 padding-top: 0.7rem;
                 padding-left: 14rem !important;
@@ -182,6 +152,38 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                 }
             }
         </style>
+
+
+<body>
+
+    <?php include 'includes/styles.php'; ?>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar for desktop -->
+            <?php include 'includes/sidebar_siswa.php'; ?>
+
+            <!-- Mobile navigation -->
+            <?php include 'includes/mobile_nav siswa.php'; ?>
+
+            <!-- Settings Modal -->
+            <?php include 'includes/settings_modal.php'; ?>
+
+
+        </div>
+    </div>
+
+
+    <!-- ini isi kontennya -->
+    <!-- Isi konten -->
+    <div class="col col-utama mt-1 p-md-0 mt-md-0">
+        <div class="p-md-3 pb-md-2 d-flex ms-3 mt-md-0 ms-md-0 p-3 mb-1 salam justify-content-between align-items-center">
+            <div class="mt-1">
+                <h3 class="fw-bold mb-0">Ujian</h3>
+            </div>
+        </div>
+
+
         <style>
             .class-card {
                 border-radius: 12px;
@@ -316,7 +318,7 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                         }
                     }
             ?>
-                    <div class="col-12 col-md-6 p-3 mt-1 p-md-3 col-lg-4">
+                    <div class="col-12 col-md-6 pt-0 mt-1 p-md-3 col-lg-4" style="padding: 2rem;">
                         <div class="class-card border" style="transition: all 0.3s ease;">
                             <div class="class-banner" style="background-image: url('<?php echo $bg_image; ?>')">
                                 <style>

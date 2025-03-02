@@ -422,11 +422,22 @@ $guru = mysqli_fetch_assoc($result);
                                     class="profile-circle">
                             </div>
                             <div class="class-content">
-                                <h4 class="class-title"><?php echo htmlspecialchars($kelas['mata_pelajaran']); ?></h4>
+                            <h4 class="class-title">
+    <?php 
+    if ($kelas['is_public']) {
+        echo htmlspecialchars($kelas['nama_kelas']); 
+    } else {
+        echo htmlspecialchars($kelas['mata_pelajaran']); 
+    }
+    ?>
+</h4>
                                 <div class="class-meta mb-2">
                                     <div class="d-flex align-items-center text-muted small">
                                         <i class="bi bi-people me-2"></i>
                                         <?php echo $kelas['jumlah_siswa']; ?> Siswa
+                                        <?php if ($kelas['is_public']): ?>
+                                            <span class="badge bg-success ms-2">Publik</span>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="d-flex align-items-center text-muted small mt-1">
                                         <i class="bi bi-book me-2"></i>
@@ -641,12 +652,41 @@ $guru = mysqli_fetch_assoc($result);
     <div class="modal fade" id="modal_tambah_kelas" tabindex="-1" aria-labelledby="label_tambah_kelas" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
+            <form action="tambah_kelas.php" method="POST">
                 <div class="modal-header border-0 pb-0">
-                    <h1 class="modal-title fs-5 fw-bold" id="label_tambah_kelas">Buat Kelas</h1>
+                    <div>
+                        <h1 class="modal-title fs-5 fw-bold" id="label_tambah_kelas">Buat Kelas Baru</h1>
+                        <p class="text-muted small mb-0">Buat kelas untuk mulai berbagi materi pembelajaran</p>
+                    </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+                </div>                
                 <div class="modal-body px-4">
-                    <form action="tambah_kelas.php" method="POST">
+                    <div class="form-group mb-4">
+                        <label class="form-label small mb-2">Jenis Kelas</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="jenis_kelas" id="kelas_privat" value="0" checked>
+                            <label class="btn btn-outline-secondary" for="kelas_privat">
+                                <i class="bi bi-lock me-1"></i>Privat
+                            </label>
+
+                            <input type="radio" class="btn-check" name="jenis_kelas" id="kelas_publik" value="1">
+                            <label class="btn btn-outline-secondary" for="kelas_publik">
+                                <i class="bi bi-globe me-1"></i>Publik
+                            </label>
+                        </div>
+                        <div class="form-text small">
+                            <div class="alert alert-light border p-3 mt-2 d-flex align-items-start" style="border-radius: 15px; font-size: 13px;">
+                                <i class="bi bi-lock me-2 mt-1" id="jenis_kelas_icon" style="font-size: 16px;"></i>
+                                <div>
+                                    <strong id="jenis_kelas_title">Akses kelas terbatas</strong><br>
+                                    <span id="jenis_kelas_info">Pilih siswa secara manual untuk bergabung dengan kelas ini. Cocok untuk mata pelajaran dengan kelas khusus.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form fields for private class -->
+                    <div id="private_class_form">
                         <div class="row g-4">
                             <!-- Form Kelas -->
                             <div class="col-12 col-md-6">
@@ -688,7 +728,6 @@ $guru = mysqli_fetch_assoc($result);
                                         <option value="Sejarah">Sejarah</option>
                                         <option value="Seni">Seni</option>
                                         <option value="Akutansi">Akutansi</option>
-
                                     </select>
                                 </div>
 
@@ -755,12 +794,102 @@ $guru = mysqli_fetch_assoc($result);
                             <button type="button" class="btn border px-4" data-bs-dismiss="modal">Batal</button>
                             <button type="submit" name="submit" class="btn color-web text-white px-4">Buat Kelas</button>
                         </div>
-                    </form>
+                    </div>
+
+                    <!-- Form fields for public class -->
+                    <div id="public_class_form" style="display: none;">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-4">
+                                    <label class="form-label small mb-2">Judul Kelas</label>
+                                    <input type="text" class="form-control form-control-lg shadow-sm" 
+                                           name="judul_kelas" 
+                                           placeholder="Masukkan judul kelas umum"
+                                           required>
+                                </div>
+                    
+                                <div class="form-group mb-4">
+                                    <label class="form-label small mb-2">Deskripsi Kelas</label>
+                                    <textarea class="form-control shadow-sm" 
+                                              name="deskripsi" 
+                                              rows="3" 
+                                              placeholder="Jelaskan tentang kelas ini"
+                                              required></textarea>
+                                </div>
+                    
+                                <div class="form-group mb-4">
+                                    <label class="form-label small mb-2">Maksimal Siswa</label>
+                                    <input type="number" 
+                                           class="form-control form-control-lg shadow-sm" 
+                                           name="max_siswa" 
+                                           placeholder="Jumlah maksimal siswa yang dapat bergabung" 
+                                           min="1" 
+                                           value="30"
+                                           required>
+                                    <small class="form-text text-muted">Biarkan kosong jika tidak ada batasan</small>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="modal-footer btn-group border-0 px-0 pt-4">
+                            <button type="button" class="btn border px-4" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" name="submit" class="btn color-web text-white px-4">Buat Kelas</button>
+                        </div>
+                    </div>
+                </form>
                 </div>
             </div>
         </div>
     </div>
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('input[name="jenis_kelas"]');
+            const infoIcon = document.getElementById('jenis_kelas_icon');
+            const infoTitle = document.getElementById('jenis_kelas_title');
+            const infoText = document.getElementById('jenis_kelas_info');
+            const privateForm = document.getElementById('private_class_form');
+            const publicForm = document.getElementById('public_class_form');
+            
+            // Add event listeners for radio buttons
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === "1") {
+                        // Public class
+                        infoIcon.className = "bi bi-globe me-2 mt-1";
+                        infoTitle.textContent = "Siapapun dapat bergabung";
+                        infoText.textContent = "Seluruh siswa dapat bergabung dengan kelas ini tanpa persetujuan. Cocok untuk kursus, ruang diskusi, dan lainnya.";
+                        privateForm.style.display = 'none';
+                        publicForm.style.display = 'block';
+
+                         // Remove required from private form fields
+            document.getElementById('mata_pelajaran').removeAttribute('required');
+            document.getElementById('tingkat').removeAttribute('required');
+            
+            // Add required to public form fields
+            document.querySelector('input[name="judul_kelas"]').setAttribute('required', '');
+            document.querySelector('textarea[name="deskripsi"]').setAttribute('required', '');
+                    } else {
+                        // Private class
+                        infoIcon.className = "bi bi-lock me-2 mt-1";
+                        infoTitle.textContent = "Akses kelas terbatas";
+                        infoText.textContent = "Pilih siswa secara manual untuk bergabung dengan kelas ini. Cocok untuk pembelajaran formal.";
+                        privateForm.style.display = 'block';
+                        publicForm.style.display = 'none';
+
+                         // Add required to private form fields
+            document.getElementById('mata_pelajaran').setAttribute('required', '');
+            document.getElementById('tingkat').setAttribute('required', '');
+            
+            // Remove required from public form fields
+            document.querySelector('input[name="judul_kelas"]').removeAttribute('required');
+            document.querySelector('textarea[name="deskripsi"]').removeAttribute('required');
+                    }
+                });
+            });
+        });
+    </script>
     <style>
         /* Modal styling */
         .modal-content {
@@ -811,7 +940,37 @@ $guru = mysqli_fetch_assoc($result);
         }
     </style>
 
-    <script>
+    <!-- <script>
+        // Script untuk mengubah teks info dan form yang ditampilkan sesuai jenis kelas
+        document.querySelectorAll('input[name="jenis_kelas"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const infoText = document.getElementById('jenis_kelas_info');
+                const infoIcon = document.getElementById('jenis_kelas_icon');
+                const infoTitle = document.getElementById('jenis_kelas_title');
+                const privateForm = document.getElementById('private_class_form');
+                const publicForm = document.getElementById('public_class_form');
+
+                if (this.value === "1") {
+                    // Public class
+                    infoIcon.className = "bi bi-globe me-2 mt-1";
+                    infoTitle.textContent = "Siapapun dapat bergabung";
+                    infoText.textContent = "Seluruh siswa dapat bergabung dengan kelas ini tanpa persetujuan. Cocok untuk kursus, ruang diskusi, dan lainnya.";
+
+                    privateForm.style.display = 'none';
+                    publicForm.style.display = 'block';
+                } else {
+                    // Private class
+                    infoIcon.className = "bi bi-lock me-2 mt-1";
+                    infoTitle.textContent = "Akses kelas terbatas";
+                    infoText.textContent = "Pilih siswa secara manual untuk bergabung dengan kelas ini. Cocok untuk pembelajaran formal.";
+
+                    privateForm.style.display = 'block';
+                    publicForm.style.display = 'none';
+                }
+            });
+        });
+
+
         document.addEventListener('DOMContentLoaded', function() {
             const materiContainer = document.getElementById('materi-container');
             const addMateriBtn = document.getElementById('add-materi');
@@ -855,7 +1014,7 @@ $guru = mysqli_fetch_assoc($result);
                 }
             });
         });
-    </script>
+    </script> -->
 
     <!-- Modal Arsip Kelas -->
     <div class="modal fade" id="modal_arsip_kelas" tabindex="-1" aria-labelledby="label_arsip_kelas" aria-hidden="true">
