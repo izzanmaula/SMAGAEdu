@@ -178,7 +178,7 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
 
         <div class="container-fluid">
             <div class="row">
-                <!-- Sidebar for desktop -->
+                <!-- sidebar buat view dekstopp -->
                 <?php include 'includes/sidebar_siswa.php'; ?>
 
                 <!-- Mobile navigation -->

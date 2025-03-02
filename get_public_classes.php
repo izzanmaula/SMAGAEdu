@@ -18,6 +18,7 @@ mysqli_stmt_execute($stmt_siswa);
 $result_siswa = mysqli_stmt_get_result($stmt_siswa);
 $siswa = mysqli_fetch_assoc($result_siswa);
 
+
 // Query untuk kelas publik
 $query = "SELECT k.*, g.namaLengkap as nama_guru, g.foto_profil,
           (SELECT COUNT(*) FROM kelas_siswa ks 
