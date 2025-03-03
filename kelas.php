@@ -37,17 +37,20 @@ $result_guru = mysqli_query($koneksi, $query_guru);
 $guru = mysqli_fetch_assoc($result_guru);
 
 // Ambil postingan di kelas ini
+// Modify the query_postingan part in kelas.php to include student posts
 $query_postingan = "SELECT 
     p.*,
-    g.namaLengkap as nama_guru,
-    g.foto_profil as foto_guru,
+    COALESCE(g.namaLengkap, s.nama) as nama_poster,
+    COALESCE(g.foto_profil, s.foto_profil) as foto_poster,
     g.jabatan as jabatan_guru,
     t.id as tugas_id,
     t.judul as judul_tugas,
     t.batas_waktu,
-    t.status as tugas_status
+    t.status as tugas_status,
+    p.user_type
 FROM postingan_kelas p
-JOIN guru g ON p.user_id = g.username
+LEFT JOIN guru g ON p.user_id = g.username AND p.user_type = 'guru'
+LEFT JOIN siswa s ON p.user_id = s.username AND p.user_type = 'siswa'
 LEFT JOIN tugas t ON p.id = t.postingan_id
 WHERE p.kelas_id = '$kelas_id'
 ORDER BY p.created_at DESC";
@@ -245,7 +248,13 @@ function formatFileSize($bytes)
                         <div>
                             <h5 class="display-5 p-0 m-0 text-white"
                                 style="font-weight: bold; font-size: 28px; font-size: clamp(24px, 5vw, 35px);">
-                                <?php echo htmlspecialchars($kelas['mata_pelajaran']); ?>
+                                <?php
+                                if (isset($kelas['is_public']) && $kelas['is_public']) {
+                                    echo htmlspecialchars($kelas['nama_kelas']);
+                                } else {
+                                    echo htmlspecialchars($kelas['mata_pelajaran']);
+                                }
+                                ?>
                             </h5>
                             <h4 class="p-0 m-0 pb-3 text-white" style="font-size: clamp(16px, 4vw, 24px);">
                                 Kelas <?php echo htmlspecialchars($kelas['tingkat']); ?>
@@ -306,6 +315,282 @@ function formatFileSize($bytes)
                 <div class="row mt-4 p-0 m-0 p-2">
                     <div class="col-12 col-lg-8 p-0">
 
+                        <!-- postingan, hanya untuk kelas publik -->
+                        <!-- Student Posting Form (ONLY for public classes) -->
+                        <!-- Student Post Creator Card (ONLY for public classes) -->
+                        <?php if (isset($kelas['is_public']) && $kelas['is_public']): ?>
+                            <div class="create-post-card bg-white rounded-3 p-3 mb-4 border">
+                                <!-- Desktop View -->
+                                <div class="d-none d-md-flex align-items-center gap-3">
+                                    <img src="<?php
+                                                if (!empty($siswa['photo_url'])) {
+                                                    // If using avatar from DiceBear
+                                                    if ($siswa['photo_type'] === 'avatar') {
+                                                        echo $siswa['photo_url'];
+                                                    }
+                                                    // If using uploaded photo
+                                                    else if ($siswa['photo_type'] === 'upload') {
+                                                        echo $siswa['photo_url'];
+                                                    }
+                                                } else {
+                                                    // Default image
+                                                    echo 'assets/pp.png';
+                                                }
+                                                ?>" alt="Profile" class="rounded-circle" width="45" height="45" style="object-fit: cover;">
+                                    <div class="flex-grow-1">
+                                        <button class="btn w-100 text-start px-4 rounded-pill border bg-light hover-bg"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modalTambahPostinganSiswa">
+                                            <span class="text-muted">Apa yang ingin kamu bagikan dengan kelas?</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Mobile View -->
+                                <div class="d-flex d-md-none gap-2">
+                                    <img src="<?php
+                                                if (!empty($siswa['photo_url'])) {
+                                                    if ($siswa['photo_type'] === 'avatar') {
+                                                        echo $siswa['photo_url'];
+                                                    } else if ($siswa['photo_type'] === 'upload') {
+                                                        echo $siswa['photo_url'];
+                                                    }
+                                                } else {
+                                                    echo 'assets/pp.png';
+                                                }
+                                                ?>" alt="Profile" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                                    <button class="flex-grow-1 btn text-start rounded-pill border bg-light"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalTambahPostinganSiswa">
+                                        <span class="text-muted" style="font-size: 0.9rem;">Mulai diskusi...</span>
+                                    </button>
+                                </div>
+
+                                <!-- Quick Actions -->
+                                <div class="d-flex justify-content-around mt-3 pt-2 border-top">
+                                    <button class="btn btn-light flex-grow-1 me-2 d-flex align-items-center justify-content-center gap-2"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalTambahPostinganSiswa">
+                                        <i class="bi bi-image text-success"></i>
+                                        <span class="d-none d-md-inline">Foto/Video</span>
+                                    </button>
+                                    <button class="btn btn-light flex-grow-1 me-2 d-flex align-items-center justify-content-center gap-2"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalTambahPostinganSiswa">
+                                        <i class="bi bi-file-earmark-text text-primary"></i>
+                                        <span class="d-none d-md-inline">Dokumen</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Modal Tambah Postingan Siswa -->
+                            <div class="modal fade" id="modalTambahPostinganSiswa" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 shadow">
+                                        <div class="modal-header border-0">
+                                            <h5 class="modal-title fw-semibold">Buat Postingan</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <div class="modal-body p-4">
+                                            <form action="proses_postingan_siswa.php" method="POST" enctype="multipart/form-data">
+                                                <input type="hidden" name="kelas_id" value="<?php echo $kelas_id; ?>">
+
+                                                <!-- Author Info -->
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <img src="<?php
+                                                                if (!empty($siswa['photo_url'])) {
+                                                                    if ($siswa['photo_type'] === 'avatar') {
+                                                                        echo $siswa['photo_url'];
+                                                                    } else if ($siswa['photo_type'] === 'upload') {
+                                                                        echo $siswa['photo_url'];
+                                                                    }
+                                                                } else {
+                                                                    echo 'assets/pp.png';
+                                                                }
+                                                                ?>" alt="Profile" class="rounded-circle me-2" width="40" height="40">
+                                                    <div>
+                                                        <div class="fw-medium"><?php echo htmlspecialchars($siswa['nama']); ?></div>
+                                                        <small class="text-muted">Siswa</small>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Content -->
+                                                <div class="form-group mb-3">
+                                                    <textarea class="form-control border-0 bg-light"
+                                                        name="konten" rows="5"
+                                                        placeholder="Apa yang ingin kamu bagikan?"
+                                                        style="border-radius: 12px; resize: none;"
+                                                        required></textarea>
+                                                </div>
+
+                                                <!-- File Preview -->
+                                                <div id="previewContainer" class="mb-3 d-none">
+                                                    <div id="imagePreview" class="d-flex flex-wrap gap-2"></div>
+                                                </div>
+
+                                                <!-- File Upload -->
+                                                <div class="attachment-box bg-light rounded-3 p-3 mb-3"
+                                                    onclick="document.getElementById('file_upload_siswa').click()">
+                                                    <input type="file" id="file_upload_siswa" name="lampiran[]"
+                                                        class="d-none" multiple
+                                                        accept="image/*,.pdf,.doc,.docx"
+                                                        onchange="showSelectedFilesSiswa(this)">
+                                                    <div class="text-center">
+                                                        <i class="bi bi-cloud-upload fs-3 mb-2" style="color: rgb(218, 119, 86);"></i>
+                                                        <p class="mb-0 text-muted">Klik untuk menambah lampiran</p>
+                                                        <small class="text-muted">atau drag & drop file di sini</small>
+                                                    </div>
+                                                    <div id="selectedFilesSiswa" class="selected-files mt-2"></div>
+                                                </div>
+
+                                                <!-- Submit Button -->
+                                                <div class="d-grid">
+                                                    <button type="submit" class="btn py-2 rounded-4"
+                                                        style="background-color: rgb(218, 119, 86); color: white;">
+                                                        Kirim Postingan
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                function showSelectedFilesSiswa(input) {
+                                    const previewContainer = document.getElementById('previewContainer');
+                                    const imagePreview = document.getElementById('imagePreview');
+                                    const selectedFiles = document.getElementById('selectedFilesSiswa');
+
+                                    if (input.files.length > 0) {
+                                        previewContainer.classList.remove('d-none');
+                                        imagePreview.innerHTML = ''; // Clear previous previews
+                                        selectedFiles.innerHTML = ''; // Clear filename list
+
+                                        for (let i = 0; i < input.files.length; i++) {
+                                            const file = input.files[i];
+
+                                            // Create file item display
+                                            const fileItem = document.createElement('div');
+                                            fileItem.classList.add('file-item', 'd-flex', 'align-items-center', 'bg-white', 'p-2', 'rounded', 'mb-2');
+
+                                            // Icon based on file type
+                                            let iconClass = 'bi-file-earmark';
+                                            if (file.type.includes('image')) {
+                                                iconClass = 'bi-file-image text-success';
+                                            } else if (file.name.endsWith('.pdf')) {
+                                                iconClass = 'bi-file-pdf text-danger';
+                                            } else if (file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                                                iconClass = 'bi-file-word text-primary';
+                                            }
+
+                                            // File size formatting
+                                            const fileSize = file.size < 1024 * 1024 ?
+                                                Math.round(file.size / 1024) + ' KB' :
+                                                Math.round(file.size / (1024 * 1024) * 10) / 10 + ' MB';
+
+                                            fileItem.innerHTML = `
+                <div class="file-icon me-2">
+                    <i class="bi ${iconClass} fs-4"></i>
+                </div>
+                <div class="file-info flex-grow-1">
+                    <div class="file-name text-truncate">${file.name}</div>
+                    <small class="text-muted">${fileSize}</small>
+                </div>
+                <button type="button" class="btn-close btn-sm" 
+                    onclick="removeFile(this, ${i})"></button>
+            `;
+
+                                            selectedFiles.appendChild(fileItem);
+
+                                            // Create preview for images
+                                            if (file.type.match('image.*')) {
+                                                const reader = new FileReader();
+                                                reader.onload = function(e) {
+                                                    const imgContainer = document.createElement('div');
+                                                    imgContainer.classList.add('position-relative', 'img-preview');
+
+                                                    const img = document.createElement('img');
+                                                    img.src = e.target.result;
+                                                    img.style.height = '100px';
+                                                    img.style.width = '100px';
+                                                    img.style.objectFit = 'cover';
+                                                    img.classList.add('rounded');
+
+                                                    imgContainer.appendChild(img);
+                                                    imagePreview.appendChild(imgContainer);
+                                                };
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }
+                                    } else {
+                                        previewContainer.classList.add('d-none');
+                                        selectedFiles.innerHTML = '';
+                                    }
+                                }
+
+                                function removeFile(button, index) {
+                                    const input = document.getElementById('file_upload_siswa');
+                                    const dt = new DataTransfer();
+
+                                    for (let i = 0; i < input.files.length; i++) {
+                                        if (i !== index) {
+                                            dt.items.add(input.files[i]);
+                                        }
+                                    }
+
+                                    input.files = dt.files;
+                                    button.closest('.file-item').remove();
+
+                                    // Re-render the file preview
+                                    showSelectedFilesSiswa(input);
+                                }
+                            </script>
+
+                            <style>
+                                .attachment-box {
+                                    border: 2px dashed #ddd;
+                                    border-radius: 12px;
+                                    cursor: pointer;
+                                    transition: all 0.2s ease;
+                                }
+
+                                .attachment-box:hover {
+                                    background-color: #f8f9fa;
+                                    border-color: rgb(218, 119, 86);
+                                }
+
+                                .file-item {
+                                    border: 1px solid #eee;
+                                    transition: all 0.2s ease;
+                                }
+
+                                .file-item:hover {
+                                    background-color: #f8f9fa !important;
+                                }
+
+                                .file-name {
+                                    max-width: 200px;
+                                    font-size: 14px;
+                                }
+
+                                .img-preview {
+                                    display: inline-block;
+                                    margin-right: 8px;
+                                    margin-bottom: 8px;
+                                }
+
+                                @media (max-width: 768px) {
+                                    .file-name {
+                                        max-width: 150px;
+                                    }
+                                }
+                            </style>
+                        <?php endif; ?>
+
+
+
 
                         <!-- Konten Utama -->
                         <!-- postingan guru -->
@@ -330,14 +615,38 @@ function formatFileSize($bytes)
                                     style="border: 1px solid rgb(226, 226, 226);">
                                     <div class="d-flex gap-3">
                                         <div>
+                                            <img src="<?php
+                                                        if ($post['user_type'] == 'guru') {
+                                                            // For teachers (guru), use foto_poster from uploads/profil directory
+                                                            echo !empty($post['foto_poster']) ? 'uploads/profil/' . $post['foto_poster'] : 'assets/pp.png';
+                                                        } else {
+                                                            // For students (siswa), we need to query for the student's photo info
+                                                            $student_username = $post['user_id'];
+                                                            $query_student = "SELECT photo_url, photo_type FROM siswa WHERE username = '$student_username'";
+                                                            $result_student = mysqli_query($koneksi, $query_student);
+                                                            $student_data = mysqli_fetch_assoc($result_student);
 
-                                            <img src="<?php echo !empty($guru['foto_profil']) ? 'uploads/profil/' . $guru['foto_profil'] : 'assets/pp.png'; ?>"
-                                                alt="Profile Image"
-                                                class="profile-img rounded-circle border-0 bg-white" style="width: 40px;">
+                                                            if (!empty($student_data) && !empty($student_data['photo_url'])) {
+                                                                // Use photo_url directly since it already contains the full path
+                                                                echo $student_data['photo_url'];
+                                                            } else {
+                                                                // Default image
+                                                                echo 'assets/pp.png';
+                                                            }
+                                                        }
+                                                        ?>" alt="Profile Image"
+                                                class="profile-img rounded-circle border-0 bg-white"
+                                                style="width: 40px; height: 40px; object-fit: cover;">
 
                                         </div>
+
                                         <div class="">
-                                            <h6 class="p-0 m-0 fw-bold"><?php echo $guru['namaLengkap']; ?></h6>
+                                            <h6 class="p-0 m-0 fw-bold">
+                                                <?php echo $post['nama_poster']; ?>
+                                                <?php if ($post['user_type'] == 'guru'): ?>
+                                                    <span class="badge ms-1" style="font-size: 10px; background-color:rgb(218, 119, 86); color:white;">Guru</span>
+                                                <?php endif; ?>
+                                            </h6>
                                             <p class="p-0 m-0 text-muted" style="font-size: 12px;"><?php echo $tanggal; ?></p>
                                         </div>
                                     </div>

@@ -42,14 +42,18 @@ $guru_pengampu = mysqli_fetch_assoc($result_guru_pengampu);
 // Query untuk mengambil postingan dari kelas ini
 $query_postingan = "SELECT 
     p.*,
-    g.namaLengkap as nama_pembuat,
+    COALESCE(g.namaLengkap, s.nama) as nama_pembuat,
     g.jabatan,
     t.id as tugas_id,
     t.judul as judul_tugas,
-    t.batas_waktu
+    t.batas_waktu,
+    CASE WHEN g.username IS NOT NULL THEN 'guru' ELSE 'siswa' END as user_type,
+    CASE WHEN g.username IS NOT NULL THEN g.foto_profil ELSE s.foto_profil END as foto_profil,
+    s.photo_url, s.photo_type
 FROM postingan_kelas p
-JOIN guru g ON p.user_id = g.username
-LEFT JOIN tugas t ON p.id = t.postingan_id  /* Tambahkan join ke tabel tugas */
+LEFT JOIN guru g ON p.user_id = g.username AND p.user_type = 'guru'
+LEFT JOIN siswa s ON p.user_id = s.username AND p.user_type = 'siswa'
+LEFT JOIN tugas t ON p.id = t.postingan_id
 WHERE p.kelas_id = '$kelas_id'
 ORDER BY p.created_at DESC";
 
@@ -329,7 +333,7 @@ function getProfilePhoto($user_type, $data)
 
             <!-- Overlay dengan tombol (akan muncul saat hover) -->
             <div class="background-overlay rounded d-flex align-items-center justify-content-center">
-                <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#modalEditBackground">
+                <button class="btn btn-light" style="z-index: 9999;" data-bs-toggle="modal" data-bs-target="#modalEditBackground">
                     <i class="fas fa-camera me-2"></i>Ganti Background
                 </button>
             </div>
@@ -339,13 +343,13 @@ function getProfilePhoto($user_type, $data)
                 <div>
                     <h5 class="display-5 p-0 m-0 text-white"
                         style="font-weight: bold; font-size: 28px; font-size: clamp(24px, 5vw, 35px);">
-                        <?php 
-    if ($data_kelas['is_public']) {
-        echo htmlspecialchars($data_kelas['nama_kelas']); 
-    } else {
-        echo htmlspecialchars($data_kelas['mata_pelajaran']); 
-    }
-    ?>
+                        <?php
+                        if ($data_kelas['is_public']) {
+                            echo htmlspecialchars($data_kelas['nama_kelas']);
+                        } else {
+                            echo htmlspecialchars($data_kelas['mata_pelajaran']);
+                        }
+                        ?>
 
                     </h5>
                     <h4 class="p-0 m-0 pb-3 text-white" style="font-size: clamp(16px, 4vw, 24px);">
@@ -1813,14 +1817,30 @@ function getProfilePhoto($user_type, $data)
                             style="border: 1px solid rgb(226, 226, 226);">
                             <div class="d-flex gap-3">
                                 <div>
-                                    <a href="profil_guru.php">
-                                        <img src="<?php echo !empty($guru_pengampu['foto_profil']) ? 'uploads/profil/' . $guru_pengampu['foto_profil'] : 'assets/pp.png'; ?>"
-                                            alt="Profile Image"
-                                            class="profile-img rounded-4 border-0 bg-white" style="width: 40px;">
+                                    <a href="<?php echo $post['user_type'] == 'guru' ? 'profil_guru.php' : '#'; ?>">
+                                        <img src="<?php
+                                                    if ($post['user_type'] == 'guru') {
+                                                        echo !empty($post['foto_profil']) ? 'uploads/profil/' . $post['foto_profil'] : 'assets/pp.png';
+                                                    } else {
+                                                        // For student posts
+                                                        if (!empty($post['photo_url']) && $post['photo_type'] === 'avatar') {
+                                                            echo $post['photo_url'];
+                                                        } elseif (!empty($post['foto_profil']) && $post['photo_type'] === 'upload') {
+                                                            echo 'uploads/profil/' . $post['foto_profil'];
+                                                        } else {
+                                                            echo 'assets/pp.png';
+                                                        }
+                                                    }
+                                                    ?>" alt="Profile Image" class="profile-img rounded-4 border-0 bg-white" style="width: 40px;">
                                     </a>
                                 </div>
                                 <div class="">
-                                    <h6 class="p-0 m-0"><?php echo htmlspecialchars($post['nama_pembuat']); ?></h6>
+                                    <h6 class="p-0 m-0">
+                                        <?php echo htmlspecialchars($post['nama_pembuat']); ?>
+                                        <?php if ($post['user_type'] == 'siswa'): ?>
+                                            <span class="badge bg-secondary" style="font-size: 10px;">Siswa</span>
+                                        <?php endif; ?>
+                                    </h6>
                                     <p class="p-0 m-0 text-muted" style="font-size: 12px;">Diposting pada <?php echo $tanggal; ?></p>
                                 </div>
                                 <div class="flex-fill text-end dropdown">
@@ -1829,10 +1849,12 @@ function getProfilePhoto($user_type, $data)
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end animate slideIn">
                                         <li>
-                                            <a class="dropdown-item d-flex align-items-center gap-2" href="#" onclick="hapusPostingan(<?php echo $post['id']; ?>)">
-                                                <i class="fas fa-trash-alt text-danger"></i>
-                                                Hapus Postingan
-                                            </a>
+                                            <?php if ($post['user_type'] == 'guru' || ($_SESSION['level'] == 'admin')): ?>
+                                                <a class="dropdown-item d-flex align-items-center gap-2" href="#" onclick="hapusPostingan(<?php echo $post['id']; ?>)">
+                                                    <i class="fas fa-trash-alt text-danger"></i>
+                                                    Hapus Postingan
+                                                </a>
+                                            <?php endif; ?>
                                         </li>
                                     </ul>
                                 </div>
