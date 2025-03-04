@@ -956,7 +956,7 @@ function formatFileSize($bytes)
                                                                     <i class="bi bi-check-circle-fill" style="color: #34c759;"></i>
                                                                 </div>
                                                                 <div>
-                                                                    <h6 class="mb-0 fw-semibold">Tugasmu Sudah Kami Kirim</h6>
+                                                                    <h6 class="mb-0 fw-semibold">Tugasmu Terkirim</h6>
                                                                     <small class="text-muted">
                                                                         <?php echo date('d M Y, H:i', strtotime($data_pengumpulan['waktu_pengumpulan'])); ?>
                                                                     </small>

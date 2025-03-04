@@ -331,14 +331,16 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                     <ul class="nav nav-pills border bg-light rounded-pill p-1" id="kelasTab" role="tablist">
                         <li class="nav-item">
                             <button class="nav-link active rounded-pill" id="khusus-tab" data-bs-toggle="tab" data-bs-target="#khusus" type="button" role="tab">
-                                <i class="bi bi-bookmark me-1"></i>
-                                Kelas yang diikuti
+                                <i class="bi bi-bookmark d-none d-md-inline me-1"></i>
+                                <span class="d-none d-md-inline">Kelas yang diikuti</span>
+                                <span class="d-inline d-md-none">Diikuti</span>
                             </button>
                         </li>
                         <li class="nav-item">
                             <button class="nav-link rounded-pill" id="umum-tab" data-bs-toggle="tab" data-bs-target="#umum" type="button" role="tab">
-                                <i class="bi bi-globe me-1"></i>
-                                Jelajahi Kelas
+                                <i class="bi bi-globe d-none d-md-inline me-1"></i>
+                                <span class="d-none d-md-inline">Jelajahi Kelas</span>
+                                <span class="d-inline d-md-none">Jelajahi</span>
                             </button>
                         </li>
                     </ul>
@@ -630,7 +632,6 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                             document.getElementById('jumbotron-image').style.maxHeight = '20rem';
                         });
                     });
-
                 </script>
 
                 <style>
@@ -661,7 +662,7 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                                 while ($kelas = mysqli_fetch_assoc($result_kelas)):
                                     $bg_image = !empty($kelas['background_image']) ? $kelas['background_image'] : 'assets/bg.jpg';
                             ?>
-                                    <div class="col-12 col-md-6 col-lg-4 mb-4">
+                                    <div class="col-12 col-md-6 col-lg-4 mb-1">
                                         <div class="class-card border">
                                             <div class="class-banner" style="background-image: url('<?php echo $bg_image; ?>')">
                                                 <div class="profile-circle-wrapper">
@@ -760,7 +761,24 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
 
                     <!-- Tab Kelas Umum -->
                     <div class="tab-pane fade" id="umum" role="tabpanel" aria-labelledby="umum-tab">
+
+                        <!-- kontainer muncul di mobile -->
+                        <div class="card shadow-none mx-2 rounded-3 border mb-2 position-relative mobile-alert-card d-md-none">
+                            <button type="button" class="btn-close position-absolute close-mobile-alert" style="top: 8px; right: 8px; font-size: 0.7rem;" aria-label="Close"></button>
+                            <div class="card-body d-flex align-items-center py-2 px-3">
+                                <div>
+                                    <h6 class="card-title fw-semibold mb-1" style="font-size:14px;">Jelajahi Ilmu Tanpa Batas!</h6>
+                                    <p class="card-text text-muted mb-0" style="font-size:12px;">Temukan kelas umum dan diskusi menarik.</p>
+                                </div>
+                                <img src="assets/umum.png" width="70" class="ms-2" alt="Jelajahi Ilmu">
+                            </div>
+                        </div>
+
                         <div class="row g-4 mx-0" id="kelas-umum-container">
+
+
+
+
                             <!-- Kelas umum akan dimuat dengan AJAX -->
                             <div class="col-12 text-center py-5">
                                 <div class="spinner-border" style="color: #da7756;" role="status">
@@ -779,6 +797,11 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                         document.getElementById('umum-tab').addEventListener('click', function() {
                             loadPublicClasses();
                         });
+
+                        // Load public classes on initial load if the "Umum" tab is active
+                        if (document.getElementById('umum-tab').classList.contains('active')) {
+                            loadPublicClasses();
+                        }
 
                         function loadPublicClasses() {
                             const container = document.getElementById('kelas-umum-container');
@@ -814,6 +837,8 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                                         const bgImage = kelas.background_image ? kelas.background_image : 'assets/bg.jpg';
                                         const guruFoto = kelas.foto_profil ? `uploads/profil/${kelas.foto_profil}` : 'assets/pp.png';
                                         htmlContent += `
+
+
 <div class="col-12 col-md-6 col-lg-4">
     <div class="class-card border h-100">
         <div class="class-banner" style="background-image: url('${bgImage}');">
@@ -873,6 +898,16 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
 
 
                                     container.innerHTML = htmlContent;
+
+                                    // Add event listeners to close buttons after content is loaded
+                                    document.querySelectorAll('.close-mobile-alert').forEach(button => {
+                                        button.addEventListener('click', function() {
+                                            const card = this.closest('.mobile-alert-card');
+                                            if (card) {
+                                                card.style.display = 'none';
+                                            }
+                                        });
+                                    });
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
