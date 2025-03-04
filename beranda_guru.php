@@ -277,6 +277,42 @@ $guru = mysqli_fetch_assoc($result);
             </div>
         </div>
 
+                        <!-- Jumbotron yang akan berubah berdasarkan tab yang aktif -->
+                        <div class="jumbotron jumbotron-fluid mb-md-2 d-none d-md-block">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <!-- Konten untuk tab Diikuti (khusus) -->
+                                <div id="jumbotron-khusus" class="jumbotron-content active">
+                                    <h2 class="display-5">
+                                        <?php
+
+                                        date_default_timezone_set('Asia/Jakarta');
+                                        $hour = date('H');
+                                        if ($hour >= 5 && $hour < 12) {
+                                            echo "Selamat Pagi";
+                                        } else if ($hour >= 12 && $hour < 15) {
+                                            echo "Selamat Siang";
+                                        } else if ($hour >= 15 && $hour < 19) {
+                                            echo "Selamat Sore";
+                                        } else {
+                                            echo "Selamat Malam";
+                                        }
+                                        ?>,
+                                        <span style="color: rgb(218, 119, 86);"><?php echo ucwords($guru['namaLengkap']); ?></span>
+                                    </h2>
+                                    <p class="lead">Mari bersama menciptakan pembelajaran inporatif dan bermakna!</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 text-center d-none d-md-block">
+                                <!-- Gambar untuk tab Diikuti (khusus) -->
+                                <img src="assets/guru.png" class="img-fluid jumbotron-image" id="jumbotron-image" alt="Ilustrasi kelas" style="max-height: 20rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
         <style>
             .btn {
                 border-radius: 15px;
@@ -616,7 +652,7 @@ $guru = mysqli_fetch_assoc($result);
                 endwhile;
             else:
                 ?>
-                <div class="position-absolute top-50 start-50 translate-middle text-center">
+                <div class="text-center">
                     <i class="bi bi-journal-x" style="font-size: 2rem; color: #6c757d;"></i>
                     <p class="mt-3 mb-0">Belum ada kelas</p>
                     <small class="text-muted">Klik tombol "Buat Kelas" untuk membuat kelas baru</small>

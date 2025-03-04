@@ -84,15 +84,15 @@ require "koneksi.php";
                 <div class="card shadow-sm" style="border-radius: 20px; background: rgba(255, 255, 255, 0.95);">
                     <div class="row g-0">
                         <div class="col-md-6">
-                            <div class="card-body p-4">
+                            <div class="card-body ps-md-5 p-4">
                                 <!-- Logo -->
-                                <div class="text-center mb-4">
-                                    <img src="assets/smagaedu.png" alt="SMAGA Edu Logo" class="bg-white rounded-circle logo me-2">
-                                    <img src="assets/logo.png" alt="Logo" class="bg-white rounded-circle logo">
+                                <div class="mb-4">
+                                    <img src="assets/smagaedu.png" alt="SMAGA Edu Logo" class="bg-white border rounded-circle logo me-2">
+                                    <img src="assets/logo.png" alt="Logo" class="bg-white border rounded-circle logo">
                                 </div>
 
                                 <!-- Header -->
-                                <div class="text-center mb-4">
+                                <div class="mb-4">
                                     <p class="mb-1">Halo, Selamat Datang</p>
                                     <h5 class="fw-bold">Portal SMAGAEdu LMS</h5>
                                 </div>
@@ -103,16 +103,16 @@ require "koneksi.php";
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content" style="border-radius: 15px;">
                                                 <div class="modal-body text-center p-4">
-                                                    <div class="mb-3">
-                                                        <i class="bi bi-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+                                                    <div class="">
+                                                        <img src="assets/password-salah.png" alt="" width="300rem">
                                                     </div>
-                                                    <h5 class="mb-3">Gagal Masuk</h5>
-                                                    <p class="mb-4">
+                                                    <h5 class="mb-2 fw-bold">ID atau Password Salah</h5>
+                                                    <p class="">
                                                         <?php
                                                         if ($_GET['pesan'] == "password_salah") {
                                                             echo "Password yang Anda masukkan salah!";
                                                         } else if ($_GET['pesan'] == "user_tidak_ditemukan") {
-                                                            echo "Kami tidak menemukan akunmu, silahkan coba lagi atau hubungi Tim IT.";
+                                                            echo "Sepertinya ID atau Password yang Anda masukkan salah, silahkan cek kembali atau hubungi Tim IT SMAGA";
                                                         }
                                                         ?>
                                                     </p>
@@ -146,9 +146,7 @@ require "koneksi.php";
 
                                 <!-- Lupa Sandi Link -->
                                 <div class="text-center mt-3">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#lupaPasswordModal" class="text-decoration-none" style="color: #666;">
-                                        <small>Butuh Bantuan?</small>
-                                    </a>
+                                    <small style="font-size: 10px;" class="text-muted">Dikelola dan Dikembangkan oleh Tim IT SMAGA - 2025</small>
                                 </div>
                             </div>
                         </div>
@@ -220,14 +218,14 @@ require "koneksi.php";
                         </div>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var myCarousel = new bootstrap.Carousel(document.getElementById('loginCarousel'), {
-        interval: 3000,
-        ride: 'carousel'
-    });
-});
-</script>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var myCarousel = new bootstrap.Carousel(document.getElementById('loginCarousel'), {
+                                    interval: 3000,
+                                    ride: 'carousel'
+                                });
+                            });
+                        </script>
                     </div>
                 </div>
             </div>
@@ -237,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     <style>
         body {
-            background:rgb(244, 232, 220);
+            background: rgb(244, 232, 220);
         }
 
         .form-control {
@@ -254,10 +252,12 @@ document.addEventListener('DOMContentLoaded', function() {
             body {
                 background: white;
             }
+
             .card {
                 border: none;
                 box-shadow: none !important;
             }
+
             .container {
                 padding: 0;
             }
