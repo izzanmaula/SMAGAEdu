@@ -266,7 +266,7 @@ $guru = mysqli_fetch_assoc($result);
 
         <!-- Header Section -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold m-0">Kelas Saya</h3>
+            <h3 class="fw-bold m-0">Beranda</h3>
             <div class="d-none d-md-flex gap-2">
                 <button class="btn button-beranda btn-light border px-3 py-2" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas">
                     <i class="bi bi-plus-lg me-2"></i>Buat Kelas
@@ -277,41 +277,41 @@ $guru = mysqli_fetch_assoc($result);
             </div>
         </div>
 
-                        <!-- Jumbotron yang akan berubah berdasarkan tab yang aktif -->
-                        <div class="jumbotron jumbotron-fluid mb-md-2 d-none d-md-block">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-md-6 mb-3 mb-md-0">
-                                <!-- Konten untuk tab Diikuti (khusus) -->
-                                <div id="jumbotron-khusus" class="jumbotron-content active">
-                                    <h2 class="display-5">
-                                        <?php
+        <!-- Jumbotron yang akan berubah berdasarkan tab yang aktif -->
+        <div class="jumbotron jumbotron-fluid mb-md-2 d-none d-md-block">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <!-- Konten untuk tab Diikuti (khusus) -->
+                        <div id="jumbotron-khusus" class="jumbotron-content active">
+                            <h2 class="display-5">
+                                <?php
 
-                                        date_default_timezone_set('Asia/Jakarta');
-                                        $hour = date('H');
-                                        if ($hour >= 5 && $hour < 12) {
-                                            echo "Selamat Pagi";
-                                        } else if ($hour >= 12 && $hour < 15) {
-                                            echo "Selamat Siang";
-                                        } else if ($hour >= 15 && $hour < 19) {
-                                            echo "Selamat Sore";
-                                        } else {
-                                            echo "Selamat Malam";
-                                        }
-                                        ?>,
-                                        <span style="color: rgb(218, 119, 86);"><?php echo ucwords($guru['namaLengkap']); ?></span>
-                                    </h2>
-                                    <p class="lead">Mari bersama menciptakan pembelajaran inporatif dan bermakna!</p>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 text-center d-none d-md-block">
-                                <!-- Gambar untuk tab Diikuti (khusus) -->
-                                <img src="assets/guru.png" class="img-fluid jumbotron-image" id="jumbotron-image" alt="Ilustrasi kelas" style="max-height: 20rem;">
-                            </div>
+                                date_default_timezone_set('Asia/Jakarta');
+                                $hour = date('H');
+                                if ($hour >= 5 && $hour < 12) {
+                                    echo "Selamat Pagi";
+                                } else if ($hour >= 12 && $hour < 15) {
+                                    echo "Selamat Siang";
+                                } else if ($hour >= 15 && $hour < 19) {
+                                    echo "Selamat Sore";
+                                } else {
+                                    echo "Selamat Malam";
+                                }
+                                ?>,
+                                <span style="color: rgb(218, 119, 86);"><?php echo ucwords($guru['namaLengkap']); ?></span>
+                            </h2>
+                            <p class="lead">Mari bersama menciptakan pembelajaran inporatif dan bermakna!</p>
                         </div>
                     </div>
+
+                    <div class="col-md-6 text-center d-none d-md-block">
+                        <!-- Gambar untuk tab Diikuti (khusus) -->
+                        <img src="assets/guru.png" class="img-fluid jumbotron-image" id="jumbotron-image" alt="Ilustrasi kelas" style="max-height: 20rem;">
+                    </div>
                 </div>
+            </div>
+        </div>
 
         <style>
             .btn {
@@ -653,7 +653,7 @@ $guru = mysqli_fetch_assoc($result);
             else:
                 ?>
                 <div class="text-center">
-                    <i class="bi bi-journal-x" style="font-size: 2rem; color: #6c757d;"></i>
+                    <i class="bi bi-journal-x" style="font-size: 2rem; color: #6c757d"></i>
                     <p class="mt-3 mb-0">Belum ada kelas</p>
                     <small class="text-muted">Klik tombol "Buat Kelas" untuk membuat kelas baru</small>
                 </div>
@@ -705,12 +705,12 @@ $guru = mysqli_fetch_assoc($result);
                             <label class="form-label small mb-2">Jenis Kelas</label>
                             <div class="btn-group w-100" role="group">
                                 <input type="radio" class="btn-check" name="jenis_kelas" id="kelas_privat" value="0" checked>
-                                <label class="btn btn-outline-secondary" for="kelas_privat">
+                                <label class="btn btn-outline-secondary kelas-btn" for="kelas_privat">
                                     <i class="bi bi-lock me-1"></i>Privat
                                 </label>
 
                                 <input type="radio" class="btn-check" name="jenis_kelas" id="kelas_publik" value="1">
-                                <label class="btn btn-outline-secondary" for="kelas_publik">
+                                <label class="btn btn-outline-secondary kelas-btn" for="kelas_publik">
                                     <i class="bi bi-globe me-1"></i>Publik
                                 </label>
                             </div>
@@ -719,7 +719,7 @@ $guru = mysqli_fetch_assoc($result);
                                     <i class="bi bi-lock me-2 mt-1" id="jenis_kelas_icon" style="font-size: 16px;"></i>
                                     <div>
                                         <strong id="jenis_kelas_title">Akses kelas terbatas</strong><br>
-                                        <span id="jenis_kelas_info">Pilih siswa secara manual untuk bergabung dengan kelas ini. Cocok untuk mata pelajaran dengan kelas khusus.</span>
+                                        <span id="jenis_kelas_info">Pilih siswa secara manual untuk bergabung dengan kelas ini. Hak akses kelas sepenuhnya diberikan kepada Anda. Cocok untuk pembelajaran formal.</span>
                                     </div>
                                 </div>
                             </div>
@@ -783,31 +783,6 @@ $guru = mysqli_fetch_assoc($result);
                                             <option value="12">SMA Kelas 12</option>
                                         </select>
                                     </div>
-
-                                    <div class="form-group mb-4">
-                                        <label class="form-label small p-0 m-0">Materi Pembelajaran</label>
-                                        <p class="text-muted p-0 m-0  mb-2" style="font-size: 12px;">- Optional</p>
-                                        <div id="materi-container">
-                                            <div class="input-group mb-2">
-                                                <input type="text"
-                                                    class="form-control"
-                                                    name="materi[]"
-                                                    placeholder="Masukkan judul materi">
-                                                <button type="button"
-                                                    class="btn btn-outline-light remove-materi text-muted border"
-                                                    style="display:none;">
-                                                    <i class="bi bi-x"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <button type="button"
-                                            class="btn w-100 text-muted border-dotted d-flex align-items-center justify-content-center py-2"
-                                            id="add-materi"
-                                            style="border: 2px dashed #dee2e6; background: transparent;">
-                                            <i class="bi bi-plus-circle me-2"></i>
-                                            Tambah materi
-                                        </button>
-                                    </div>
                                 </div>
 
                                 <!-- Daftar Siswa -->
@@ -842,7 +817,7 @@ $guru = mysqli_fetch_assoc($result);
                                 <div class="col-12">
                                     <div class="form-group mb-4">
                                         <label class="form-label small mb-2">Judul Kelas</label>
-                                        <input type="text" class="form-control form-control-lg shadow-sm"
+                                        <input type="text" class="form-control shadow-sm"
                                             name="judul_kelas"
                                             placeholder="Masukkan judul kelas umum"
                                             required>
@@ -860,13 +835,12 @@ $guru = mysqli_fetch_assoc($result);
                                     <div class="form-group mb-4">
                                         <label class="form-label small mb-2">Maksimal Siswa</label>
                                         <input type="number"
-                                            class="form-control form-control-lg shadow-sm"
+                                            class="form-control shadow-sm"
                                             name="max_siswa"
                                             placeholder="Jumlah maksimal siswa yang dapat bergabung"
                                             min="1"
                                             value="30"
                                             required>
-                                        <small class="form-text text-muted">Biarkan kosong jika tidak ada batasan</small>
                                     </div>
                                 </div>
                             </div>
@@ -891,15 +865,26 @@ $guru = mysqli_fetch_assoc($result);
             const infoText = document.getElementById('jenis_kelas_info');
             const privateForm = document.getElementById('private_class_form');
             const publicForm = document.getElementById('public_class_form');
-
+            
+            // Set initial active state for the privat button
+            document.querySelector('label[for="kelas_privat"]').classList.add('active-tab');
+            
             // Add event listeners for radio buttons
             radioButtons.forEach(radio => {
                 radio.addEventListener('change', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.kelas-btn').forEach(btn => {
+                        btn.classList.remove('active-tab');
+                    });
+                    
+                    // Add active class to selected button
+                    document.querySelector(`label[for="${this.id}"]`).classList.add('active-tab');
+                    
                     if (this.value === "1") {
                         // Public class
                         infoIcon.className = "bi bi-globe me-2 mt-1";
                         infoTitle.textContent = "Siapapun dapat bergabung";
-                        infoText.textContent = "Seluruh siswa dapat bergabung dengan kelas ini tanpa persetujuan. Cocok untuk kursus, ruang diskusi, dan lainnya.";
+                        infoText.textContent = "Seluruh siswa dapat bergabung dengan kelas ini tanpa persetujuan. Siswa mempunyai hak akses untuk membagikan postingan dalam grup. Cocok untuk kursus, ruang diskusi santai, dan lainya.";
                         privateForm.style.display = 'none';
                         publicForm.style.display = 'block';
 
@@ -914,7 +899,7 @@ $guru = mysqli_fetch_assoc($result);
                         // Private class
                         infoIcon.className = "bi bi-lock me-2 mt-1";
                         infoTitle.textContent = "Akses kelas terbatas";
-                        infoText.textContent = "Pilih siswa secara manual untuk bergabung dengan kelas ini. Cocok untuk pembelajaran formal.";
+                        infoText.textContent = "Pilih siswa secara manual untuk bergabung dengan kelas ini. Hak akses kelas sepenuhnya diberikan kepada Anda. Cocok untuk pembelajaran formal.";
                         privateForm.style.display = 'block';
                         publicForm.style.display = 'none';
 
@@ -952,6 +937,30 @@ $guru = mysqli_fetch_assoc($result);
         .form-check-input:checked {
             background-color: #da7756;
             border-color: #da7756;
+        }
+        
+        /* Tab button styling */
+        .btn-outline-secondary {
+            color: #6c757d;
+            border-color: #dee2e6;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+            color: rgb(218, 119, 86);
+        }
+        
+        .active-tab {
+            background-color: rgb(218, 119, 86) !important;
+            color: white !important;
+            border-color: rgb(218, 119, 86) !important;
+        }
+        
+        .btn-check:checked + .btn-outline-secondary {
+            background-color: rgb(218, 119, 86);
+            color: white;
+            border-color: rgb(218, 119, 86);
         }
 
         /* Custom scrollbar */

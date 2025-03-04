@@ -328,7 +328,7 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
 
                 <!-- Minimalist Tab Navigation -->
                 <div class="nav-container d-inline-flex">
-                    <ul class="nav nav-pills border bg-light rounded-pill p-1" id="kelasTab" role="tablist">
+                    <ul class="nav nav-pills border bg-light  p-1" id="kelasTab" style="border-radius: 15px;" role="tablist">
                         <li class="nav-item">
                             <button class="nav-link active rounded-pill" id="khusus-tab" data-bs-toggle="tab" data-bs-target="#khusus" type="button" role="tab">
                                 <i class="bi bi-bookmark d-none d-md-inline me-1"></i>
@@ -363,13 +363,13 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                     }
                 </style>
 
-                <div class="d-flex gap-2 d-none d-md-block">
+                <div class="d-flex d-none d-md-block">
                     <button type="button"
                         data-bs-toggle="modal"
                         data-bs-target="#modal_arsip_kelas"
-                        class="btn btn-light border d-flex align-items-center gap-2 px-3">
+                        class="btn btn-light border d-flex align-items-center gap-2 px-3" style="border-radius: 15px;">
                         <i class="bi bi-archive"></i>
-                        <span class="d-none d-md-inline">Arsip Kelas</span>
+                        <span class="d-none d-md-inline" style="font-size: 12px;">Arsip Kelas</span>
                     </button>
                 </div>
 
@@ -1094,7 +1094,6 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content" style="border-radius: 16px;">
                             <div class="modal-body text-center p-4">
-                                <i class="bi bi-archive" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
                                 <h5 class="mt-3 fw-bold">Arsipkan Kelas</h5>
                                 <p class="mb-4">Apakah kamu yakin ingin mengarsipkan kelas <strong id="kelasToArchive"></strong>?</p>
                                 <div class="d-flex gap-2 btn-group">
@@ -1166,9 +1165,9 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
 
 
                 <!-- Modal Arsip Kelas -->
-                <div class="modal fade" id="modal_arsip_kelas" tabindex="-1" aria-labelledby="label_arsip_kelas" aria-hidden="true">
+                <div class="modal fade " id="modal_arsip_kelas" tabindex="-1" aria-labelledby="label_arsip_kelas" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                        <div class="modal-content">
+                        <div class="modal-content bg-white">
                             <!-- Header -->
                             <div class="modal-header border-0 pb-0">
                                 <div>
@@ -1251,7 +1250,7 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                                     </div>
                                 <?php } else { ?>
                                     <div class="text-center py-5">
-                                        <i class="bi bi-archive text-muted" style="font-size: 48px;"></i>
+                                        <img src="assets/arsip.png" alt="" width="200rem" class="opacity-50">
                                         <p class="text-muted mb-0">Belum ada kelas yang diarsipkan</p>
                                     </div>
                                 <?php } ?>

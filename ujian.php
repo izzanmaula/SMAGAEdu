@@ -117,41 +117,42 @@ $siswa = mysqli_fetch_assoc($result_siswa);
 </style>
 
 <style>
-            .col-utama {
-                padding-top: 0.7rem;
-                padding-left: 14rem !important;
-                animation: fadeInUp 0.5s;
-                opacity: 1;
+    .col-utama {
+        padding-top: 0.7rem;
+        padding-left: 14rem !important;
+        animation: fadeInUp 0.5s;
+        opacity: 1;
 
-            }
+    }
 
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            @media (max-width: 768px) {
-                .col-utama {
-                    padding-left: 0rem !important;
-                }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-                .judul {
-                    display: none;
-                }
+    @media (max-width: 768px) {
+        .col-utama {
+            padding-left: 0rem !important;
+        }
 
-                .salam {
-                    display: block;
-                    margin-left: 1.5rem;
-                    margin-bottom: 1rem;
-                }
-            }
-        </style>
+        .judul {
+            display: none;
+        }
+
+        .salam {
+            display: block;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+    }
+</style>
 
 
 <body>
@@ -180,6 +181,57 @@ $siswa = mysqli_fetch_assoc($result_siswa);
         <div class="p-md-3 pb-md-2 d-flex ms-3 mt-md-0 ms-md-0 p-3 mb-1 salam justify-content-between align-items-center">
             <div class="mt-1">
                 <h3 class="fw-bold mb-0">Ujian</h3>
+            </div>
+            <div class="d-flex d-none d-md-block">
+                <button type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal_jadwal_ujian"
+                    class="btn btn-light border d-flex align-items-center gap-2 px-3" style="border-radius: 15px;">
+                    <i class="bi bi-calendar-date"></i>
+                    <span class="d-none d-md-inline" style="font-size: 12px;">Jadwal Ujian</span>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Modal Jadwal Ujian -->
+        <div class="modal fade" id="modal_jadwal_ujian" tabindex="-1" aria-labelledby="jadwalUjianModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content" style="border-radius: 16px;">
+                    <div class="modal-body p-4">
+                        <div class="text-center py-5">
+                            <i class="bi bi-calendar-x" style="font-size: 3rem; color: #6c757d;"></i>
+                            <h5 class="mt-3 fw-bold">Tidak Ada Data</h5>
+                            <p class="text-muted">Saat ini belum ada jadwal ujian yang tersedia</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex">
+                        <button type="button" class="btn flex-fill" data-bs-dismiss="modal" style="background-color: rgb(218, 119, 86); color: white; border-radius: 12px;">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Jumbotron yang akan berubah berdasarkan tab yang aktif -->
+        <div class="jumbotron jumbotron-fluid mb-md-2 d-none d-md-block">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <!-- Konten untuk tab Diikuti (khusus) -->
+                        <div id="jumbotron-khusus" class="jumbotron-content active">
+                            <h2 class="display-5">
+                                Aggap Ujian ini Game, dan <span style="color: rgb(198, 99, 66);">Kamu Jagoannya!</span>
+                            </h2>
+                            <p class="lead">Pilih ujian di bawah sesuai dengan jadwal ujian kamu, tetap sportif dan jangan lupa berdoa.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 text-center d-none d-md-block">
+                        <!-- Gambar untuk tab Diikuti (khusus) -->
+                        <img src="assets/ujian_siswa.png" class="img-fluid jumbotron-image" id="jumbotron-image" alt="Ilustrasi kelas" style="max-height: 20rem;">
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -438,16 +490,16 @@ $siswa = mysqli_fetch_assoc($result_siswa);
         <!-- Modal Ujian Selesai -->
         <div class="modal fade" id="ujianSelesaiModal" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 16px;">
-                <div class="modal-body text-center p-4">
-                <i class="bi bi-dash-circle-fill" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
-                <h5 class="mt-3 fw-bold">Sesi ujian kadaluarsa</h5>
-                <p class="mb-4">Kamu tidak dapat mengakses ujian ini karena sudah menyelesaikan ujian atau sesi ujian telah berakhir.</p>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn px-4 w-100 flex-fill" style="background-color: rgb(218, 119, 86); color:white; border-radius: 12px;" data-bs-dismiss="modal">Ok</button>
+                <div class="modal-content bg-white" style="border-radius: 16px;">
+                    <div class="modal-body text-center p-4">
+                        <img src="assets/ujian_selesai.png" alt="" width="200rem">
+                        <h5 class="mt-3 fw-bold">Sesi Ujian Telah Kadaluarsa</h5>
+                        <p class="mb-4">Kamu tidak dapat mengakses ujian ini karena sudah menyelesaikan ujian atau sesi ujian telah berakhir.</p>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn px-4 w-100 flex-fill" style="background-color: rgb(218, 119, 86); color:white; border-radius: 12px;" data-bs-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
                 </div>
-                </div>
-            </div>
             </div>
         </div>
 
