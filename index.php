@@ -112,11 +112,14 @@ require "koneksi.php";
                                                         if ($_GET['pesan'] == "password_salah") {
                                                             echo "Password yang Anda masukkan salah!";
                                                         } else if ($_GET['pesan'] == "user_tidak_ditemukan") {
-                                                            echo "User ID tidak ditemukan!";
+                                                            echo "Kami tidak menemukan akunmu, silahkan coba lagi atau hubungi Tim IT.";
                                                         }
                                                         ?>
                                                     </p>
-                                                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal" style="border-radius: 10px;">OK</button>
+                                                </div>
+                                                <div class="modal-footer d-flex">
+                                                    <button type="button" class="btn px-4 flex-fill" data-bs-dismiss="modal" style="border-radius: 10px; background-color:rgb(218, 119, 86); color:white;">OK</button>
+
                                                 </div>
                                             </div>
                                         </div>

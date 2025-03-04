@@ -330,10 +330,16 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                 <div class="nav-container d-inline-flex">
                     <ul class="nav nav-pills border bg-light rounded-pill p-1" id="kelasTab" role="tablist">
                         <li class="nav-item">
-                            <button class="nav-link active rounded-pill" id="khusus-tab" data-bs-toggle="tab" data-bs-target="#khusus" type="button" role="tab">Diikuti</button>
+                            <button class="nav-link active rounded-pill" id="khusus-tab" data-bs-toggle="tab" data-bs-target="#khusus" type="button" role="tab">
+                                <i class="bi bi-bookmark me-1"></i>
+                                Kelas yang diikuti
+                            </button>
                         </li>
                         <li class="nav-item">
-                            <button class="nav-link rounded-pill" id="umum-tab" data-bs-toggle="tab" data-bs-target="#umum" type="button" role="tab">Umum</button>
+                            <button class="nav-link rounded-pill" id="umum-tab" data-bs-toggle="tab" data-bs-target="#umum" type="button" role="tab">
+                                <i class="bi bi-globe me-1"></i>
+                                Jelajahi Kelas
+                            </button>
                         </li>
                     </ul>
                 </div>
