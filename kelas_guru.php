@@ -1850,7 +1850,8 @@ function getProfilePhoto($user_type, $data)
                                     <ul class="dropdown-menu dropdown-menu-end animate slideIn">
                                         <li>
                                             <?php if ($post['user_type'] == 'guru' || ($_SESSION['level'] == 'admin')): ?>
-                                                <a class="dropdown-item d-flex align-items-center gap-2" href="#" onclick="hapusPostingan(<?php echo $post['id']; ?>)">
+                                                <a class="dropdown-item d-flex align-items-center gap-2" href="#"
+                                                    onclick="showDeleteConfirmation(<?php echo $post['id']; ?>)">
                                                     <i class="fas fa-trash-alt text-danger"></i>
                                                     Hapus Postingan
                                                 </a>
@@ -1859,6 +1860,29 @@ function getProfilePhoto($user_type, $data)
                                     </ul>
                                 </div>
                             </div>
+
+                            <script>
+                                function showDeleteConfirmation(postId) {
+                                    // Simpan posisi scroll sekarang
+                                    const scrollPosition = window.pageYOffset;
+
+                                    const confirmBtn = document.getElementById('confirmDeleteBtn');
+                                    confirmBtn.setAttribute('href', `hapus_postingan.php?id=${postId}&kelas_id=<?php echo $kelas_id; ?>`);
+
+                                    const modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+
+                                    // Tambahkan event listener untuk modal shown
+                                    document.getElementById('deleteConfirmModal').addEventListener('shown.bs.modal', function() {
+                                        // Kembalikan posisi scroll
+                                        setTimeout(() => window.scrollTo(0, scrollPosition), 0);
+                                    }, {
+                                        once: true
+                                    });
+
+                                    modal.show();
+                                }
+                            </script>
+
 
                             <style>
                                 /* Animasi dropdown */
@@ -1901,6 +1925,26 @@ function getProfilePhoto($user_type, $data)
                                     background-color: #f8f9fa;
                                 }
                             </style>
+
+
+                            <!-- Delete Confirmation Modal -->
+                            <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content" style="border-radius: 16px;">
+                                        <div class="modal-body text-center p-4">
+                                            <h5 class="mt-3 fw-bold">Hapus Postingan</h5>
+                                            <p class="mb-4">Apakah Anda yakin ingin menghapus postingan ini? Tindakan ini tidak dapat dibatalkan.</p>
+                                            <div class="d-flex gap-2 btn-group">
+                                                <button type="button" class="btn border px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Batal</button>
+                                                <a href="#" id="confirmDeleteBtn" class="btn btn-danger px-4" style="border-radius: 12px;">Hapus</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                             <div class="">
                                 <?php if ($is_tugas): ?>
                                     <?php
@@ -2741,11 +2785,12 @@ function getProfilePhoto($user_type, $data)
                                                                                     <ul class="dropdown-menu dropdown-menu-end shadow-sm animate fadeIn">
                                                                                         <li>
                                                                                             <a class="dropdown-item text-danger" href="#"
-                                                                                                onclick="hapusKomentar(<?php echo $komentar['id']; ?>, <?php echo $post['id']; ?>)">
+                                                                                                onclick="showDeleteCommentConfirmation(<?php echo $komentar['id']; ?>, <?php echo $post['id']; ?>)">
                                                                                                 <i class="bi bi-trash me-2"></i>Hapus Komentar
                                                                                             </a>
                                                                                         </li>
                                                                                     </ul>
+
                                                                                 </div>
 
                                                                                 <style>
@@ -3430,30 +3475,6 @@ function getProfilePhoto($user_type, $data)
                                             <!-- Footer dengan Input Komentar -->
 
                                             <script>
-                                                function hapusKomentar(komentarId, postId) {
-                                                    if (confirm('Apakah Anda yakin ingin menghapus komentar ini?')) {
-                                                        fetch('hapus_komentar.php', {
-                                                                method: 'POST',
-                                                                headers: {
-                                                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                                                },
-                                                                body: `komentar_id=${komentarId}&post_id=${postId}`
-                                                            })
-                                                            .then(response => response.json())
-                                                            .then(data => {
-                                                                if (data.success) {
-                                                                    // Refresh modal content
-                                                                    location.reload();
-                                                                } else {
-                                                                    alert('Gagal menghapus komentar: ' + data.message);
-                                                                }
-                                                            })
-                                                            .catch(error => {
-                                                                console.error('Error:', error);
-                                                                alert('Terjadi kesalahan saat menghapus komentar');
-                                                            });
-                                                    }
-                                                }
                                             </script>
                                             <div class="modal-footer p-2 border-top">
                                                 <div class="d-flex gap-2 align-items-end w-100">
@@ -3666,12 +3687,6 @@ function getProfilePhoto($user_type, $data)
             </div>
             <!-- fungsi untuk menghapus postingan di bagian bawah file -->
             <script>
-                function hapusPostingan(id) {
-                    if (confirm('Apakah Anda yakin ingin menghapus postingan ini?')) {
-                        window.location.href = `hapus_postingan.php?id=${id}&kelas_id=<?php echo $kelas_id; ?>`;
-                    }
-                }
-
                 function showImage(src) {
                     document.getElementById('modalImage').src = src;
                     var imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
@@ -4028,7 +4043,7 @@ function getProfilePhoto($user_type, $data)
 
                 <!-- Daftar Siswa -->
                 <div class="daftarSiswa p-4 rounded-3 bg-white mt-3 border">
-                    <!-- Header dengan statistik -->
+                    <!-- Header dengan statistik dan pencarian -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="d-flex align-items-center gap-3">
                             <div class="stats-icon rounded-circle d-flex align-items-center justify-content-center"
@@ -4036,85 +4051,61 @@ function getProfilePhoto($user_type, $data)
                                 <i class="bi bi-people fs-5" style="color: rgb(218, 119, 86);"></i>
                             </div>
                             <div>
-                                <h6 class="mb-1">Daftar Siswa</h6>
+                                <h6 class="mb-1 fw-bold">Daftar Siswa</h6>
                                 <p class="m-0 text-muted" style="font-size: 14px;"><?php echo $jumlah_siswa; ?> siswa</p>
                             </div>
                         </div>
-
-                        <!-- Dropdown menu aksi -->
-                        <div class="dropdown">
-                            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-gear me-1"></i> Kelola
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-sm animate slideIn">
-                                <li>
-                                    <button class="dropdown-item d-flex align-items-center gap-2"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#tambahSiswaModal">
-                                        <i class="bi bi-person-plus"></i>
-                                        <span class="menu-text">Tambah Siswa</span>
-                                    </button>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item d-flex align-items-center gap-2"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#hapusSiswaModal">
-                                        <i class="bi bi-person-x text-danger"></i>
-                                        <span class="menu-text">Keluarkan Siswa</span>
-                                    </button>
-                                </li>
-                            </ul>
-
-                            <style>
-                                .animate {
-                                    animation-duration: 0.12s;
-                                    animation-timing-function: ease-out;
-                                    animation-fill-mode: both;
-                                    transform-origin: top center;
-                                }
-
-                                .slideIn {
-                                    animation-name: windowsDropdown;
-                                }
-
-                                @keyframes windowsDropdown {
-                                    0% {
-                                        transform: scaleY(0);
-                                        opacity: 0;
-                                    }
-
-                                    100% {
-                                        transform: scaleY(1);
-                                        opacity: 1;
-                                    }
-                                }
-
-                                .dropdown-menu {
-                                    padding: 4px 0;
-                                    border-radius: 4px;
-                                    border: 1px solid rgba(0, 0, 0, 0.08);
-                                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                                }
-
-                                .dropdown-item {
-                                    padding: 8px 16px;
-                                    transition: background 0.1s;
-                                }
-
-                                .dropdown-item:hover {
-                                    background-color: #f0f0f0;
-                                }
-
-                                .dropdown-item:active {
-                                    background-color: #e5e5e5;
-                                }
-
-                                .menu-text {
-                                    margin-left: 8px;
-                                }
-                            </style>
-                        </div>
                     </div>
+                    <div>
+                        <!-- Search bar -->
+                        <div class="position-relative mb-3">
+                            <input type="text" class="form-control" id="searchSiswa" placeholder="Cari siswa..."
+                                style="border-radius: 20px; padding-left: 35px;">
+                            <i class="bi bi-search position-absolute"
+                                style="left: 12px; top: 50%; transform: translateY(-50%); color: #aaa;"></i>
+                        </div>
+
+                    </div>
+
+                    <!-- Search script -->
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const searchInput = document.getElementById('searchSiswa');
+
+                            searchInput.addEventListener('input', function() {
+                                const searchTerm = this.value.toLowerCase();
+                                const studentCards = document.querySelectorAll('.student-list-container .card');
+
+                                studentCards.forEach(card => {
+                                    const studentName = card.querySelector('h6').textContent.toLowerCase();
+                                    if (studentName.includes(searchTerm)) {
+                                        card.style.display = '';
+                                    } else {
+                                        card.style.display = 'none';
+                                    }
+                                });
+
+                                // Show message if no results
+                                const visibleCards = Array.from(studentCards).filter(card => card.style.display !== 'none');
+                                const noResultsMessage = document.getElementById('noResultsMessage');
+
+                                if (visibleCards.length === 0 && searchTerm !== '') {
+                                    if (!noResultsMessage) {
+                                        const message = document.createElement('div');
+                                        message.id = 'noResultsMessage';
+                                        message.className = 'text-center py-3 text-muted';
+                                        message.innerHTML = `
+                                            <i class="bi bi-search me-2"></i>
+                                            Tidak ditemukan siswa dengan nama "${searchTerm}"
+                                        `;
+                                        document.querySelector('.student-list-container').appendChild(message);
+                                    }
+                                } else if (noResultsMessage) {
+                                    noResultsMessage.remove();
+                                }
+                            });
+                        });
+                    </script>
 
                     <?php if (mysqli_num_rows($result_siswa) > 0): ?>
                         <!-- Grid siswa -->
@@ -4173,15 +4164,15 @@ function getProfilePhoto($user_type, $data)
                                                         <button type="button"
                                                             class="btn btn-light border flex-fill d-flex align-items-center justify-content-center gap-2"
                                                             data-bs-toggle="modal"
-                                                            data-bs-target="#siswaInfoModal<?php echo $siswa['id']; ?>"
-                                                            style="font-size: 12px;">
+                                                            data-bs-target="#siswaInfoModal-<?php echo $siswa['id']; ?>"
+                                                            style="font-size: 12px;"
+                                                            onclick="console.log('Trying to open modal: siswaInfoModal-<?php echo $siswa['id']; ?>')">
                                                             <i class="bi bi-info-circle"></i>
                                                             <span>Lihat</span>
                                                         </button>
 
-
                                                         <!-- Modal Lihat Info Siswa -->
-                                                        <div class="modal fade" id="siswaInfoModal<?php echo $siswa['id']; ?>" tabindex="-1">
+                                                        <div class="modal fade" id="siswaInfoModal-<?php echo $siswa['id']; ?>" tabindex="-1">
                                                             <div class="modal-dialog modal-dialog-centered modal-sm">
                                                                 <div class="modal-content">
                                                                     <div class="modal-body p-3">
@@ -4271,54 +4262,17 @@ function getProfilePhoto($user_type, $data)
                                                             </div>
                                                         </div>
 
-                                                        <style>
-                                                            .info-card {
-                                                                transition: all 0.2s;
-                                                                border: 1px solid rgba(0, 0, 0, 0.05);
-                                                            }
-
-                                                            .info-card:hover {
-                                                                background-color: #f8f9fa !important;
-                                                                transform: translateY(-1px);
-                                                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-                                                            }
-
-                                                            .info-card i {
-                                                                color: #6c757d;
-                                                                font-size: 1rem;
-                                                            }
-
-                                                            @media (max-width: 576px) {
-                                                                .modal-content {
-                                                                    border-radius: 0;
-                                                                    min-height: 100vh;
-                                                                }
-                                                            }
-                                                        </style>
-
-                                                        <script>
-                                                            function togglePassword(button) {
-                                                                const card = button.closest('.info-card');
-                                                                const passwordSpan = card.querySelector('.password-dots');
-                                                                const icon = button.querySelector('i');
-
-                                                                if (passwordSpan.textContent === '•••••••') {
-                                                                    passwordSpan.textContent = '<?php echo htmlspecialchars($siswa['password']); ?>';
-                                                                    icon.classList.replace('bi-eye', 'bi-eye-slash');
-                                                                } else {
-                                                                    passwordSpan.textContent = '•••••••';
-                                                                    icon.classList.replace('bi-eye-slash', 'bi-eye');
-                                                                }
-                                                            }
-                                                        </script>
-
                                                         <button type="button"
                                                             class="btn btn-danger flex-fill d-flex align-items-center justify-content-center gap-2"
-                                                            onclick="hapusSiswa(<?php echo $siswa['id']; ?>, '<?php echo htmlspecialchars($siswa['nama']); ?>')"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#removeSiswaModal"
+                                                            onclick="setRemovalData(<?php echo $siswa['id']; ?>, '<?php echo htmlspecialchars($siswa['nama']); ?>')"
                                                             style="font-size: 12px;">
                                                             <i class="bi bi-person-x"></i>
                                                             <span>Keluarkan</span>
                                                         </button>
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -4327,6 +4281,79 @@ function getProfilePhoto($user_type, $data)
                                 <?php endwhile; ?>
                             </div>
                         </div>
+
+
+
+                        <style>
+                            .info-card {
+                                transition: all 0.2s;
+                                border: 1px solid rgba(0, 0, 0, 0.05);
+                            }
+
+                            .info-card:hover {
+                                background-color: #f8f9fa !important;
+                                transform: translateY(-1px);
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+                            }
+
+                            .info-card i {
+                                color: #6c757d;
+                                font-size: 1rem;
+                            }
+
+                            @media (max-width: 576px) {
+                                .modal-content {
+                                    border-radius: 0;
+                                    min-height: 100vh;
+                                }
+                            }
+                        </style>
+
+                        <script>
+                            function togglePassword(button) {
+                                const card = button.closest('.info-card');
+                                const passwordSpan = card.querySelector('.password-dots');
+                                const icon = button.querySelector('i');
+
+                                if (passwordSpan.textContent === '•••••••') {
+                                    passwordSpan.textContent = '<?php echo htmlspecialchars($siswa['password']); ?>';
+                                    icon.classList.replace('bi-eye', 'bi-eye-slash');
+                                } else {
+                                    passwordSpan.textContent = '•••••••';
+                                    icon.classList.replace('bi-eye-slash', 'bi-eye');
+                                }
+                            }
+                        </script>
+
+
+                        <!-- Modal Konfirmasi Keluarkan Siswa -->
+                        <div class="modal fade" id="removeSiswaModal" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content" style="border-radius: 16px;">
+                                    <div class="modal-body text-center p-4">
+                                        <h5 class="mt-3 fw-bold">Keluarkan Siswa</h5>
+                                        <p class="mb-4">Apakah Anda yakin ingin mengeluarkan siswa ini dari kelas?</p>
+                                        <div class="d-flex gap-2 btn-group">
+                                            <button type="button" class="btn border px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Batal</button>
+                                            <a href="#" id="confirmRemoveBtn" class="btn btn-danger px-4" style="border-radius: 12px;">Keluarkan</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            function setRemovalData(siswaId, siswaName) {
+                                // Set the student name in the modal message
+                                const modalMessage = document.querySelector('#removeSiswaModal .modal-body p');
+                                modalMessage.textContent = `Apakah Anda yakin ingin mengeluarkan ${siswaName} dari kelas? Tindakan ini tidak dapat dibatalkan.`;
+
+                                // Set the confirmation button's action
+                                const confirmBtn = document.getElementById('confirmRemoveBtn');
+                                confirmBtn.href = `hapus_siswa.php?siswa_id=${siswaId}&kelas_id=<?php echo $kelas_id; ?>`;
+                            }
+                        </script>
+
 
                         <style>
                             .student-card {
@@ -4522,40 +4549,44 @@ function getProfilePhoto($user_type, $data)
 
                             // Fungsi untuk konfirmasi dan hapus siswa
                             function hapusSiswa(siswaId, namaSiswa) {
-                                Swal.fire({
-                                    title: 'Konfirmasi Hapus',
-                                    text: `Apakah Anda yakin ingin mengeluarkan ${namaSiswa} dari kelas ini?`,
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Ya, Keluarkan',
-                                    cancelButtonText: 'Batal',
-                                    confirmButtonColor: '#dc3545',
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        fetch(`hapus_siswa.php?siswa_id=${siswaId}&kelas_id=<?php echo $kelas_id; ?>`)
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                if (data.success) {
-                                                    Swal.fire({
-                                                        icon: 'success',
-                                                        title: 'Berhasil',
-                                                        text: 'Siswa telah dikeluarkan dari kelas',
-                                                        timer: 1500,
-                                                        showConfirmButton: false
-                                                    }).then(() => {
-                                                        location.reload();
-                                                    });
-                                                } else {
-                                                    Swal.fire({
-                                                        icon: 'error',
-                                                        title: 'Gagal',
-                                                        text: data.message
-                                                    });
-                                                }
-                                            });
-                                    }
-                                });
+                                // Show the confirmation modal
+                                const confirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+
+                                // Update modal content with student name
+                                document.getElementById('confirmDeleteTitle').textContent = 'Keluarkan Siswa';
+                                document.getElementById('confirmDeleteMessage').textContent =
+                                    `Apakah Anda yakin ingin mengeluarkan ${namaSiswa} dari kelas ini? Tindakan ini tidak dapat dibatalkan.`;
+
+                                // Set the confirm button's action
+                                const confirmBtn = document.getElementById('confirmDeleteBtn');
+                                confirmBtn.href = `hapus_siswa.php?siswa_id=${siswaId}&kelas_id=<?php echo $kelas_id; ?>`;
+
+                                // Show the modal
+                                confirmModal.show();
                             }
+
+                            // Add the confirmation modal to the page
+                            document.addEventListener('DOMContentLoaded', function() {
+                                if (!document.getElementById('deleteConfirmModal')) {
+                                    const modalHTML = `
+                                    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content" style="border-radius: 16px;">
+                                                <div class="modal-body text-center p-4">
+                                                    <h5 class="mt-3 fw-bold" id="confirmDeleteTitle">Keluarkan Siswa</h5>
+                                                    <p class="mb-4" id="confirmDeleteMessage">Apakah Anda yakin ingin mengeluarkan siswa ini dari kelas?</p>
+                                                    <div class="d-flex gap-2 btn-group">
+                                                        <button type="button" class="btn border px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Batal</button>
+                                                        <a href="#" id="confirmDeleteBtn" class="btn btn-danger px-4" style="border-radius: 12px;">Keluarkan</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    `;
+                                    document.body.insertAdjacentHTML('beforeend', modalHTML);
+                                }
+                            });
                         </script>
                         <?php if ($jumlah_siswa > 6): ?>
                             <button class="btn mt-4 btn-light w-100 text-center"
@@ -4995,7 +5026,6 @@ function getProfilePhoto($user_type, $data)
 
                 <!-- script tambah siswa -->
                 <script>
-                    console.log('ngapain kalian sampe di sini? balik belajar sana');
                     // Ketika tingkat kelas berubah
                     document.getElementById('tingkatKelas').addEventListener('change', function() {
                         const tingkat = this.value;
@@ -5141,6 +5171,23 @@ function getProfilePhoto($user_type, $data)
                         }
                     }
                 </script>
+
+                <!-- Delete Comment Confirmation Modal -->
+                <div class="modal fade" id="deleteCommentConfirmModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="border-radius: 16px;">
+                            <div class="modal-body text-center p-4">
+                                <h5 class="mt-3 fw-bold">Hapus Komentar</h5>
+                                <p class="mb-4">Apakah Anda yakin ingin menghapus komentar ini? Tindakan ini tidak dapat dibatalkan.</p>
+                                <div class="d-flex gap-2 btn-group">
+                                    <button type="button" class="btn border px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Batal</button>
+                                    <button type="button" id="confirmDeleteCommentBtn" class="btn btn-danger px-4" style="border-radius: 12px;">Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Modal Lihat Semua Siswa -->
                 <div class="modal fade" id="lihatSemuaSiswaModal" tabindex="-1" aria-hidden="true">
