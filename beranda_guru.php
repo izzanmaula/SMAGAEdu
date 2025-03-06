@@ -473,17 +473,50 @@ $guru = mysqli_fetch_assoc($result);
 
                                 </h4>
                                 <div class="class-meta mb-2">
-                                    <div class="d-flex text-muted small mt-1">
-                                        <i class="bi bi-book me-2"></i>
-                                        <?php echo !empty($kelas['deskripsi']) ? $kelas['deskripsi'] : 'Tidak ada deskripsi'; ?>
-                                    </div>
-                                    <div class="d-flex align-items-center text-muted small">
-                                        <i class="bi bi-people me-2"></i>
-                                        <?php echo $kelas['jumlah_siswa']; ?> Siswa
+    <div class="d-flex text-muted small mt-1">
+        <i class="bi bi-book me-2"></i>
+        <div class="description-container">
+            <?php
+            $deskripsi = !empty($kelas['deskripsi']) ? $kelas['deskripsi'] : 'Tidak ada deskripsi';
+            $kelas_id = $kelas['id']; // Pastikan variabel ini ada
+            
+            // Hanya tampilkan 50 karakter pertama saat awal
+            $short_text = substr($deskripsi, 0, 20);
+            $show_toggle = (strlen($deskripsi) > 50);
+            ?>
+            
+            <span id="short-desc-<?php echo $kelas_id; ?>" style="<?php echo $show_toggle ? '' : 'display:none;' ?>">
+                <?php echo $short_text; ?>...
+                <a href="#" onclick="showFullDesc(<?php echo $kelas_id; ?>); return false;" class="ms-1 text-decoration-none" style="color: #da7756;">selengkapnya</a>
+            </span>
+            
+            <span id="full-desc-<?php echo $kelas_id; ?>" style="<?php echo $show_toggle ? 'display:none;' : '' ?>">
+                <?php echo $deskripsi; ?>
+                <?php if($show_toggle): ?>
+                <a href="#" onclick="showShortDesc(<?php echo $kelas_id; ?>); return false;" class="ms-1 text-decoration-none" style="color: #da7756;">sembunyikan</a>
+                <?php endif; ?>
+            </span>
+        </div>
+    </div>
 
-                                    </div>
+    <div class="d-flex align-items-center text-muted small">
+        <i class="bi bi-people me-2"></i>
+        <?php echo $kelas['jumlah_siswa']; ?> Siswa
+    </div>
+</div>
+<script>
+function showFullDesc(id) {
+    document.getElementById('short-desc-' + id).style.display = 'none';
+    document.getElementById('full-desc-' + id).style.display = 'inline';
+    return false;
+}
 
-                                </div>
+function showShortDesc(id) {
+    document.getElementById('full-desc-' + id).style.display = 'none';
+    document.getElementById('short-desc-' + id).style.display = 'inline';
+    return false;
+}
+</script>
 
                                 <div class="action-buttons">
                                     <a href="kelas_guru.php?id=<?php echo $kelas['id']; ?>"
@@ -666,9 +699,8 @@ $guru = mysqli_fetch_assoc($result);
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 16px;">
                 <div class="modal-body text-center p-4">
-                    <i class="bi bi-exclamation-circle" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
                     <h5 class="mt-3 fw-bold">Hapus Kelas</h5>
-                    <p class="mb-4">Apakah Anda yakin ingin menghapus kelas ini? Tindakan ini tidak dapat dibatalkan.</p>
+                    <p class="mb-4">Apakah Anda yakin ingin menghapus kelas ini? Penghapusan Anda berdampak pada kelas siswa.</p>
                     <div class="d-flex gap-2 btn-group">
                         <button type="button" class="btn border px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Batal</button>
                         <a href="#" id="confirmDeleteBtn" class="btn btn-danger px-4" style="border-radius: 12px;">Hapus</a>
@@ -865,10 +897,10 @@ $guru = mysqli_fetch_assoc($result);
             const infoText = document.getElementById('jenis_kelas_info');
             const privateForm = document.getElementById('private_class_form');
             const publicForm = document.getElementById('public_class_form');
-            
+
             // Set initial active state for the privat button
             document.querySelector('label[for="kelas_privat"]').classList.add('active-tab');
-            
+
             // Add event listeners for radio buttons
             radioButtons.forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -876,10 +908,10 @@ $guru = mysqli_fetch_assoc($result);
                     document.querySelectorAll('.kelas-btn').forEach(btn => {
                         btn.classList.remove('active-tab');
                     });
-                    
+
                     // Add active class to selected button
                     document.querySelector(`label[for="${this.id}"]`).classList.add('active-tab');
-                    
+
                     if (this.value === "1") {
                         // Public class
                         infoIcon.className = "bi bi-globe me-2 mt-1";
@@ -938,26 +970,26 @@ $guru = mysqli_fetch_assoc($result);
             background-color: #da7756;
             border-color: #da7756;
         }
-        
+
         /* Tab button styling */
         .btn-outline-secondary {
             color: #6c757d;
             border-color: #dee2e6;
             transition: all 0.3s ease;
         }
-        
+
         .btn-outline-secondary:hover {
             background-color: #f8f9fa;
             color: rgb(218, 119, 86);
         }
-        
+
         .active-tab {
             background-color: rgb(218, 119, 86) !important;
             color: white !important;
             border-color: rgb(218, 119, 86) !important;
         }
-        
-        .btn-check:checked + .btn-outline-secondary {
+
+        .btn-check:checked+.btn-outline-secondary {
             background-color: rgb(218, 119, 86);
             color: white;
             border-color: rgb(218, 119, 86);
@@ -1131,11 +1163,6 @@ $guru = mysqli_fetch_assoc($result);
                                                             <i class="bi bi-box-arrow-up-right me-1"></i>
                                                             Keluarkan dari Arsip
                                                         </a>
-                                                        <button type="button"
-                                                            class="btn btn-outline-danger btn-sm"
-                                                            onclick="if(confirm('Apakah Anda yakin ingin menghapus kelas ini?')) window.location.href='hapus_kelas.php?id=<?php echo $kelas_arsip['id']; ?>'">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
