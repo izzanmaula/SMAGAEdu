@@ -299,7 +299,7 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
 
             <!-- Desktop button -->
             <div class="d-none d-md-block col-md-auto">
-                <a href="buat_ujian.php" class="btn btn-light border text-black d-flex align-items-center">
+                <a href="buat_ujian.php" class="btn btn-light border text-black d-flex align-items-center" style="border-radius: 15px;">
                     <i class="bi bi-plus-lg me-2"></i>
                     Buat Ujian
                 </a>
@@ -477,7 +477,7 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                 endwhile;
             else:
                 ?>
-                <div class="position-absolute top-50 start-50 translate-middle text-center">
+                <div class="text-center" style="margin-top:10rem;">
                     <i class="bi bi-journal-x" style="font-size: 2rem; color: #6c757d;"></i>
                     <p class="mt-3 mb-0">Belum ada ujian</p>
                     <small class="text-muted">Klik tombol "Buat Ujian" untuk membuat ujian baru</small>

@@ -236,6 +236,66 @@ $guru = mysqli_fetch_assoc($result);
                 background: white;
                 color: #666;
             }
+            /* Facebook-style notification dropdown */
+.notification-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    width: 350px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    z-index: 1060;
+    display: none;
+    max-height: 80vh;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.notification-dropdown.show {
+    display: flex;
+}
+
+.notification-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+#notif-count {
+    transform: translate(-50%, -50%);
+}
+
+.notification-scroll {
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* Notification items styling */
+.notification-item {
+    margin-bottom: 10px;
+    border-radius: 14px;
+    background-color: white;
+    padding: 14px; 
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+}
+
+.notification-item:hover {
+    background-color: rgba(206, 100, 65, 0.08);
+
+}
+
+.notification-item:last-child {
+    margin-bottom: 0;
+}
+
+.notification-item.unread {
+}
+
+/* Keep your existing notification styling for individual items */
         </style>
 
         <!-- style animasi modal -->
@@ -268,8 +328,31 @@ $guru = mysqli_fetch_assoc($result);
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="fw-bold m-0">Beranda</h3>
             <div class="d-none d-md-flex gap-2">
+                <!-- Notification Button -->
+                <div class="position-relative">
+                    <button class="btn button-beranda btn-light border px-3 py-2" id="notificationBtn">
+                        <i class="bi bi-bell me-1"></i>Notifikasi
+                        <span id="notif-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px; display: none;">0</span>
+                    </button>
+
+                    <!-- Notification Dropdown -->
+                    <div class="notification-dropdown shadow-sm border" id="notificationDropdown">
+                        <div class="notification-body" id="notification-list">
+                            <!-- Notifications will be loaded here -->
+                            <div class="text-center py-4 text-muted">
+                                <i class="bi bi-bell-slash fs-4 mb-2"></i>
+                                <p class="mb-0 small">Memuat notifikasi...</p>
+                            </div>
+                        </div>
+                        <div id="notification-footer" class="notification-footer d-flex p-2 text-end border-top">
+                            <button id="markAllAsRead" class="btn flex-fill text-white shadow-none" style="background-color: rgb(206, 100, 65); border-radius:10px;">
+                                <span class="fst-normal">Baca semua</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <button class="btn button-beranda btn-light border px-3 py-2" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas">
-                    <i class="bi bi-plus-lg me-2"></i>Buat Kelas
+                    <i class="bi bi-plus-lg me-2"></i>Buat
                 </button>
                 <button class="btn button-beranda btn-light border px-3 py-2" data-bs-toggle="modal" data-bs-target="#modal_arsip_kelas">
                     <i class="bi bi-archive me-2"></i>Arsip
@@ -280,13 +363,12 @@ $guru = mysqli_fetch_assoc($result);
         <!-- Jumbotron yang akan berubah berdasarkan tab yang aktif -->
         <div class="jumbotron jumbotron-fluid mb-md-2 d-none d-md-block">
             <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <!-- Konten untuk tab Diikuti (khusus) -->
+                <div class="row">
+                    <!-- Konten ucapan selamat datang di kiri -->
+                    <div class="col-md-6 mb-3 mt-2 mb-md-0">
                         <div id="jumbotron-khusus" class="jumbotron-content active">
                             <h2 class="display-5">
                                 <?php
-
                                 date_default_timezone_set('Asia/Jakarta');
                                 $hour = date('H');
                                 if ($hour >= 5 && $hour < 12) {
@@ -301,14 +383,190 @@ $guru = mysqli_fetch_assoc($result);
                                 ?>,
                                 <span style="color: rgb(218, 119, 86);"><?php echo ucwords($guru['namaLengkap']); ?></span>
                             </h2>
-                            <p class="lead">Mari bersama menciptakan pembelajaran inporatif dan bermakna!</p>
                         </div>
                     </div>
+                            <!-- Statistik Kelas (yang sudah ada) -->
+                            <?php
+                            // Query untuk menghitung jumlah kelas khusus/privat dan umum/publik
+                            $query_count = "SELECT 
+            SUM(CASE WHEN is_public = 0 THEN 1 ELSE 0 END) as private_count,
+            SUM(CASE WHEN is_public = 1 THEN 1 ELSE 0 END) as public_count
+            FROM kelas 
+            WHERE guru_id = '$userid' AND is_archived = 0";
 
-                    <div class="col-md-6 text-center d-none d-md-block">
-                        <!-- Gambar untuk tab Diikuti (khusus) -->
-                        <img src="assets/guru.png" class="img-fluid jumbotron-image" id="jumbotron-image" alt="Ilustrasi kelas" style="max-height: 20rem;">
-                    </div>
+                            $result_count = mysqli_query($koneksi, $query_count);
+                            $count_data = mysqli_fetch_assoc($result_count);
+                            $private_count = $count_data['private_count'] ?? 0;
+                            $public_count = $count_data['public_count'] ?? 0;
+                            ?>
+
+                            <style>
+                                /* iOS-style notification styling */
+                                .notification-card {
+                                    background-color: white;
+                                    overflow: hidden;
+                                    width: 100%;
+                                    max-width: 400px;
+                                    /* Increased from 350px */
+                                    float: right;
+                                }
+
+                                .notification-header {
+                                    background-color: rgba(248, 248, 248, 0.95);
+                                }
+
+                                .notification-body {
+                                    height: 300px;
+                                    /* Increased from 280px */
+                                    overflow: hidden;
+                                }
+
+                                .notification-scroll {
+                                    overflow-y: auto;
+                                    -ms-overflow-style: none;
+                                    /* IE and Edge */
+                                    scrollbar-width: none;
+                                    /* Firefox */
+                                    max-height: 300px;
+                                    /* Increased from 280px */
+                                }
+
+                                .notification-scroll::-webkit-scrollbar {
+                                    display: none;
+                                    /* Chrome, Safari and Opera */
+                                }
+
+                                /* The following styles won't apply since the scrollbar is hidden */
+                                .notification-scroll::-webkit-scrollbar-track {
+                                    display: none;
+                                }
+
+                                .notification-scroll::-webkit-scrollbar-thumb {
+                                    display: none;
+                                }
+
+                                .notification-scroll::-webkit-scrollbar-thumb:hover {
+                                    display: none;
+                                }
+
+                                /* Styling untuk foto profil di notifikasi */
+                                .notification-profile {
+                                    min-width: 40px;
+                                    /* Fixed width instead of variable */
+                                    height: 40px;
+                                    margin-right: 12px;
+                                    position: relative;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                }
+
+                                .profile-image {
+                                    width: 40px;
+                                    /* Increased from 2rem */
+                                    height: 40px;
+                                    /* Increased from 2rem */
+                                    border: 1px solid rgba(0, 0, 0, 0.1);
+                                    object-fit: cover;
+                                    border-radius: 50%;
+                                }
+
+                                /* Border khusus untuk jenis notifikasi */
+                                .like-border {
+                                    border: 1px solid rgba(220, 53, 69, 0.7);
+                                }
+
+                                .comment-border {
+                                    border: 1px solid rgba(13, 110, 253, 0.7);
+                                }
+
+                                .like-border::after {
+                                    content: '👍';
+                                    font-size: 8px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    background-color: rgba(220, 53, 69, 0.9);
+                                    color: white;
+                                }
+
+                                .comment-border::after {
+                                    content: '💬';
+                                    font-size: 8px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    background-color: rgba(13, 110, 253, 0.9);
+                                    color: white;
+                                }
+
+
+
+                                .notification-content {
+                                    font-size: 0.9rem;
+                                    line-height: 1.4;
+                                    word-wrap: break-word;
+                                    overflow-wrap: break-word;
+                                    width: 100%;
+                                }
+
+                                .notification-time {
+                                    font-size: 0.75rem;
+                                    color: #8e8e93;
+                                    margin-top: 3px;
+                                }
+
+                                .notification-class {
+                                    display: inline-block;
+                                    background-color: rgba(0, 0, 0, 0.03);
+                                    padding: 2px 8px;
+                                    border-radius: 10px;
+                                    margin-top: 5px;
+                                    font-size: 0.75rem;
+                                    color: #8e8e93;
+                                }
+
+                                .notification-icon {
+                                    width: 32px;
+                                    height: 32px;
+                                    border-radius: 50%;
+                                    margin-right: 12px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                }
+
+                                .notification-icon.like {
+                                    background-color: rgba(255, 45, 85, 0.1);
+                                    color: #ff2d55;
+                                }
+
+                                .notification-icon.comment {
+                                    background-color: rgba(0, 122, 255, 0.1);
+                                    color: #007aff;
+                                }
+
+                                .badge {
+                                    font-weight: normal;
+                                    padding: 2px 6px;
+                                    font-size: 10px;
+                                }
+
+                                .notification-footer {
+                                    background-color: rgba(248, 248, 248, 0);
+                                }
+
+                                .notification-footer a {
+                                    color: #007aff;
+                                    font-weight: 500;
+                                }
+
+                                @media (max-width: 768px) {
+                                    .notification-card {
+                                        max-width: 100%;
+                                    }
+                                }
+                            </style>
                 </div>
             </div>
         </div>
@@ -699,6 +957,7 @@ function showShortDesc(id) {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 16px;">
                 <div class="modal-body text-center p-4">
+                    <i class="bi bi-exclamation-circle" style="font-size: 3rem; color:red;"></i>
                     <h5 class="mt-3 fw-bold">Hapus Kelas</h5>
                     <p class="mb-4">Apakah Anda yakin ingin menghapus kelas ini? Penghapusan Anda berdampak pada kelas siswa.</p>
                     <div class="d-flex gap-2 btn-group">
@@ -734,7 +993,6 @@ function showShortDesc(id) {
                     </div>
                     <div class="modal-body px-4">
                         <div class="form-group mb-4">
-                            <label class="form-label small mb-2">Jenis Kelas</label>
                             <div class="btn-group w-100" role="group">
                                 <input type="radio" class="btn-check" name="jenis_kelas" id="kelas_privat" value="0" checked>
                                 <label class="btn btn-outline-secondary kelas-btn" for="kelas_privat">
@@ -1225,6 +1483,70 @@ function showShortDesc(id) {
 
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Notification button toggle functionality
+    const notificationBtn = document.getElementById('notificationBtn');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const closeNotifBtn = document.getElementById('closeNotif');
+    
+    notificationBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        notificationDropdown.classList.toggle('show');
+        
+        // If opening dropdown, refresh notifications
+        if(notificationDropdown.classList.contains('show')) {
+            loadHomeNotifications();
+        }
+    });
+    
+    closeNotifBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        notificationDropdown.classList.remove('show');
+    });
+    
+    // Close when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!notificationDropdown.contains(e.target) && !notificationBtn.contains(e.target)) {
+            notificationDropdown.classList.remove('show');
+        }
+    });
+    
+    // Prevent dropdown from closing when clicking inside it
+    notificationDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    // Load notifications and set up refresh interval
+    loadHomeNotifications();
+    setInterval(loadHomeNotifications, 30000);
+    
+    // Mark all as read button functionality
+    document.getElementById('markAllAsRead').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        fetch('mark_notification_read.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'mark_all=true'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadHomeNotifications();
+            }
+        });
+    });
+});
+
+// Close when clicking outside
+document.addEventListener('click', function(e) {
+    if (!notificationDropdown.contains(e.target) && !notificationBtn.contains(e.target)) {
+        notificationDropdown.classList.remove('show');
+    }
+});
+
         function loadSiswa(tingkat) {
             if (tingkat) {
                 // Gunakan AJAX untuk mengambil daftar siswa
@@ -1245,6 +1567,178 @@ function showShortDesc(id) {
                 checkbox.checked = this.checked;
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load notifikasi saat halaman dimuat
+            loadHomeNotifications();
+
+            // Set interval untuk me-refresh notifikasi setiap 30 detik
+            setInterval(loadHomeNotifications, 30000);
+
+            // Event handler untuk tombol "Tandai semua sudah dibaca"
+            document.getElementById('markAllAsRead').addEventListener('click', function(e) {
+                e.preventDefault();
+
+                fetch('mark_notification_read.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: 'mark_all=true'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            loadHomeNotifications();
+                        }
+                    });
+            });
+        });
+
+        // Function untuk memuat notifikasi
+        function loadHomeNotifications() {
+            fetch('get_notifications.php')
+                .then(response => response.json())
+                .then(data => {
+                    updateNotificationCard(data.notifications, data.total_unread);
+                })
+                .catch(error => console.error('Error loading notifications:', error));
+        }
+
+        // Update card notifikasi
+        function updateNotificationCard(notifications, totalUnread) {
+            const container = document.getElementById('notification-list');
+            const notifCount = document.getElementById('notif-count');
+            const notificationFooter = document.getElementById('notification-footer');
+
+            // Pastikan elemen notifCount ada sebelum mencoba mengakses propertinya
+            if (notifCount) {
+                // Update badge jumlah notifikasi
+                notifCount.textContent = totalUnread;
+                if (totalUnread > 0) {
+                    notifCount.style.display = 'inline-block';
+                } else {
+                    notifCount.style.display = 'none';
+                }
+            }
+
+            // Show/hide the "Mark All as Read" button based on notifications
+            if (notificationFooter) {
+                notificationFooter.style.display = notifications.length > 0 ? 'block' : 'none';
+            }
+
+            // Pastikan container ada sebelum merender notifikasi
+            if (!container) {
+                console.error('Notification list container not found');
+                return;
+            }
+
+            // Render notifikasi dalam container
+            if (notifications.length === 0) {
+                container.innerHTML = `
+            <div class="notification-scroll">
+                <div class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center border" style="height: 100%; border-radius:15px;">
+                    <i class="bi bi-bell-slash fs-4 mb-2"></i>
+                    <p class="mb-0 small">Belum ada notifikasi</p>
+                </div>
+            </div>
+        `;
+                return;
+            }
+
+            let html = `<div class="notification-scroll">`;
+
+            notifications.forEach(notification => {
+                // Determine text based on notification type
+                let text;
+                let iconClass = notification.jenis === 'like' ? 'like-border' : 'comment-border';
+
+                if (notification.jenis === 'like') {
+                    if (notification.jumlah > 1) {
+                        text = `<strong>${notification.pelaku_nama}</strong> dan <strong>${notification.jumlah - 1} orang lainnya</strong> menyukai postingan Anda`;
+                    } else {
+                        text = `<strong>${notification.pelaku_nama}</strong> menyukai postingan Anda`;
+                    }
+                } else { // komentar
+                    if (notification.jumlah > 1) {
+                        text = `<strong>${notification.pelaku_nama}</strong> dan <strong>${notification.jumlah - 1} orang lainnya</strong> mengomentari postingan Anda`;
+                    } else {
+                        text = `<strong>${notification.pelaku_nama}</strong> mengomentari postingan Anda`;
+                    }
+                }
+
+                html += `
+            <div class="notification-item d-flex align-items-start unread" 
+                data-id="${notification.id}" 
+                onclick="viewNotification(${notification.id}, ${notification.kelas_id}, ${notification.postingan_id})">
+                <div class="notification-profile">
+                    <img src="${notification.foto_profil}" alt="Profil" class="profile-image">
+                </div>
+                <div class="flex-grow-1">
+                    <div class="notification-content">
+                        ${text}
+                    </div>
+                    <div class="notification-time">${notification.waktu_formatted}</div>
+                    <span class="notification-class">
+                        <i class="bi bi-book me-1"></i>${notification.nama_kelas}
+                    </span>
+                </div>
+            </div>
+        `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // Function untuk memuat notifikasi dengan penanganan error
+        function loadHomeNotifications() {
+            fetch('get_notifications.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Notifications data received:', data); // Debug
+                    updateNotificationCard(data.notifications, data.total_unread);
+                })
+                .catch(error => {
+                    console.error('Error loading notifications:', error);
+                    // Tampilkan error pada halaman
+                    const container = document.getElementById('notification-list');
+                    if (container) {
+                        container.innerHTML = `
+                    <div class="notification-scroll">
+                        <div class="text-center py-4 text-danger">
+                            <i class="bi bi-exclamation-triangle fs-4 mb-2 d-block"></i>
+                            <p class="mb-0 small">Error memuat notifikasi</p>
+                        </div>
+                    </div>
+                `;
+                    }
+                });
+        }
+
+        // Handle notification click to view the relevant post
+        function viewNotification(notificationId, kelasId, postinganId) {
+            // Mark notification as read
+            fetch('mark_notification_read.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `notification_id=${notificationId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Navigate to the relevant post
+                        window.location.href = `kelas_guru.php?id=${kelasId}&post=${postinganId}`;
+                    }
+                });
+        }
     </script>
 
 

@@ -1,6 +1,8 @@
 <?php
 session_start();
 require "koneksi.php";
+require "create_notification.php";
+
 
 if(!isset($_SESSION['userid'])) {
     die(json_encode(['status' => 'error', 'message' => 'Unauthorized']));
@@ -19,6 +21,24 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     if(mysqli_stmt_execute($stmt)) {
         $komentar_id = mysqli_insert_id($koneksi);
+        
+        // Get post owner and kelas_id for notification
+        $query_post_info = "SELECT p.user_id, p.kelas_id FROM postingan_kelas p WHERE p.id = ?";
+        $stmt_post = mysqli_prepare($koneksi, $query_post_info);
+        mysqli_stmt_bind_param($stmt_post, "i", $postingan_id);
+        mysqli_stmt_execute($stmt_post);
+        $post_result = mysqli_stmt_get_result($stmt_post);
+        
+        if ($post_info = mysqli_fetch_assoc($post_result)) {
+            $post_owner = $post_info['user_id'];
+            $kelas_id = $post_info['kelas_id'];
+            
+            // Only create notification if the commenter is not the post owner
+            if ($user_id != $post_owner) {
+                // Create notification
+                createNotification($koneksi, $post_owner, 'komentar', $postingan_id, $user_id, $kelas_id);
+            }
+        }
         
         $query_komentar = "SELECT k.*,
             g.namaLengkap as nama_guru, g.foto_profil as foto_guru,

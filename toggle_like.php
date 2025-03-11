@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'koneksi.php';
+require 'create_notification.php';
 header('Content-Type: application/json; charset=utf8mb4');
 
 // Ensure proper character encoding
@@ -34,6 +35,8 @@ try {
     $result = mysqli_stmt_get_result($stmt);
     $existing_reaction = mysqli_fetch_assoc($result);
 
+    $isNewReaction = false; // Flag to track if this is a new reaction
+
     if($existing_reaction) {
         if($existing_reaction['emoji'] === $emoji) {
             // If clicking the same emoji, remove the reaction (unlike)
@@ -47,6 +50,7 @@ try {
             $stmt = mysqli_prepare($koneksi, $update_query);
             mysqli_stmt_bind_param($stmt, "sis", $emoji, $postingan_id, $user_id);
             mysqli_stmt_execute($stmt);
+            $isNewReaction = true; // Consider emoji change as a new reaction for notification
         }
     } else {
         // If no existing reaction, add new one
@@ -54,6 +58,7 @@ try {
         $stmt = mysqli_prepare($koneksi, $insert_query);
         mysqli_stmt_bind_param($stmt, "iss", $postingan_id, $user_id, $emoji);
         mysqli_stmt_execute($stmt);
+        $isNewReaction = true; // This is a new reaction
     }
 
     // Get updated reaction counts
@@ -83,6 +88,27 @@ try {
     mysqli_stmt_bind_param($stmt, "is", $postingan_id, $user_id);
     mysqli_stmt_execute($stmt);
     $current_reaction = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+
+    // Add notification logic here if this is a new reaction
+    if ($isNewReaction) {
+        // Get post owner (the teacher)
+        $query_post_owner = "SELECT p.user_id, p.kelas_id FROM postingan_kelas p WHERE p.id = ?";
+        $stmt = mysqli_prepare($koneksi, $query_post_owner);
+        mysqli_stmt_bind_param($stmt, "i", $postingan_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        if ($row = mysqli_fetch_assoc($result)) {
+            $post_owner = $row['user_id'];
+            $kelas_id = $row['kelas_id'];
+            
+            // Only create notification if the liker is not the post owner
+            if ($user_id != $post_owner) {
+                // Create notification
+                createNotification($koneksi, $post_owner, 'like', $postingan_id, $user_id, $kelas_id);
+            }
+        }
+    }
 
     mysqli_commit($koneksi);
 

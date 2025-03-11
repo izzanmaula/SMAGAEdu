@@ -412,10 +412,10 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                             <!-- Deskripsi -->
                             <div class="info-item mb-4">
                                 <div class="d-flex align-items-start gap-3">
-                                    <div class="icon-wrapper">
+                                    <div class="icon-wrapper flex-shrink-0">
                                         <i class="bi bi-card-text"></i>
                                     </div>
-                                    <div>
+                                    <div class="flex-grow-1">
                                         <div class="label">Deskripsi</div>
                                         <div class="value"><?php echo htmlspecialchars($ujian['deskripsi']); ?></div>
                                     </div>
@@ -555,7 +555,6 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                 border-radius: 16px;
                 padding: 20px;
                 margin-bottom: 16px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
                 animation: fadeIn 0.5s ease-out;
                 transition: all 0.2s ease;
                 border: 1px solid rgba(0, 0, 0, 0.08);
@@ -718,31 +717,64 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                 <div class="modal-body px-4">
                     <div class="alert" style="border-radius: 12px; background-color:rgb(255, 250, 240); border: none;">
                         <div class="d-flex">
-                            <i class="bi bi-info-circle fs-4 me-3 text-black" style="font-size: 30px;"></i>
-                            <p class="p-0 m-0 text-black" style="font-size: 12px;">Fitur ini masih dalam tahap eksperimental sehinggal sewaktu-waktu dapat gagal atau beberapa soal Anda tidak terbaca</p>
+                            <i class="bi bi-exclamation-circle fs-4 me-3 text-black" style="font-size: 30px;"></i>
+                            <p class="p-0 m-0 text-black" style="font-size: 12px;">Hingga saat ini, input word hanya mendukung input soal tanpa gambar secara otomatis. Kami akan segera memperbaiki secepat mungkin</p>
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2 mb-4">
-                        <a href="templates/template_soal.docx" download class="btn border flex-grow-1" style="border-radius: 12px;">
-                            <div class="d-flex align-items-center justify-content-center gap-2">
-                                <i class="bi bi-file-earmark-word"></i>
-                                <div class="text-start">
-                                    <span class="d-block" style="font-size: 14px;">Template Soal</span>
-                                    <small class="text-muted" style="font-size: 12px;">Download (.docx)</small>
+                    <div class="mb-4">
+                        <p class="small text-muted mb-2">Unduh template sesuai jenjang</p>
+                        <div class="row g-2">
+                            <!-- SMP Templates -->
+                            <div class="col-6">
+                                <div class="card h-100 border" style="border-radius: 12px;">
+                                    <div class="card-header py-2 px-3">
+                                        <h6 class="mb-0 fw-bold" style="font-size: 14px;">SMP</h6>
+                                    </div>
+                                    <div class="card-body p-2">
+                                        <div class="d-flex flex-column gap-2">
+                                            <a href="templates/smp_template_soal.docx" download class="btn border btn-sm w-100" style="border-radius: 10px;">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-file-earmark-word"></i>
+                                                    <span style="font-size: 12px;">Template Soal</span>
+                                                </div>
+                                            </a>
+                                            <a href="templates/smp_template_jawaban.docx" download class="btn border btn-sm w-100" style="border-radius: 10px;">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-file-earmark-word"></i>
+                                                    <span style="font-size: 12px;">Template Jawaban</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </a>
-
-                        <a href="templates/template_jawaban.docx" download class="btn border flex-grow-1" style="border-radius: 12px;">
-                            <div class="d-flex align-items-center justify-content-center gap-2">
-                                <i class="bi bi-file-earmark-word"></i>
-                                <div class="text-start">
-                                    <span class="d-block" style="font-size: 14px;">Template Jawaban</span>
-                                    <small class="text-muted" style="font-size: 12px;">Download (.docx)</small>
+                            
+                            <!-- SMA Templates -->
+                            <div class="col-6">
+                                <div class="card h-100 border" style="border-radius: 12px;">
+                                    <div class="card-header py-2 px-3">
+                                        <h6 class="mb-0 fw-bold" style="font-size: 14px;">SMA</h6>
+                                    </div>
+                                    <div class="card-body p-2">
+                                        <div class="d-flex flex-column gap-2">
+                                            <a href="templates/sma_template_soal.docx" download class="btn border btn-sm w-100" style="border-radius: 10px;">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-file-earmark-word"></i>
+                                                    <span style="font-size: 12px;">Template Soal</span>
+                                                </div>
+                                            </a>
+                                            <a href="templates/sma_template_jawaban.docx" download class="btn border btn-sm w-100" style="border-radius: 10px;">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-file-earmark-word"></i>
+                                                    <span style="font-size: 12px;">Template Jawaban</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
 
 
@@ -761,7 +793,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                     </form>
                 </div>
                 <div class="modal-footer border-0 gap-2">
-                    <button type="button" class="btn btn-light flex-fill" style="border-radius: 12px; font-size: 15px;" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-light flex-fill border" style="border-radius: 12px; font-size: 15px;" data-bs-dismiss="modal">Batal</button>
                     <button type="button" class="btn color-web text-white flex-fill" style="border-radius: 12px; font-size: 15px;" id="uploadButton">
                         <span>Upload</span>
                         <div class="spinner-border spinner-border-sm ms-2 d-none" role="status"></div>
@@ -771,44 +803,6 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
         </div>
     </div>
 
-    <!-- Fixed SAGA AI Character di pojok kanan bawah -->
-    <div id="sagaCharacter" class="d-none d-md-block" style="position: fixed; bottom: 20px; right: 20px; cursor: pointer; z-index: 1000;">
-        <!-- Message Bubble with enhanced styling -->
-        <div class="saga-bubble d-none" style="position: absolute; bottom: 70px; right: 0; background: white; padding: 15px 20px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); width: 280px; transition: all 0.3s ease;">
-            <p id="sagaMessage" class="m-0" style="font-size: 14px; line-height: 1.5; color: #2d3436;"></p>
-            <!-- Add subtle tail to bubble -->
-            <div style="position: absolute; bottom: -8px; right: 24px; width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 8px solid white;"></div>
-        </div>
-
-        <!-- SAGA Icon with perfect circle styling -->
-        <div class="saga-icon" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: white; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s ease; border: 2px solid rgba(218, 119, 86, 0.2);">
-            <i class="bi bi-stars" style="color: rgb(218, 119, 86); font-size: 24px;"></i>
-        </div>
-    </div>
-
-    <style>
-        .saga-bubble {
-            animation: fadeInUp 0.4s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Hover effect for the icon */
-        .saga-icon:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-    </style>
 
     <!-- Modal AI Soal yang sudah ada -->
     <!-- Tambahkan modal untuk Buat Soal dengan AI dengan iOS-style UI -->
@@ -850,9 +844,9 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer btn-group">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn color-web text-white" onclick="generateMultipleSoal()">
+                <div class="modal-footer border-0 gap-2">
+                    <button type="button" class="btn btn-light flex-fill border" style="border-radius: 12px; font-size: 15px;" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn color-web text-white flex-fill" style="border-radius: 12px; font-size: 15px;" onclick="generateMultipleSoal()">
                         <span>Generate Soal</span>
                         <div class="spinner-border spinner-border-sm ms-2 d-none" role="status"></div>
                     </button>
@@ -961,6 +955,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
             const spinner = button.querySelector('.spinner-border');
             const buttonText = button.querySelector('span');
             const overlay = document.getElementById('generateOverlay');
+
 
             try {
                 // Update button state
@@ -1160,7 +1155,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
 
             if (currentTipeSoal === 'pilihan_ganda') {
                 modalContent.innerHTML = overlayHtml + `
-            <div class="modal-header bg-white border-0">
+            <div class="modal-header bg-light border-0">
                 <h5 class="modal-title fw-bold">${isEdit ? 'Edit' : 'Buat'} Soal Pilihan Ganda</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
@@ -1308,7 +1303,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                     </div>
                 </form>
             </div>
-            <div class="modal-footer btn-group bg-white border-0">
+            <div class="modal-footer btn-group bg-light border-0">
                 <button type="button" class="btn border" data-bs-dismiss="modal" style="border-radius: 12px;">Batal</button>
                 <button type="button" class="btn color-web text-white" onclick="simpanSoal()" style="border-radius: 12px;">Simpan</button>
             </div>
@@ -1428,7 +1423,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
         async function deleteExistingImage() {
             const form = document.getElementById('formSoal');
             const soalId = form.querySelector('[name="soal_id"]').value;
-            
+
             try {
                 const response = await fetch('hapus_gambar_soal.php', {
                     method: 'POST',

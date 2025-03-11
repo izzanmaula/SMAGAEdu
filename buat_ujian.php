@@ -40,15 +40,16 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
             background-color: rgb(218, 119, 86);
         }
 
+        .color-web:hover {
+            background-color: rgb(218, 119, 86);
+        }
+
         .btn {
             transition: background-color 0.3s ease;
             border: 0;
             border-radius: 5px;
         }
 
-        .btn:hover {
-            background-color: rgb(219, 106, 68);
-        }
 
         .menu-samping {
             position: fixed;
@@ -105,8 +106,46 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
         </div>
     </div>
 
+            <!-- style animasi modal -->
+            <style>
+            .modal-content {
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
 
+            .modal .btn {
+                font-weight: 500;
+                transition: all 0.2s;
+            }
 
+            .modal .btn:active {
+                transform: scale(0.98);
+            }
+
+            .modal.fade .modal-dialog {
+                transform: scale(0.95);
+                transition: transform 0.2s ease-out;
+            }
+
+            .modal.show .modal-dialog {
+                transform: scale(1);
+            }
+        </style>
+
+        <!-- Validation Modal -->
+        <div class="modal fade" id="validationModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 16px;">
+                    <div class="modal-body text-center p-4">
+                        <i class="bi bi-exclamation-triangle-fill" style="font-size: 3rem; color: rgb(218, 119, 86);"></i>
+                        <h5 class="mt-3 fw-bold">Data Belum Lengkap</h5>
+                        <p class="mb-4" id="validationMessage">Mohon lengkapi semua field yang diperlukan.</p>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn color-web flex-fill text-white px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Ok, Saya Mengerti</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <!-- Main Content -->
     <div class="col p-4 col-utama">
@@ -228,11 +267,11 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
 
                         <!-- Navigation Buttons -->
                         <div class="navigation-buttons d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary" onclick="previousStep()">
-                                <p class="p-0 m-0" style="font-size: 12px;">Kembali</p>
+                            <button type="button" class="btn btn-secondary rounded-5" onclick="previousStep()">
+                                <i class="bi bi-chevron-left"></i>
                             </button>
-                            <button type="button" class="btn color-web text-white" onclick="nextStep()">
-                                Lanjut <i class="bi bi-chevron-right"></i>
+                            <button type="button" class="btn color-web rounded-5 text-white" onclick="nextStep()">
+                                <i class="bi bi-chevron-right"></i>
                             </button>
                         </div>
 
@@ -480,13 +519,13 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
 
             // Change button text and type on last step
             if (step === totalSteps) {
-                nextButton.textContent = 'Kirim';
+                nextButton.textContent = '<i class="bi bi-send"></i>';
                 nextButton.type = 'submit';
-                nextButton.innerHTML = '<p style="font-size:12px;" class="p-0 m-0">Kirim</p>'
+                nextButton.innerHTML = '<i class="bi bi-send"></i>'
             } else {
-                nextButton.textContent = 'Lanjut';
+                nextButton.textContent = '<i class="bi bi-chevron-right"></i>';
                 nextButton.type = 'button';
-                nextButton.innerHTML = '<p style="font-size:12px;" class="p-0 m-0">Lanjut</p>';
+                nextButton.innerHTML = '<i class="bi bi-chevron-right"></i>';
             }
 
             setTimeout(() => {
@@ -544,8 +583,33 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
             if (materiItems.length > 1) {
                 btn.closest('.materi-item').remove();
                 updateMateriNumbers();
+                updateMateriPreview();
             } else {
-                alert('Harus ada minimal satu materi!');
+                // Show modal instead of alert
+                const modalHtml = `
+                <div class="modal fade" id="materiMinimumModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="border-radius: 16px;">
+                            <div class="modal-body text-center p-4">
+                                <i class="bi bi-exclamation-circle" style="font-size: 3rem; color:red;"></i>
+                                <h5 class="mt-3 fw-bold">Peringatan</h5>
+                                <p class="mb-4">Harus ada minimal satu materi</p>
+                                <div class="d-flex justify-content-center">
+                                    <button type="button" class="btn color-web flex-fill text-white px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                
+                // Append modal to body if it doesn't exist
+                if (!document.getElementById('materiMinimumModal')) {
+                    document.body.insertAdjacentHTML('beforeend', modalHtml);
+                }
+                
+                // Show the modal
+                const minimumModal = new bootstrap.Modal(document.getElementById('materiMinimumModal'));
+                minimumModal.show();
             }
         }
 
@@ -620,6 +684,25 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
             if (durasi > durasiMenit) {
                 e.preventDefault();
                 alert('Durasi ujian tidak boleh lebih besar dari rentang waktu ujian!');
+            }
+        });
+    </script>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const form = e.target;
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+                const invalidElements = form.querySelectorAll(':invalid');
+                if (invalidElements.length > 0) {
+                    const firstInvalidElement = invalidElements[0];
+                    firstInvalidElement.focus();
+                    const validationMessage = firstInvalidElement.validationMessage || 'Data Belum Lengkap';
+                    document.getElementById('validationMessage').textContent = validationMessage;
+                    const validationModal = new bootstrap.Modal(document.getElementById('validationModal'));
+                    validationModal.show();
+                }
             }
         });
     </script>
