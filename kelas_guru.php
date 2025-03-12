@@ -514,12 +514,9 @@ function getProfilePhoto($user_type, $data)
                                     </div>
 
                                     <!-- Batas Waktu -->
-                                    <div class="deadline-container bg-light p-3 rounded-4 mb-4">
-                                        <div class="d-flex align-items-center mb-3">
-                                            <i class="bi bi-clock-fill me-2" style="color: rgb(218, 119, 86);"></i>
-                                            <span class="fw-medium">Batas Pengumpulan</span>
-                                        </div>
-                                        <div class="row g-3">
+                                    <div class="form-group-ios mb-4">
+                                        <label class="form-label mb-2">Batas Pengumpulan</label>
+                                        <div class="row g-2">
                                             <div class="col-6">
                                                 <input type="date" class="form-control form-control-ios"
                                                     name="batas_tanggal" required>
@@ -581,7 +578,7 @@ function getProfilePhoto($user_type, $data)
                     }
 
                     .attachment-box {
-                        border: 2px dashed #E5E5EA;
+                        border: 1px solid #E5E5EA;
                         border-radius: 12px;
                         transition: all 0.2s;
                         cursor: pointer;
@@ -1301,11 +1298,11 @@ function getProfilePhoto($user_type, $data)
 
                                     <!-- Text Area -->
                                     <div class="position-relative mb-3">
-                                        <textarea class="form-control bg-white border"
+                                        <textarea class="form-control bg-light border-0"
                                             name="konten"
                                             id="postContent"
                                             placeholder="Apa yang ingin Anda bagikan?"
-                                            style="height: 150px; resize: none;"
+                                            style="height: 150px; resize: none; font-size:1.5rem"
                                             required></textarea>
 
                                     </div>
@@ -1325,7 +1322,7 @@ function getProfilePhoto($user_type, $data)
                                 </div>
 
                                 <!-- Footer Actions -->
-                                <div class="modal-footer border-top position-relative">
+                                <div class="modal-footer border-0 position-relative">
                                     <div class="d-flex justify-content-between align-items-center w-100">
                                         <!-- Attachment Button -->
                                         <div class="btn-group">
@@ -1506,12 +1503,12 @@ function getProfilePhoto($user_type, $data)
                                                 }
                                             </style>
                                         </div>
-
-                                        <!-- Post Button -->
-                                        <button type="submit" class="btn btnPrimary text-white px-4">
-                                            <i class="bi bi-send-fill"></i>
-                                        </button>
                                     </div>
+                                    
+                                        <!-- Post Button -->
+                                        <button type="submit" class="btn flex-fill btnPrimary text-white px-4">
+                                            <p class="p-0 m-0">Kirim</p>
+                                        </button>
                                 </div>
                             </form>
                         </div>

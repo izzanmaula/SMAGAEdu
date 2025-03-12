@@ -70,25 +70,25 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
         .col-utama {
             margin-left: 13rem;
             animation: fadeInUp 0.5s;
+            opacity: 1;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
                 opacity: 1;
+                transform: translateY(0);
             }
-
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
+        }
     </style>
 </head>
 
 <body>
-    
+
     <?php include 'includes/styles.php'; ?>
 
     <div class="container-fluid">
@@ -106,50 +106,50 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
         </div>
     </div>
 
-            <!-- style animasi modal -->
-            <style>
-            .modal-content {
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            }
+    <!-- style animasi modal -->
+    <style>
+        .modal-content {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
 
-            .modal .btn {
-                font-weight: 500;
-                transition: all 0.2s;
-            }
+        .modal .btn {
+            font-weight: 500;
+            transition: all 0.2s;
+        }
 
-            .modal .btn:active {
-                transform: scale(0.98);
-            }
+        .modal .btn:active {
+            transform: scale(0.98);
+        }
 
-            .modal.fade .modal-dialog {
-                transform: scale(0.95);
-                transition: transform 0.2s ease-out;
-            }
+        .modal.fade .modal-dialog {
+            transform: scale(0.95);
+            transition: transform 0.2s ease-out;
+        }
 
-            .modal.show .modal-dialog {
-                transform: scale(1);
-            }
-        </style>
+        .modal.show .modal-dialog {
+            transform: scale(1);
+        }
+    </style>
 
-        <!-- Validation Modal -->
-        <div class="modal fade" id="validationModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content" style="border-radius: 16px;">
-                    <div class="modal-body text-center p-4">
-                        <i class="bi bi-exclamation-triangle-fill" style="font-size: 3rem; color: rgb(218, 119, 86);"></i>
-                        <h5 class="mt-3 fw-bold">Data Belum Lengkap</h5>
-                        <p class="mb-4" id="validationMessage">Mohon lengkapi semua field yang diperlukan.</p>
-                        <div class="d-flex justify-content-center">
-                            <button type="button" class="btn color-web flex-fill text-white px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Ok, Saya Mengerti</button>
-                        </div>
+    <!-- Validation Modal -->
+    <div class="modal fade" id="validationModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px;">
+                <div class="modal-body text-center p-4">
+                    <i class="bi bi-exclamation-triangle-fill" style="font-size: 3rem; color: rgb(218, 119, 86);"></i>
+                    <h5 class="mt-3 fw-bold">Data Belum Lengkap</h5>
+                    <p class="mb-4" id="validationMessage">Mohon lengkapi semua field yang diperlukan.</p>
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn color-web flex-fill text-white px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Ok, Saya Mengerti</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
     <!-- Main Content -->
     <div class="col p-4 col-utama">
-        <h3 class="mb-4 fw-bold">Buat Ujian Baru</h3>
+        <!-- <h3 class="mb-4 fw-bold">Buat Ujian Baru</h3> -->
         <div class="row">
             <!-- Form Section (Left) -->
             <div class="col-md-6">
@@ -160,19 +160,17 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                             <div class="card border-0 p-4 mb-3">
                                 <!-- nama judul -->
                                 <div class="d-flex align-items-center gap-3 mb-3">
-                                    <span class="bi bi-person-lines-fill" style="font-size: 70px; color:rgb(218, 119, 86)"></span>
                                     <div>
-                                        <h5 class="card-title mb-1">Berikan Identitas Ujian Anda</h5>
-                                        <p style="font-size: 12px;" class="pb-0 mb-0">Berikan judul dan deskripsi singkat untuk mempermudah Anda dalam mengkategorikan berkas ujian Anda.</p>
+                                        <h5 class="card-title mb-1 fw-bold" style="font-size: 1.5rem;">Berikan Identitas Ujian Anda</h5>
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">Apa judul ujian Anda?</label>
+                                    <label class="form-label">Apa judul ujian Anda?</label>
                                     <input type="text" class="form-control shadow-sm" name="judul"
                                         onchange="updatePreview(this)" data-preview="judul-preview" placeholder="Cth : Ujian Harian Bahasa Indonesia" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">Apa deskripsi ujian Anda?</label>
+                                    <label class="form-label">Apa deskripsi ujian Anda?</label>
                                     <textarea class="form-control shadow-sm" name="deskripsi" rows="3"
                                         onchange="updatePreview(this)" data-preview="deskripsi-preview" placeholder="Cth : Evaluasi pemahaman tentang Teks Eksposisi dan Struktur Paragraf, Bab 1-3"></textarea>
                                 </div>
@@ -185,10 +183,8 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                             <div class="card border-0 p-4 mb-3">
                                 <!-- nama judul -->
                                 <div class="d-flex align-items-center gap-3 mb-3">
-                                    <span class="bi bi-people-fill" style="font-size: 70px; color:rgb(218, 119, 86)"></span>
                                     <div>
-                                        <h5 class="card-title mb-1">Kelas apa yang ingin Anda ujikan?</h5>
-                                        <p style="font-size: 12px;" class="pb-0 mb-0">Anda hanya dapat memberikan berkas ujian kepada kelas yang telah Anda buat dan diikuti oleh siswa.</p>
+                                        <h5 class="card-title mb-1 fw-bold" style="font-size: 1.5rem;">Kelas apa yang ingin Anda ujikan?</h5>
                                     </div>
                                 </div>
                                 <label for="kelas" class="form-label fw-semibold">Pilih Kelas</label>
@@ -200,6 +196,8 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                                         </option>
                                     <?php } ?>
                                 </select>
+                                <!-- // Tambahkan di dalam form -->
+                                <input type="hidden" id="background_image" name="background_image" value="">
                             </div>
                         </div>
 
@@ -210,7 +208,7 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                                     <div class="d-flex align-items-center gap-3 mb-3">
                                         <span class="bi bi-stars" style="font-size: 70px; color:rgb(218, 119, 86)"></span>
                                         <div>
-                                            <h5 class="card-title mb-1">SAGA siap membantu Anda</h5>
+                                            <h5 class="card-title mb-1 fw-bold" style="font-size:1.5rem">Membuat Soal Tidak Pernah Semudah Ini</h5>
                                             <p style="font-size: 12px;" class="pb-0 mb-0">Anda dapat memberikan topik materi yang akan di ujikan, dengan ini SAGA akan membaca dan membantu Anda dalam membuat soal.</p>
                                         </div>
                                     </div>
@@ -242,10 +240,8 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                         <div class="question-card d-none" data-step="4">
                             <div class="row g-3 mb-4 p-4">
                                 <div class="d-flex align-items-center gap-3 mb-3">
-                                    <span class="bi bi-calendar-week-fill" style="font-size: 70px; color:rgb(218, 119, 86)"></span>
                                     <div>
-                                        <h5 class="card-title mb-1">Tentukan waktu ujian Anda</h5>
-                                        <p style="font-size: 12px;" class="pb-0 mb-0">Berikan jadwal soal Anda di ujikan, kami akan memblokir siswa mengerjakan soal Anda sampai waktu ujian yang telah Anda tentukan.</p>
+                                        <h5 class="card-title mb-1 fw-bold" style="font-size: 1.5rem;">Tentukan waktu ujian Anda</h5>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -281,47 +277,136 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
 
             <!-- Preview Section (Right) -->
             <div class="col-md-6 d-none d-md-block">
-                <div class="card border rounded-4 p-4">
+                <div class="card border-0 p-4">
                     <div class="d-flex align-items-center gap-2 mb-4">
                         <i class="bi bi-eye-fill text-muted"></i>
                         <h5 class="mb-0">Pratinjau Ujian</h5>
                     </div>
 
-                    <div class="preview-content">
-                        <!-- Judul Section -->
-                        <div class="preview-section mb-2">
-                            <label class="preview-label">Judul Ujian</label>
-                            <div class="preview-value" id="judul-preview">-</div>
-                        </div>
+                    <style>
+                        .class-card {
+                            border-radius: 12px;
+                            overflow: hidden;
+                            background: white;
+                            opacity: 0;
+                            transform: translateY(20px);
+                            animation: fadeInUp 0.5s ease forwards;
+                            will-change: transform;
+                        }
 
-                        <!-- Deskripsi Section -->
-                        <div class="preview-section mb-2">
-                            <label class="preview-label">Deskripsi</label>
-                            <div class="preview-value" id="deskripsi-preview">-</div>
-                        </div>
+                        .class-card:hover {
+                            transform: translateY(-5px);
+                            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        }
 
-                        <!-- Kelas Section -->
-                        <div class="preview-section mb-2">
-                            <label class="preview-label">Kelas</label>
-                            <div class="preview-value" id="kelas-preview">-</div>
-                        </div>
+                        @keyframes fadeInUp {
+                            from {
+                                opacity: 0;
+                                transform: translateY(20px);
+                            }
 
-                        <!-- Materi Section -->
-                        <div class="preview-section mb-2">
-                            <label class="preview-label">Materi Ujian</label>
-                            <div class="preview-value" id="materi-preview">-</div>
-                        </div>
+                            to {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
 
-                        <!-- Waktu Section -->
-                        <div class="preview-section mb-2">
-                            <label class="preview-label">Waktu Pelaksanaan</label>
-                            <div class="preview-value" id="waktu-preview">-</div>
-                        </div>
+                        .class-banner {
+                            height: 160px;
+                            background-size: cover;
+                            background-position: center;
+                            position: relative;
+                            background-image: url('assets/bg.jpg');
+                        }
 
-                        <!-- Durasi ujian -->
-                        <div class="preview-section mb-2">
-                            <div id="duration-info" class="text-muted" style="font-size: 12px;">
-                                Waktu ujian akan muncul setelah Anda memilih waktu mulai dan selesai
+                        .profile-circle {
+                            width: 70px;
+                            height: 70px;
+                            border-radius: 50%;
+                            border: 3px solid #fff;
+                            position: absolute;
+                            bottom: -35px;
+                            right: 20px;
+                            object-fit: cover;
+                            background: #fff;
+                        }
+
+                        .class-content {
+                            padding: 20px;
+                        }
+
+                        .class-title {
+                            font-size: 18px;
+                            font-weight: 600;
+                        }
+
+                        .btn-enter {
+                            background: rgb(218, 119, 86);
+                            color: #fff;
+                            padding: 8px 20px;
+                            border-radius: 6px;
+                            display: inline-flex;
+                            align-items: center;
+                            transition: background 0.3s;
+                        }
+
+                        .btn-enter:hover {
+                            background: rgb(198, 99, 66);
+                            color: #fff;
+                        }
+                    </style>
+
+                    <div class="class-card border">
+                        <div class="class-banner">
+                            <img src="<?php echo ($is_guru || $is_admin) ?
+                                            (!empty($guru['foto_profil']) ? 'uploads/profil/' . $guru['foto_profil'] : 'assets/pp.png') : (!empty($siswa['photo_url']) ? $siswa['photo_url'] : 'assets/pp.png'); ?>"
+                                 class="profile-circle">
+                        </div>
+                        <div class="class-content">
+                            <h4 class="class-title mb-3" id="judul-preview">-</h4>
+
+                            <div class="class-meta" style="font-size: 12px;">
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-file-text me-2 text-muted"></i>
+                                            <span class="text-secondary" id="deskripsi-preview">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-book me-2 text-muted"></i>
+                                            <span class="text-dark" id="kelas-preview">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-list-check me-2 text-muted"></i>
+                                            <span class="text-secondary" id="materi-preview">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-calendar-event me-2 text-muted"></i>
+                                            <span class="text-secondary" id="waktu-preview">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-clock me-2 text-muted"></i>
+                                            <span class="text-secondary" id="duration-info">
+                                                Waktu ujian akan muncul setelah Anda memilih waktu mulai dan selesai
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button class="btn px-3 py-2 w-100" style="background: rgb(218, 119, 86); border: none; color: white;">
+                                    <i class="bi bi-play-circle me-1"></i> Mulai Ujian
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -440,22 +525,6 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
             }
         }
 
-        function updatePreviewSelect(element) {
-            const previewElement = document.getElementById('kelas-preview');
-            const selectedOption = element.options[element.selectedIndex];
-            const newValue = selectedOption.text || '-';
-
-            previewElement.textContent = newValue;
-
-            previewElement.style.animation = 'fadeIn 0.3s ease';
-            previewElement.classList.add('highlight');
-
-            setTimeout(() => {
-                previewElement.style.animation = '';
-                previewElement.classList.remove('highlight');
-            }, 1500);
-        }
-
         function updateMateriPreview() {
             const materiInputs = document.querySelectorAll('input[name="materi[]"]');
             const materiValues = Array.from(materiInputs)
@@ -552,6 +621,60 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
         showStep(1);
     </script>
 
+    <script>
+// Simpan data background kelas dalam objek JavaScript
+const kelasBackgrounds = <?php
+    mysqli_data_seek($result_kelas, 0); // Reset pointer hasil query
+    $backgrounds = array();
+    while ($kelas = mysqli_fetch_assoc($result_kelas)) {
+        $backgrounds[$kelas['id']] = $kelas['background_image'];
+    }
+    echo json_encode($backgrounds);
+?>;
+
+
+// Modifikasi fungsi updatePreviewSelect
+// Modifikasi bagian perubahan background di fungsi updatePreviewSelect
+function updatePreviewSelect(element) {
+    const previewElement = document.getElementById('kelas-preview');
+    const selectedOption = element.options[element.selectedIndex];
+    const newValue = selectedOption.text || '-';
+
+    previewElement.textContent = newValue;
+
+    previewElement.style.animation = 'fadeIn 0.3s ease';
+    previewElement.classList.add('highlight');
+
+    // Update background berdasarkan kelas yang dipilih
+    const kelasId = element.value;
+    let backgroundUrl = 'assets/bg.jpg'; // Default background
+
+    if (kelasId && kelasBackgrounds[kelasId] && kelasBackgrounds[kelasId] !== '') {
+        backgroundUrl = kelasBackgrounds[kelasId];
+    }
+
+    // Set background image
+    document.querySelector('.class-banner').style.backgroundImage = `url('${backgroundUrl}')`;
+    
+    // Update hidden input untuk background
+    if (document.getElementById('background_image')) {
+        document.getElementById('background_image').value = backgroundUrl;
+    } else {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.id = 'background_image';
+        hiddenInput.name = 'background_image';
+        hiddenInput.value = backgroundUrl;
+        document.querySelector('form').appendChild(hiddenInput);
+    }
+
+    setTimeout(() => {
+        previewElement.style.animation = '';
+        previewElement.classList.remove('highlight');
+    }, 1500);
+}
+    </script>
+
     <!-- materi ujian -->
     <script>
         function tambahMateri() {
@@ -601,12 +724,12 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                         </div>
                     </div>
                 </div>`;
-                
+
                 // Append modal to body if it doesn't exist
                 if (!document.getElementById('materiMinimumModal')) {
                     document.body.insertAdjacentHTML('beforeend', modalHtml);
                 }
-                
+
                 // Show the modal
                 const minimumModal = new bootstrap.Modal(document.getElementById('materiMinimumModal'));
                 minimumModal.show();

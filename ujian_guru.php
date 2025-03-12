@@ -301,7 +301,7 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
             <div class="d-none d-md-block col-md-auto">
                 <a href="buat_ujian.php" class="btn btn-light border text-black d-flex align-items-center" style="border-radius: 15px;">
                     <i class="bi bi-plus-lg me-2"></i>
-                    Buat Ujian
+                    Buat
                 </a>
             </div>
         </div>

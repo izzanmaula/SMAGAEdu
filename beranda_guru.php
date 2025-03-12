@@ -366,7 +366,7 @@ $guru = mysqli_fetch_assoc($result);
                 <div class="row">
                     <!-- Konten ucapan selamat datang di kiri -->
                     <div class="col-md-6 mb-3 mt-2 mb-md-0">
-                        <div id="jumbotron-khusus" class="jumbotron-content active">
+                        <div id="jumbotron-khusus" class="jumbotron-content active mb-3">
                             <h2 class="display-5">
                                 <?php
                                 date_default_timezone_set('Asia/Jakarta');
@@ -419,6 +419,7 @@ $guru = mysqli_fetch_assoc($result);
                                     height: 300px;
                                     /* Increased from 280px */
                                     overflow: hidden;
+                                    border: 0;
                                 }
 
                                 .notification-scroll {
@@ -1637,7 +1638,7 @@ document.addEventListener('click', function(e) {
             if (notifications.length === 0) {
                 container.innerHTML = `
             <div class="notification-scroll">
-                <div class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center border" style="height: 100%; border-radius:15px;">
+                <div class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center" style="height: 100%; border-radius:15px;">
                     <i class="bi bi-bell-slash fs-4 mb-2"></i>
                     <p class="mb-0 small">Belum ada notifikasi</p>
                 </div>
