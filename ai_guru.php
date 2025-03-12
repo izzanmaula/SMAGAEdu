@@ -45,51 +45,54 @@ $guru = mysqli_fetch_assoc($result);
     }
 
     #model-list-container {
-  position: fixed !important;
-  z-index: 100000 !important;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
-  background: white !important;
-  border-radius: 8px !important;
-  overflow: hidden !important;
-  margin-top: 0 !important; /* Reset Bootstrap margins */
-  padding: 0.5rem 0 !important;
-  transform: none !important; /* Prevent Bootstrap transforms */
-}
+        position: fixed !important;
+        z-index: 100000 !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+        background: white !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        margin-top: 0 !important;
+        /* Reset Bootstrap margins */
+        padding: 0.5rem 0 !important;
+        transform: none !important;
+        /* Prevent Bootstrap transforms */
+    }
 
-.model-item {
-  white-space: normal !important; /* Allow text to wrap */
-}
+    .model-item {
+        white-space: normal !important;
+        /* Allow text to wrap */
+    }
 
-/* Make sure the dropup container has proper position */
-#modelDropupContainer {
-  position: relative !important;
-  z-index: 10000 !important;
-}
+    /* Make sure the dropup container has proper position */
+    #modelDropupContainer {
+        position: relative !important;
+    }
 
-/* Fix for Bootstrap's dropdown backdrop which might be blocking clicks */
-.dropdown-backdrop {
-  display: none !important;
-}
-/* Style for the model list */
-#model-list-container {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
+    /* Fix for Bootstrap's dropdown backdrop which might be blocking clicks */
+    .dropdown-backdrop {
+        display: none !important;
+    }
 
-.model-item {
-  padding: 10px 15px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
+    /* Style for the model list */
+    #model-list-container {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
 
-.model-item:hover {
-  background-color: #f8f9fa;
-}
+    .model-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
 
-.model-item.active {
-  background-color: rgba(218, 119, 86, 0.1);
-}
+    .model-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .model-item.active {
+        background-color: rgba(218, 119, 86, 0.1);
+    }
 </style>
 
 <body>
@@ -311,8 +314,8 @@ $guru = mysqli_fetch_assoc($result);
                             data-bs-toggle="modal"
                             data-bs-target="#projectModal"
                             style="border-radius: 15px;">
-                            <i class="bi bi-folder-plus"></i>
-                            <span class="button-text d-none d-md-inline" style="font-size: 13px;">Memori</span>
+                            <i class="bi bi-gear"></i>
+                            <span class="button-text d-none d-md-inline" style="font-size: 13px;">Pengaturan</span>
                         </button>
                     </div>
 
@@ -449,24 +452,24 @@ $guru = mysqli_fetch_assoc($result);
                             <button class="btn ms-1 button-style d-flex rounded-pill align-items-center"
                                 style="background-color:rgb(219, 213, 183); padding: 5px 15px;"
                                 onclick="document.getElementById('file-input').click()">
-                                <i class="bi-plus" style="font-size: 16px;"></i>
+                                <i class="bi bi-plus" style="font-size: 16px;"></i>
                                 <input type="file" id="file-input" accept=".pdf,.doc,.docx.xlsx,.xls" style="display: none;">
                             </button>
 
                             <!-- Model selection dropdown (menggantikan deep-thinking-toggle) -->
                             <div class="btn-group dropup" id="modelDropupContainer">
-                            <button class="btn rounded-pill button-style p-2 d-flex align-items-center gap-2" style="background-color: rgb(219, 213, 183);" 
-  id="modelDropdownBtn">
-  <i class="bi bi-robot" style="font-size: 16px;"></i>
-  <p class="p-0 m-0 text-dark" style="font-size: 12px; cursor: pointer;">
-    <span id="current-model-name">LLaMA 3.3 70B</span>
-  </p>
-</button>
+                                <button class="btn rounded-pill button-style p-2 d-flex align-items-center gap-2" style="background-color: rgb(219, 213, 183);"
+                                    id="modelDropdownBtn">
+                                    <i class="bi bi-stars" style="font-size: 16px;"></i>
+                                    <p class="p-0 m-0 text-dark" style="font-size: 12px; cursor: pointer;">
+                                        <span id="current-model-name">LLaMA 3.3 70B</span>
+                                    </p>
+                                </button>
 
-<ul id="model-list-container" style="display: none;">
-  <!-- Your model items here -->
-</ul>
-</div>
+                                <ul id="model-list-container" style="display: none;">
+                                    <!-- Your model items here -->
+                                </ul>
+                            </div>
 
                             <!-- Checkbox bernalar tersembunyi untuk kompatibilitas -->
                             <input class="form-check-input d-none" type="checkbox" id="deepThinkingToggle">
@@ -511,100 +514,100 @@ $guru = mysqli_fetch_assoc($result);
                 </style>
 
                 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Create a custom dropup solution
-  const modelBtn = document.getElementById('modelDropdownBtn');
-  const modelList = document.getElementById('model-list-container');
-  
-  if (modelBtn && modelList) {
-    // Remove Bootstrap's data attributes to prevent its dropdown behavior
-    modelBtn.removeAttribute('data-bs-toggle');
-    modelBtn.removeAttribute('data-bs-target');
-    
-    // Create our own custom dropup
-    let isOpen = false;
-    
-    modelBtn.addEventListener('click', function(e) {
-      e.stopPropagation(); // Prevent event bubbling
-      
-      if (!isOpen) {
-        // Show dropup
-        showDropup();
-      } else {
-        // Hide dropup
-        hideDropup();
-      }
-    });
-    
-    // Function to show dropup properly positioned
-    function showDropup() {
-      // Remove from current location and append to body
-      document.body.appendChild(modelList);
-      
-      // Style the dropup
-      modelList.style.position = 'fixed';
-      modelList.style.display = 'block';
-      modelList.style.zIndex = '999999';
-      modelList.style.background = 'white';
-      modelList.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
-      modelList.style.borderRadius = '8px';
-      modelList.style.overflow = 'hidden';
-      modelList.style.minWidth = '200px';
-      modelList.style.maxWidth = '250px';
-      modelList.style.padding = '0.5rem 0';
-      
-      // First position it off-screen to calculate its height
-      modelList.style.top = '-9999px';
-      modelList.style.left = '-9999px';
-      
-      // Force layout calculation so we can get the height
-      const dropupHeight = modelList.offsetHeight;
-      
-      // Position it ABOVE the button
-      const btnRect = modelBtn.getBoundingClientRect();
-      modelList.style.top = (btnRect.top + window.scrollY - dropupHeight - 5) + 'px';
-      modelList.style.left = (btnRect.left + window.scrollX) + 'px';
-      
-      isOpen = true;
-      
-      // Close when clicking outside
-      setTimeout(() => {
-        document.addEventListener('click', documentClickHandler);
-      }, 10);
-    }
-    
-    function hideDropup() {
-      modelList.style.display = 'none';
-      isOpen = false;
-      document.removeEventListener('click', documentClickHandler);
-    }
-    
-    function documentClickHandler(e) {
-      if (!modelList.contains(e.target) && e.target !== modelBtn) {
-        hideDropup();
-      }
-    }
-    
-    // Prevent clicks inside dropup from closing it
-    modelList.addEventListener('click', function(e) {
-      e.stopPropagation();
-      
-      // Handle model selection
-      if (e.target.closest('.model-item')) {
-        const modelId = e.target.closest('.model-item').dataset.modelId;
-        if (modelId && typeof window.setActiveModel === 'function') {
-          window.setActiveModel(modelId);
-          hideDropup();
-        }
-      }
-    });
-  }
-});
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Create a custom dropup solution
+                        const modelBtn = document.getElementById('modelDropdownBtn');
+                        const modelList = document.getElementById('model-list-container');
 
-// Prevent dropdown from closing when clicking inside
-$(document).on('click', '#model-list-container', function(e) {
-  e.stopPropagation();
-});
+                        if (modelBtn && modelList) {
+                            // Remove Bootstrap's data attributes to prevent its dropdown behavior
+                            modelBtn.removeAttribute('data-bs-toggle');
+                            modelBtn.removeAttribute('data-bs-target');
+
+                            // Create our own custom dropup
+                            let isOpen = false;
+
+                            modelBtn.addEventListener('click', function(e) {
+                                e.stopPropagation(); // Prevent event bubbling
+
+                                if (!isOpen) {
+                                    // Show dropup
+                                    showDropup();
+                                } else {
+                                    // Hide dropup
+                                    hideDropup();
+                                }
+                            });
+
+                            // Function to show dropup properly positioned
+                            function showDropup() {
+                                // Remove from current location and append to body
+                                document.body.appendChild(modelList);
+
+                                // Style the dropup
+                                modelList.style.position = 'fixed';
+                                modelList.style.display = 'block';
+                                modelList.style.zIndex = '999999';
+                                modelList.style.background = 'white';
+                                modelList.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+                                modelList.style.borderRadius = '8px';
+                                modelList.style.overflow = 'hidden';
+                                modelList.style.minWidth = '200px';
+                                modelList.style.maxWidth = '250px';
+                                modelList.style.padding = '0.5rem 0';
+
+                                // First position it off-screen to calculate its height
+                                modelList.style.top = '-9999px';
+                                modelList.style.left = '-9999px';
+
+                                // Force layout calculation so we can get the height
+                                const dropupHeight = modelList.offsetHeight;
+
+                                // Position it ABOVE the button
+                                const btnRect = modelBtn.getBoundingClientRect();
+                                modelList.style.top = (btnRect.top + window.scrollY - dropupHeight - 5) + 'px';
+                                modelList.style.left = (btnRect.left + window.scrollX) + 'px';
+
+                                isOpen = true;
+
+                                // Close when clicking outside
+                                setTimeout(() => {
+                                    document.addEventListener('click', documentClickHandler);
+                                }, 10);
+                            }
+
+                            function hideDropup() {
+                                modelList.style.display = 'none';
+                                isOpen = false;
+                                document.removeEventListener('click', documentClickHandler);
+                            }
+
+                            function documentClickHandler(e) {
+                                if (!modelList.contains(e.target) && e.target !== modelBtn) {
+                                    hideDropup();
+                                }
+                            }
+
+                            // Prevent clicks inside dropup from closing it
+                            modelList.addEventListener('click', function(e) {
+                                e.stopPropagation();
+
+                                // Handle model selection
+                                if (e.target.closest('.model-item')) {
+                                    const modelId = e.target.closest('.model-item').dataset.modelId;
+                                    if (modelId && typeof window.setActiveModel === 'function') {
+                                        window.setActiveModel(modelId);
+                                        hideDropup();
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    // Prevent dropdown from closing when clicking inside
+                    $(document).on('click', '#model-list-container', function(e) {
+                        e.stopPropagation();
+                    });
 
                     // Tambahkan script berikut untuk mengganti semuanya:
                     document.addEventListener('DOMContentLoaded', function() {
@@ -613,28 +616,28 @@ $(document).on('click', '#model-list-container', function(e) {
                         const aiModels = [{
                                 id: 'llama-3.3-70b-versatile',
                                 name: 'LLaMA 3.3 70B',
-                                desc: 'Model paling cerdas & lengkap',
+                                desc: 'Paling cerdas & lengkap',
                                 isDefault: true
                             },
                             {
                                 id: 'llama-3.1-8b-instant',
                                 name: 'LLaMA 3.1 8B',
-                                desc: 'Cepat & efisien'
+                                desc: 'Tercepat untuk harian'
                             },
                             {
                                 id: 'mixtral-8x7b-32768',
                                 name: 'Mixtral 8x7B',
-                                desc: 'Konteks panjang & akurat'
+                                desc: 'Terbaik untuk text panjang'
                             },
                             {
                                 id: 'deepseek-r1-distill-llama-70b',
                                 name: 'DeepSeek Llama 70B',
-                                desc: 'Analisis mendalam'
+                                desc: 'Terbaik untuk matematika atau analisis dalam'
                             },
                             {
                                 id: 'gemma2-9b-it',
                                 name: 'Gemma2 9B',
-                                desc: 'Seimbang & efisien'
+                                desc: 'Moderat, terbaik untuk pertanyaan umum'
                             }
                         ];
 
@@ -736,12 +739,12 @@ $(document).on('click', '#model-list-container', function(e) {
                             modelItems.forEach(item => {
                                 if (item.dataset.modelId === savedModel) {
                                     item.classList.add('active');
-                                    const cpuIcon = item.querySelector('.bi-cpu');
-                                    if (cpuIcon) cpuIcon.style.color = 'rgb(218, 119, 86)';
+                                    const modelImg = item.querySelector('.model-img');
+                                    if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
                                 } else {
                                     item.classList.remove('active');
-                                    const cpuIcon = item.querySelector('.bi-cpu');
-                                    if (cpuIcon) cpuIcon.style.color = '#6c757d';
+                                    const modelImg = item.querySelector('.model-img');
+                                    if (modelImg) modelImg.style.border = '1px solid #dee2e6';
                                     const checkIcon = item.querySelector('.bi-check-circle-fill');
                                     if (checkIcon) checkIcon.remove();
                                 }
@@ -749,6 +752,79 @@ $(document).on('click', '#model-list-container', function(e) {
                         } else {
                             // Default ke model pertama
                             setActiveModel(aiModels[0].id);
+                        }
+
+                        // Populasi model list dengan gambar model alih-alih icon
+                        // Reuse the existing modelListEl variable instead of redeclaring it
+                        if (modelListEl) {
+                            modelListEl.innerHTML = ''; // Hapus semua item terlebih dahulu
+
+                            // Definisikan gambar untuk setiap model
+                            const modelImages = {
+                                'llama-3.3-70b-versatile': 'assets/llama.png', // Ganti dengan path gambar Anda
+                                'llama-3.1-8b-instant': 'assets/llama.png',
+                                'mixtral-8x7b-32768': 'assets/mixtral.png',
+                                'deepseek-r1-distill-llama-70b': 'assets/deepseek.png',
+                                'gemma2-9b-it': 'assets/google.png'
+                                // Tambahkan model lain sesuai kebutuhan
+                            };
+
+                            aiModels.forEach(model => {
+                                const item = document.createElement('li');
+                                const modelImageUrl = modelImages[model.id] || 'assets/llama.png';
+
+                                item.innerHTML = `
+                                <a class="dropdown-item d-flex align-items-center p-3 model-item ${model.isDefault ? 'active' : ''}" 
+                                   href="javascript:void(0)" 
+                                   data-model-id="${model.id}"
+                                   style="z-index:9999 !important;">
+                                  <div class="me-3 d-flex align-items-center justify-content-center border flex-shrink-0" 
+                                       style="width: 40px; height: 40px; border-radius: 10px; overflow: hidden;">
+                                    <img src="${modelImageUrl}" alt="${model.name}" class="model-img" 
+                                        style="width: 40px; height: 40px; object-fit: cover;">
+                                  </div>
+                                  <div>
+                                    <h6 class="mb-0" style="font-size: 14px;">${model.name}</h6>
+                                    <p class="mb-0 text-muted" style="font-size: 12px;">${model.desc}</p>
+                                  </div>
+                                  ${model.isDefault ? '<i class="bi bi-check-circle-fill ms-auto" style="color: rgb(218, 119, 86);"></i>' : ''}
+                                </a>
+                            `;
+
+                                // Add click event to the model item
+                                const modelItem = item.querySelector('.model-item');
+                                if (modelItem) {
+                                    modelItem.addEventListener('click', function() {
+                                        const modelId = this.dataset.modelId;
+
+                                        // Update active state in UI
+                                        document.querySelectorAll('.model-item').forEach(item => {
+                                            item.classList.remove('active');
+                                            const modelImg = item.querySelector('.model-img');
+                                            if (modelImg) modelImg.style.border = '1px solid #dee2e6';
+                                            const checkIcon = item.querySelector('.bi-check-circle-fill');
+                                            if (checkIcon) checkIcon.remove();
+                                        });
+
+                                        // Update the newly selected item
+                                        this.classList.add('active');
+                                        const modelImg = this.querySelector('.model-img');
+                                        if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
+
+                                        // Add check icon
+                                        if (!this.querySelector('.bi-check-circle-fill')) {
+                                            const checkIcon = document.createElement('i');
+                                            checkIcon.className = 'bi bi-check-circle-fill ms-auto';
+                                            checkIcon.style.color = 'rgb(218, 119, 86)';
+                                            this.appendChild(checkIcon);
+                                        }
+
+                                        setActiveModel(modelId);
+                                    });
+                                }
+
+                                modelListEl.appendChild(item);
+                            });
                         }
 
                         // CSS untuk model dropdown
@@ -1066,9 +1142,8 @@ $(document).on('click', '#model-list-container', function(e) {
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header border-0">
-                                <div>
-                                    <h5 class="fw-bold mb-1">Riwayat Chat</h5>
-                                </div>
+                                <h5 class="fw-bold mb-1 w-100 text-center">Riwayat Chat</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body p-3" id="historyList">
                                 <!-- Sessions will be loaded here -->
@@ -1082,8 +1157,8 @@ $(document).on('click', '#model-list-container', function(e) {
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header border-0">
-                                <div>
-                                    <h5 class="modal-title fw-bold mb-1">Memori SAGA</h5>
+                                <div class="text-center w-100">
+                                    <h5 class="modal-title fw-bold mb-1">Pengaturan</h5>
                                 </div>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
@@ -1105,7 +1180,7 @@ $(document).on('click', '#model-list-container', function(e) {
                                 </div>
 
                                 <!-- memori custom -->
-                                <div class="">
+                                <div class="mb-4">
                                     <div class="list-group">
                                         <button class="list-group-item border-0 px-0  py-3 m-0 list-group-item-action d-flex justify-content-between align-items-center gap-2"
                                             data-bs-toggle="modal"
@@ -1118,6 +1193,23 @@ $(document).on('click', '#model-list-container', function(e) {
                                         </button>
                                     </div>
                                 </div>
+
+                                <!-- memori custom -->
+                                <div class="">
+                                    <div class="list-group">
+                                        <button class="list-group-item border-0 px-0  py-3 m-0 list-group-item-action d-flex justify-content-between align-items-center gap-2"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#aiInfo">
+                                            <div>
+                                                <h6 class="fw-bold p-0 m-0">Panduan Model AI</h6>
+                                                <p class="p-0 m-0" style="font-size: 12px;">Panduan dalam memilih model dalam AI sesuai dengan kebutuhan Anda.</p>
+                                            </div>
+                                            <i class="bi bi-chevron-right text-muted" style="font-size: 14px;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+
                             </div>
 
                         </div>
@@ -1169,6 +1261,177 @@ $(document).on('click', '#model-list-container', function(e) {
                         }
                     }
                 </style>
+
+                <!-- AI Info -->
+                <!-- AI Info Modal -->
+                <div class="modal fade" id="aiInfo">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content rounded-4 shadow">
+                            <div class="modal-header w-100 text-center border-0">
+                                <h5 class="modal-title fw-bold">Panduan Model AI</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="list-group" id="aiModelList">
+                                            <button class="list-group-item list-group-item-action border-0 px-0 py-3 m-0 d-flex align-items-center" data-model="llama-3.3-70b">
+                                                <img src="assets/llama.png" alt="LLaMA 3.3 70B" class="me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <div>
+                                                    <h6 class="fw-bold p-0 m-0">LLaMA 3.3 70B</h6>
+                                                    <p class="text-muted mb-0" style="font-size: 13px;">Paling cerdas & lengkap</p>
+                                                </div>
+                                            </button>
+                                            <button class="list-group-item list-group-item-action border-0 px-0 py-3 m-0 d-flex align-items-center" data-model="llama-3.1-8b">
+                                                <img src="assets/llama.png" alt="LLaMA 3.1 8B" class="me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <div>
+                                                    <h6 class="fw-bold p-0 m-0">LLaMA 3.1 8B</h6>
+                                                    <p class="text-muted mb-0" style="font-size: 13px;">Cepat & efisien</p>
+                                                </div>
+                                            </button>
+                                            <button class="list-group-item list-group-item-action border-0 px-0 py-3 m-0 d-flex align-items-center" data-model="mixtral-8x7b">
+                                                <img src="assets/mixtral.png" alt="Mixtral 8x7B" class="me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <div>
+                                                    <h6 class="fw-bold p-0 m-0">Mixtral 8x7B</h6>
+                                                    <p class="text-muted mb-0" style="font-size: 13px;">Konteks panjang & akurat</p>
+                                                </div>
+                                            </button>
+                                            <button class="list-group-item list-group-item-action border-0 px-0 py-3 m-0 d-flex align-items-center" data-model="deepseek-llama-70b">
+                                                <img src="assets/deepseek.png" alt="DeepSeek Llama 70B" class="me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <div>
+                                                    <h6 class="fw-bold p-0 m-0">DeepSeek Llama 70B</h6>
+                                                    <p class="text-muted mb-0" style="font-size: 13px;">Analisis mendalam</p>
+                                                </div>
+                                            </button>
+                                            <button class="list-group-item list-group-item-action border-0 px-0 py-3 m-0 d-flex align-items-center" data-model="gemma2-9b">
+                                                <img src="assets/google.png" alt="Gemma2 9B" class="me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <div>
+                                                    <h6 class="fw-bold p-0 m-0">Gemma2 9B</h6>
+                                                    <p class="text-muted mb-0" style="font-size: 13px;">Seimbang & efisien</p>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div id="aiModelDescription">
+                                            <h6 class="fw-bold">Bantu saya dalam memilih model AI</h6>
+                                            <p class="text-muted" style="font-size: 13px;">Memilih model AI yang tepat sangat penting agar performa sesuai dengan kebutuhan. Pilih model SAGA AI yang Anda inginkan untuk menampilkan ringkasan dari setiap model yang tersedia.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const modelDescriptions = {
+                            'llama-3.3-70b': {
+                                title: 'LLaMA 3.3 70B',
+                                description: 'LLaMA 3.3 70B adalah model AI paling canggih dengan pemahaman mendalam dan fleksibilitas tinggi. Model ini mampu menangani berbagai tugas dengan akurasi luar biasa, cocok untuk pekerjaan yang membutuhkan analisis kompleks dan kreativitas tinggi.',
+                                examples: [
+                                    'Menganalisis laporan bisnis dan riset ilmiah',
+                                    'Membantu penulisan artikel, skrip, dan konten kreatif',
+                                    'Memecahkan soal teknis yang kompleks'
+                                ],
+                                suitableFor: [
+                                    'Data scientist & analis bisnis',
+                                    'Penulis dan content creator',
+                                    'Pengguna yang membutuhkan AI serbaguna'
+                                ]
+                            },
+                            'llama-3.1-8b': {
+                                title: 'LLaMA 3.1 8B',
+                                description: 'LLaMA 3.1 8B adalah model AI yang cepat dan ringan, dirancang untuk respons instan dengan efisiensi tinggi. Model ini ideal untuk penggunaan sehari-hari yang membutuhkan kecepatan tanpa mengorbankan kualitas.',
+                                examples: [
+                                    'Menjawab pertanyaan cepat dalam chatbot',
+                                    'Menyediakan saran teks dalam waktu nyata',
+                                    'Melakukan pencarian informasi sederhana'
+                                ],
+                                suitableFor: [
+                                    'Chatbot & asisten virtual',
+                                    'Aplikasi yang membutuhkan respons cepat',
+                                    'Pengguna dengan perangkat terbatas'
+                                ]
+                            },
+                            'mixtral-8x7b': {
+                                title: 'Mixtral 8x7B',
+                                description: 'Mixtral 8x7B unggul dalam memahami konteks panjang hingga 32K token. Model ini sangat cocok untuk membaca, menganalisis, dan meringkas dokumen besar dengan akurasi tinggi.',
+                                examples: [
+                                    'Menganalisis dokumen hukum atau penelitian panjang',
+                                    'Meringkas artikel berita atau jurnal akademik',
+                                    'Menjalankan diskusi yang membutuhkan pemahaman mendalam'
+                                ],
+                                suitableFor: [
+                                    'Akademisi & peneliti',
+                                    'Pengacara & analis data',
+                                    'Pengguna yang sering bekerja dengan teks panjang'
+                                ]
+                            },
+                            'deepseek-llama-70b': {
+                                title: 'DeepSeek Llama 70B',
+                                description: 'DeepSeek Llama 70B adalah model AI yang dirancang untuk analisis mendalam dan pemecahan masalah kompleks. Model ini sangat cocok untuk riset, eksplorasi informasi, dan tugas yang membutuhkan pemahaman detail.',
+                                examples: [
+                                    'Menganalisis data finansial atau teknis',
+                                    'Meneliti tren industri berdasarkan data historis',
+                                    'Memecahkan soal matematika atau algoritma tingkat lanjut'
+                                ],
+                                suitableFor: [
+                                    'Analis data & riset pasar',
+                                    'Teknisi & insinyur',
+                                    'Pengguna yang membutuhkan pemahaman data kompleks'
+                                ]
+                            },
+                            'gemma2-9b': {
+                                title: 'Gemma2 9B',
+                                description: 'Gemma2 9B adalah model AI yang menyeimbangkan antara kecepatan dan akurasi. Model ini sangat cocok untuk tugas sehari-hari yang membutuhkan performa stabil dan efisien.',
+                                examples: [
+                                    'Menulis email dan ringkasan dokumen',
+                                    'Menyediakan rekomendasi berdasarkan preferensi pengguna',
+                                    'Membantu dalam tugas administratif dan organisasi'
+                                ],
+                                suitableFor: [
+                                    'Profesional & pekerja kantoran',
+                                    'Asisten virtual & customer service',
+                                    'Pengguna yang menginginkan AI yang serbaguna & ringan'
+                                ]
+                            }
+                        };
+
+
+                        const aiModelList = document.getElementById('aiModelList');
+                        const aiModelDescription = document.getElementById('aiModelDescription');
+
+                        aiModelList.addEventListener('click', function(e) {
+                            const modelButton = e.target.closest('.list-group-item');
+                            if (modelButton) {
+                                const modelId = modelButton.getAttribute('data-model');
+                                const modelInfo = modelDescriptions[modelId];
+
+                                if (modelInfo) {
+                                    // Format daftar contoh penggunaan & cocok untuk
+                                    const examplesList = modelInfo.examples
+                                        .map(example => `<li>${example}</li>`)
+                                        .join('');
+
+                                    const suitableForList = modelInfo.suitableFor
+                                        .map(suitable => `<li>${suitable}</li>`)
+                                        .join('');
+
+                                    // Masukkan ke dalam tampilan
+                                    aiModelDescription.innerHTML = `
+                <h6 class="fw-bold">${modelInfo.title}</h6>
+                <p class="text-muted" style="font-size: 13px;">${modelInfo.description}</p>
+                <strong>Contoh Penggunaan:</strong>
+                <ul>${examplesList}</ul>
+            `;
+                                }
+                            }
+                        });
+
+                    });
+                </script>
 
                 <!-- Custom Memories Modal -->
                 <div class="modal fade" id="customMemoriesModal">
@@ -1888,12 +2151,20 @@ PERINGATAN FINALL:
                     function showActivePersonalityBadge(personalityText) {
                         // Jika tidak ada container untuk menampilkan badge, buat baru
                         if (!document.getElementById('personalityBadgeContainer')) {
+                            // Cek apakah elemen deep-thinking-toggle ada
+                            const deepThinkingToggle = document.querySelector('.deep-thinking-toggle');
+
+                            if (!deepThinkingToggle) {
+                                console.log("Element .deep-thinking-toggle tidak ditemukan, tidak bisa menampilkan badge");
+                                return; // Keluar dari fungsi jika elemen tidak ditemukan
+                            }
+
                             const container = document.createElement('div');
                             container.id = 'personalityBadgeContainer';
                             container.className = 'd-flex flex-wrap align-items-center gap-2';
 
                             // Tambahkan ke samping deep thinking toggle
-                            const toggleContainer = document.querySelector('.deep-thinking-toggle').parentNode;
+                            const toggleContainer = deepThinkingToggle.parentNode;
                             toggleContainer.appendChild(container);
                         }
 
