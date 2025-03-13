@@ -560,7 +560,7 @@ function getGrade($value)
                             <button type="button" class="btn btn-light btn-sm rounded-pill border shadow-sm d-flex" id="filterButton" style="font-size: 12px;">
                                 <i class="bi bi-funnel-fill me-1" style="color:#c56a4d;"></i> Filter
                             </button>
-                            
+
                             <!-- Filter Popup -->
                             <div class="filter-popup shadow" id="filterPopup">
                                 <div class="filter-popup-body">
@@ -597,103 +597,106 @@ function getGrade($value)
                         </div>
                     </div>
 
-<!-- Perbaikan CSS untuk popup -->
-<style>
-.filter-popup {
-    display: none;
-    position: absolute;
-    bottom: 100%; /* Posisi di atas tombol */
-    right: 0;
-    width: 280px;
-    background: white;
-    border-radius: 12px;
-    z-index: 1050;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    margin-bottom: 10px; /* Beri jarak dari tombol */
-}
-    
-    .filter-popup-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 15px;
-        background-color: rgb(218, 119, 86);
-        color: white;
-    }
-    
-    .filter-popup-body {
-        padding: 15px;
-    }
-    
-    @media (max-width: 767px) {
-        .filter-popup {
-            width: calc(100vw - 20px);
-            max-width: 320px;
-            right: -10px; /* Sedikit penyesuaian untuk mobile */
-        }
-    }
+                    <!-- Perbaikan CSS untuk popup -->
+                    <style>
+                        .filter-popup {
+                            display: none;
+                            position: absolute;
+                            bottom: 100%;
+                            /* Posisi di atas tombol */
+                            right: 0;
+                            width: 280px;
+                            background: white;
+                            border-radius: 12px;
+                            z-index: 1050;
+                            overflow: hidden;
+                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                            margin-bottom: 10px;
+                            /* Beri jarak dari tombol */
+                        }
 
-    /* Tambahkan arrow ke bawah popup */
-    .filter-popup::after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        right: 15px;
-        width: 0;
-        height: 0;
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-top: 8px solid white;
-    }
-</style>
+                        .filter-popup-header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            padding: 12px 15px;
+                            background-color: rgb(218, 119, 86);
+                            color: white;
+                        }
 
-<!-- Perbaikan JavaScript untuk popup -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const filterButton = document.getElementById('filterButton');
-        const filterPopup = document.getElementById('filterPopup');
-        const closeFilterPopup = document.getElementById('closeFilterPopup');
-        
-        // Menambahkan tampilan awal "none" via JavaScript sebagai double-check
-        filterPopup.style.display = 'none';
-        
-        filterButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            
-            // Toggle visibility
-            if (filterPopup.style.display === 'block') {
-                filterPopup.style.display = 'none';
-            } else {
-                filterPopup.style.display = 'block';
-            }
-            console.log('Button clicked - popup visibility: ' + filterPopup.style.display);
-        });
-        
-        closeFilterPopup.addEventListener('click', function(event) {
-            event.stopPropagation(); // Hentikan event bubbling
-            filterPopup.style.display = 'none';
-            console.log('Close clicked');
-        });
-        
-        // Mencegah popup menutup saat mengklik di dalam popup
-        filterPopup.addEventListener('click', function(event) {
-            event.stopPropagation();
-        });
-        
-        // Close popup when clicking outside
-        document.addEventListener('click', function(event) {
-            if (filterPopup.style.display === 'block') {
-                filterPopup.style.display = 'none';
-                console.log('Clicked outside - closing popup');
-            }
-        });
-        
-        // Debug - tampilkan elemen popup di console
-        console.log('Filter Button:', filterButton);
-        console.log('Filter Popup:', filterPopup);
-    });
-</script>
+                        .filter-popup-body {
+                            padding: 15px;
+                        }
+
+                        @media (max-width: 767px) {
+                            .filter-popup {
+                                width: calc(100vw - 20px);
+                                max-width: 320px;
+                                right: -10px;
+                                /* Sedikit penyesuaian untuk mobile */
+                            }
+                        }
+
+                        /* Tambahkan arrow ke bawah popup */
+                        .filter-popup::after {
+                            content: '';
+                            position: absolute;
+                            bottom: -8px;
+                            right: 15px;
+                            width: 0;
+                            height: 0;
+                            border-left: 8px solid transparent;
+                            border-right: 8px solid transparent;
+                            border-top: 8px solid white;
+                        }
+                    </style>
+
+                    <!-- Perbaikan JavaScript untuk popup -->
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const filterButton = document.getElementById('filterButton');
+                            const filterPopup = document.getElementById('filterPopup');
+                            const closeFilterPopup = document.getElementById('closeFilterPopup');
+
+                            // Menambahkan tampilan awal "none" via JavaScript sebagai double-check
+                            filterPopup.style.display = 'none';
+
+                            filterButton.addEventListener('click', function(event) {
+                                event.stopPropagation();
+
+                                // Toggle visibility
+                                if (filterPopup.style.display === 'block') {
+                                    filterPopup.style.display = 'none';
+                                } else {
+                                    filterPopup.style.display = 'block';
+                                }
+                                console.log('Button clicked - popup visibility: ' + filterPopup.style.display);
+                            });
+
+                            closeFilterPopup.addEventListener('click', function(event) {
+                                event.stopPropagation(); // Hentikan event bubbling
+                                filterPopup.style.display = 'none';
+                                console.log('Close clicked');
+                            });
+
+                            // Mencegah popup menutup saat mengklik di dalam popup
+                            filterPopup.addEventListener('click', function(event) {
+                                event.stopPropagation();
+                            });
+
+                            // Close popup when clicking outside
+                            document.addEventListener('click', function(event) {
+                                if (filterPopup.style.display === 'block') {
+                                    filterPopup.style.display = 'none';
+                                    console.log('Clicked outside - closing popup');
+                                }
+                            });
+
+                            // Debug - tampilkan elemen popup di console
+                            console.log('Filter Button:', filterButton);
+                            console.log('Filter Popup:', filterPopup);
+                        });
+                    </script>
                     <hr class="mb-3 mt-1">
 
                     <div class="col-12">
@@ -756,7 +759,7 @@ function getGrade($value)
                                 <option value="2" <?php echo ($selected_semester == 2) ? 'selected' : ''; ?>>Semester 2</option>
                             </select>
                         </div>
-                        
+
                         <div class="input-group input-group-sm w-100 mb-2">
                             <select name="tahun_ajaran" class="form-select form-select-sm border-0 bg-light rounded-3">
                                 <?php
@@ -769,7 +772,7 @@ function getGrade($value)
                                 ?>
                             </select>
                         </div>
-                        
+
                         <button type="submit" class="btn btn-sm w-100 rounded-pill" style="background-color: rgb(218, 119, 86); color: white;">
                             <i class="bi bi-filter"></i> Tampilkan
                         </button>
@@ -1742,8 +1745,8 @@ function getGrade($value)
         </div>
     </div>
 
-        <!-- Modal untuk progressif guidance -->
-        <div class="modal fade" id="pgInfoModal" tabindex="-1" aria-labelledby="identitasInfoModalLabel" aria-hidden="true">
+    <!-- Modal untuk progressif guidance -->
+    <div class="modal fade" id="pgInfoModal" tabindex="-1" aria-labelledby="identitasInfoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 16px;">
                 <div class="modal-body p-4">
@@ -1751,28 +1754,28 @@ function getGrade($value)
                         <i class="bi bi-question-circle" style="font-size: 3rem; color: #c56a4d;"></i>
                         <h5 class="mt-3 fw-bold">Progressive Guidance: Pendampingan Holistik Siswa</h5>
                         <p class="text-muted mb-4">Progressive Guidance merupakan program pendampingan yang dirancang untuk mendukung perkembangan siswa secara menyeluruh. Program ini mencakup bimbingan dalam berbagai aspek kehidupan siswa:</p>
-                        
+
                         <ul class="text-muted mb-4">
                             <li class="mb-2">
                                 <strong>Pendampingan Ibadah</strong>
                                 <p class="mb-1 small">Membantu siswa dalam memahami dan melaksanakan ibadah dengan benar serta menanamkan kesadaran spiritual dalam kehidupan sehari-hari.</p>
                             </li>
-                            
+
                             <li class="mb-2">
                                 <strong>Pendampingan Karakter</strong>
                                 <p class="mb-1 small">Membangun sikap disiplin, tanggung jawab, kejujuran, serta nilai-nilai moral lainnya untuk membentuk kepribadian yang baik.</p>
                             </li>
-                            
+
                             <li class="mb-2">
                                 <strong>Pendampingan Sosial Kemasyarakatan</strong>
                                 <p class="mb-1 small">Mendorong keterlibatan aktif dalam kehidupan sosial melalui kegiatan kemasyarakatan, kepedulian lingkungan, serta penguatan keterampilan komunikasi dan kerja sama.</p>
                             </li>
-                            
+
                             <li class="mb-2">
                                 <strong>Pendampingan Pengembangan Diri (Kewirausahaan)</strong>
                                 <p class="mb-1 small">Membekali siswa dengan keterampilan kewirausahaan, kreativitas, serta kemandirian dalam menciptakan peluang di masa depan.</p>
                             </li>
-                            
+
                             <li class="mb-2">
                                 <strong>Pendampingan Belajar</strong>
                                 <p class="mb-1 small">Mendukung proses pembelajaran dengan teknik yang efektif, membangun kebiasaan belajar yang baik, serta meningkatkan pemahaman akademik secara optimal.</p>

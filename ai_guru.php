@@ -47,9 +47,8 @@ $guru = mysqli_fetch_assoc($result);
     #model-list-container {
         position: fixed !important;
         z-index: 100000 !important;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
         background: white !important;
-        border-radius: 8px !important;
+        border-radius: 15px !important;
         overflow: hidden !important;
         margin-top: 0 !important;
         /* Reset Bootstrap margins */
@@ -466,7 +465,7 @@ $guru = mysqli_fetch_assoc($result);
                                     </p>
                                 </button>
 
-                                <ul id="model-list-container" style="display: none;">
+                                <ul id="model-list-container" class="shadow-sm border" style="display: none;">
                                     <!-- Your model items here -->
                                 </ul>
                             </div>
@@ -617,27 +616,37 @@ $guru = mysqli_fetch_assoc($result);
                                 id: 'llama-3.3-70b-versatile',
                                 name: 'LLaMA 3.3 70B',
                                 desc: 'Paling cerdas & lengkap',
-                                isDefault: true
+                                category: 'advanced',
+                                categoryLabel: 'Analisis Mendalam',
                             },
                             {
                                 id: 'llama-3.1-8b-instant',
                                 name: 'LLaMA 3.1 8B',
-                                desc: 'Tercepat untuk harian'
+                                desc: 'Tercepat untuk harian',
+                                category: 'daily',
+                                categoryLabel: 'Penggunaan Harian',
+                                isDefault: true
                             },
                             {
                                 id: 'mixtral-8x7b-32768',
                                 name: 'Mixtral 8x7B',
-                                desc: 'Terbaik untuk text panjang'
+                                desc: 'Terbaik untuk text panjang',
+                                category: 'daily',
+                                categoryLabel: 'Penggunaan Harian'
                             },
                             {
                                 id: 'deepseek-r1-distill-llama-70b',
                                 name: 'DeepSeek Llama 70B',
-                                desc: 'Terbaik untuk matematika atau analisis dalam'
+                                desc: 'Terbaik untuk matematika atau analisis dalam',
+                                category: 'advanced',
+                                categoryLabel: 'Analisis Mendalam'
                             },
                             {
                                 id: 'gemma2-9b-it',
                                 name: 'Gemma2 9B',
-                                desc: 'Moderat, terbaik untuk pertanyaan umum'
+                                desc: 'Moderat, terbaik untuk pertanyaan umum',
+                                category: 'daily',
+                                categoryLabel: 'Penggunaan Harian'
                             }
                         ];
 
@@ -645,6 +654,7 @@ $guru = mysqli_fetch_assoc($result);
                         window.activeModelId = 'llama-3.3-70b-versatile';
 
                         // Fungsi untuk mengatur model yang dipilih
+                        // Tambahkan ini setelah definisi fungsi setActiveModel
                         window.setActiveModel = function(modelId) {
                             window.activeModelId = modelId;
                             const selectedModel = aiModels.find(m => m.id === modelId);
@@ -655,8 +665,22 @@ $guru = mysqli_fetch_assoc($result);
                                 displayElement.textContent = selectedModel.name;
                             }
 
-                            // Simpan di localStorage untuk persistensi
+                            // Simpan di localStorage
                             localStorage.setItem('preferredModel', modelId);
+
+                            // Penting: Re-apply personality setelah model diganti
+                            const savedPersonality = localStorage.getItem('sagaPersonality');
+                            if (savedPersonality) {
+                                try {
+                                    const personalityData = JSON.parse(savedPersonality);
+                                    if (personalityData && personalityData.personality) {
+                                        updateSystemMessageWithPersonality(personalityData);
+                                    }
+                                } catch (e) {
+                                    console.error('Error re-applying personality after model change:', e);
+                                }
+                            }
+
                             console.log(`Model changed to: ${selectedModel?.name} (${modelId})`);
                         };
 
@@ -668,65 +692,118 @@ $guru = mysqli_fetch_assoc($result);
                         if (modelListEl) {
                             modelListEl.innerHTML = ''; // Hapus semua item terlebih dahulu
 
+                            // Group models by category
+                            const categories = {
+                                'daily': {
+                                    label: 'Penggunaan Harian',
+                                    models: []
+                                },
+                                'advanced': {
+                                    label: 'Analisis Mendalam',
+                                    models: []
+                                }
+                            };
+
+
+
+                            // Populate categories
                             aiModels.forEach(model => {
-                                const item = document.createElement('li');
-                                item.innerHTML = `
-                <a class="dropdown-item d-flex align-items-center p-3 model-item ${model.isDefault ? 'active' : ''}" 
-                   href="javascript:void(0)" 
-                   data-model-id="${model.id}"
-                   style="z-index:9999 !important;">
-                  <div class="me-3 d-flex align-items-center justify-content-center" 
-                       style="width: 40px; height: 40px; border-radius: 10px; background-color: #f8f9fa;">
-                    <i class="bi bi-cpu" style="font-size: 20px; color: ${model.isDefault ? 'rgb(218, 119, 86)' : '#6c757d'};"></i>
-                  </div>
-                  <div>
-                    <h6 class="mb-0" style="font-size: 14px;">${model.name}</h6>
-                    <p class="mb-0 text-muted" style="font-size: 12px;">${model.desc}</p>
-                  </div>
-                  ${model.isDefault ? '<i class="bi bi-check-circle-fill ms-auto" style="color: rgb(218, 119, 86);"></i>' : ''}
-                </a>
-            `;
+                                const category = model.category || 'daily'; // Default to 'daily' if no category
+                                if (categories[category]) {
+                                    categories[category].models.push(model);
+                                }
+                                console.log(`Added model ${model.name} to category ${category}`);
+                            });
 
-                                modelListEl.appendChild(item);
+                            console.log('Categories after population:', JSON.stringify(categories, null, 2));
 
-                                // Menangani klik pada tombol model selector
-                                document.getElementById('modelDropdownBtn').addEventListener('click', function() {
-                                    // const modelModal = new bootstrap.Modal(document.getElementById('modelSelectorModal'));
-                                    // modelModal.show();
-                                });
+                            // Define model images
+                            const modelImages = {
+                                'llama-3.3-70b-versatile': 'assets/llama.png',
+                                'llama-3.1-8b-instant': 'assets/llama.png',
+                                'mixtral-8x7b-32768': 'assets/mixtral.png',
+                                'deepseek-r1-distill-llama-70b': 'assets/deepseek.png',
+                                'gemma2-9b-it': 'assets/google.png'
+                            };
 
-                                // Add click event
-                                const modelItem = item.querySelector('.model-item');
-                                if (modelItem) {
-                                    modelItem.addEventListener('click', function() {
-                                        const modelId = this.dataset.modelId;
+                            // Create elements for each category
+                            Object.entries(categories).forEach(([categoryKey, category]) => {
+                                // Check if category exists and has models
+                                if (category && category.models && category.models.length > 0) {
+                                    // Add category header
+                                    const categoryHeader = document.createElement('li');
+                                    categoryHeader.className = 'dropdown-header px-3 py-2 text-muted';
+                                    categoryHeader.innerHTML = `<small class="fw-bold">${category.label}</small>`;
+                                    modelListEl.appendChild(categoryHeader);
 
-                                        // Update aktif di UI
-                                        document.querySelectorAll('.model-item').forEach(item => {
-                                            item.classList.remove('active');
-                                            const cpuIcon = item.querySelector('.bi-cpu');
-                                            if (cpuIcon) cpuIcon.style.color = '#6c757d';
-                                            const checkIcon = item.querySelector('.bi-check-circle-fill');
-                                            if (checkIcon) checkIcon.remove();
-                                        });
+                                    // Add models in this category
+                                    category.models.forEach(model => {
+                                        // Rest of your existing code
+                                        const item = document.createElement('li');
+                                        const modelImageUrl = modelImages[model.id] || 'assets/llama.png';
 
-                                        // Update yang baru dipilih
-                                        this.classList.add('active');
-                                        const cpuIcon = this.querySelector('.bi-cpu');
-                                        if (cpuIcon) cpuIcon.style.color = 'rgb(218, 119, 86)';
+                                        item.innerHTML = `
+                    <a class="dropdown-item d-flex align-items-center p-3 model-item ${model.isDefault ? 'active' : ''}" 
+                       href="javascript:void(0)" 
+                       data-model-id="${model.id}"
+                       data-category="${model.category || 'daily'}"
+                       style="z-index:9999 !important;">
+                      <div class="me-3 d-flex align-items-center justify-content-center border flex-shrink-0" 
+                           style="width: 40px; height: 40px; border-radius: 10px; overflow: hidden;">
+                        <img src="${modelImageUrl}" alt="${model.name}" class="model-img" 
+                            style="width: 40px; height: 40px; object-fit: cover; ${model.isDefault ? 'border: none;' : ''}">
+                      </div>
+                      <div>
+                        <h6 class="mb-0" style="font-size: 14px;">${model.name}</h6>
+                        <p class="mb-0 text-muted" style="font-size: 12px;">${model.desc}</p>
+                      </div>
+                      ${model.isDefault ? '<i class="bi bi-check-circle-fill ms-auto" style="color: rgb(218, 119, 86);"></i>' : ''}
+                    </a>
+                `;
 
-                                        // Tambahkan check icon
-                                        if (!this.querySelector('.bi-check-circle-fill')) {
-                                            const checkIcon = document.createElement('i');
-                                            checkIcon.className = 'bi bi-check-circle-fill ms-auto';
-                                            checkIcon.style.color = 'rgb(218, 119, 86)';
-                                            this.appendChild(checkIcon);
+                                        // Add click event handler (reuse existing code)
+                                        const modelItem = item.querySelector('.model-item');
+                                        if (modelItem) {
+                                            // Your existing click handler code here
+                                            modelItem.addEventListener('click', function() {
+                                                const modelId = this.dataset.modelId;
+
+                                                // Update UI
+                                                document.querySelectorAll('.model-item').forEach(item => {
+                                                    item.classList.remove('active');
+                                                    const modelImg = item.querySelector('.model-img');
+                                                    if (modelImg) modelImg.style.border = '1px solid #dee2e6';
+                                                    const checkIcon = item.querySelector('.bi-check-circle-fill');
+                                                    if (checkIcon) checkIcon.remove();
+                                                });
+
+                                                this.classList.add('active');
+                                                const modelImg = this.querySelector('.model-img');
+                                                // if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
+
+                                                if (!this.querySelector('.bi-check-circle-fill')) {
+                                                    const checkIcon = document.createElement('i');
+                                                    checkIcon.className = 'bi bi-check-circle-fill ms-auto';
+                                                    checkIcon.style.color = 'rgb(218, 119, 86)';
+                                                    this.appendChild(checkIcon);
+                                                }
+
+                                                setActiveModel(modelId);
+                                            });
                                         }
 
-                                        setActiveModel(modelId);
+                                        modelListEl.appendChild(item);
                                     });
                                 }
+
+                                // Add divider except for the last category
+                                if (categoryKey !== Object.keys(categories)[Object.keys(categories).length - 1]) {
+                                    const divider = document.createElement('li');
+                                    divider.innerHTML = '<hr class="dropdown-divider">';
+                                    modelListEl.appendChild(divider);
+                                }
                             });
+
                         }
 
                         // Inisialisasi model dari localStorage jika ada
@@ -740,7 +817,7 @@ $guru = mysqli_fetch_assoc($result);
                                 if (item.dataset.modelId === savedModel) {
                                     item.classList.add('active');
                                     const modelImg = item.querySelector('.model-img');
-                                    if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
+                                    // if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
                                 } else {
                                     item.classList.remove('active');
                                     const modelImg = item.querySelector('.model-img');
@@ -756,76 +833,7 @@ $guru = mysqli_fetch_assoc($result);
 
                         // Populasi model list dengan gambar model alih-alih icon
                         // Reuse the existing modelListEl variable instead of redeclaring it
-                        if (modelListEl) {
-                            modelListEl.innerHTML = ''; // Hapus semua item terlebih dahulu
 
-                            // Definisikan gambar untuk setiap model
-                            const modelImages = {
-                                'llama-3.3-70b-versatile': 'assets/llama.png', // Ganti dengan path gambar Anda
-                                'llama-3.1-8b-instant': 'assets/llama.png',
-                                'mixtral-8x7b-32768': 'assets/mixtral.png',
-                                'deepseek-r1-distill-llama-70b': 'assets/deepseek.png',
-                                'gemma2-9b-it': 'assets/google.png'
-                                // Tambahkan model lain sesuai kebutuhan
-                            };
-
-                            aiModels.forEach(model => {
-                                const item = document.createElement('li');
-                                const modelImageUrl = modelImages[model.id] || 'assets/llama.png';
-
-                                item.innerHTML = `
-                                <a class="dropdown-item d-flex align-items-center p-3 model-item ${model.isDefault ? 'active' : ''}" 
-                                   href="javascript:void(0)" 
-                                   data-model-id="${model.id}"
-                                   style="z-index:9999 !important;">
-                                  <div class="me-3 d-flex align-items-center justify-content-center border flex-shrink-0" 
-                                       style="width: 40px; height: 40px; border-radius: 10px; overflow: hidden;">
-                                    <img src="${modelImageUrl}" alt="${model.name}" class="model-img" 
-                                        style="width: 40px; height: 40px; object-fit: cover;">
-                                  </div>
-                                  <div>
-                                    <h6 class="mb-0" style="font-size: 14px;">${model.name}</h6>
-                                    <p class="mb-0 text-muted" style="font-size: 12px;">${model.desc}</p>
-                                  </div>
-                                  ${model.isDefault ? '<i class="bi bi-check-circle-fill ms-auto" style="color: rgb(218, 119, 86);"></i>' : ''}
-                                </a>
-                            `;
-
-                                // Add click event to the model item
-                                const modelItem = item.querySelector('.model-item');
-                                if (modelItem) {
-                                    modelItem.addEventListener('click', function() {
-                                        const modelId = this.dataset.modelId;
-
-                                        // Update active state in UI
-                                        document.querySelectorAll('.model-item').forEach(item => {
-                                            item.classList.remove('active');
-                                            const modelImg = item.querySelector('.model-img');
-                                            if (modelImg) modelImg.style.border = '1px solid #dee2e6';
-                                            const checkIcon = item.querySelector('.bi-check-circle-fill');
-                                            if (checkIcon) checkIcon.remove();
-                                        });
-
-                                        // Update the newly selected item
-                                        this.classList.add('active');
-                                        const modelImg = this.querySelector('.model-img');
-                                        if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
-
-                                        // Add check icon
-                                        if (!this.querySelector('.bi-check-circle-fill')) {
-                                            const checkIcon = document.createElement('i');
-                                            checkIcon.className = 'bi bi-check-circle-fill ms-auto';
-                                            checkIcon.style.color = 'rgb(218, 119, 86)';
-                                            this.appendChild(checkIcon);
-                                        }
-
-                                        setActiveModel(modelId);
-                                    });
-                                }
-
-                                modelListEl.appendChild(item);
-                            });
-                        }
 
                         // CSS untuk model dropdown
                         const styleElement = document.createElement('style');
@@ -837,17 +845,14 @@ $guru = mysqli_fetch_assoc($result);
         
         .model-item {
             transition: all 0.2s ease;
-            border-left: 3px solid transparent;
         }
         
         .model-item:hover {
             background-color: #f8f9fa;
-            border-left: 3px solid rgb(218, 119, 86);
         }
         
         .model-item.active {
             background-color: rgba(218, 119, 86, 0.1);
-            border-left: 3px solid rgb(218, 119, 86);
         }
     `;
                         document.head.appendChild(styleElement);
@@ -1170,9 +1175,11 @@ $guru = mysqli_fetch_assoc($result);
                                         <button class="list-group-item border-0 px-0  py-3 m-0 list-group-item-action d-flex justify-content-between align-items-center gap-2"
                                             data-bs-toggle="modal"
                                             data-bs-target="#personalityModal">
+
                                             <div>
                                                 <h6 class="fw-bold p-0 m-0">Memori Personal</h6>
                                                 <p class="p-0 m-0" style="font-size: 12px;">Perkenalkan diri Anda kepada SAGA untuk mendapatkan respons yang lebih baik dan lebih personal.</p>
+
                                             </div>
                                             <i class="bi bi-chevron-right text-muted" style="font-size: 14px;"></i>
                                         </button>
@@ -1261,6 +1268,85 @@ $guru = mysqli_fetch_assoc($result);
                         }
                     }
                 </style>
+
+                <!-- AI LIMIT -->
+                <!-- Modal untuk Groq Limit -->
+                <!-- Modal untuk Groq Limit -->
+                <div class="modal fade" id="groqLimitModal">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header border-0">
+                                <h5 class="modal-title fw-bold">Penggunaan API Hari Ini</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card mb-3">
+                                    <div class="card-header bg-light">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="m-0">Status Penggunaan</h6>
+                                            <button class="btn btn-sm btn-outline-primary" id="refreshLimitBtn">
+                                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body" id="groqLimitInfo">
+                                        <div class="text-center p-3">
+                                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <p class="mt-2 mb-0">Memuat informasi limit...</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <small>Penggunaan API akan direset otomatis setiap hari pukul 00:00 UTC.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    // Definisikan model-model AI yang tersedia
+                    const aiModels = [{
+                            id: 'llama-3.3-70b-versatile',
+                            name: 'LLaMA 3.3 70B',
+                            desc: 'Paling cerdas & lengkap',
+                            category: 'advanced',
+                            categoryLabel: 'Analisis Mendalam',
+                            isDefault: true
+                        },
+                        {
+                            id: 'llama-3.1-8b-instant',
+                            name: 'LLaMA 3.1 8B',
+                            desc: 'Tercepat untuk harian',
+                            category: 'daily',
+                            categoryLabel: 'Penggunaan Harian'
+                        },
+                        {
+                            id: 'mixtral-8x7b-32768',
+                            name: 'Mixtral 8x7B',
+                            desc: 'Terbaik untuk text panjang',
+                            category: 'daily',
+                            categoryLabel: 'Penggunaan Harian'
+                        },
+                        {
+                            id: 'deepseek-r1-distill-llama-70b',
+                            name: 'DeepSeek Llama 70B',
+                            desc: 'Terbaik untuk matematika atau analisis dalam',
+                            category: 'advanced',
+                            categoryLabel: 'Analisis Mendalam'
+                        },
+                        {
+                            id: 'gemma2-9b-it',
+                            name: 'Gemma2 9B',
+                            desc: 'Moderat, terbaik untuk pertanyaan umum',
+                            category: 'daily',
+                            categoryLabel: 'Penggunaan Harian'
+                        }
+                    ];
+                </script>
 
                 <!-- AI Info -->
                 <!-- AI Info Modal -->
@@ -1591,42 +1677,57 @@ $guru = mysqli_fetch_assoc($result);
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold" style="font-size: 14px;">Sifat apa yang harus dimiliki SAGA?</label>
-                                        <textarea class="form-control"
+                                        <label class="form-label text-muted" style="font-size: 14px;">Sifat apa yang harus dimiliki SAGA?</label>
+                                        <textarea class="form-control bg-light text-muted"
                                             id="sagaPersonality"
                                             rows="3"
-                                            placeholder="Jelaskan atau pilih personalisasi"></textarea>
+                                            placeholder=""
+                                            disabled></textarea>
 
                                         <div class="mt-2 d-flex flex-wrap gap-2">
-                                            <button type="button" onclick="addPersonality('Rileks dan tidak mudah panik serta selalu tenang menghadapi masalah')" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
                                                 <i class="bi bi-plus-circle me-1"></i>Santuy
                                             </button>
-                                            <button type="button" onclick="addPersonality('Bicara aktif dan komunikatif.')" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
                                                 <i class="bi bi-plus-circle me-1"></i>Cerewet
                                             </button>
-                                            <button type="button" onclick="addPersonality('Katakan apa adanya serta jangan menutup-nutupi jawaban dan basa basi.')" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
                                                 <i class="bi bi-plus-circle me-1"></i>Langsung To-the-point
                                             </button>
-                                            <button type="button" onclick="addPersonality('Pendekatan skeptis dan penuh pertanyaan')" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
                                                 <i class="bi bi-plus-circle me-1"></i>Skeptis
                                             </button>
-                                            <button type="button" onclick="addPersonality('Memperlakukan pengguna seperti keluarga sendiri')" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
                                                 <i class="bi bi-plus-circle me-1"></i>Kekeluargaan
                                             </button>
-                                            <button type="button" onclick="addPersonality('Gunakan nada yang puitis dan liris.')" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
                                                 <i class="bi bi-plus-circle me-1"></i>Puitis
                                             </button>
-                                            <button type="button" onclick="addPersonality('Bersikaplah praktis di atas segalanya.')" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
                                                 <i class="bi bi-plus-circle me-1"></i>Pragmatis
                                             </button>
-                                            <button type="button" onclick="addPersonality('Bicara seperti Gen-Z dengan menggunakan istilah modern dan selera internet culture lokal')" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
                                                 <i class="bi bi-plus-circle me-1"></i>Gen-Z
                                             </button>
-                                            <button type="button" onclick="addPersonality('Selalu hormat pada setiap percakapan')" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
                                                 <i class="bi bi-plus-circle me-1"></i>Penuh Hormat
                                             </button>
-
                                         </div>
+                                        <p class="text-muted mt-2" style="font-size: 12px;">Fitur ini tidak tersedia dalam versi saat ini</p>
+
+                                        <!-- onclicknya 
+                                         
+                                        onclick="addPersonality('Rileks dan tidak mudah panik serta selalu tenang menghadapi masalah')" class="btn
+onclick="addPersonality('Bicara aktif dan komunikatif.')" class="btn btn-sm btn-outline-secondary rounded
+onclick="addPersonality('Katakan apa adanya serta jangan menutup-nutupi jawaban dan basa basi.')" class="
+onclick="addPersonality('Pendekatan skeptis dan penuh pertanyaan')" class="btn btn-sm btn-outline-secondary
+onclick="addPersonality('Memperlakukan pengguna seperti keluarga sendiri')" class="btn btn-sm btn-outline-secondary
+onclick="addPersonality('Gunakan nada yang puitis dan liris.')" class="btn btn-sm btn-outline
+onclick="addPersonality('Bersikaplah praktis di atas segalanya.')" class="btn btn-sm btn-outline-secondary
+onclick="addPersonality('Bicara seperti Gen-Z dengan menggunakan istilah modern dan selera internet culture lokal')"
+onclick="addPersonality('Selalu hormat pada setiap percakapan')" class="btn btn-sm btn-outline-secondary
+                                        
+                                        -->
                                     </div>
 
                                     <script>
@@ -2108,46 +2209,34 @@ PERINGATAN FINALL:
                         toast.show();
                     }
 
-                    // 5. Load personality dari localStorage saat halaman dimuat
+                    // Modifikasi fungsi document.addEventListener untuk loadPersonality
                     document.addEventListener('DOMContentLoaded', function() {
-                        setTimeout(() => {
-                            // Load personality dari localStorage jika ada
-                            const savedPersonality = localStorage.getItem('sagaPersonality');
-                            if (savedPersonality) {
-                                try {
+                        // Tambahkan timeout untuk memastikan semua komponen sudah dirender
+                        setTimeout(async function() {
+                            // Pertama coba load dari server
+                            const serverLoaded = await loadPersonalityFromServer();
+
+                            // Jika gagal, gunakan localStorage sebagai fallback
+                            if (!serverLoaded) {
+                                const savedPersonality = localStorage.getItem('sagaPersonality');
+                                if (savedPersonality) {
                                     const personalityData = JSON.parse(savedPersonality);
-                    
-                                    // Cek apakah personalityData memiliki data personality yang valid
-                                    if (personalityData && personalityData.personality && personalityData.personality.trim() !== '') {
-                                        // Isi form dengan data yang tersimpan
+                                    if (personalityData && personalityData.personality) {
+                                        updateSystemMessageWithPersonality(personalityData);
+                                        // Isi form jika elemen ada
                                         if (document.getElementById('currentJob')) {
                                             document.getElementById('currentJob').value = personalityData.currentJob || '';
                                         }
-                    
                                         if (document.getElementById('sagaPersonality')) {
                                             document.getElementById('sagaPersonality').value = personalityData.personality || '';
                                         }
-                    
                                         if (document.getElementById('additionalInfo')) {
                                             document.getElementById('additionalInfo').value = personalityData.additionalInfo || '';
                                         }
-                    
-                                        // Update system message
-                                        updateSystemMessageWithPersonality(personalityData);
-                                    } else {
-                                        // Jika tidak ada personality valid, pastikan badge dihapus
-                                        removePersonalityBadge();
                                     }
-                                } catch (e) {
-                                    console.error('Error loading saved personality:', e);
-                                    localStorage.removeItem('sagaPersonality');
-                                    removePersonalityBadge();
                                 }
-                            } else {
-                                // Jika tidak ada personality tersimpan, gunakan default dan pastikan badge dihapus
-                                removePersonalityBadge();
                             }
-                        }, 500); // Changed from 500ms to 500 (milliseconds)
+                        }, 1000); // Tunggu 1 detik
                     });
 
                     function showActivePersonalityBadge(personalityText) {
