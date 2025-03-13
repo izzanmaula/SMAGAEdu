@@ -141,6 +141,9 @@ $siswa = mysqli_fetch_assoc($result_siswa);
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-5-theme/1.3.0/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <title>E-Raport Progressive Guidance - SMAGAEdu</title>
 </head>
 <style>
@@ -496,19 +499,248 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                     </span>
                                 </div>
 
+                                <!-- Perbarui tombol di card profil siswa -->
                                 <div class="d-flex gap-1 w-100" <?php echo !$current_student ? 'style="display:none;"' : ''; ?>>
-                                    <button class="btn btn-sm btn-light border flex-fill d-flex align-items-center justify-content-center gap-1" style="font-size: 11px;">
+                                    <button class="btn btn-sm btn-light border flex-fill d-flex align-items-center justify-content-center gap-1 btn-print" style="font-size: 11px;">
                                         <i class="bi bi-printer"></i>
                                         Print
-                                    </button>
-                                    <button class="btn btn-sm btn-light border flex-fill d-flex align-items-center justify-content-center gap-1" style="font-size: 11px;">
-                                        <i class="bi bi-file-pdf"></i>
-                                        PDF
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+<!-- Tambahkan script ini di bagian bawah halaman, sebelum tag </body> -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tombol PDF di desktop dan mobile
+    const pdfButtons = document.querySelectorAll('.btn-pdf, [data-action="pdf"]');
+    pdfButtons.forEach(button => {
+        button.addEventListener('click', handleGeneratePDF);
+    });
+    
+    // Tombol Print di desktop dan mobile
+    const printButtons = document.querySelectorAll('.btn-print, [data-action="print"]');
+    printButtons.forEach(button => {
+        button.addEventListener('click', printRaport);
+    });
+});
+
+// Fungsi untuk print halaman
+function printRaport() {
+    window.print();
+}
+
+// Fungsi untuk mengkonversi ke PDF
+function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    
+    // Dapatkan data untuk nama file dengan cara yang lebih aman
+    const siswaName = document.querySelector('.fw-bold') ? 
+                      document.querySelector('.fw-bold').textContent.trim() : 'raport';
+    
+    // Cari elemen badge yang berisi teks "Semester"
+    let semester = "Semester";
+    const semesterBadges = document.querySelectorAll('.badge');
+    for (let badge of semesterBadges) {
+        if (badge.textContent.includes('Semester')) {
+            semester = badge.textContent.trim();
+            break;
+        }
+    }
+    
+    // Cari elemen badge yang berisi teks "TA."
+    let tahunAjaran = "TA";
+    for (let badge of semesterBadges) {
+        if (badge.textContent.includes('TA.')) {
+            tahunAjaran = badge.textContent.trim();
+            break;
+        }
+    }
+    
+    // Format nama file: Nama-Semester-TahunAjaran.pdf
+    const fileName = `${siswaName} - ${semester} - ${tahunAjaran}.pdf`.replace(/\s+/g, ' ');
+    
+    // Buat instance baru dari jsPDF
+    const doc = new jsPDF('p', 'mm', 'a4');
+    
+    // Element yang akan dikonversi ke PDF
+    const element = document.querySelector('.col-utama');
+    
+    // Buat clone dari element untuk memodifikasi tampilan khusus PDF
+    const printElement = element.cloneNode(true);
+    printElement.style.display = 'block';
+    printElement.style.position = 'absolute';
+    printElement.style.left = '-9999px';
+    // printElement.style.backgroundColor = 'white';
+    printElement.style.width = '1200px'; // Set fixed width untuk layout yang konsisten
+    
+    // Pastikan semua elemen terlihat untuk PDF
+    const collapseElements = printElement.querySelectorAll('.collapse');
+    collapseElements.forEach(el => {
+        el.classList.add('show');
+    });
+    
+    // Tambahkan elemen ke body
+    document.body.appendChild(printElement);
+    
+    // Perbaikan untuk warna/brightness
+    html2canvas(printElement, {
+        scale: 2, // Kualitas lebih tinggi
+        useCORS: true, // Untuk menangani gambar cross-origin
+        logging: true, // Enable logging untuk debugging
+        // backgroundColor: '#ffffff', // Background putih
+        allowTaint: true, // Izinkan modifikasi canvas dengan konten yang mungkin "tainted"
+        letterRendering: true, // Untuk render teks lebih tajam
+        // Perbaikan untuk gambar
+        onclone: function(clonedDoc) {
+            const images = clonedDoc.querySelectorAll('img');
+            images.forEach(img => {
+                // Tambahkan crossOrigin attribute untuk semua gambar
+                img.crossOrigin = 'anonymous';
+                // Perbaiki opacity
+                img.style.opacity = '1';
+                
+                // Force load gambar
+                if (img.src.indexOf('data:') !== 0) { // Jika bukan data URL
+                    const originalSrc = img.src;
+                    img.src = originalSrc;
+                }
+            });
+            
+            // Tingkatkan kontras semua elemen
+            const allElements = clonedDoc.querySelectorAll('*');
+            allElements.forEach(el => {
+                if(el.style) {
+                    el.style.color = '#000000';
+                    if(el.style.backgroundColor) {
+                        el.style.backgroundColor = '#ffffff';
+                    }
+                }
+            });
+        }
+    }).then(canvas => {
+        // Dapatkan data gambar
+        const imgData = canvas.toDataURL('image/jpeg', 1.0); // Gunakan JPEG dengan kualitas 100%
+        
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 295; // A4 height in mm
+        const imgHeight = canvas.height * imgWidth / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        // Tambahkan halaman pertama
+        doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        // Tambahkan halaman tambahan jika konten terlalu panjang
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            doc.addPage();
+            doc.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        
+        // Hapus elemen clone
+        document.body.removeChild(printElement);
+        
+        // Unduh PDF dengan nama yang sesuai
+        doc.save(fileName);
+    }).catch(error => {
+        console.error('Error generating PDF:', error);
+        // Hapus elemen clone jika terjadi error
+        if(document.body.contains(printElement)) {
+            document.body.removeChild(printElement);
+        }
+        alert('Terjadi kesalahan saat membuat PDF. Silakan coba lagi.');
+    });
+}
+
+// Fungsi untuk menangani gambar profil
+async function preloadProfileImage() {
+    return new Promise((resolve, reject) => {
+        const profileImg = document.querySelector('.rounded-circle[width="150px"]');
+        if (!profileImg) {
+            resolve(); // Tidak ada gambar profil
+            return;
+        }
+        
+        // Jika gambar sudah dimuat
+        if (profileImg.complete) {
+            resolve();
+            return;
+        }
+        
+        // Tunggu gambar dimuat
+        profileImg.onload = resolve;
+        profileImg.onerror = reject;
+        
+        // Set ulang src untuk memastikan onload terpanggil
+        const currentSrc = profileImg.src;
+        profileImg.src = currentSrc;
+    });
+}
+
+// Modifikasi pemanggilan generatePDF untuk menunggu gambar profil
+async function handleGeneratePDF() {
+    try {
+        await preloadProfileImage();
+        generatePDF();
+    } catch (error) {
+        console.error('Failed to preload profile image:', error);
+        // Tetap generate PDF meskipun ada error dengan gambar
+        generatePDF();
+    }
+}
+</script>
+
+<style>
+/* CSS untuk cetak */
+@media print {
+    /* Menyembunyikan elemen yang tidak perlu diprint */
+    .menu-samping, 
+    .navbar, 
+    .floating-action-button, 
+    .btn-print, 
+    .btn-pdf,
+    .accordion-button,
+    button[data-bs-toggle],
+    .offcanvas,
+    .modal,
+    .card-header {
+        display: none !important;
+    }
+    
+    /* Pastikan semua konten terlihat */
+    .col-utama {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* Tampilkan semua data */
+    .accordion-collapse {
+        display: block !important;
+    }
+    
+    /* Format halaman */
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
+    
+    /* Reset margin dan padding untuk tampilan yang bersih */
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Warna latar belakang putih untuk semua elemen */
+    * {
+        background-color: white !important;
+        color: black !important;
+    }
+}
+</style>
 
                     <!-- Mobile view - Combined search -->
                     <div class="card mb-3 d-block d-md-none border" style="border-radius: 15px;">

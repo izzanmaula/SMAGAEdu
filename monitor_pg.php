@@ -198,7 +198,7 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Progressive Guidance Monitoring</title>
+    <title>Monitor Progressive Guidance - SMAGAEdu</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -281,7 +281,7 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
         }
 
         .table-responsive {
-            border-radius: 15px;
+            border-radius: 15px; 
             overflow: hidden;
         }
 
@@ -416,27 +416,86 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                 </div>
             </div>
 
-            <form method="GET" class="d-flex align-items-center">
-                <div class="me-2">
-                    <select name="semester" class="form-select" onchange="this.form.submit()">
-                        <option value="1" <?php echo ($selected_semester == 1) ? 'selected' : ''; ?>>Semester 1</option>
-                        <option value="2" <?php echo ($selected_semester == 2) ? 'selected' : ''; ?>>Semester 2</option>
-                    </select>
-                </div>
-                <div>
-                    <select name="tahun_ajaran" class="form-select" onchange="this.form.submit()">
-                        <?php
-                        $current_year = date('Y');
-                        for ($i = $current_year - 5; $i <= $current_year + 5; $i++) {
-                            $tahun_option = $i . '/' . ($i + 1);
-                            $selected = ($tahun_option == $selected_tahun_ajaran) ? 'selected' : '';
-                            echo "<option value='$tahun_option' $selected>$tahun_option</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-            </form>
+            <div class="d-flex align-items-center">
+                <form method="GET" class="d-flex align-items-center me-2">
+                    <div class="me-2">
+                        <select name="semester" class="form-select" onchange="this.form.submit()">
+                            <option value="1" <?php echo ($selected_semester == 1) ? 'selected' : ''; ?>>Semester 1</option>
+                            <option value="2" <?php echo ($selected_semester == 2) ? 'selected' : ''; ?>>Semester 2</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select name="tahun_ajaran" class="form-select" onchange="this.form.submit()">
+                            <?php
+                            $current_year = date('Y');
+                            for ($i = $current_year - 5; $i <= $current_year + 5; $i++) {
+                                $tahun_option = $i . '/' . ($i + 1);
+                                $selected = ($tahun_option == $selected_tahun_ajaran) ? 'selected' : '';
+                                echo "<option value='$tahun_option' $selected>$tahun_option</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <?php if (isset($_GET['siswa_id'])): ?>
+                        <input type="hidden" name="siswa_id" value="<?php echo $_GET['siswa_id']; ?>">
+                    <?php endif; ?>
+                </form>
+                <button onclick="printContent()" class="btn bg-white border text-black d-flex align-items-center gap-2">
+                    <i class="bi bi-printer-fill"></i> Cetak
+                </button>
+            </div>
         </div>
+
+        <!-- Print-specific styles -->
+        <style type="text/css" media="print">
+            .sidebar, .offcanvas, .navbar, .dashboard-header, .btn-back, .btn-print, form,
+            .footer, #sidebar, .mobile-nav, .settings-modal, header {
+                display: none !important;
+            }
+            
+            .col-utama {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
+            }
+            
+            body {
+                background-color: white;
+            }
+            
+            @page {
+                size: auto;
+                margin: 15mm 10mm 15mm 10mm;
+            }
+            
+            .dashboard-header h4 {
+                font-size: 18pt;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .card {
+                break-inside: avoid;
+            }
+            
+            .card-header {
+                background-color: #f8f9fa !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            .progress-bar {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                background-color: #da7756 !important;
+            }
+        </style>
+
+        <script>
+            function printContent() {
+                window.print();
+            }
+        </script>
 
         <?php if ($siswa_id && $current_student): ?>
             <!-- Student Detail View -->

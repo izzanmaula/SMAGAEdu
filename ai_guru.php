@@ -2110,42 +2110,44 @@ PERINGATAN FINALL:
 
                     // 5. Load personality dari localStorage saat halaman dimuat
                     document.addEventListener('DOMContentLoaded', function() {
-                        // Load personality dari localStorage jika ada
-                        const savedPersonality = localStorage.getItem('sagaPersonality');
-                        if (savedPersonality) {
-                            try {
-                                const personalityData = JSON.parse(savedPersonality);
-
-                                // Cek apakah personalityData memiliki data personality yang valid
-                                if (personalityData && personalityData.personality && personalityData.personality.trim() !== '') {
-                                    // Isi form dengan data yang tersimpan
-                                    if (document.getElementById('currentJob')) {
-                                        document.getElementById('currentJob').value = personalityData.currentJob || '';
+                        setTimeout(() => {
+                            // Load personality dari localStorage jika ada
+                            const savedPersonality = localStorage.getItem('sagaPersonality');
+                            if (savedPersonality) {
+                                try {
+                                    const personalityData = JSON.parse(savedPersonality);
+                    
+                                    // Cek apakah personalityData memiliki data personality yang valid
+                                    if (personalityData && personalityData.personality && personalityData.personality.trim() !== '') {
+                                        // Isi form dengan data yang tersimpan
+                                        if (document.getElementById('currentJob')) {
+                                            document.getElementById('currentJob').value = personalityData.currentJob || '';
+                                        }
+                    
+                                        if (document.getElementById('sagaPersonality')) {
+                                            document.getElementById('sagaPersonality').value = personalityData.personality || '';
+                                        }
+                    
+                                        if (document.getElementById('additionalInfo')) {
+                                            document.getElementById('additionalInfo').value = personalityData.additionalInfo || '';
+                                        }
+                    
+                                        // Update system message
+                                        updateSystemMessageWithPersonality(personalityData);
+                                    } else {
+                                        // Jika tidak ada personality valid, pastikan badge dihapus
+                                        removePersonalityBadge();
                                     }
-
-                                    if (document.getElementById('sagaPersonality')) {
-                                        document.getElementById('sagaPersonality').value = personalityData.personality || '';
-                                    }
-
-                                    if (document.getElementById('additionalInfo')) {
-                                        document.getElementById('additionalInfo').value = personalityData.additionalInfo || '';
-                                    }
-
-                                    // Update system message
-                                    updateSystemMessageWithPersonality(personalityData);
-                                } else {
-                                    // Jika tidak ada personality valid, pastikan badge dihapus
+                                } catch (e) {
+                                    console.error('Error loading saved personality:', e);
+                                    localStorage.removeItem('sagaPersonality');
                                     removePersonalityBadge();
                                 }
-                            } catch (e) {
-                                console.error('Error loading saved personality:', e);
-                                localStorage.removeItem('sagaPersonality');
+                            } else {
+                                // Jika tidak ada personality tersimpan, gunakan default dan pastikan badge dihapus
                                 removePersonalityBadge();
                             }
-                        } else {
-                            // Jika tidak ada personality tersimpan, gunakan default dan pastikan badge dihapus
-                            removePersonalityBadge();
-                        }
+                        }, 500); // Changed from 500ms to 500 (milliseconds)
                     });
 
                     function showActivePersonalityBadge(personalityText) {

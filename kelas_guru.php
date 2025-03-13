@@ -95,26 +95,6 @@ function getProfilePhoto($user_type, $data)
 
 
 ?>
-
-<?php if (isset($_GET['pesan'])): ?>
-    <div class="alert alert-<?php echo $_GET['pesan'] == 'siswa_dihapus' ? 'success' : 'danger'; ?> alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" role="alert" style="z-index: 1050;">
-        <?php
-        if ($_GET['pesan'] == 'siswa_dihapus') {
-            echo "Siswa berhasil dihapus dari kelas!";
-        } else if ($_GET['pesan'] == 'gagal_hapus') {
-            echo "Gagal menghapus siswa. Silakan coba lagi.";
-        }
-        ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-
-    <script>
-        // Auto hide alert after 3 seconds
-        setTimeout(function() {
-            document.querySelector('.alert').remove();
-        }, 3000);
-    </script>
-<?php endif; ?>
 <!DOCTYPE html>
 <html lang="en">
 
