@@ -57,6 +57,11 @@ $guru = mysqli_fetch_assoc($result);
         /* Prevent Bootstrap transforms */
     }
 
+    .thinking-indicator {
+        opacity: 1 !important;
+        display: block !important;
+    }
+
     .model-item {
         white-space: normal !important;
         /* Allow text to wrap */
@@ -295,7 +300,7 @@ $guru = mysqli_fetch_assoc($result);
                             overflow-y: auto;
                         }
                     </style>
-                    <div class="gap-2 mb-4 d-none d-md-flex">
+                    <div class="gap-2 mb-1 d-none d-md-flex">
                         <button class="btn bg-white text-black d-flex align-items-center gap-2 px-3 py-2 border"
                             onclick="window.location.reload()"
                             style="border-radius: 15px;">
@@ -341,26 +346,83 @@ $guru = mysqli_fetch_assoc($result);
                     <!-- Pesan chat akan ditampilkan di sini -->
                 </div>
 
-
-                <!-- Tambah HTML setelah chat-container: -->
-                <div class="recommendation-container" style="position: relative; margin-top: -40px;">
-                    <div class="d-flex flex-wrap justify-content-center gap-2">
-                        <button class="btn buttonRekomendasi button-style" id="buttonRekomendasi" onclick="fillPrompt('Berikan saya Tips mengajar efektif')">
-                            <i class="bi bi-pen-fill pe-1"></i>
-                            Tips mengajar efektif
-                        </button>
-                        <button class="btn buttonRekomendasi button-style" id="buttonRekomendasi2" onclick="fillPrompt('Berikan saya Ide aktivitas kelas')">
-                            <i class="bi bi-lightbulb-fill pe-1"></i>
-                            Ide aktivitas kelas
-                        </button>
-                        <button class="btn buttonRekomendasi button-style" id="buttonRekomendasi3" onclick="fillPrompt('Beri saya kejutan!')">
-                            <i class="bi bi-emoji-surprise-fill pe-1"></i>
-                            Beri saya kejutan!
-                        </button>
+                <div id="welcomeContainer" class="welcome-container">
+                    <div class="welcome-content animate__animated animate__fadeIn d-flex align-items-center p-4">
+                        <span class="bi bi-stars me-3" style="font-size: 2rem;"></span>
+                        <h4 class="welcome-title">Halo, ada yang bisa SAGA bantu?</h4>
                     </div>
                 </div>
 
                 <style>
+                    .welcome-container {
+                        position: absolute;
+                        top: 40%;
+                        left: 58%;
+                        transform: translate(-50%, -50%);
+                        text-align: center;
+                        z-index: 10;
+                        width: 100%;
+                        max-width: 500px;
+                        transition: all 0.3s ease;
+                    }
+
+                    .welcome-content {
+                        background-color: white;
+                        padding: 2rem;
+                        border-radius: 15px;
+                    }
+
+                    .welcome-avatar {
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 50%;
+                        padding: 10px;
+                        background-color: #EEECE2;
+                    }
+
+                    .welcome-title {
+                        font-weight: bold;
+                        margin-bottom: 0.5rem;
+                    }
+
+                    .welcome-text {
+                        color: #666;
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .welcome-suggestions {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        gap: 0.5rem;
+                    }
+
+                    .suggestion-btn {
+                        background-color: #EEECE2;
+                        border: none;
+                        border-radius: 20px;
+                        padding: 8px 16px;
+                        font-size: 14px;
+                        transition: all 0.2s;
+                    }
+
+                    .suggestion-btn:hover {
+                        background-color: rgb(218, 119, 86);
+                        color: white;
+                        transform: translateY(-2px);
+                    }
+
+                    @media (max-width: 768px) {
+                        .welcome-container {
+                            width: 85%;
+                            max-width: none;
+                        }
+
+                        .welcome-content {
+                            padding: 1.5rem;
+                        }
+                    }
+
                     .buttonRekomendasi {
                         background-color: #EEECE2;
                         border: 0;
@@ -378,8 +440,70 @@ $guru = mysqli_fetch_assoc($result);
                 </style>
 
                 <!-- Input Area -->
+                <!-- Replace your current attached-files-container with this -->
+                <div id="attached-files-container" class="attached-files-floating-container"></div>
                 <div class="d-flex justify-content-center input-container mt-0 pt-0">
                     <style>
+                        .attached-files-floating-container {
+                            position: fixed;
+                            bottom: 85px;
+                            /* Adjust this value to position above your input area */
+                            left: 60%;
+                            transform: translateX(-50%);
+                            z-index: 1000;
+                            border-radius: 12px;
+                            padding: 8px 12px;
+                            display: none;
+                            /* Hidden by default */
+                            flex-wrap: wrap;
+                            gap: 8px;
+                            max-width: 80%;
+                            max-height: 120px;
+                            overflow-y: auto;
+                            /* Add scroll if too many files */
+                            transition: all 0.3s ease;
+                        }
+
+                        .attached-file {
+                            display: flex;
+                            align-items: center;
+                            background: rgba(240, 240, 240, 0.5);
+                            border-radius: 8px;
+                            padding: 5px 10px;
+                            font-size: 12px;
+                            white-space: nowrap;
+                            animation: slideIn 0.3s ease;
+                        }
+
+                        .file-name {
+                            max-width: 150px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            margin: 0 6px;
+                        }
+
+                        .remove-file {
+                            cursor: pointer;
+                            opacity: 0.6;
+                            transition: opacity 0.2s;
+                        }
+
+                        .remove-file:hover {
+                            opacity: 1;
+                        }
+
+                        @keyframes slideIn {
+                            from {
+                                opacity: 0;
+                                transform: translateY(10px);
+                            }
+
+                            to {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
+
                         @media (max-width: 768px) {
                             .input-container {
                                 position: fixed;
@@ -439,9 +563,263 @@ $guru = mysqli_fetch_assoc($result);
 
                         }
                     </style>
+                    <script>
+                        // Variabel untuk menyimpan berkas terlampir
+                        let attachedFiles = [];
+
+                        // Fungsi untuk menambahkan berkas ke container
+                        // Modify the addAttachedFile function
+                        function addAttachedFile(file) {
+                            const fileId = Date.now();
+
+                            console.log("Attempting to add file:", file.name);
+
+                            // Pemeriksaan duplikat yang lebih ketat
+                            if (activeDocuments.has(file.name)) {
+                                console.log("File already attached, skipping:", file.name);
+                                return;
+                            }
+
+                            // Check if file with same name is already attached
+                            const existingFile = attachedFiles.find(f => f.name === file.name);
+                            if (existingFile) {
+                                console.log("File already attached:", file.name);
+                                return; // Skip if file with same name exists
+                            }
+
+                            attachedFiles.push({
+                                id: fileId,
+                                name: file.name,
+                                content: window.documentContent || ''
+                            });
+
+                            const fileElement = document.createElement('div');
+                            fileElement.className = 'attached-file';
+                            fileElement.dataset.fileId = fileId;
+
+                            fileElement.innerHTML = `
+                                ${getFileIcon(file.name)}
+                                <span class="file-name">${file.name}</span>
+                                <span class="remove-file" onclick="removeAttachedFile(${fileId})">
+                                  <i class="bi bi-x"></i>
+                                </span>
+                            `;
+
+                            const container = document.getElementById('attached-files-container');
+                            if (container) {
+                                // Show container if it was hidden
+                                container.style.display = 'flex';
+                                container.appendChild(fileElement);
+                            } else {
+                                console.error('Container for attached files not found');
+                            }
+                        }
+
+                        // Fungsi untuk menghapus berkas
+                        function removeAttachedFile(fileId) {
+                            const fileElement = document.querySelector(`.attached-file[data-file-id="${fileId}"]`);
+                            if (fileElement) {
+                                fileElement.classList.add('animate__animated', 'animate__fadeOut');
+                                setTimeout(() => fileElement.remove(), 300);
+                            }
+
+                            attachedFiles = attachedFiles.filter(file => file.id !== fileId);
+                        }
+
+                        // Tambahkan HTML untuk container file yang terlampir
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Tambahkan container untuk file terlampir jika belum ada
+                            if (!document.getElementById('attached-files-container')) {
+                                const inputWrapper = document.getElementById('input-wrapper');
+                                if (inputWrapper) {
+                                    const container = document.createElement('div');
+                                    container.id = 'attached-files-container';
+                                    container.className = 'attached-files-container';
+                                    inputWrapper.insertBefore(container, inputWrapper.firstChild);
+                                }
+                            }
+
+                            // Attach event handler untuk file input
+                            // Update the file input change event handler
+                            const fileInput = document.getElementById('file-input');
+                            if (fileInput) {
+                                fileInput.addEventListener('change', async function(e) {
+                                    const file = e.target.files[0];
+                                    if (!file) return;
+
+                                    // Check if file is already attached
+                                    const existingFile = attachedFiles.find(f => f.name === file.name);
+                                    if (existingFile) {
+                                        console.log("File already attached, skipping processing:", file.name);
+                                        return;
+                                    }
+
+                                    // Show loading preview
+                                    const preview = document.getElementById('document-preview');
+                                    if (preview) {
+                                        preview.style.display = 'flex';
+                                        preview.style.opacity = '1';
+                                    }
+
+                                    const formData = new FormData();
+                                    formData.append('file', file);
+
+                                    try {
+                                        const response = await fetch('process_document.php', {
+                                            method: 'POST',
+                                            body: formData
+                                        });
+                                        const result = await response.json();
+
+                                        if (result.success) {
+                                            window.documentContent = result.content;
+                                            addAttachedFile(file);
+                                        }
+                                    } catch (error) {
+                                        console.error("Error processing file:", error);
+                                    } finally {
+                                        if (preview) {
+                                            preview.style.opacity = '0';
+                                            setTimeout(() => {
+                                                preview.style.display = 'none';
+                                            }, 300);
+                                        }
+                                        // Reset file input to allow selecting the same file again
+                                        fileInput.value = '';
+                                    }
+                                });
+                            } else {
+                                console.error('File input element not found');
+                            }
+
+                            // Override sendMessage function
+                            if (typeof sendMessage === 'function') {
+                                const originalSendMessage = sendMessage;
+                                window.sendMessage = async function() {
+                                    const userMessage = userInput.value.trim();
+                                    if (userMessage === '' && attachedFiles.length === 0) return;
+
+                                    // Buat pesan dengan berkas terlampir
+                                    let fullMessage = userMessage;
+
+                                    // Jika ada berkas terlampir, tambahkan ke pesan
+                                    if (attachedFiles.length > 0) {
+                                        const filesHtml = attachedFiles.map(file =>
+                                            `<div class="file-in-chat">${getFileIcon(file.name)} ${file.name}</div>`
+                                        ).join('');
+
+                                        const fileContent = attachedFiles.map(file => file.content).join('\n\n');
+
+                                        // Untuk tampilan di chat
+                                        await addMessage('user', `${userMessage} ${filesHtml}`);
+
+                                        // Untuk dikirim ke AI
+                                        fullMessage = `${userMessage}\n\nBerkas terlampir:\n${attachedFiles.map(file => file.name).join(', ')}\n\nIsi berkas:\n${fileContent}`;
+                                    } else {
+                                        await addMessage('user', userMessage);
+                                    }
+
+                                    // Reset container berkas
+                                    const container = document.getElementById('attached-files-container');
+                                    if (container) {
+                                        container.innerHTML = '';
+                                    }
+                                    attachedFiles = [];
+
+                                    // Lanjutkan dengan proses normal
+                                    userInput.value = '';
+                                    hideTersedia();
+                                    showLoader();
+
+                                    try {
+                                        const aiResponse = await getAIResponse(fullMessage);
+                                        await addMessage('ai', aiResponse);
+                                        await saveToDatabase(fullMessage, aiResponse);
+                                    } catch (error) {
+                                        console.error('Error:', error);
+                                        await addMessage('ai', 'Maaf, terjadi kesalahan saat memproses pesan Anda.');
+                                    } finally {
+                                        hideLoader();
+                                        showTersedia();
+                                    }
+                                };
+                            } else {
+                                console.error('sendMessage function not found');
+                            }
+                        });
+
+                        // Tambahkan CSS untuk styling
+                        const styleElement = document.createElement('style');
+                        styleElement.textContent = `
+  .attached-files-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  .attached-file {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 12px;
+    max-width: 200px;
+    animation: slideIn 0.3s ease;
+  }
+  
+  .file-icon {
+    margin-right: 6px;
+    font-size: 14px;
+  }
+  
+  .file-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .remove-file {
+    margin-left: 6px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  
+  .remove-file:hover {
+    opacity: 1;
+  }
+  
+  .file-in-chat {
+    display: inline-flex;
+    align-items: center;
+    background: white;
+    border: 1px solid rgba(218, 119, 86, 0.2);
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin: 2px 0;
+    font-size: 12px;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
+                        document.head.appendChild(styleElement);
+                    </script>
                     <div class="input-wrapper card-footer p-2 w-100" id="input-wrapper" style="max-width: 45rem; background-color: #EEECE2; border-radius: 30px;">
                         <div class="input-group d-flex align-items-center">
-                            <textarea id="user-input" class="form-control border-0" style="background-color: transparent;" placeholder="Apa yang bisa SAGA bantu?"></textarea>
+                            <textarea id="user-input" class="form-control border-0" style="background-color: transparent;" placeholder="Tanya apapun"></textarea>
                             <button id="send-button" class="btn bi-send rounded-4 text-white" style="background-color: rgb(218, 119, 86);"></button>
                         </div>
                         <!--  -->
@@ -635,16 +1013,16 @@ $guru = mysqli_fetch_assoc($result);
                                 categoryLabel: 'Penggunaan Harian'
                             },
                             {
-                                id: 'deepseek-r1-distill-llama-70b',
+                                id: 'deepseek-r1-distill-llama-70b-specdec',
                                 name: 'DeepSeek Llama 70B',
-                                desc: 'Terbaik untuk matematika atau analisis dalam',
+                                desc: 'Terbaik untuk penalaran logika',
                                 category: 'advanced',
                                 categoryLabel: 'Analisis Mendalam'
                             },
                             {
                                 id: 'gemma2-9b-it',
                                 name: 'Gemma2 9B',
-                                desc: 'Moderat, terbaik untuk pertanyaan umum',
+                                desc: 'Moderat antara cepat dan akurat',
                                 category: 'daily',
                                 categoryLabel: 'Penggunaan Harian'
                             }
@@ -699,7 +1077,7 @@ $guru = mysqli_fetch_assoc($result);
                                     models: []
                                 },
                                 'advanced': {
-                                    label: 'Analisis Mendalam',
+                                    label: 'Penggunaan Analisis',
                                     models: []
                                 }
                             };
@@ -722,7 +1100,7 @@ $guru = mysqli_fetch_assoc($result);
                                 'llama-3.3-70b-versatile': 'assets/llama.png',
                                 'llama-3.1-8b-instant': 'assets/llama.png',
                                 'mixtral-8x7b-32768': 'assets/mixtral.png',
-                                'deepseek-r1-distill-llama-70b': 'assets/deepseek.png',
+                                'deepseek-r1-distill-llama-70b-specdec': 'assets/deepseek.png',
                                 'gemma2-9b-it': 'assets/google.png'
                             };
 
@@ -1055,6 +1433,7 @@ $guru = mysqli_fetch_assoc($result);
                 </style>
 
                 <script>
+                    let isProcessingFile = false;
                     // Function to show loading with dynamic text updates
                     function showDocumentLoading(filename) {
                         const preview = document.getElementById('document-preview');
@@ -1099,10 +1478,6 @@ $guru = mysqli_fetch_assoc($result);
                     }
                 </script>
 
-                <!-- Floating document container -->
-                <div id="floating-docs-container" class="floating-docs-container d-flex gap-2 justify-content-center align-items-center text-truncate" style="display: none;">
-                    <!-- Documents will be added here dynamically -->
-                </div>
 
                 <!-- modal untuk riwayat session -->
                 <style>
@@ -1307,46 +1682,6 @@ $guru = mysqli_fetch_assoc($result);
                         </div>
                     </div>
                 </div>
-                <script>
-                    // Definisikan model-model AI yang tersedia
-                    const aiModels = [{
-                            id: 'llama-3.3-70b-versatile',
-                            name: 'LLaMA 3.3 70B',
-                            desc: 'Paling cerdas & lengkap',
-                            category: 'advanced',
-                            categoryLabel: 'Analisis Mendalam',
-                            isDefault: true
-                        },
-                        {
-                            id: 'llama-3.1-8b-instant',
-                            name: 'LLaMA 3.1 8B',
-                            desc: 'Tercepat untuk harian',
-                            category: 'daily',
-                            categoryLabel: 'Penggunaan Harian'
-                        },
-                        {
-                            id: 'mixtral-8x7b-32768',
-                            name: 'Mixtral 8x7B',
-                            desc: 'Terbaik untuk text panjang',
-                            category: 'daily',
-                            categoryLabel: 'Penggunaan Harian'
-                        },
-                        {
-                            id: 'deepseek-r1-distill-llama-70b',
-                            name: 'DeepSeek Llama 70B',
-                            desc: 'Terbaik untuk matematika atau analisis dalam',
-                            category: 'advanced',
-                            categoryLabel: 'Analisis Mendalam'
-                        },
-                        {
-                            id: 'gemma2-9b-it',
-                            name: 'Gemma2 9B',
-                            desc: 'Moderat, terbaik untuk pertanyaan umum',
-                            category: 'daily',
-                            categoryLabel: 'Penggunaan Harian'
-                        }
-                    ];
-                </script>
 
                 <!-- AI Info -->
                 <!-- AI Info Modal -->
@@ -3114,13 +3449,6 @@ PERINGATAN FINALL:
                         chatContainer.scrollTop = chatContainer.scrollHeight;
                     }
 
-                    // Tambahkan event listener untuk menampilkan kembali rekomendasi saat chat baru dimulai
-                    document.getElementById('user-input').addEventListener('input', function() {
-                        const recommendationContainer = document.querySelector('.recommendation-container');
-                        if (recommendationContainer.classList.contains('d-none') && this.value.trim() === '') {
-                            recommendationContainer.classList.remove('d-none');
-                        }
-                    });
 
 
                     async function deleteSession(sessionId, event) {
@@ -3446,243 +3774,6 @@ PERINGATAN FINALL:
                     .col-utama .btn:not(.buttonRekomendasi) {
                         transition: background-color 0.3s ease;
                     }
-
-                    .floating-docs-container {
-                        position: fixed;
-                        top: 40%;
-                        left: 58%;
-                        transform: translate(-50%, -50%);
-                        background: none;
-                        padding: 1rem;
-                        border-radius: 1rem;
-                        max-width: 80%;
-                        overflow-x: auto;
-                        opacity: 0;
-                        /* Tambahkan ini */
-                        visibility: hidden;
-                        /* Tambahkan ini */
-                        transition: all 0.3s ease;
-                        /* Tambahkan ini */
-                    }
-
-                    .floating-docs-container.show {
-                        opacity: 1;
-                        visibility: visible;
-                    }
-
-                    .doc-item {
-                        background: white;
-                        padding: 0.5rem 1rem;
-                        border: 1px solid rgb(158, 158, 158);
-                        border-radius: 1rem;
-                        display: flex;
-                        align-items: center;
-                        gap: 0.5rem
-                    }
-
-                    .doc-icon {
-                        color: #3B82F6;
-                        font-size: 1.2rem;
-                    }
-
-                    .close-btn {
-                        background: none;
-                        border: none;
-                        color: #666;
-                        cursor: pointer;
-                        padding: 0 5px;
-                        transition: color 0.2s;
-                    }
-
-                    .close-btn:hover {
-                        color: #ff0000;
-                    }
-
-                    /* style untuk animasi background */
-                    /* Dalam bagian style .col-utama */
-                    .col-utama {
-                        transition: all 0.3s ease;
-                    }
-
-                    /* Warna untuk Word */
-                    .word-bg {
-                        background-color: transparent !important;
-                    }
-
-                    .word-bg .btn:not(.buttonRekomendasi) {
-                        background-color: #0074cc !important;
-                        border-color: #0074cc !important;
-                    }
-
-                    .word-bg #input-wrapper {
-                        background-color: white !important;
-                        box-shadow: 0 0 0 2px #0074cc33 !important;
-                    }
-
-                    .word-bg .floating-docs-container .doc-item {
-                        border-color: #0074cc;
-                        background-color: #0074cc15;
-                    }
-
-                    .word-bg .button-style {
-                        background-color: #0074cc !important;
-                        color: white;
-                    }
-
-                    .word-bg .deep-thinking-toggle {
-                        background-color: #0074cc !important;
-                        color: white;
-                    }
-
-                    .word-bg .form-check-label p {
-                        color: white !important;
-                    }
-
-                    /* Excel - Hijau */
-                    .excel-bg {
-                        background-color: transparent !important;
-                    }
-
-                    .excel-bg .btn:not(.buttonRekomendasi) {
-                        background-color: #10a37f !important;
-                        border-color: #10a37f !important;
-                    }
-
-                    .excel-bg .floating-docs-container .doc-item {
-                        border-color: #10a37f;
-                        background-color: #10a37f15;
-                    }
-
-                    .excel-bg #buttonRekomendasi {
-                        background-color: white;
-                    }
-
-                    .excel-bg #buttonRekomendasi2 {
-                        background-color: white;
-                    }
-
-                    .excel-bg #buttonRekomendasi3 {
-                        background-color: white;
-                    }
-
-                    /* Untuk bubble user */
-                    /* Untuk Excel */
-                    .excel-bg {
-                        background-color: transparent !important;
-                    }
-
-                    .excel-bg .btn:not(.buttonRekomendasi) {
-                        background-color: #10a37f !important;
-                    }
-
-                    .excel-bg #input-wrapper {
-                        background-color: white !important;
-                        box-shadow: 0 0 0 2px #10a37f33 !important;
-                    }
-
-                    .excel-bg .floating-docs-container .doc-item {
-                        border-color: #10a37f;
-                        background-color: #10a37f15;
-                    }
-
-                    .excel-bg .button-style {
-                        background-color: #10a37f !important;
-                        color: white;
-                    }
-
-                    .excel-bg .deep-thinking-toggle {
-                        background-color: #10a37f !important;
-                        color: white;
-                    }
-
-                    .excel-bg .form-check-label p {
-                        color: white !important;
-                    }
-
-                    .excel-bg .chat-container[style*="rgb(239, 239, 239)"] {
-                        background-color: white !important;
-                        box-shadow: none !important;
-                    }
-
-                    /* Untuk hover state */
-                    .excel-bg .chat-container[style*="rgb(239, 239, 239)"]:hover {
-                        background-color: #f8f9fa !important;
-                    }
-
-                    /* Untuk bubble AI (tetap transparan) */
-                    .excel-bg .chat-container[style*="transparent"] {
-                        background-color: transparent !important;
-
-                    }
-
-                    /* PDF - Merah */
-                    /* PDF - Merah */
-                    .pdf-bg {
-                        background-color: transparent !important;
-                    }
-
-                    .pdf-bg .btn:not(.buttonRekomendasi) {
-                        background-color: #800020 !important;
-                        /* Changed to maroon */
-                        border-color: #800020 !important;
-                        /* Changed to maroon */
-                    }
-
-                    .pdf-bg .floating-docs-container .doc-item {
-                        border-color: #800020;
-                        /* Changed to maroon */
-                        background-color: #80002015;
-                        /* Changed to maroon with transparency */
-                    }
-
-                    .pdf-bg #buttonRekomendasi {
-                        background-color: white;
-                    }
-
-                    .pdf-bg #buttonRekomendasi2 {
-                        background-color: white;
-                    }
-
-                    .pdf-bg #buttonRekomendasi3 {
-                        background-color: white;
-                    }
-
-                    .pdf-bg #input-wrapper {
-                        background-color: white !important;
-                        box-shadow: 0 0 0 2px #80002033 !important;
-                        /* Changed to maroon with transparency */
-                    }
-
-                    .pdf-bg .button-style {
-                        background-color: #800020 !important;
-                        /* Changed to maroon */
-                        color: white;
-                    }
-
-                    .pdf-bg .deep-thinking-toggle {
-                        background-color: #800020 !important;
-                        /* Changed to maroon */
-                        color: white;
-                    }
-
-                    .pdf-bg .form-check-label p {
-                        color: white !important;
-                    }
-
-                    .pdf-bg .chat-container[style*="rgb(239, 239, 239)"] {
-                        background-color: white !important;
-                        box-shadow: none !important;
-                    }
-
-                    /* Untuk hover state */
-                    .pdf-bg .chat-container[style*="rgb(239, 239, 239)"]:hover {
-                        background-color: #f8f9fa !important;
-                    }
-
-                    /* Untuk bubble AI (tetap transparan) */
-                    .pdf-bg .chat-container[style*="transparent"] {
-                        background-color: transparent !important;
-                    }
                 </style>
 
                 <!-- script untuk drag and drop -->
@@ -3705,130 +3796,93 @@ PERINGATAN FINALL:
                     document.addEventListener('drop', async (e) => {
                         e.preventDefault();
                         document.getElementById('drag-drop-overlay').style.display = 'none';
-
                         const file = e.dataTransfer.files[0];
-                        const preview = document.getElementById('document-preview');
-
-                        // Show loading preview
-                        preview.style.display = 'flex';
-                        preview.style.opacity = '1';
-
-                        const formData = new FormData();
-                        formData.append('file', file);
-
-                        try {
-                            const response = await fetch('process_document.php', {
-                                method: 'POST',
-                                body: formData
-                            });
-                            const result = await response.json();
-
-                            if (result.success) {
-                                window.documentContent = result.content;
-                                addDocumentToContainer(file.name);
-                                document.getElementById('user-input').value = ``;
-                            }
-                        } catch (error) {
-                            console.error("Error processing file:", error);
-                        } finally {
-                            preview.style.opacity = '0';
-                            setTimeout(() => {
-                                preview.style.display = 'none';
-                            }, 300);
-                        }
+                        await processFile(file);
                     });
 
 
                     function addDocumentToContainer(filename) {
-                        if (!activeDocuments.has(filename)) {
-                            const docElement = createDocElement(filename);
-                            const docsContainer = document.getElementById('floating-docs-container');
+                        if (activeDocuments.has(filename)) {
+                            console.log(`File ${filename} is already attached, skipping.`);
+                            return;
+                        }
 
-                            // Tambahkan class show
-                            docsContainer.classList.add('show');
-                            docsContainer.style.display = 'flex';
+                        const docElement = createDocElement(filename);
+                        const filesContainer = document.getElementById('attached-files-container');
 
-                            docsContainer.appendChild(docElement);
+                        if (filesContainer) {
+                            // Show the container with animation
+                            filesContainer.style.display = 'flex';
+                            filesContainer.style.opacity = '0';
+                            filesContainer.style.transform = 'translate(-50%, 10px)';
+
+                            // Trigger reflow to ensure animation works
+                            void filesContainer.offsetWidth;
+
+                            // Animate in
+                            filesContainer.style.opacity = '1';
+                            filesContainer.style.transform = 'translate(-50%, 0)';
+
+                            filesContainer.appendChild(docElement);
                             activeDocuments.add(filename);
+
+                            // Adjust the container position based on the chat input area
+                            positionFileContainer();
                         }
                     }
+
+                    // Add a function to position the container correctly
+                    function positionFileContainer() {
+                        const inputWrapper = document.getElementById('input-wrapper');
+                        const filesContainer = document.getElementById('attached-files-container');
+
+                        if (inputWrapper && filesContainer) {
+                            const inputRect = inputWrapper.getBoundingClientRect();
+                            filesContainer.style.bottom = (window.innerHeight - inputRect.top + 10) + 'px';
+                        }
+                    }
+
+                    // Call this on window resize to maintain positioning
+                    window.addEventListener('resize', positionFileContainer);
 
                     function createDocElement(filename) {
                         const docDiv = document.createElement('div');
-                        docDiv.className = 'doc-item animate__animated animate__fadeIn';
+                        docDiv.className = 'attached-file animate__animated animate__fadeIn';
 
                         const ext = filename.split('.').pop().toLowerCase();
-                        const colUtama = document.querySelector('.col-utama');
-
-                        // Reset semua kelas warna
-                        colUtama.classList.remove('excel-bg', 'word-bg', 'pdf-bg');
-
-                        switch (ext) {
-                            case 'xlsx':
-                            case 'xls':
-                                colUtama.classList.add('excel-bg');
-                                break;
-                            case 'doc':
-                            case 'docx':
-                                colUtama.classList.add('word-bg');
-                                break;
-                            case 'pdf':
-                                colUtama.classList.add('pdf-bg');
-                                break;
-                        }
-
 
                         docDiv.innerHTML = `
-                                    ${getFileIcon(filename)}
-                                    <span class="doc-name">${filename}</span>
-                                    <button class="close-btn" onclick="removeDocument('${filename}')">
-                                        <i class="bi bi-x"></i>
-                                    </button>
-                                `;
+    ${getFileIcon(filename)}
+    <span class="file-name">${filename}</span>
+    <span class="remove-file" onclick="removeDocument('${filename}')">
+      <i class="bi bi-x"></i>
+    </span>
+  `;
                         return docDiv;
                     }
 
+
                     function removeDocument(filename) {
-                        const docs = docsContainer.querySelectorAll('.doc-item');
-                        docs.forEach(doc => {
-                            if (doc.querySelector('.doc-name').textContent === filename) {
-                                doc.classList.add('animate__fadeOut');
+                        const filesContainer = document.getElementById('attached-files-container');
+                        if (!filesContainer) return;
+
+                        const files = filesContainer.querySelectorAll('.attached-file');
+                        files.forEach(file => {
+                            if (file.querySelector('.file-name').textContent === filename) {
+                                file.classList.add('animate__fadeOut');
                                 setTimeout(() => {
-                                    doc.remove();
+                                    file.remove();
                                     activeDocuments.delete(filename);
 
-                                    // Update warna berdasarkan file yang tersisa
-                                    const colUtama = document.querySelector('.col-utama');
-                                    const remainingFiles = Array.from(docsContainer.children)
-                                        .filter(item => item.classList.contains('doc-item'))
-                                        .map(item => item.querySelector('.doc-name').textContent);
-
-                                    if (remainingFiles.length === 0) {
-                                        // Jika tidak ada file tersisa
-                                        colUtama.classList.remove('word-bg', 'excel-bg', 'pdf-bg');
-                                        docsContainer.style.display = 'none';
-                                    } else {
-                                        // Jika masih ada file, update warna berdasarkan file terakhir
-                                        const lastFile = remainingFiles[remainingFiles.length - 1];
-                                        const ext = lastFile.split('.').pop().toLowerCase();
-
-                                        colUtama.classList.remove('word-bg', 'excel-bg', 'pdf-bg');
-
-                                        switch (ext) {
-                                            case 'doc':
-                                            case 'docx':
-                                                colUtama.classList.add('word-bg');
-                                                break;
-                                            case 'xls':
-                                            case 'xlsx':
-                                                colUtama.classList.add('excel-bg');
-                                                break;
-                                            case 'pdf':
-                                                colUtama.classList.add('pdf-bg');
-                                                break;
-                                        }
+                                    // Hide container if no files left
+                                    if (filesContainer.children.length === 0) {
+                                        filesContainer.style.opacity = '0';
+                                        filesContainer.style.transform = 'translate(-50%, 10px)';
+                                        setTimeout(() => {
+                                            filesContainer.style.display = 'none';
+                                        }, 300);
                                     }
-                                }, 500);
+                                }, 300);
                             }
                         });
                     }
@@ -3921,36 +3975,7 @@ PERINGATAN FINALL:
                     // Update your existing file input handler
                     document.getElementById('file-input').addEventListener('change', async function(e) {
                         const file = e.target.files[0];
-                        console.log("[File Handler] File selected:", file?.name);
-
-                        const preview = document.getElementById('document-preview');
-
-                        if (file) {
-                            preview.style.display = 'flex';
-                            preview.style.opacity = '1';
-
-                            try {
-                                if (file.name.match(/\.(xlsx|xls)$/)) {
-                                    console.log("[File Handler] Excel file detected, starting processing...");
-                                    // Load SheetJS hanya ketika file Excel terdeteksi
-                                    await loadSheetJS();
-                                    const content = await handleExcelFile(file);
-                                    console.log("[File Handler] Excel processing completed:", {
-                                        fileName: file.name,
-                                        contentPreview: content.substring(0, 200) + "..."
-                                    });
-                                    window.documentContent = content;
-                                    addDocumentToContainer(file.name);
-                                }
-                            } catch (error) {
-                                console.error("[File Handler] Excel processing failed:", error);
-                            } finally {
-                                preview.style.opacity = '0';
-                                setTimeout(() => {
-                                    preview.style.display = 'none';
-                                }, 300);
-                            }
-                        }
+                        await processFile(file);
                     });
 
 
@@ -3973,45 +3998,55 @@ PERINGATAN FINALL:
 
                 <!-- script untuk upload -->
                 <script>
-                    // Add event listener for file input
-                    document.getElementById('file-input').addEventListener('change', async function(e) {
-                        const file = e.target.files[0];
-                        const preview = document.getElementById('document-preview');
+                    // Update the processFile function to properly handle the file preview
+                    async function processFile(file) {
+                        if (isProcessingFile || !file) return;
 
-
-                        if (file) {
-                            console.log("File selected:", file);
-
+                        try {
+                            isProcessingFile = true;
 
                             // Show loading preview
-                            preview.style.display = 'flex';
-                            preview.style.opacity = '1';
+                            const preview = document.getElementById('document-preview');
+                            if (preview) {
+                                preview.style.display = 'flex';
+                                preview.style.opacity = '1';
+                            }
 
                             const formData = new FormData();
                             formData.append('file', file);
 
-                            try {
-                                const response = await fetch('process_document.php', {
-                                    method: 'POST',
-                                    body: formData
-                                });
-                                const result = await response.json();
+                            const response = await fetch('process_document.php', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            const result = await response.json();
 
-                                if (result.success) {
-                                    window.documentContent = result.content;
-                                    addDocumentToContainer(file.name);
-                                    userInput.value = ``;
-                                }
-                            } catch (error) {
-                                console.error("Error processing file:", error);
-                            } finally {
+                            if (result.success) {
+                                window.documentContent = result.content;
+
+                                // Clear existing files first to prevent duplicates
+                                const container = document.getElementById('attached-files-container');
+                                if (container) container.innerHTML = '';
+                                activeDocuments.clear();
+
+                                // Now add the document
+                                addDocumentToContainer(file.name);
+                            }
+                        } catch (error) {
+                            console.error("Error processing file:", error);
+                        } finally {
+                            isProcessingFile = false;
+
+                            // Hide loading preview
+                            const preview = document.getElementById('document-preview');
+                            if (preview) {
                                 preview.style.opacity = '0';
                                 setTimeout(() => {
                                     preview.style.display = 'none';
                                 }, 300);
                             }
                         }
-                    });
+                    }
 
                     // Update button styling
                     const fileInputLabel = document.querySelector('label[for="file-input"]');
@@ -4191,7 +4226,10 @@ PERINGATAN FINALL:
                 sender === 'user' ? 'justify-content-end' : 'justify-content-start'
             );
 
-            if (isTemporary) messageWrapper.id = 'thinking-message';
+            //         if (isTemporary) {
+            //     messageWrapper.id = 'thinking-message';
+            //     messageWrapper.classList.add('thinking-indicator');
+            // }
 
             let processedText = text;
             if (sender === 'ai' && !isTemporary) {
@@ -4617,14 +4655,49 @@ PERINGATAN FINALL:
             const userMessage = userInput.value.trim();
             if (userMessage === '') return;
 
-            // Sembunyikan recommendation container saat mulai chat
-            const recommendationContainer = document.querySelector('.recommendation-container');
-            if (recommendationContainer) {
-                recommendationContainer.classList.add('hide');
-                setTimeout(() => {
-                    recommendationContainer.classList.add('d-none');
-                }, 300); // Tunggu animasi fade selesai
+            // Periksa apakah ada file yang dilampirkan
+            const hasAttachedFiles = activeDocuments.size > 0;
+
+            if (userMessage === '' && !hasAttachedFiles) return;
+
+            let fullMessage = userMessage;
+
+            // Jika ada file terlampir, tambahkan ke pesan
+            if (hasAttachedFiles) {
+                const filesHtml = Array.from(activeDocuments).map(filename =>
+                    `<div class="file-in-chat">${getFileIcon(filename)} ${filename}</div>`
+                ).join('');
+
+                // Untuk tampilan di chat
+                await addMessage('user', `${userMessage} ${filesHtml}`);
+
+                // Untuk dikirim ke AI
+                fullMessage = `${userMessage}\n\nBerkas terlampir:\n${Array.from(activeDocuments).join(', ')}\n\nIsi berkas:\n${window.documentContent}`;
+            } else {
+                await addMessage('user', userMessage);
             }
+
+            // Reset container berkas
+            const container = document.getElementById('attached-files-container');
+            if (container) {
+                container.innerHTML = '';
+            }
+
+            activeDocuments.clear();
+
+            // Hide the files container with animation
+            if (filesContainer && filesContainer.children.length > 0) {
+                filesContainer.style.opacity = '0';
+                filesContainer.style.transform = 'translate(-50%, 10px)';
+
+                setTimeout(() => {
+                    filesContainer.innerHTML = '';
+                    filesContainer.style.display = 'none';
+                    activeDocuments.clear();
+                    window.documentContent = '';
+                }, 300);
+            }
+
 
             if (isFirstChat) {
                 updateFirstMessage(userMessage);
@@ -4644,11 +4717,22 @@ PERINGATAN FINALL:
                 }, 300);
             }
 
+            // Clear attached files
+            const filesContainer = document.getElementById('attached-files-container');
+            if (filesContainer) {
+                filesContainer.innerHTML = '';
+                activeDocuments.clear();
+                window.documentContent = '';
+            }
+
             // Add user message
             await addMessage('user', userMessage);
 
             // Show thinking message with italic, fade-in, and muted text
             const tempMessage = await addMessage('ai', '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>', true);
+            console.log('Temporary message created:', tempMessage);
+
+
 
             // Clear input and update UI states
             userInput.value = '';

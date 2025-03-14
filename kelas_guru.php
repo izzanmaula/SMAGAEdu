@@ -410,7 +410,7 @@ function getProfilePhoto($user_type, $data)
                     </div>
 
                     <!-- Quick Actions -->
-                    <div class="d-flex justify-content-around mt-3 pt-2 border-top">
+                    <div class="d-flex justify-content-around mt-3 pt-2">
                         <button class="btn btn-light flex-grow-1 me-2 d-flex align-items-center justify-content-center gap-2"
                             data-bs-toggle="modal"
                             data-bs-target="#modalTambahPostingan">
@@ -1278,7 +1278,7 @@ function getProfilePhoto($user_type, $data)
 
                                     <!-- Text Area -->
                                     <div class="position-relative mb-3">
-                                        <textarea class="form-control bg-light border-0"
+                                        <textarea class="form-control bg-light border"
                                             name="konten"
                                             id="postContent"
                                             placeholder="Apa yang ingin Anda bagikan?"
@@ -1310,7 +1310,7 @@ function getProfilePhoto($user_type, $data)
                                                 accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
                                                 onchange="handleFileSelect(this)">
 
-                                            <div class="d-flex gap-2">
+                                            <div class="d-flex justify-content-between gap-2">
                                                 <!-- Attachment Button -->
                                                 <button type="button"
                                                     class="btn btn-light btn-sm d-flex align-items-center gap-2 px-3"
@@ -3831,7 +3831,7 @@ function getProfilePhoto($user_type, $data)
                             <i class="bi bi-journal-text fs-4" style="color: rgb(218, 119, 86);"></i>
                             <h5 class="m-0"><strong>Catatan Guru</strong></h5>
                         </div>
-                        <button class="btn btnPrimary text-white d-flex align-items-center gap-2 px-3"
+                        <button class="btn border text-black d-flex align-items-center gap-2 px-3"
                             data-bs-toggle="modal"
                             data-bs-target="#catatanModal">
                             <i class="bi bi-plus-lg"></i>
