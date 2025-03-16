@@ -180,9 +180,9 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
             </div>
         </div>
 
-<!-- animasi modal -->
-         <!-- style animasi modal -->
-         <style>
+        <!-- animasi modal -->
+        <!-- style animasi modal -->
+        <style>
             .modal-content {
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             }
@@ -205,6 +205,24 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                 transform: scale(1);
             }
         </style>
+
+        <!-- Mobile view blocker (iOS style) -->
+        <div class="mobile-blocker d-md-none position-fixed top-0 start-0 w-100 h-100 bg-white" style="z-index: 9999;">
+            <div class="d-flex flex-column justify-content-center align-items-center h-100 px-4">
+                <div class="text-center mb-4">
+                    <i class="bi bi-laptop display-1 text-secondary"></i>
+                </div>
+                <h4 class="mb-3 fw-bold text-dark">Akses Ditolak</h4>
+                <p class="text-center text-secondary mb-4" style="font-size: 12px;">
+                    Halaman ini hanya dapat diakses pada perangkat laptop atau tablet.
+                    Silakan gunakan perangkat dengan layar yang lebih besar.
+                </p>
+                <a href="ujian_guru.php" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" style="background-color: rgb(218, 119, 86); border: none;">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Kembali 
+                </a>
+            </div>
+        </div>
 
 
 
@@ -428,7 +446,7 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
+
                                                         <!-- Pilihan jawaban -->
                                                         <div class="col-lg-6">
                                                             <div class="card mb-4">
@@ -468,14 +486,14 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
 
                                         .card {
                                             border-radius: 12px;
-                                            border: 1px solid rgba(0,0,0,0.08);
+                                            border: 1px solid rgba(0, 0, 0, 0.08);
                                             overflow: hidden;
                                         }
 
                                         .card-header {
                                             padding: 0.75rem 1.25rem;
                                             background-color: white !important;
-                                            border-bottom: 1px solid rgba(0,0,0,0.05);
+                                            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
                                         }
 
                                         .list-group-item {
@@ -770,11 +788,11 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                         <style>
                                             .ios-table {
                                                 border-radius: 16px;
-                                                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                                                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
                                                 background: white;
                                                 overflow: hidden;
                                             }
-                                            
+
                                             .ios-table thead th {
                                                 background: #f8f9fa;
                                                 font-weight: 600;
@@ -851,19 +869,19 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                                             <td>
                                                                 <div class="student-info">
                                                                     <img src="<?php
-                                                                        if (!empty($peserta['photo_type'])) {
-                                                                            if ($peserta['photo_type'] === 'avatar') {
-                                                                                echo $peserta['photo_url'];
-                                                                            } else if ($peserta['photo_type'] === 'upload') {
-                                                                                echo 'uploads/profil/' . $peserta['foto_profil'];
-                                                                            }
-                                                                        } else {
-                                                                            echo 'assets/pp.png';
-                                                                        }
-                                                                    ?>" 
-                                                                    class="profile-pic rounded-circle border shadow-sm" 
-                                                                    alt="Profile"
-                                                                    style="object-fit: cover;">
+                                                                                if (!empty($peserta['photo_type'])) {
+                                                                                    if ($peserta['photo_type'] === 'avatar') {
+                                                                                        echo $peserta['photo_url'];
+                                                                                    } else if ($peserta['photo_type'] === 'upload') {
+                                                                                        echo 'uploads/profil/' . $peserta['foto_profil'];
+                                                                                    }
+                                                                                } else {
+                                                                                    echo 'assets/pp.png';
+                                                                                }
+                                                                                ?>"
+                                                                        class="profile-pic rounded-circle border shadow-sm"
+                                                                        alt="Profile"
+                                                                        style="object-fit: cover;">
                                                                     <span class="fw-medium"><?php echo htmlspecialchars($peserta['nama']); ?></span>
                                                                 </div>
                                                             </td>

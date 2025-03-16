@@ -111,6 +111,36 @@ $guru = mysqli_fetch_assoc($result);
     .color-web:hover {
         background-color: rgb(206, 100, 65);
     }
+    /* Button click effect for all buttons */
+    button {
+        transition: transform 0.2s ease;
+    }
+
+    button:active {
+        transform: scale(0.95);
+    }
+
+    /* Specific styling for btn-umum */
+    .btn-umum {
+        background-color: rgb(218, 119, 86);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-umum:hover {
+        background-color: rgb(206, 100, 65);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-umum:active {
+        transform: scale(0.95);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 </style>
 <?php include 'includes/styles.php'; ?>
 
@@ -293,8 +323,6 @@ $guru = mysqli_fetch_assoc($result);
                 margin-bottom: 0;
             }
 
-            .notification-item.unread {}
-
             /* Keep your existing notification styling for individual items */
         </style>
 
@@ -372,7 +400,7 @@ $guru = mysqli_fetch_assoc($result);
                 <div class="filter-pills-wrapper d-flex justify-content-start">
                     <div class="filter-pills d-flex gap-2">
                         <button class="btn btn-filter active" data-filter="all">Semua</button>
-                        <button class="btn btn-filter" data-filter="private">Kelas Khusus</button>
+                        <button class="btn btn-filter" data-filter="private">Kelas Privat</button>
                         <button class="btn btn-filter" data-filter="public">Kelas Umum</button>
                         <!-- Filter dinamis akan ditambahkan di sini -->
                         <div id="custom-filters-container" class="d-flex gap-2">
@@ -429,8 +457,16 @@ $guru = mysqli_fetch_assoc($result);
         <style>
             .filter-container {
                 background-color: white;
-                padding: 0;
                 margin-bottom: 1.5rem;
+                border: 1px solid transparent;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .filter-container:hover {
+                border-color: #dee2e6;
+                padding: 0.5rem;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
             }
 
             .filter-pills-wrapper {
@@ -1336,7 +1372,7 @@ $guru = mysqli_fetch_assoc($result);
                                         </div>
                                     </div>
 
-                                    <div class="d-flex align-items-center text-muted small mt-1">
+                                    <div class= "d-flex align-items-center text-muted small mt-1">
                                         <i class="bi bi-mortarboard me-2"></i>
                                         <?php
                                         $tingkat = $kelas['tingkat'];

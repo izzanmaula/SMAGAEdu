@@ -55,36 +55,7 @@
     margin-top: -2px;
 }
 
-/* Bottom Sheet Styles */
-.modal-dialog-bottom {
-    position: fixed;
-    right: 0;
-    bottom: -100%;
-    left: 0;
-    margin: 0;
-    transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.modal.show .modal-dialog-bottom {
-    bottom: 0;
-}
-.modal-content {
-    border: none;
-    box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-.drag-handle {
-    padding: 12px 0 8px;
-    display: flex;
-    justify-content: center;
-}
-.drag-handle-indicator {
-    width: 36px;
-    height: 4px;
-    border-radius: 2px;
-    background-color: #E0E0E0;
-}
+
 
 /* Dark Mode Styles */
 .dark-mode {

@@ -268,6 +268,20 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
             .btn-more:hover {
                 background: #f8f9fa;
             }
+            /* Specific styling for btn-umum */
+            .btn {
+                transition: all 0.3s ease;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .btn:active {
+                transform: scale(0.95);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
         </style>
 
         <div class="row justify-content-between align-items-center mb-0 mb-md-4">

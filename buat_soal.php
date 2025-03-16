@@ -257,6 +257,19 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
             .modal.show .modal-dialog {
                 transform: scale(1);
             }
+            .btn {
+                transition: all 0.3s ease;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .btn:active {
+                transform: scale(0.95);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
         </style>
 </head>
 
