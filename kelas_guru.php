@@ -333,7 +333,7 @@ function getProfilePhoto($user_type, $data)
 
                     </h5>
                     <h4 class="p-0 m-0 pb-3 text-white" style="font-size: clamp(16px, 4vw, 24px);">
-                        Kelas <?php echo htmlspecialchars($data_kelas['tingkat']); ?>
+                        Kelas/Fase <?php echo htmlspecialchars($data_kelas['tingkat']); ?>
                     </h4>
                 </div>
             </div>

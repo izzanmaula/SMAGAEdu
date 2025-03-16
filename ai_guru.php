@@ -207,15 +207,6 @@ $guru = mysqli_fetch_assoc($result);
                 <div class="d-flex justify-content-between">
                     <div class="headerChat">
                         <h3 class="mb-0 fw-bold">Saga</h3>
-                        <div style="display: none;">
-                            <p class="loading animate__animated animate__fadeIn animate__flash animate__infinite text-muted p-0 m-0"
-                                id="loading"
-                                style="font-size: 13px; z-index: 10;display: none;">Sedang berpikir...</p>
-                            <p class="animate__animated animate__fadeIn text-muted p-0 m-0"
-                                style="font-size: 13px; z-index: 10;"
-                                id="tersedia">SMAGAAI tersedia</p>
-                        </div>
-
                         <div class="d-flex align-items-center gap-2 mb-3">
                             <div class="text-muted" style="font-size: 13px;">
                                 <span id="firstMessage" class="d-none">
@@ -346,9 +337,16 @@ $guru = mysqli_fetch_assoc($result);
                     <!-- Pesan chat akan ditampilkan di sini -->
                 </div>
 
+                <div id="loading" class="text-center p-3 d-none">
+                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span>Sedang berpikir...</span>
+                </div>
+
                 <div id="welcomeContainer" class="welcome-container">
                     <div class="welcome-content animate__animated animate__fadeIn d-flex align-items-center p-4">
-                        <span class="bi bi-stars me-3" style="font-size: 2rem;"></span>
+                        <!-- <span class="bi bi-stars me-3" style="font-size: 2rem;"></span> -->
                         <h4 class="welcome-title">Halo, ada yang bisa SAGA bantu?</h4>
                     </div>
                 </div>
@@ -366,6 +364,14 @@ $guru = mysqli_fetch_assoc($result);
                         transition: all 0.3s ease;
                     }
 
+                    @media (max-width: 768px) {
+                        .welcome-container {
+                            top: 40%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                        }
+                    }
+
                     .welcome-content {
                         background-color: white;
                         padding: 2rem;
@@ -381,7 +387,6 @@ $guru = mysqli_fetch_assoc($result);
                     }
 
                     .welcome-title {
-                        font-weight: bold;
                         margin-bottom: 0.5rem;
                     }
 
@@ -4159,18 +4164,18 @@ PERINGATAN FINALL:
 
         // Fungsi untuk menampilkan pesan loading
         function showLoader() {
-            const loadingEl = document.getElementById('loading');
-            loadingEl.style.display = 'block';
-            let dots = 0;
-            loadingInterval = setInterval(() => {
-                loadingEl.textContent = 'Tunggu sebentar' + '.'.repeat(dots);
-                dots = (dots + 1) % 4;
-            }, 500);
+            const loadingElement = document.getElementById('loading');
+            if (loadingElement) {
+                loadingElement.classList.remove('d-none');
+                loadingElement.style.display = 'block';
+            }
         }
 
         function hideLoader() {
-            clearInterval(loadingInterval);
-            document.getElementById('loading').style.display = 'none';
+            const loadingElement = document.getElementById('loading');
+            if (loadingElement) {
+                loadingElement.style.display = 'none';
+            }
         }
 
 
@@ -4567,12 +4572,18 @@ PERINGATAN FINALL:
 
         //tampilkan gemini tersedia
         function showTersedia() {
-            document.getElementById('tersedia').style.display = 'block';
+            const recommendationContainer = document.querySelector('.recommendation-container');
+            if (recommendationContainer) {
+                recommendationContainer.style.display = 'block';
+            }
         }
 
         // sembunyikan gemini tersedia
         function hideTersedia() {
-            document.getElementById('tersedia').style.display = 'none';
+            const recommendationContainer = document.querySelector('.recommendation-container');
+            if (recommendationContainer) {
+                recommendationContainer.style.display = 'none';
+            }
         }
 
 

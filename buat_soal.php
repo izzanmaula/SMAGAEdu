@@ -715,65 +715,31 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                     <button type="button" class="btn-close rounded-circle" style="background-color: #e4e4e4; opacity: 1; padding: 12px;" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body px-4">
-                    <div class="alert" style="border-radius: 12px; background-color:rgb(255, 250, 240); border: none;">
+                    <div class="alert border bg-light" style="border-radius: 15px;">
                         <div class="d-flex">
                             <i class="bi bi-exclamation-circle fs-4 me-3 text-black" style="font-size: 30px;"></i>
-                            <p class="p-0 m-0 text-black" style="font-size: 12px;">Hingga saat ini, input word hanya mendukung input soal tanpa gambar secara otomatis. Kami akan segera memperbaiki secepat mungkin</p>
+                            <div>
+                                <p class="fw- p-0 m-0 fw-bold" style="font-size: 14px;">Dukungan upload soal bergambar belum tersedia</p>
+                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">Hingga saat ini, input word hanya mendukung input soal tanpa gambar secara otomatis. Kami akan segera memperbaiki secepat mungkin</p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <p class="small text-muted mb-2">Unduh template sesuai jenjang</p>
-                        <div class="row g-2">
-                            <!-- SMP Templates -->
-                            <div class="col-6">
-                                <div class="card h-100 border" style="border-radius: 12px;">
-                                    <div class="card-header py-2 px-3">
-                                        <h6 class="mb-0 fw-bold" style="font-size: 14px;">SMP</h6>
-                                    </div>
-                                    <div class="card-body p-2">
-                                        <div class="d-flex flex-column gap-2">
-                                            <a href="templates/smp_template_soal.docx" download class="btn border btn-sm w-100" style="border-radius: 10px;">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <i class="bi bi-file-earmark-word"></i>
-                                                    <span style="font-size: 12px;">Template Soal</span>
-                                                </div>
-                                            </a>
-                                            <a href="templates/smp_template_jawaban.docx" download class="btn border btn-sm w-100" style="border-radius: 10px;">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <i class="bi bi-file-earmark-word"></i>
-                                                    <span style="font-size: 12px;">Template Jawaban</span>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
+                        <p class="small text-muted mb-2">Unduh template soal</p>
+                        <div class="d-flex gap-2 mb-2">
+                            <a href="templates/template_soal.docx" download class="btn border flex-fill" style="border-radius: 12px;">
+                                <div class="d-flex align-items-center gap-2 justify-content-center">
+                                    <i class="bi bi-file-earmark-word"></i>
+                                    <span>Template Soal</span>
                                 </div>
-                            </div>
-                            
-                            <!-- SMA Templates -->
-                            <div class="col-6">
-                                <div class="card h-100 border" style="border-radius: 12px;">
-                                    <div class="card-header py-2 px-3">
-                                        <h6 class="mb-0 fw-bold" style="font-size: 14px;">SMA</h6>
-                                    </div>
-                                    <div class="card-body p-2">
-                                        <div class="d-flex flex-column gap-2">
-                                            <a href="templates/sma_template_soal.docx" download class="btn border btn-sm w-100" style="border-radius: 10px;">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <i class="bi bi-file-earmark-word"></i>
-                                                    <span style="font-size: 12px;">Template Soal</span>
-                                                </div>
-                                            </a>
-                                            <a href="templates/sma_template_jawaban.docx" download class="btn border btn-sm w-100" style="border-radius: 10px;">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <i class="bi bi-file-earmark-word"></i>
-                                                    <span style="font-size: 12px;">Template Jawaban</span>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
+                            </a>
+                            <a href="templates/template_jawaban.docx" download class="btn border flex-fill" style="border-radius: 12px;">
+                                <div class="d-flex align-items-center gap-2 justify-content-center">
+                                    <i class="bi bi-file-earmark-check"></i>
+                                    <span>Template Jawaban</span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
 

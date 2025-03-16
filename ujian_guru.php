@@ -191,8 +191,8 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                 background: white;
                 border-radius: 12px;
                 overflow: hidden;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 transition: transform 0.2s ease, box-shadow 0.2s ease;
+                border: 1px solid #eee;
             }
 
             .class-card:hover {

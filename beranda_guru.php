@@ -321,20 +321,21 @@ $guru = mysqli_fetch_assoc($result);
             .modal.show .modal-dialog {
                 transform: scale(1);
             }
-            .button-beranda{
+
+            .button-beranda {
                 border-radius: 15px;
             }
         </style>
 
 
         <!-- Header Section -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="fw-bold m-0"> Beranda
             </h3>
             <div class="d-none d-md-flex gap-2">
                 <!-- Notification Button -->
                 <div class="position-relative">
-                    <button class="btn button-beranda btn-light border px-3 py-2" id="notificationBtn">
+                    <button class="btn button-beranda btn-sm btn-light border px-3 py-2" id="notificationBtn">
                         <i class="bi bi-bell me-1"></i>Notifikasi
                         <span id="notif-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px; display: none;">0</span>
                     </button>
@@ -355,484 +356,554 @@ $guru = mysqli_fetch_assoc($result);
                         </div>
                     </div>
                 </div>
-                <button class="btn button-beranda btn-light border px-3 py-2" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas">
-                    <i class="bi bi-plus-lg me-2"></i>Buat
+                <button class="btn button-beranda btn-sm btn-light border px-3 py-2" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas">
+                    <i class="bi bi-plus-lg me-2"></i>Baru
                 </button>
-                <button class="btn button-beranda btn-light border px-3 py-2" data-bs-toggle="modal" data-bs-target="#modal_arsip_kelas">
+                <button class="btn button-beranda btn-sm btn-light border px-3 py-2" data-bs-toggle="modal" data-bs-target="#modal_arsip_kelas">
                     <i class="bi bi-archive me-2"></i>Arsip
                 </button>
             </div>
         </div>
 
 
-<!-- Filter Section -->
-<div class="filter-container mb-4">
-    <div class="d-flex justify-content-start align-items-center">
-        <div class="filter-pills d-flex gap-2 flex-wrap">
-            <button class="btn btn-filter active" data-filter="all">Semua</button>
-            <button class="btn btn-filter" data-filter="private">Kelas Khusus</button>
-            <button class="btn btn-filter" data-filter="public">Kelas Umum</button>
-            <!-- Filter dinamis akan ditambahkan di sini -->
-            <div id="custom-filters-container">
-                <!-- Custom filters will be generated here -->
-            </div>
-        </div>
-        <button class="btn btn-light border ms-2" id="addFilterBtn" data-bs-toggle="modal" data-bs-target="#addFilterModal">
-            <i class="bi bi-plus-lg"></i>
-        </button>
-    </div>
-</div>
-
-<!-- Modal Tambah Filter -->
-<div class="modal fade" id="addFilterModal" tabindex="-1" aria-labelledby="addFilterModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold" id="addFilterModalLabel">Tambah Filter Baru</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group mb-3">
-                    <label class="form-label small mb-2">Nama Filter</label>
-                    <input type="text" class="form-control" id="newFilterName" placeholder="Masukkan nama filter">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label small mb-2">Pilih Kelas untuk Filter Ini</label>
-                    <div class="form-check mb-2">
-                        <input class="form-check-input" type="checkbox" id="select-all-classes">
-                        <label class="form-check-label" for="select-all-classes">
-                            Pilih Semua
-                        </label>
-                    </div>
-                    <div class="bg-light rounded p-3" style="max-height: 250px; overflow-y: auto;">
-                        <div id="kelas-list" class="d-flex flex-column gap-2">
-                            <!-- Daftar kelas akan dimuat di sini -->
+        <!-- Filter Section -->
+        <div class="filter-container mb-4">
+            <div class="d-flex align-items-center">
+                <div class="filter-pills-wrapper d-flex justify-content-start">
+                    <div class="filter-pills d-flex gap-2">
+                        <button class="btn btn-filter active" data-filter="all">Semua</button>
+                        <button class="btn btn-filter" data-filter="private">Kelas Khusus</button>
+                        <button class="btn btn-filter" data-filter="public">Kelas Umum</button>
+                        <!-- Filter dinamis akan ditambahkan di sini -->
+                        <div id="custom-filters-container" class="d-flex gap-2">
+                            <!-- Custom filters will be generated here -->
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer border-0">
-                <button type="button" class="btn border" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn color-web text-white" id="saveFilterBtn">Simpan</button>
+                <button class="btn btn-light border ms-2 flex-shrink-0" id="addFilterBtn" data-bs-toggle="modal" data-bs-target="#addFilterModal">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- CSS untuk filter -->
-<style>
-    .filter-container {
-        background-color: white;
-        padding: 0;
-    }
-    
-    .btn-filter {
-        background-color: white;
-        border: 1px solid #dee2e6;
-        border-radius: 10px;
-        padding: 6px 16px;
-        font-size: 14px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-filter:hover {
-        background-color: #f1f1f1;
-        color: #da7756;
-    }
-    
-    .btn-filter.active {
-        background-color: #da7756;
-        color: white;
-        border-color: #da7756;
-    }
-    
-    #addFilterBtn {
-        width: 38px;
-        height: 37px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-        border: 1px solid #dee2e6;
-        background-color: white;
-    }
-    
-    #addFilterBtn:hover {
-        background-color: #f1f1f1;
-        color: #da7756;
-    }
-    
-    .kelas-item {
-        padding: 8px 12px;
-        border-radius: 8px;
-        background: white;
-        border: 1px solid #dee2e6;
-        transition: all 0.2s ease;
-        margin-bottom: 5px;
-    }
-    
-    .kelas-item:hover {
-        background-color: #f8f9fa;
-    }
-    
-    .form-check-input:checked {
-        background-color: #da7756;
-        border-color: #da7756;
-    }
-</style>
+        <!-- Modal Tambah Filter -->
+        <div class="modal fade" id="addFilterModal" tabindex="-1" aria-labelledby="addFilterModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title fw-bold" id="addFilterModalLabel">Tambah Filter Baru</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group mb-3">
+                            <label class="form-label small mb-2">Nama Filter</label>
+                            <input type="text" class="form-control" id="newFilterName" placeholder="Masukkan nama filter">
+                        </div>
 
-<!-- Hidden form to store custom filters data -->
-<form id="customFiltersForm" style="display: none;">
-    <input type="hidden" id="customFiltersData" name="customFiltersData" value="">
-</form>
+                        <div class="form-group">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <label class="form-label small mb-0">Pilih Kelas untuk Filter Ini</label>
+                                <div class="form-check mb-0 d-none d-md-block">
+                                    <input class="form-check-input" type="checkbox" id="select-all-classes">
+                                    <label class="form-check-label small" for="select-all-classes">
+                                        Pilih Semua
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="rounded mt-3" style="max-height: 250px; overflow-y: auto;">
+                                <div id="kelas-list" class="d-flex flex-column gap-2">
+                                    <!-- Daftar kelas akan dimuat di sini -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn border" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn color-web text-white" id="saveFilterBtn">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<!-- Script untuk filter -->
-<script>
-    // Global variables
-    let classMapping = {};
-    let customFilters = [];
+        <!-- CSS untuk filter -->
+        <style>
+            .filter-container {
+                background-color: white;
+                padding: 0;
+                margin-bottom: 1.5rem;
+            }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Load class mapping
-        buildClassMapping();
-        
-        // Setup default filter buttons
-        setupDefaultFilters();
-        
-        // Try to load saved filters
-        try {
-            loadCustomFilters();
-        } catch (e) {
-            console.error("Error loading custom filters:", e);
-        }
-        
-        // Setup modal events
-        setupModalEvents();
-    });
-    
-    // Setup default filter buttons
-    function setupDefaultFilters() {
-        document.querySelectorAll('.btn-filter').forEach(btn => {
-            if (!btn.hasAttribute('data-custom-filter')) {
-                btn.addEventListener('click', function() {
-                    // Set active state
-                    document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Apply filter
-                    const filter = this.getAttribute('data-filter');
-                    filterClasses(filter);
+            .filter-pills-wrapper {
+                flex: 1;
+                overflow-x: auto;
+                -ms-overflow-style: none;
+                /* IE and Edge */
+                scrollbar-width: none;
+                /* Firefox */
+                padding-bottom: 5px;
+            }
+
+            .filter-pills-wrapper::-webkit-scrollbar {
+                display: none;
+                /* Chrome, Safari and Opera */
+            }
+
+            .filter-pills {
+                white-space: nowrap;
+            }
+
+            .btn-filter {
+                background-color: white;
+                border: 1px solid #dee2e6;
+                border-radius: 10px;
+                padding: 6px 16px;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .btn-filter:hover {
+                background-color: #f1f1f1;
+                color: #da7756;
+            }
+
+            .btn-filter.active {
+                background-color: #da7756;
+                color: white;
+                border-color: #da7756;
+            }
+
+            #addFilterBtn {
+                width: 38px;
+                height: 37px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 10px;
+                border: 1px solid #dee2e6;
+                background-color: white;
+            }
+
+            #addFilterBtn:hover {
+                background-color: #f1f1f1;
+                color: #da7756;
+            }
+
+            /* Update the kelas-item styling */
+            .kelas-item {
+                padding: 12px 15px;
+                border-radius: 8px;
+                background: white;
+                border: 1px solid #dee2e6;
+                transition: all 0.2s ease;
+                margin-bottom: 8px;
+            }
+
+            .kelas-item:hover {
+                background-color: #f8f9fa;
+                border-color: #da7756;
+            }
+
+            .kelas-item .form-check {
+                padding-left: 2rem;
+            }
+
+            .kelas-item .form-check-input {
+                margin-top: 0.5rem;
+            }
+
+            .kelas-item .form-check-label {
+                padding-left: 0.5rem;
+                cursor: pointer;
+            }
+
+            .form-check-input:checked {
+                background-color: #da7756;
+                border-color: #da7756;
+            }
+
+            #custom-filters-container {
+                display: inline-flex;
+            }
+        </style>
+
+        <!-- Hidden form to store custom filters data -->
+        <form id="customFiltersForm" style="display: none;">
+            <input type="hidden" id="customFiltersData" name="customFiltersData" value="">
+        </form>
+
+        <!-- Script untuk filter -->
+        <script>
+            // Global variables
+            let classMapping = {};
+            let customFilters = [];
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Load class mapping
+                buildClassMapping();
+
+                // Setup default filter buttons
+                setupDefaultFilters();
+
+                // Try to load saved filters
+                try {
+                    loadCustomFilters();
+                } catch (e) {
+                    console.error("Error loading custom filters:", e);
+                }
+
+                // Setup modal events
+                setupModalEvents();
+            });
+
+            // Setup default filter buttons
+            function setupDefaultFilters() {
+                document.querySelectorAll('.btn-filter').forEach(btn => {
+                    if (!btn.hasAttribute('data-custom-filter')) {
+                        btn.addEventListener('click', function() {
+                            // Set active state
+                            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+                            this.classList.add('active');
+
+                            // Apply filter
+                            const filter = this.getAttribute('data-filter');
+                            filterClasses(filter);
+                        });
+                    }
                 });
             }
-        });
-    }
-    
-    // Build class mapping from DOM
-    function buildClassMapping() {
-        classMapping = {};
-        const classCards = document.querySelectorAll('.class-card');
-        
-        classCards.forEach((card) => {
-            const linkElement = card.querySelector('a[href^="kelas_guru.php?id="]');
-            if (!linkElement) return;
-            
-            const href = linkElement.getAttribute('href');
-            const match = href.match(/id=(\d+)/);
-            if (!match || !match[1]) return;
-            
-            const kelasId = match[1];
-            const titleElement = card.querySelector('.class-title');
-            const kelasName = titleElement ? titleElement.textContent.trim() : '';
-            const isPublic = card.querySelector('.badge.bg-success') !== null;
-            
-            classMapping[kelasId] = {
-                id: kelasId,
-                name: kelasName,
-                isPublic: isPublic,
-                element: card
-            };
-        });
-        
-        console.log("Class mapping built:", classMapping);
-    }
-    
-    // Setup modal events
-    function setupModalEvents() {
-        // Load class list when modal opens
-        const addFilterModal = document.getElementById('addFilterModal');
-        if (addFilterModal) {
-            addFilterModal.addEventListener('show.bs.modal', function() {
-                populateClassList();
-            });
-        }
-        
-        // Setup select all checkbox
-        const selectAllCheckbox = document.getElementById('select-all-classes');
-        if (selectAllCheckbox) {
-            selectAllCheckbox.addEventListener('change', function() {
-                const checkboxes = document.querySelectorAll('.kelas-checkbox');
-                checkboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+
+            // Update the buildClassMapping function to capture more information
+            function buildClassMapping() {
+                classMapping = {};
+                const classCards = document.querySelectorAll('.class-card');
+
+                classCards.forEach((card) => {
+                    const linkElement = card.querySelector('a[href^="kelas_guru.php?id="]');
+                    if (!linkElement) return;
+
+                    const href = linkElement.getAttribute('href');
+                    const match = href.match(/id=(\d+)/);
+                    if (!match || !match[1]) return;
+
+                    const kelasId = match[1];
+                    const titleElement = card.querySelector('.class-title');
+                    const kelasName = titleElement ? titleElement.textContent.trim() : '';
+                    const isPublic = card.querySelector('.badge.bg-success') !== null;
+
+                    // Extract student count from the class card
+                    const studentCountElement = card.querySelector('.class-meta .text-muted.small:last-child');
+                    let studentCount = '0 Siswa';
+                    if (studentCountElement) {
+                        studentCount = studentCountElement.textContent.trim();
+                    }
+
+                    // Extract class level from description or other elements
+                    let classLevel = '';
+                    // Try to find class level info in any text element
+                    const textElements = card.querySelectorAll('.text-muted.small');
+                    textElements.forEach(el => {
+                        const text = el.textContent.trim();
+                        if (text.includes('Kelas') || text.includes('SMP') || text.includes('SMA') || text.includes('Fase')) {
+                            classLevel = text;
+                        }
+                    });
+
+                    classMapping[kelasId] = {
+                        id: kelasId,
+                        name: kelasName,
+                        isPublic: isPublic,
+                        element: card,
+                        studentCount: studentCount,
+                        classLevel: classLevel
+                    };
                 });
-            });
-        }
-        
-        // Setup save button
-        const saveFilterBtn = document.getElementById('saveFilterBtn');
-        if (saveFilterBtn) {
-            saveFilterBtn.addEventListener('click', function() {
-                saveNewFilter();
-            });
-        }
-    }
-    
-    // Populate class list in modal
-    function populateClassList() {
-        const container = document.getElementById('kelas-list');
-        if (!container) return;
-        
-        let html = '';
-        
-        // Check if we have any classes
-        if (Object.keys(classMapping).length === 0) {
-            container.innerHTML = '<div class="text-center py-3 text-muted small">Tidak ada kelas tersedia</div>';
-            return;
-        }
-        
-        // Build HTML for class checkboxes
-        for (const [kelasId, kelasData] of Object.entries(classMapping)) {
-            html += `
+
+                console.log("Class mapping built:", classMapping);
+            }
+
+            // Setup modal events
+            function setupModalEvents() {
+                // Load class list when modal opens
+                const addFilterModal = document.getElementById('addFilterModal');
+                if (addFilterModal) {
+                    addFilterModal.addEventListener('show.bs.modal', function() {
+                        populateClassList();
+                    });
+                }
+
+                // Setup select all checkbox
+                const selectAllCheckbox = document.getElementById('select-all-classes');
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.addEventListener('change', function() {
+                        const checkboxes = document.querySelectorAll('.kelas-checkbox');
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                    });
+                }
+
+                // Setup save button
+                const saveFilterBtn = document.getElementById('saveFilterBtn');
+                if (saveFilterBtn) {
+                    saveFilterBtn.addEventListener('click', function() {
+                        saveNewFilter();
+                    });
+                }
+            }
+
+            // Update the populateClassList function to display more information
+            function populateClassList() {
+                const container = document.getElementById('kelas-list');
+                if (!container) return;
+
+                let html = '';
+
+                // Check if we have any classes
+                if (Object.keys(classMapping).length === 0) {
+                    container.innerHTML = '<div class="text-center py-3 text-muted small">Tidak ada kelas tersedia</div>';
+                    return;
+                }
+
+                // Build HTML for class checkboxes with additional information
+                for (const [kelasId, kelasData] of Object.entries(classMapping)) {
+                    html += `
             <div class="kelas-item">
                 <div class="form-check">
                     <input class="form-check-input kelas-checkbox" type="checkbox" 
                            value="${kelasId}" id="kelas-check-${kelasId}" 
                            data-kelas-name="${kelasData.name}">
                     <label class="form-check-label" for="kelas-check-${kelasId}">
-                        ${kelasData.name} ${kelasData.isPublic ? '<span class="badge bg-success" style="font-size: 10px;">Publik</span>' : ''}
+                        <div>
+                            <span class="d-block fw-bold">${kelasData.name} ${kelasData.isPublic ? '<span class="badge bg-success" style="font-size: 10px;">Publik</span>' : ''}</span>
+                            <span class="d-block text-muted small mt-1">
+                                ${kelasData.classLevel ? `${kelasData.classLevel}` : ''}
+                            </span>
+                        </div>
                     </label>
                 </div>
             </div>`;
-        }
-        
-        container.innerHTML = html;
-    }
-    
-    // Save new filter
-    function saveNewFilter() {
-        const filterName = document.getElementById('newFilterName').value.trim();
-        
-        if (!filterName) {
-            alert('Nama filter tidak boleh kosong');
-            return;
-        }
-        
-        // Get selected class IDs
-        const selectedClasses = [];
-        const checkboxes = document.querySelectorAll('.kelas-checkbox:checked');
-        
-        checkboxes.forEach(checkbox => {
-            selectedClasses.push(checkbox.value);
-        });
-        
-        if (selectedClasses.length === 0) {
-            alert('Pilih minimal satu kelas untuk filter ini');
-            return;
-        }
-        
-        // Check if filter already exists
-        const existingIndex = customFilters.findIndex(f => f.name === filterName);
-        
-        if (existingIndex >= 0) {
-            // Update existing filter
-            customFilters[existingIndex].classIds = selectedClasses;
-            
-            // Update UI
-            const existingBtn = document.querySelector(`[data-custom-filter="${filterName}"]`);
-            if (existingBtn) existingBtn.remove();
-        } else {
-            // Add new filter
-            customFilters.push({
-                name: filterName,
-                classIds: selectedClasses
-            });
-        }
-        
-        // Save filters
-        saveCustomFilters();
-        
-        // Add or update button
-        addCustomFilterButton(filterName, selectedClasses);
-        
-        // Close modal
-        const addFilterModal = document.getElementById('addFilterModal');
-        if (addFilterModal) {
-            const modal = bootstrap.Modal.getInstance(addFilterModal);
-            if (modal) modal.hide();
-        }
-        
-        // Clear input
-        document.getElementById('newFilterName').value = '';
-    }
-    
-    // Save custom filters
-    function saveCustomFilters() {
-        try {
-            // Store in hidden form field (more reliable than localStorage for some contexts)
-            const formField = document.getElementById('customFiltersData');
-            if (formField) {
-                formField.value = JSON.stringify(customFilters);
-            }
-            
-            // Also try localStorage as backup
-            localStorage.setItem('smagaEduCustomFilters', JSON.stringify(customFilters));
-            
-            console.log("Custom filters saved:", customFilters);
-        } catch (e) {
-            console.error("Error saving custom filters:", e);
-        }
-    }
-    
-    // Load custom filters
-    function loadCustomFilters() {
-        // Try to get from hidden form field first
-        let filtersData = null;
-        const formField = document.getElementById('customFiltersData');
-        
-        if (formField && formField.value) {
-            try {
-                filtersData = JSON.parse(formField.value);
-            } catch (e) {
-                console.error("Error parsing form field data:", e);
-            }
-        }
-        
-        // If not found, try localStorage
-        if (!filtersData) {
-            try {
-                const storedData = localStorage.getItem('smagaEduCustomFilters');
-                if (storedData) {
-                    filtersData = JSON.parse(storedData);
                 }
-            } catch (e) {
-                console.error("Error loading from localStorage:", e);
-            }
-        }
-        
-        // If we have data, process it
-        if (filtersData && Array.isArray(filtersData)) {
-            customFilters = filtersData;
-            
-            // Add buttons for each custom filter
-            const container = document.getElementById('custom-filters-container');
-            if (container) {
-                container.innerHTML = ''; // Clear existing
-                
-                customFilters.forEach(filter => {
-                    addCustomFilterButton(filter.name, filter.classIds);
-                });
-            }
-            
-            console.log("Custom filters loaded:", customFilters);
-        }
-    }
-    
-    // Add custom filter button
-    function addCustomFilterButton(filterName, classIds) {
-        const container = document.getElementById('custom-filters-container');
-        if (!container) return;
-        
-        // Create button
-        const btn = document.createElement('button');
-        btn.className = 'btn btn-filter d-flex align-items-center';
-        btn.setAttribute('data-filter', 'custom');
-        btn.setAttribute('data-custom-filter', filterName);
-        btn.setAttribute('data-class-ids', classIds.join(','));
-        
-        // Create filter text
-        const textSpan = document.createElement('span');
-        textSpan.textContent = filterName;
-        btn.appendChild(textSpan);
-        
-        // Create remove button
-        const removeBtn = document.createElement('i');
-        removeBtn.className = 'bi bi-x ms-2';
-        removeBtn.style.fontSize = '14px';
-        
-        removeBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            removeCustomFilter(filterName, btn);
-        });
-        
-        btn.appendChild(removeBtn);
-        
-        // Add click handler
-        btn.addEventListener('click', function() {
-            // Set active state
-            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Apply filter
-            const classIdsAttr = this.getAttribute('data-class-ids');
-            const classIds = classIdsAttr ? classIdsAttr.split(',') : [];
-            
-            filterClasses('custom', classIds);
-        });
-        
-        // Add to DOM
-        container.appendChild(btn);
-    }
-    
-    // Remove custom filter
-    function removeCustomFilter(filterName, btnElement) {
-        // Create a modal for confirmation
-        const modal = document.getElementById('deleteFilterModal') || createDeleteFilterModal();
-        
-        // Set the filter name in the modal
-        const filterNameElement = modal.querySelector('.filter-name');
-        if (filterNameElement) filterNameElement.textContent = filterName;
-        
-        // Set up the confirm button
-        const confirmBtn = modal.querySelector('#confirmDeleteFilterBtn');
-        if (confirmBtn) {
-            // Remove previous event listeners
-            const newConfirmBtn = confirmBtn.cloneNode(true);
-            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-            
-            // Add new event listener
-            newConfirmBtn.addEventListener('click', function() {
-                // Remove from array
-                customFilters = customFilters.filter(f => f.name !== filterName);
-                
-                // Save updated filters
-                saveCustomFilters();
-                
-                // Remove button
-                btnElement.remove();
-                
-                // If this was the active filter, switch to "All"
-                if (btnElement.classList.contains('active')) {
-                    const allBtn = document.querySelector('[data-filter="all"]');
-                    if (allBtn) allBtn.click();
-                }
-                
-                // Hide modal
-                bootstrap.Modal.getInstance(modal).hide();
-            });
-        }
-        
-        // Show the modal
-        const bsModal = new bootstrap.Modal(modal);
-        bsModal.show();
-    }
 
-    // Function to create the modal if it doesn't exist
-    function createDeleteFilterModal() {
-        const modal = document.createElement('div');
-        modal.className = 'modal fade';
-        modal.id = 'deleteFilterModal';
-        modal.tabIndex = '-1';
-        modal.innerHTML = `
+                container.innerHTML = html;
+            }
+
+            // Save new filter
+            function saveNewFilter() {
+                const filterName = document.getElementById('newFilterName').value.trim();
+
+                if (!filterName) {
+                    alert('Nama filter tidak boleh kosong');
+                    return;
+                }
+
+                // Get selected class IDs
+                const selectedClasses = [];
+                const checkboxes = document.querySelectorAll('.kelas-checkbox:checked');
+
+                checkboxes.forEach(checkbox => {
+                    selectedClasses.push(checkbox.value);
+                });
+
+                if (selectedClasses.length === 0) {
+                    alert('Pilih minimal satu kelas untuk filter ini');
+                    return;
+                }
+
+                // Check if filter already exists
+                const existingIndex = customFilters.findIndex(f => f.name === filterName);
+
+                if (existingIndex >= 0) {
+                    // Update existing filter
+                    customFilters[existingIndex].classIds = selectedClasses;
+
+                    // Update UI
+                    const existingBtn = document.querySelector(`[data-custom-filter="${filterName}"]`);
+                    if (existingBtn) existingBtn.remove();
+                } else {
+                    // Add new filter
+                    customFilters.push({
+                        name: filterName,
+                        classIds: selectedClasses
+                    });
+                }
+
+                // Save filters
+                saveCustomFilters();
+
+                // Add or update button
+                addCustomFilterButton(filterName, selectedClasses);
+
+                // Close modal
+                const addFilterModal = document.getElementById('addFilterModal');
+                if (addFilterModal) {
+                    const modal = bootstrap.Modal.getInstance(addFilterModal);
+                    if (modal) modal.hide();
+                }
+
+                // Clear input
+                document.getElementById('newFilterName').value = '';
+            }
+
+            // Save custom filters
+            function saveCustomFilters() {
+                try {
+                    // Store in hidden form field (more reliable than localStorage for some contexts)
+                    const formField = document.getElementById('customFiltersData');
+                    if (formField) {
+                        formField.value = JSON.stringify(customFilters);
+                    }
+
+                    // Also try localStorage as backup
+                    localStorage.setItem('smagaEduCustomFilters', JSON.stringify(customFilters));
+
+                    console.log("Custom filters saved:", customFilters);
+                } catch (e) {
+                    console.error("Error saving custom filters:", e);
+                }
+            }
+
+            // Load custom filters
+            function loadCustomFilters() {
+                // Try to get from hidden form field first
+                let filtersData = null;
+                const formField = document.getElementById('customFiltersData');
+
+                if (formField && formField.value) {
+                    try {
+                        filtersData = JSON.parse(formField.value);
+                    } catch (e) {
+                        console.error("Error parsing form field data:", e);
+                    }
+                }
+
+                // If not found, try localStorage
+                if (!filtersData) {
+                    try {
+                        const storedData = localStorage.getItem('smagaEduCustomFilters');
+                        if (storedData) {
+                            filtersData = JSON.parse(storedData);
+                        }
+                    } catch (e) {
+                        console.error("Error loading from localStorage:", e);
+                    }
+                }
+
+                // If we have data, process it
+                if (filtersData && Array.isArray(filtersData)) {
+                    customFilters = filtersData;
+
+                    // Add buttons for each custom filter
+                    const container = document.getElementById('custom-filters-container');
+                    if (container) {
+                        container.innerHTML = ''; // Clear existing
+
+                        customFilters.forEach(filter => {
+                            addCustomFilterButton(filter.name, filter.classIds);
+                        });
+                    }
+
+                    console.log("Custom filters loaded:", customFilters);
+                }
+            }
+
+            // Add custom filter button
+            function addCustomFilterButton(filterName, classIds) {
+                const container = document.getElementById('custom-filters-container');
+                if (!container) return;
+
+                // Create button
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-filter d-flex align-items-center';
+                btn.setAttribute('data-filter', 'custom');
+                btn.setAttribute('data-custom-filter', filterName);
+                btn.setAttribute('data-class-ids', classIds.join(','));
+
+                // Create filter text
+                const textSpan = document.createElement('span');
+                textSpan.textContent = filterName;
+                btn.appendChild(textSpan);
+
+                // Create remove button
+                const removeBtn = document.createElement('i');
+                removeBtn.className = 'bi bi-x ms-2';
+                removeBtn.style.fontSize = '14px';
+
+                removeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    removeCustomFilter(filterName, btn);
+                });
+
+                btn.appendChild(removeBtn);
+
+                // Add click handler
+                btn.addEventListener('click', function() {
+                    // Set active state
+                    document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Apply filter
+                    const classIdsAttr = this.getAttribute('data-class-ids');
+                    const classIds = classIdsAttr ? classIdsAttr.split(',') : [];
+
+                    filterClasses('custom', classIds);
+                });
+
+                // Add to DOM
+                container.appendChild(btn);
+            }
+
+            // Remove custom filter
+            function removeCustomFilter(filterName, btnElement) {
+                // Create a modal for confirmation
+                const modal = document.getElementById('deleteFilterModal') || createDeleteFilterModal();
+
+                // Set the filter name in the modal
+                const filterNameElement = modal.querySelector('.filter-name');
+                if (filterNameElement) filterNameElement.textContent = filterName;
+
+                // Set up the confirm button
+                const confirmBtn = modal.querySelector('#confirmDeleteFilterBtn');
+                if (confirmBtn) {
+                    // Remove previous event listeners
+                    const newConfirmBtn = confirmBtn.cloneNode(true);
+                    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+                    // Add new event listener
+                    newConfirmBtn.addEventListener('click', function() {
+                        // Remove from array
+                        customFilters = customFilters.filter(f => f.name !== filterName);
+
+                        // Save updated filters
+                        saveCustomFilters();
+
+                        // Remove button
+                        btnElement.remove();
+
+                        // If this was the active filter, switch to "All"
+                        if (btnElement.classList.contains('active')) {
+                            const allBtn = document.querySelector('[data-filter="all"]');
+                            if (allBtn) allBtn.click();
+                        }
+
+                        // Hide modal
+                        bootstrap.Modal.getInstance(modal).hide();
+                    });
+                }
+
+                // Show the modal
+                const bsModal = new bootstrap.Modal(modal);
+                bsModal.show();
+            }
+
+            // Function to create the modal if it doesn't exist
+            function createDeleteFilterModal() {
+                const modal = document.createElement('div');
+                modal.className = 'modal fade';
+                modal.id = 'deleteFilterModal';
+                modal.tabIndex = '-1';
+                modal.innerHTML = `
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" style="border-radius: 16px;">
                     <div class="modal-body text-center p-4">
@@ -847,52 +918,52 @@ $guru = mysqli_fetch_assoc($result);
                 </div>
             </div>
         `;
-        
-        // Append to body
-        document.body.appendChild(modal);
-        return modal;
-    }
-    
-    // Filter classes
-    function filterClasses(filter, classIds = []) {
-        console.log('Filtering by:', filter);
-        console.log('Class IDs:', classIds);
-        
-        const classCards = document.querySelectorAll('.class-card');
-        
-        classCards.forEach((card) => {
-            const parentCol = card.closest('.col-12.col-md-6.col-lg-4');
-            if (!parentCol) return;
-            
-            // Get class ID from the link
-            let kelasId = '';
-            const linkElement = card.querySelector('a[href^="kelas_guru.php?id="]');
-            
-            if (linkElement) {
-                const href = linkElement.getAttribute('href');
-                const match = href.match(/id=(\d+)/);
-                if (match && match[1]) {
-                    kelasId = match[1];
-                }
+
+                // Append to body
+                document.body.appendChild(modal);
+                return modal;
             }
-            
-            // Apply filter
-            if (filter === 'all') {
-                parentCol.style.display = 'block';
-            } else if (filter === 'public') {
-                const isPublic = card.querySelector('.badge.bg-success') !== null;
-                parentCol.style.display = isPublic ? 'block' : 'none';
-            } else if (filter === 'private') {
-                const isPublic = card.querySelector('.badge.bg-success') !== null;
-                parentCol.style.display = !isPublic ? 'block' : 'none';
-            } else if (filter === 'custom') {
-                const shouldShow = classIds.includes(kelasId);
-                console.log('Checking class ID:', kelasId, 'Should show:', shouldShow);
-                parentCol.style.display = shouldShow ? 'block' : 'none';
+
+            // Filter classes
+            function filterClasses(filter, classIds = []) {
+                console.log('Filtering by:', filter);
+                console.log('Class IDs:', classIds);
+
+                const classCards = document.querySelectorAll('.class-card');
+
+                classCards.forEach((card) => {
+                    const parentCol = card.closest('.col-12.col-md-6.col-lg-4');
+                    if (!parentCol) return;
+
+                    // Get class ID from the link
+                    let kelasId = '';
+                    const linkElement = card.querySelector('a[href^="kelas_guru.php?id="]');
+
+                    if (linkElement) {
+                        const href = linkElement.getAttribute('href');
+                        const match = href.match(/id=(\d+)/);
+                        if (match && match[1]) {
+                            kelasId = match[1];
+                        }
+                    }
+
+                    // Apply filter
+                    if (filter === 'all') {
+                        parentCol.style.display = 'block';
+                    } else if (filter === 'public') {
+                        const isPublic = card.querySelector('.badge.bg-success') !== null;
+                        parentCol.style.display = isPublic ? 'block' : 'none';
+                    } else if (filter === 'private') {
+                        const isPublic = card.querySelector('.badge.bg-success') !== null;
+                        parentCol.style.display = !isPublic ? 'block' : 'none';
+                    } else if (filter === 'custom') {
+                        const shouldShow = classIds.includes(kelasId);
+                        console.log('Checking class ID:', kelasId, 'Should show:', shouldShow);
+                        parentCol.style.display = shouldShow ? 'block' : 'none';
+                    }
+                });
             }
-        });
-    }
-</script>
+        </script>
 
         <!-- Jumbotron yang akan berubah berdasarkan tab yang aktif -->
         <div class="jumbotron jumbotron-fluid mb-md-2 d-none d-md-block">
@@ -1265,9 +1336,21 @@ $guru = mysqli_fetch_assoc($result);
                                         </div>
                                     </div>
 
-                                    <div class="d-flex align-items-center text-muted small">
-                                        <i class="bi bi-people me-2"></i>
-                                        <?php echo $kelas['jumlah_siswa']; ?> Siswa
+                                    <div class="d-flex align-items-center text-muted small mt-1">
+                                        <i class="bi bi-mortarboard me-2"></i>
+                                        <?php
+                                        $tingkat = $kelas['tingkat'];
+                                        $formatted_tingkat = '';
+
+                                        if (in_array($tingkat, ['7', '8', '9'])) {
+                                            $formatted_tingkat = "SMP Kelas " . $tingkat;
+                                        } elseif (in_array($tingkat, ['E', 'F'])) {
+                                            $formatted_tingkat = "SMA Fase " . $tingkat;
+                                        } else {
+                                            $formatted_tingkat = "Kelas " . $tingkat;
+                                        }
+                                        echo $formatted_tingkat;
+                                        ?>
                                     </div>
                                 </div>
                                 <script>
