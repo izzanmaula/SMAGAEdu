@@ -128,7 +128,7 @@ $nav_items = $is_guru ? [
                             <div class="ms-3 flex-grow-1">
                                 <div class="fw-medium">Mode Gelap <span class="badge ms-2 fs-7 rounded-pill" style="background-color: rgba(255, 193, 7, 0.1); color: #ffc107;">BETA</span></div>
                                 <small class="text-secondary">Ubah tampilan aplikasi</small>
-                            </div>
+                            </div> 
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" role="switch" id="darkModeSwitch">
                             </div>

@@ -47,19 +47,15 @@ $guru = mysqli_fetch_assoc($result);
     #model-list-container {
         position: fixed !important;
         z-index: 100000 !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
         background: white !important;
-        border-radius: 15px !important;
+        border-radius: 8px !important;
         overflow: hidden !important;
         margin-top: 0 !important;
         /* Reset Bootstrap margins */
         padding: 0.5rem 0 !important;
         transform: none !important;
         /* Prevent Bootstrap transforms */
-    }
-
-    .thinking-indicator {
-        opacity: 1 !important;
-        display: block !important;
     }
 
     .model-item {
@@ -207,6 +203,15 @@ $guru = mysqli_fetch_assoc($result);
                 <div class="d-flex justify-content-between">
                     <div class="headerChat">
                         <h3 class="mb-0 fw-bold">Saga</h3>
+                        <div style="display: none;">
+                            <p class="loading animate__animated animate__fadeIn animate__flash animate__infinite text-muted p-0 m-0"
+                                id="loading"
+                                style="font-size: 13px; z-index: 10;display: none;">Sedang berpikir...</p>
+                            <p class="animate__animated animate__fadeIn text-muted p-0 m-0"
+                                style="font-size: 13px; z-index: 10;"
+                                id="tersedia">SMAGAAI tersedia</p>
+                        </div>
+
                         <div class="d-flex align-items-center gap-2 mb-3">
                             <div class="text-muted" style="font-size: 13px;">
                                 <span id="firstMessage" class="d-none">
@@ -277,6 +282,7 @@ $guru = mysqli_fetch_assoc($result);
                                 margin: 0.5rem !important;
                                 max-width: none !important;
                                 margin-bottom: 4.5rem !important;
+                                background-color: white !important;
                             }
 
                             /* Container utama */
@@ -291,21 +297,21 @@ $guru = mysqli_fetch_assoc($result);
                             overflow-y: auto;
                         }
                     </style>
-                    <div class="gap-2 mb-1 d-none d-md-flex">
-                        <button class="btn bg-white text-black d-flex align-items-center gap-2 px-3 py-2 border"
+                    <div class="gap-2 mb-4 d-flex">
+                        <button class="btn btn-sm bg-white text-black d-flex align-items-center gap-2 px-3 py-2 border"
                             onclick="window.location.reload()"
                             style="border-radius: 15px;">
                             <i class="bi bi-arrow-clockwise"></i>
                             <span class="button-text d-none d-md-inline" style="font-size: 13px;">Baru</span>
                         </button>
-                        <button class="btn bg-white text-black d-flex align-items-center gap-2 px-3 py-2 border"
+                        <button class="btn btn-sm bg-white text-black d-flex align-items-center gap-2 px-3 py-2 border"
                             data-bs-toggle="modal"
                             data-bs-target="#historyModal"
                             style="border-radius: 15px;">
                             <i class="bi bi-clock-history"></i>
                             <span class="button-text d-none d-md-inline" style="font-size: 13px;">Riwayat</span>
                         </button>
-                        <button class="btn d-flex text-black bg-white align-items-center gap-2 px-3 py-2 border"
+                        <button class="btn btn-sm d-flex text-black bg-white align-items-center gap-2 px-3 py-2 border"
                             data-bs-toggle="modal"
                             data-bs-target="#projectModal"
                             style="border-radius: 15px;">
@@ -337,97 +343,26 @@ $guru = mysqli_fetch_assoc($result);
                     <!-- Pesan chat akan ditampilkan di sini -->
                 </div>
 
-                <div id="loading" class="text-center p-3 d-none">
-                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <span>Sedang berpikir...</span>
-                </div>
 
-                <div id="welcomeContainer" class="welcome-container">
-                    <div class="welcome-content animate__animated animate__fadeIn d-flex align-items-center p-4">
-                        <!-- <span class="bi bi-stars me-3" style="font-size: 2rem;"></span> -->
-                        <h4 class="welcome-title">Halo, ada yang bisa SAGA bantu?</h4>
+                <!-- Tambah HTML setelah chat-container: -->
+                <div class="recommendation-container" style="position: relative; margin-top: -40px;">
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        <button class="btn buttonRekomendasi button-style" id="buttonRekomendasi" onclick="fillPrompt('Berikan saya Tips mengajar efektif')">
+                            <i class="bi bi-pen-fill pe-1"></i>
+                            Tips mengajar efektif
+                        </button>
+                        <button class="btn buttonRekomendasi button-style" id="buttonRekomendasi2" onclick="fillPrompt('Berikan saya Ide aktivitas kelas')">
+                            <i class="bi bi-lightbulb-fill pe-1"></i>
+                            Ide aktivitas kelas
+                        </button>
+                        <button class="btn buttonRekomendasi button-style" id="buttonRekomendasi3" onclick="fillPrompt('Beri saya kejutan!')">
+                            <i class="bi bi-emoji-surprise-fill pe-1"></i>
+                            Beri saya kejutan!
+                        </button>
                     </div>
                 </div>
 
                 <style>
-                    .welcome-container {
-                        position: absolute;
-                        top: 40%;
-                        left: 58%;
-                        transform: translate(-50%, -50%);
-                        text-align: center;
-                        z-index: 10;
-                        width: 100%;
-                        max-width: 500px;
-                        transition: all 0.3s ease;
-                    }
-
-                    @media (max-width: 768px) {
-                        .welcome-container {
-                            top: 40%;
-                            left: 50%;
-                            transform: translate(-50%, -50%);
-                        }
-                    }
-
-                    .welcome-content {
-                        background-color: white;
-                        padding: 2rem;
-                        border-radius: 15px;
-                    }
-
-                    .welcome-avatar {
-                        width: 80px;
-                        height: 80px;
-                        border-radius: 50%;
-                        padding: 10px;
-                        background-color: #EEECE2;
-                    }
-
-                    .welcome-title {
-                        margin-bottom: 0.5rem;
-                    }
-
-                    .welcome-text {
-                        color: #666;
-                        margin-bottom: 1.5rem;
-                    }
-
-                    .welcome-suggestions {
-                        display: flex;
-                        flex-wrap: wrap;
-                        justify-content: center;
-                        gap: 0.5rem;
-                    }
-
-                    .suggestion-btn {
-                        background-color: #EEECE2;
-                        border: none;
-                        border-radius: 20px;
-                        padding: 8px 16px;
-                        font-size: 14px;
-                        transition: all 0.2s;
-                    }
-
-                    .suggestion-btn:hover {
-                        background-color: rgb(218, 119, 86);
-                        color: white;
-                        transform: translateY(-2px);
-                    }
-
-                    @media (max-width: 768px) {
-                        .welcome-container {
-                            width: 85%;
-                            max-width: none;
-                        }
-
-                        .welcome-content {
-                            padding: 1.5rem;
-                        }
-                    }
-
                     .buttonRekomendasi {
                         background-color: #EEECE2;
                         border: 0;
@@ -445,70 +380,8 @@ $guru = mysqli_fetch_assoc($result);
                 </style>
 
                 <!-- Input Area -->
-                <!-- Replace your current attached-files-container with this -->
-                <div id="attached-files-container" class="attached-files-floating-container"></div>
                 <div class="d-flex justify-content-center input-container mt-0 pt-0">
                     <style>
-                        .attached-files-floating-container {
-                            position: fixed;
-                            bottom: 85px;
-                            /* Adjust this value to position above your input area */
-                            left: 60%;
-                            transform: translateX(-50%);
-                            z-index: 1000;
-                            border-radius: 12px;
-                            padding: 8px 12px;
-                            display: none;
-                            /* Hidden by default */
-                            flex-wrap: wrap;
-                            gap: 8px;
-                            max-width: 80%;
-                            max-height: 120px;
-                            overflow-y: auto;
-                            /* Add scroll if too many files */
-                            transition: all 0.3s ease;
-                        }
-
-                        .attached-file {
-                            display: flex;
-                            align-items: center;
-                            background: rgba(240, 240, 240, 0.5);
-                            border-radius: 8px;
-                            padding: 5px 10px;
-                            font-size: 12px;
-                            white-space: nowrap;
-                            animation: slideIn 0.3s ease;
-                        }
-
-                        .file-name {
-                            max-width: 150px;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            margin: 0 6px;
-                        }
-
-                        .remove-file {
-                            cursor: pointer;
-                            opacity: 0.6;
-                            transition: opacity 0.2s;
-                        }
-
-                        .remove-file:hover {
-                            opacity: 1;
-                        }
-
-                        @keyframes slideIn {
-                            from {
-                                opacity: 0;
-                                transform: translateY(10px);
-                            }
-
-                            to {
-                                opacity: 1;
-                                transform: translateY(0);
-                            }
-                        }
-
                         @media (max-width: 768px) {
                             .input-container {
                                 position: fixed;
@@ -568,271 +441,17 @@ $guru = mysqli_fetch_assoc($result);
 
                         }
                     </style>
-                    <script>
-                        // Variabel untuk menyimpan berkas terlampir
-                        let attachedFiles = [];
-
-                        // Fungsi untuk menambahkan berkas ke container
-                        // Modify the addAttachedFile function
-                        function addAttachedFile(file) {
-                            const fileId = Date.now();
-
-                            console.log("Attempting to add file:", file.name);
-
-                            // Pemeriksaan duplikat yang lebih ketat
-                            if (activeDocuments.has(file.name)) {
-                                console.log("File already attached, skipping:", file.name);
-                                return;
-                            }
-
-                            // Check if file with same name is already attached
-                            const existingFile = attachedFiles.find(f => f.name === file.name);
-                            if (existingFile) {
-                                console.log("File already attached:", file.name);
-                                return; // Skip if file with same name exists
-                            }
-
-                            attachedFiles.push({
-                                id: fileId,
-                                name: file.name,
-                                content: window.documentContent || ''
-                            });
-
-                            const fileElement = document.createElement('div');
-                            fileElement.className = 'attached-file';
-                            fileElement.dataset.fileId = fileId;
-
-                            fileElement.innerHTML = `
-                                ${getFileIcon(file.name)}
-                                <span class="file-name">${file.name}</span>
-                                <span class="remove-file" onclick="removeAttachedFile(${fileId})">
-                                  <i class="bi bi-x"></i>
-                                </span>
-                            `;
-
-                            const container = document.getElementById('attached-files-container');
-                            if (container) {
-                                // Show container if it was hidden
-                                container.style.display = 'flex';
-                                container.appendChild(fileElement);
-                            } else {
-                                console.error('Container for attached files not found');
-                            }
-                        }
-
-                        // Fungsi untuk menghapus berkas
-                        function removeAttachedFile(fileId) {
-                            const fileElement = document.querySelector(`.attached-file[data-file-id="${fileId}"]`);
-                            if (fileElement) {
-                                fileElement.classList.add('animate__animated', 'animate__fadeOut');
-                                setTimeout(() => fileElement.remove(), 300);
-                            }
-
-                            attachedFiles = attachedFiles.filter(file => file.id !== fileId);
-                        }
-
-                        // Tambahkan HTML untuk container file yang terlampir
-                        document.addEventListener('DOMContentLoaded', function() {
-                            // Tambahkan container untuk file terlampir jika belum ada
-                            if (!document.getElementById('attached-files-container')) {
-                                const inputWrapper = document.getElementById('input-wrapper');
-                                if (inputWrapper) {
-                                    const container = document.createElement('div');
-                                    container.id = 'attached-files-container';
-                                    container.className = 'attached-files-container';
-                                    inputWrapper.insertBefore(container, inputWrapper.firstChild);
-                                }
-                            }
-
-                            // Attach event handler untuk file input
-                            // Update the file input change event handler
-                            const fileInput = document.getElementById('file-input');
-                            if (fileInput) {
-                                fileInput.addEventListener('change', async function(e) {
-                                    const file = e.target.files[0];
-                                    if (!file) return;
-
-                                    // Check if file is already attached
-                                    const existingFile = attachedFiles.find(f => f.name === file.name);
-                                    if (existingFile) {
-                                        console.log("File already attached, skipping processing:", file.name);
-                                        return;
-                                    }
-
-                                    // Show loading preview
-                                    const preview = document.getElementById('document-preview');
-                                    if (preview) {
-                                        preview.style.display = 'flex';
-                                        preview.style.opacity = '1';
-                                    }
-
-                                    const formData = new FormData();
-                                    formData.append('file', file);
-
-                                    try {
-                                        const response = await fetch('process_document.php', {
-                                            method: 'POST',
-                                            body: formData
-                                        });
-                                        const result = await response.json();
-
-                                        if (result.success) {
-                                            window.documentContent = result.content;
-                                            addAttachedFile(file);
-                                        }
-                                    } catch (error) {
-                                        console.error("Error processing file:", error);
-                                    } finally {
-                                        if (preview) {
-                                            preview.style.opacity = '0';
-                                            setTimeout(() => {
-                                                preview.style.display = 'none';
-                                            }, 300);
-                                        }
-                                        // Reset file input to allow selecting the same file again
-                                        fileInput.value = '';
-                                    }
-                                });
-                            } else {
-                                console.error('File input element not found');
-                            }
-
-                            // Override sendMessage function
-                            if (typeof sendMessage === 'function') {
-                                const originalSendMessage = sendMessage;
-                                window.sendMessage = async function() {
-                                    const userMessage = userInput.value.trim();
-                                    if (userMessage === '' && attachedFiles.length === 0) return;
-
-                                    // Buat pesan dengan berkas terlampir
-                                    let fullMessage = userMessage;
-
-                                    // Jika ada berkas terlampir, tambahkan ke pesan
-                                    if (attachedFiles.length > 0) {
-                                        const filesHtml = attachedFiles.map(file =>
-                                            `<div class="file-in-chat">${getFileIcon(file.name)} ${file.name}</div>`
-                                        ).join('');
-
-                                        const fileContent = attachedFiles.map(file => file.content).join('\n\n');
-
-                                        // Untuk tampilan di chat
-                                        await addMessage('user', `${userMessage} ${filesHtml}`);
-
-                                        // Untuk dikirim ke AI
-                                        fullMessage = `${userMessage}\n\nBerkas terlampir:\n${attachedFiles.map(file => file.name).join(', ')}\n\nIsi berkas:\n${fileContent}`;
-                                    } else {
-                                        await addMessage('user', userMessage);
-                                    }
-
-                                    // Reset container berkas
-                                    const container = document.getElementById('attached-files-container');
-                                    if (container) {
-                                        container.innerHTML = '';
-                                    }
-                                    attachedFiles = [];
-
-                                    // Lanjutkan dengan proses normal
-                                    userInput.value = '';
-                                    hideTersedia();
-                                    showLoader();
-
-                                    try {
-                                        const aiResponse = await getAIResponse(fullMessage);
-                                        await addMessage('ai', aiResponse);
-                                        await saveToDatabase(fullMessage, aiResponse);
-                                    } catch (error) {
-                                        console.error('Error:', error);
-                                        await addMessage('ai', 'Maaf, terjadi kesalahan saat memproses pesan Anda.');
-                                    } finally {
-                                        hideLoader();
-                                        showTersedia();
-                                    }
-                                };
-                            } else {
-                                console.error('sendMessage function not found');
-                            }
-                        });
-
-                        // Tambahkan CSS untuk styling
-                        const styleElement = document.createElement('style');
-                        styleElement.textContent = `
-  .attached-files-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    padding: 0 0.5rem;
-  }
-  
-  .attached-file {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 5px 10px;
-    font-size: 12px;
-    max-width: 200px;
-    animation: slideIn 0.3s ease;
-  }
-  
-  .file-icon {
-    margin-right: 6px;
-    font-size: 14px;
-  }
-  
-  .file-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  .remove-file {
-    margin-left: 6px;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s;
-  }
-  
-  .remove-file:hover {
-    opacity: 1;
-  }
-  
-  .file-in-chat {
-    display: inline-flex;
-    align-items: center;
-    background: white;
-    border: 1px solid rgba(218, 119, 86, 0.2);
-    border-radius: 6px;
-    padding: 4px 8px;
-    margin: 2px 0;
-    font-size: 12px;
-  }
-  
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-`;
-                        document.head.appendChild(styleElement);
-                    </script>
-                    <div class="input-wrapper card-footer p-2 w-100" id="input-wrapper" style="max-width: 45rem; background-color: #EEECE2; border-radius: 30px;">
+                    <div class="input-wrapper border rounded-5 card-footer p-2 w-100" id="input-wrapper" style="max-width: 45rem;">
                         <div class="input-group d-flex align-items-center">
-                            <textarea id="user-input" class="form-control border-0" style="background-color: transparent;" placeholder="Tanya apapun"></textarea>
-                            <button id="send-button" class="btn bi-send rounded-4 text-white" style="background-color: rgb(218, 119, 86);"></button>
+                            <textarea id="user-input" class="form-control border-0" style="background-color: transparent;" placeholder="Apa yang bisa SAGA bantu?"></textarea>
+                            <button id="send-button" class="btn bi-arrow-up rounded-4 text-white" style="background-color: rgb(218, 119, 86); margin-top:-1rem;"></button>
                         </div>
                         <!--  -->
                         <!-- settings mode -->
                         <div class="d-flex gap-2 mt-2">
                             <!-- Upload button -->
-                            <button class="btn ms-1 button-style d-flex rounded-pill align-items-center"
-                                style="background-color:rgb(219, 213, 183); padding: 5px 15px;"
+                            <button class="btn border ms-1 button-style d-flex rounded-pill align-items-center"
+                                style="padding: 5px 15px;"
                                 onclick="document.getElementById('file-input').click()">
                                 <i class="bi bi-plus" style="font-size: 16px;"></i>
                                 <input type="file" id="file-input" accept=".pdf,.doc,.docx.xlsx,.xls" style="display: none;">
@@ -840,7 +459,7 @@ $guru = mysqli_fetch_assoc($result);
 
                             <!-- Model selection dropdown (menggantikan deep-thinking-toggle) -->
                             <div class="btn-group dropup" id="modelDropupContainer">
-                                <button class="btn rounded-pill button-style p-2 d-flex align-items-center gap-2" style="background-color: rgb(219, 213, 183);"
+                                <button class="btn rounded-pill border button-style p-2 d-flex align-items-center gap-2"
                                     id="modelDropdownBtn">
                                     <i class="bi bi-stars" style="font-size: 16px;"></i>
                                     <p class="p-0 m-0 text-dark" style="font-size: 12px; cursor: pointer;">
@@ -848,7 +467,7 @@ $guru = mysqli_fetch_assoc($result);
                                     </p>
                                 </button>
 
-                                <ul id="model-list-container" class="shadow-sm border" style="display: none;">
+                                <ul id="model-list-container" style="display: none;">
                                     <!-- Your model items here -->
                                 </ul>
                             </div>
@@ -999,195 +618,167 @@ $guru = mysqli_fetch_assoc($result);
                                 id: 'llama-3.3-70b-versatile',
                                 name: 'LLaMA 3.3 70B',
                                 desc: 'Paling cerdas & lengkap',
-                                category: 'advanced',
-                                categoryLabel: 'Analisis Mendalam',
+                                isDefault: true
                             },
                             {
                                 id: 'llama-3.1-8b-instant',
                                 name: 'LLaMA 3.1 8B',
-                                desc: 'Tercepat untuk harian',
-                                category: 'daily',
-                                categoryLabel: 'Penggunaan Harian',
-                                isDefault: true
+                                desc: 'Tercepat untuk harian'
                             },
                             {
                                 id: 'mixtral-8x7b-32768',
                                 name: 'Mixtral 8x7B',
-                                desc: 'Terbaik untuk text panjang',
-                                category: 'daily',
-                                categoryLabel: 'Penggunaan Harian'
+                                desc: 'Terbaik untuk text panjang'
                             },
                             {
-                                id: 'deepseek-r1-distill-llama-70b-specdec',
+                                id: 'deepseek-r1-distill-llama-70b',
                                 name: 'DeepSeek Llama 70B',
-                                desc: 'Terbaik untuk penalaran logika',
-                                category: 'advanced',
-                                categoryLabel: 'Analisis Mendalam'
+                                desc: 'Terbaik untuk matematika atau analisis dalam'
                             },
                             {
                                 id: 'gemma2-9b-it',
                                 name: 'Gemma2 9B',
-                                desc: 'Moderat antara cepat dan akurat',
-                                category: 'daily',
-                                categoryLabel: 'Penggunaan Harian'
+                                desc: 'Moderat, terbaik untuk pertanyaan umum'
                             }
                         ];
 
                         // Set model aktif secara default
                         window.activeModelId = 'llama-3.3-70b-versatile';
 
-                        // Fungsi untuk mengatur model yang dipilih
-                        // Tambahkan ini setelah definisi fungsi setActiveModel
-                        window.setActiveModel = function(modelId) {
-                            window.activeModelId = modelId;
-                            const selectedModel = aiModels.find(m => m.id === modelId);
+     // Fungsi untuk mengatur model yang dipilih
+window.setActiveModel = function(modelId) {
+    window.activeModelId = modelId;
+    const selectedModel = aiModels.find(m => m.id === modelId);
 
-                            // Update UI
-                            const displayElement = document.getElementById('current-model-name');
-                            if (displayElement && selectedModel) {
-                                displayElement.textContent = selectedModel.name;
-                            }
+    // Update UI
+    const displayElement = document.getElementById('current-model-name');
+    if (displayElement && selectedModel) {
+        displayElement.textContent = selectedModel.name;
+    }
 
-                            // Simpan di localStorage
-                            localStorage.setItem('preferredModel', modelId);
-
-                            // Penting: Re-apply personality setelah model diganti
-                            const savedPersonality = localStorage.getItem('sagaPersonality');
-                            if (savedPersonality) {
-                                try {
-                                    const personalityData = JSON.parse(savedPersonality);
-                                    if (personalityData && personalityData.personality) {
-                                        updateSystemMessageWithPersonality(personalityData);
-                                    }
-                                } catch (e) {
-                                    console.error('Error re-applying personality after model change:', e);
-                                }
-                            }
-
-                            console.log(`Model changed to: ${selectedModel?.name} (${modelId})`);
-                        };
+    // Simpan di localStorage untuk persistensi
+    localStorage.setItem('preferredModel', modelId);
+    console.log(`Model changed to: ${selectedModel?.name} (${modelId})`);
+    
+    // TAMBAHAN BARU: Update semua ikon centang di dropdown
+    setTimeout(() => {
+        document.querySelectorAll('.model-item').forEach(item => {
+            // Hapus semua tanda active dan ikon centang terlebih dahulu
+            item.classList.remove('active');
+            const existingCheckIcon = item.querySelector('.bi-check-circle-fill');
+            if (existingCheckIcon) existingCheckIcon.remove();
+            
+            // Jika ini adalah item yang dipilih, tambahkan kelas active dan ikon centang
+            if (item.dataset.modelId === modelId) {
+                item.classList.add('active');
+                const checkIcon = document.createElement('i');
+                checkIcon.className = 'bi bi-check-circle-fill ms-auto';
+                checkIcon.style.color = 'rgb(218, 119, 86)';
+                item.appendChild(checkIcon);
+            } else {
+                // Reset border gambar model untuk item yang tidak dipilih
+                const modelImg = item.querySelector('.model-img');
+                if (modelImg) modelImg.style.border = '1px solid #dee2e6';
+            }
+        });
+    }, 100); // Delay singkat untuk memastikan DOM telah diperbarui
+};
 
 
 
                         // Populasi model list di dropdown
                         const modelListEl = document.getElementById('model-list-container');
-                        console.log('model list el', modelListEl);
+                        // console.log('model list el', modelListEl);
                         if (modelListEl) {
                             modelListEl.innerHTML = ''; // Hapus semua item terlebih dahulu
 
-                            // Group models by category
-                            const categories = {
-                                'daily': {
-                                    label: 'Penggunaan Harian',
-                                    models: []
-                                },
-                                'advanced': {
-                                    label: 'Penggunaan Analisis',
-                                    models: []
-                                }
-                            };
-
-
-
-                            // Populate categories
                             aiModels.forEach(model => {
-                                const category = model.category || 'daily'; // Default to 'daily' if no category
-                                if (categories[category]) {
-                                    categories[category].models.push(model);
-                                }
-                                console.log(`Added model ${model.name} to category ${category}`);
-                            });
+                                const item = document.createElement('li');
+                                item.innerHTML = `
+                <a class="dropdown-item d-flex align-items-center p-3 model-item ${model.isDefault ? 'active' : ''}" 
+                   href="javascript:void(0)" 
+                   data-model-id="${model.id}"
+                   style="z-index:9999 !important;">
+                  <div class="me-3 d-flex align-items-center justify-content-center" 
+                       style="width: 40px; height: 40px; border-radius: 10px; background-color: #f8f9fa;">
+                    <i class="bi bi-cpu" style="font-size: 20px; color: ${model.isDefault ? 'rgb(218, 119, 86)' : '#6c757d'};"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0" style="font-size: 14px;">${model.name}</h6>
+                    <p class="mb-0 text-muted" style="font-size: 12px;">${model.desc}</p>
+                  </div>
+                  ${model.isDefault ? '<i class="bi bi-check-circle-fill ms-auto" style="color: rgb(218, 119, 86);"></i>' : ''}
+                </a>
+            `;
 
-                            console.log('Categories after population:', JSON.stringify(categories, null, 2));
+                                modelListEl.appendChild(item);
 
-                            // Define model images
-                            const modelImages = {
-                                'llama-3.3-70b-versatile': 'assets/llama.png',
-                                'llama-3.1-8b-instant': 'assets/llama.png',
-                                'mixtral-8x7b-32768': 'assets/mixtral.png',
-                                'deepseek-r1-distill-llama-70b-specdec': 'assets/deepseek.png',
-                                'gemma2-9b-it': 'assets/google.png'
-                            };
+                                // Menangani klik pada tombol model selector
+                                document.getElementById('modelDropdownBtn').addEventListener('click', function() {
+                                    // const modelModal = new bootstrap.Modal(document.getElementById('modelSelectorModal'));
+                                    // modelModal.show();
+                                });
 
-                            // Create elements for each category
-                            Object.entries(categories).forEach(([categoryKey, category]) => {
-                                // Check if category exists and has models
-                                if (category && category.models && category.models.length > 0) {
-                                    // Add category header
-                                    const categoryHeader = document.createElement('li');
-                                    categoryHeader.className = 'dropdown-header px-3 py-2 text-muted';
-                                    categoryHeader.innerHTML = `<small class="fw-bold">${category.label}</small>`;
-                                    modelListEl.appendChild(categoryHeader);
+                                // Add click event
+                                const modelItem = item.querySelector('.model-item');
+                                if (modelItem) {
+                                    modelItem.addEventListener('click', function() {
+                                        const modelId = this.dataset.modelId;
 
-                                    // Add models in this category
-                                    category.models.forEach(model => {
-                                        // Rest of your existing code
-                                        const item = document.createElement('li');
-                                        const modelImageUrl = modelImages[model.id] || 'assets/llama.png';
+                                        // Update aktif di UI
+                                        document.querySelectorAll('.model-item').forEach(item => {
+                                            item.classList.remove('active');
+                                            const cpuIcon = item.querySelector('.bi-cpu');
+                                            if (cpuIcon) cpuIcon.style.color = '#6c757d';
+                                            const checkIcon = item.querySelector('.bi-check-circle-fill');
+                                            if (checkIcon) checkIcon.remove();
+                                        });
 
-                                        item.innerHTML = `
-                    <a class="dropdown-item d-flex align-items-center p-3 model-item ${model.isDefault ? 'active' : ''}" 
-                       href="javascript:void(0)" 
-                       data-model-id="${model.id}"
-                       data-category="${model.category || 'daily'}"
-                       style="z-index:9999 !important;">
-                      <div class="me-3 d-flex align-items-center justify-content-center border flex-shrink-0" 
-                           style="width: 40px; height: 40px; border-radius: 10px; overflow: hidden;">
-                        <img src="${modelImageUrl}" alt="${model.name}" class="model-img" 
-                            style="width: 40px; height: 40px; object-fit: cover; ${model.isDefault ? 'border: none;' : ''}">
-                      </div>
-                      <div>
-                        <h6 class="mb-0" style="font-size: 14px;">${model.name}</h6>
-                        <p class="mb-0 text-muted" style="font-size: 12px;">${model.desc}</p>
-                      </div>
-                      ${model.isDefault ? '<i class="bi bi-check-circle-fill ms-auto" style="color: rgb(218, 119, 86);"></i>' : ''}
-                    </a>
-                `;
+                                        // Update yang baru dipilih
+                                        this.classList.add('active');
+                                        const cpuIcon = this.querySelector('.bi-cpu');
+                                        if (cpuIcon) cpuIcon.style.color = 'rgb(218, 119, 86)';
 
-                                        // Add click event handler (reuse existing code)
-                                        const modelItem = item.querySelector('.model-item');
-                                        if (modelItem) {
-                                            // Your existing click handler code here
-                                            modelItem.addEventListener('click', function() {
-                                                const modelId = this.dataset.modelId;
-
-                                                // Update UI
-                                                document.querySelectorAll('.model-item').forEach(item => {
-                                                    item.classList.remove('active');
-                                                    const modelImg = item.querySelector('.model-img');
-                                                    if (modelImg) modelImg.style.border = '1px solid #dee2e6';
-                                                    const checkIcon = item.querySelector('.bi-check-circle-fill');
-                                                    if (checkIcon) checkIcon.remove();
-                                                });
-
-                                                this.classList.add('active');
-                                                const modelImg = this.querySelector('.model-img');
-                                                // if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
-
-                                                if (!this.querySelector('.bi-check-circle-fill')) {
-                                                    const checkIcon = document.createElement('i');
-                                                    checkIcon.className = 'bi bi-check-circle-fill ms-auto';
-                                                    checkIcon.style.color = 'rgb(218, 119, 86)';
-                                                    this.appendChild(checkIcon);
-                                                }
-
-                                                setActiveModel(modelId);
-                                            });
+                                        // Tambahkan check icon
+                                        if (!this.querySelector('.bi-check-circle-fill')) {
+                                            const checkIcon = document.createElement('i');
+                                            checkIcon.className = 'bi bi-check-circle-fill ms-auto';
+                                            checkIcon.style.color = 'rgb(218, 119, 86)';
+                                            this.appendChild(checkIcon);
                                         }
 
-                                        modelListEl.appendChild(item);
+                                        setActiveModel(modelId);
                                     });
                                 }
-
-                                // Add divider except for the last category
-                                if (categoryKey !== Object.keys(categories)[Object.keys(categories).length - 1]) {
-                                    const divider = document.createElement('li');
-                                    divider.innerHTML = '<hr class="dropdown-divider">';
-                                    modelListEl.appendChild(divider);
-                                }
                             });
-
                         }
+
+                        const activeModelId = window.activeModelId || 'llama-3.3-70b-versatile';
+                        document.querySelectorAll('.model-item').forEach(item => {
+                            const itemModelId = item.dataset.modelId;
+                            const checkIcon = item.querySelector('.bi-check-circle-fill');
+
+                            if (itemModelId === activeModelId) {
+                                item.classList.add('active');
+                                const modelImg = item.querySelector('.model-img');
+                                if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
+
+                                // Tambahkan ikon centang jika tidak ada
+                                if (!checkIcon) {
+                                    const newCheckIcon = document.createElement('i');
+                                    newCheckIcon.className = 'bi bi-check-circle-fill ms-auto';
+                                    newCheckIcon.style.color = 'rgb(218, 119, 86)';
+                                    item.appendChild(newCheckIcon);
+                                }
+                            } else {
+                                item.classList.remove('active');
+                                const modelImg = item.querySelector('.model-img');
+                                if (modelImg) modelImg.style.border = '1px solid #dee2e6';
+
+                                // Hapus ikon centang jika ada
+                                if (checkIcon) checkIcon.remove();
+                            }
+                        });
 
                         // Inisialisasi model dari localStorage jika ada
                         const savedModel = localStorage.getItem('preferredModel');
@@ -1200,7 +791,7 @@ $guru = mysqli_fetch_assoc($result);
                                 if (item.dataset.modelId === savedModel) {
                                     item.classList.add('active');
                                     const modelImg = item.querySelector('.model-img');
-                                    // if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
+                                    if (modelImg) modelImg.style.border = '2px solid rgb(218, 119, 86)';
                                 } else {
                                     item.classList.remove('active');
                                     const modelImg = item.querySelector('.model-img');
@@ -1216,7 +807,75 @@ $guru = mysqli_fetch_assoc($result);
 
                         // Populasi model list dengan gambar model alih-alih icon
                         // Reuse the existing modelListEl variable instead of redeclaring it
+                        if (modelListEl) {
+                            modelListEl.innerHTML = ''; // Hapus semua item terlebih dahulu
 
+                            // Definisikan gambar untuk setiap model
+                            const modelImages = {
+                                'llama-3.3-70b-versatile': 'assets/llama.png', // Ganti dengan path gambar Anda
+                                'llama-3.1-8b-instant': 'assets/llama.png',
+                                'mixtral-8x7b-32768': 'assets/mixtral.png',
+                                'deepseek-r1-distill-llama-70b': 'assets/deepseek.png',
+                                'gemma2-9b-it': 'assets/google.png'
+                                // Tambahkan model lain sesuai kebutuhan
+                            };
+
+                            aiModels.forEach(model => {
+                                const item = document.createElement('li');
+                                const modelImageUrl = modelImages[model.id] || 'assets/llama.png';
+
+                                item.innerHTML = `
+                                <a class="dropdown-item d-flex align-items-center p-3 model-item ${model.isDefault ? 'active' : ''}" 
+                                   href="javascript:void(0)" 
+                                   data-model-id="${model.id}"
+                                   style="z-index:9999 !important;">
+                                  <div class="me-3 d-flex align-items-center justify-content-center border flex-shrink-0" 
+                                       style="width: 40px; height: 40px; border-radius: 10px; overflow: hidden;">
+                                    <img src="${modelImageUrl}" alt="${model.name}" class="model-img" 
+                                        style="width: 40px; height: 40px; object-fit: cover;">
+                                  </div>
+                                  <div>
+                                    <h6 class="mb-0" style="font-size: 14px;">${model.name}</h6>
+                                    <p class="mb-0 text-muted" style="font-size: 12px;">${model.desc}</p>
+                                  </div>
+                                  ${model.isDefault ? '<i class="bi bi-check-circle-fill ms-auto" style="color: rgb(218, 119, 86);"></i>' : ''}
+                                </a>
+                            `;
+
+                                // Add click event to the model item
+                                const modelItem = item.querySelector('.model-item');
+                                if (modelItem) {
+                                    modelItem.addEventListener('click', function() {
+                                        const modelId = this.dataset.modelId;
+
+                                        // Update active state in UI
+                                        document.querySelectorAll('.model-item').forEach(item => {
+                                            item.classList.remove('active');
+                                            const modelImg = item.querySelector('.model-img');
+                                            if (modelImg) modelImg.style.border = '1px solid #dee2e6';
+                                            const checkIcon = item.querySelector('.bi-check-circle-fill');
+                                            if (checkIcon) checkIcon.remove();
+                                        });
+
+                                        // Update the newly selected item
+                                        this.classList.add('active');
+
+
+                                        // Add check icon
+                                        if (!this.querySelector('.bi-check-circle-fill')) {
+                                            const checkIcon = document.createElement('i');
+                                            checkIcon.className = 'bi bi-check-circle-fill ms-auto';
+                                            checkIcon.style.color = 'rgb(218, 119, 86)';
+                                            this.appendChild(checkIcon);
+                                        }
+
+                                        setActiveModel(modelId);
+                                    });
+                                }
+
+                                modelListEl.appendChild(item);
+                            });
+                        }
 
                         // CSS untuk model dropdown
                         const styleElement = document.createElement('style');
@@ -1438,7 +1097,6 @@ $guru = mysqli_fetch_assoc($result);
                 </style>
 
                 <script>
-                    let isProcessingFile = false;
                     // Function to show loading with dynamic text updates
                     function showDocumentLoading(filename) {
                         const preview = document.getElementById('document-preview');
@@ -1483,6 +1141,10 @@ $guru = mysqli_fetch_assoc($result);
                     }
                 </script>
 
+                <!-- Floating document container -->
+                <div id="floating-docs-container" class="floating-docs-container d-flex gap-2 justify-content-center align-items-center text-truncate" style="display: none;">
+                    <!-- Documents will be added here dynamically -->
+                </div>
 
                 <!-- modal untuk riwayat session -->
                 <style>
@@ -1549,23 +1211,6 @@ $guru = mysqli_fetch_assoc($result);
                             </div>
 
                             <div class="modal-body">
-                                <!-- memori personal -->
-                                <div class="mb-4">
-                                    <div class="list-group">
-                                        <button class="list-group-item border-0 px-0  py-3 m-0 list-group-item-action d-flex justify-content-between align-items-center gap-2"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#personalityModal">
-
-                                            <div>
-                                                <h6 class="fw-bold p-0 m-0">Memori Personal</h6>
-                                                <p class="p-0 m-0" style="font-size: 12px;">Perkenalkan diri Anda kepada SAGA untuk mendapatkan respons yang lebih baik dan lebih personal.</p>
-
-                                            </div>
-                                            <i class="bi bi-chevron-right text-muted" style="font-size: 14px;"></i>
-                                        </button>
-                                    </div>
-                                </div>
-
                                 <!-- memori custom -->
                                 <div class="mb-4">
                                     <div class="list-group">
@@ -1648,45 +1293,6 @@ $guru = mysqli_fetch_assoc($result);
                         }
                     }
                 </style>
-
-                <!-- AI LIMIT -->
-                <!-- Modal untuk Groq Limit -->
-                <!-- Modal untuk Groq Limit -->
-                <div class="modal fade" id="groqLimitModal">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header border-0">
-                                <h5 class="modal-title fw-bold">Penggunaan API Hari Ini</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="card mb-3">
-                                    <div class="card-header bg-light">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6 class="m-0">Status Penggunaan</h6>
-                                            <button class="btn btn-sm btn-outline-primary" id="refreshLimitBtn">
-                                                <i class="bi bi-arrow-clockwise"></i> Refresh
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="card-body" id="groqLimitInfo">
-                                        <div class="text-center p-3">
-                                            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                                                <span class="visually-hidden">Loading...</span>
-                                            </div>
-                                            <p class="mt-2 mb-0">Memuat informasi limit...</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i>
-                                    <small>Penggunaan API akan direset otomatis setiap hari pukul 00:00 UTC.</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- AI Info -->
                 <!-- AI Info Modal -->
@@ -1982,9 +1588,6 @@ $guru = mysqli_fetch_assoc($result);
                         border-color: rgb(218, 119, 86);
                     }
 
-                    .dropdown-item:active {
-                        background-color: rgb(218, 119, 86);
-                    }
 
                     @media (max-width: 768px) {
                         .modal-dialog {
@@ -1997,739 +1600,6 @@ $guru = mysqli_fetch_assoc($result);
                     }
                 </style>
 
-                <!-- modal personalisasi ai ke user -->
-                <!-- Modal Personality -->
-                <div class="modal fade" id="personalityModal">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header border-0">
-                                <h5 class="modal-title fw-bold">Memori Personal</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="personalityForm">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold" style="font-size: 14px;">Apa pekerjaan Anda saat ini?</label>
-                                        <textarea class="form-control"
-                                            id="currentJob"
-                                            rows="3"
-                                            placeholder="Jelaskan jabatan di sekolah atau personalisasikan jabatan Anda"></textarea>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label text-muted" style="font-size: 14px;">Sifat apa yang harus dimiliki SAGA?</label>
-                                        <textarea class="form-control bg-light text-muted"
-                                            id="sagaPersonality"
-                                            rows="3"
-                                            placeholder=""
-                                            disabled></textarea>
-
-                                        <div class="mt-2 d-flex flex-wrap gap-2">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
-                                                <i class="bi bi-plus-circle me-1"></i>Santuy
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
-                                                <i class="bi bi-plus-circle me-1"></i>Cerewet
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
-                                                <i class="bi bi-plus-circle me-1"></i>Langsung To-the-point
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
-                                                <i class="bi bi-plus-circle me-1"></i>Skeptis
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
-                                                <i class="bi bi-plus-circle me-1"></i>Kekeluargaan
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
-                                                <i class="bi bi-plus-circle me-1"></i>Puitis
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
-                                                <i class="bi bi-plus-circle me-1"></i>Pragmatis
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
-                                                <i class="bi bi-plus-circle me-1"></i>Gen-Z
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill opacity-50" disabled>
-                                                <i class="bi bi-plus-circle me-1"></i>Penuh Hormat
-                                            </button>
-                                        </div>
-                                        <p class="text-muted mt-2" style="font-size: 12px;">Fitur ini tidak tersedia dalam versi saat ini</p>
-
-                                        <!-- onclicknya 
-                                         
-                                        onclick="addPersonality('Rileks dan tidak mudah panik serta selalu tenang menghadapi masalah')" class="btn
-onclick="addPersonality('Bicara aktif dan komunikatif.')" class="btn btn-sm btn-outline-secondary rounded
-onclick="addPersonality('Katakan apa adanya serta jangan menutup-nutupi jawaban dan basa basi.')" class="
-onclick="addPersonality('Pendekatan skeptis dan penuh pertanyaan')" class="btn btn-sm btn-outline-secondary
-onclick="addPersonality('Memperlakukan pengguna seperti keluarga sendiri')" class="btn btn-sm btn-outline-secondary
-onclick="addPersonality('Gunakan nada yang puitis dan liris.')" class="btn btn-sm btn-outline
-onclick="addPersonality('Bersikaplah praktis di atas segalanya.')" class="btn btn-sm btn-outline-secondary
-onclick="addPersonality('Bicara seperti Gen-Z dengan menggunakan istilah modern dan selera internet culture lokal')"
-onclick="addPersonality('Selalu hormat pada setiap percakapan')" class="btn btn-sm btn-outline-secondary
-                                        
-                                        -->
-                                    </div>
-
-                                    <script>
-                                        function addPersonality(trait) {
-                                            const textarea = document.getElementById('sagaPersonality');
-                                            const currentText = textarea.value;
-                                            if (currentText) {
-                                                textarea.value = currentText + ', ' + trait;
-                                            } else {
-                                                textarea.value = trait;
-                                            }
-                                        }
-                                    </script>
-
-                                    <style>
-                                        .btn-outline-secondary {
-                                            border-color: #dee2e6;
-                                            color: #6c757d;
-                                            font-size: 12px;
-                                            padding: 4px 12px;
-                                            transition: all 0.2s;
-                                        }
-
-                                        .btn-outline-secondary:hover {
-                                            background-color: #f8f9fa;
-                                            border-color: #dee2e6;
-                                            color: #495057;
-                                            transform: translateY(-1px);
-                                        }
-
-                                        .btn-outline-secondary:active {
-                                            transform: translateY(0);
-                                        }
-
-                                        .bi-plus-circle {
-                                            font-size: 14px;
-                                        }
-                                    </style>
-
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold" style="font-size: 14px;">Apapun lainnya yang harus SAGA ketahui tentang Anda?</label>
-                                        <textarea class="form-control"
-                                            id="additionalInfo"
-                                            rows="3"
-                                            placeholder="Ketertarikan, value, atau preferensi yang perlu di ingat"></textarea>
-                                    </div>
-
-                                    <button type="submit" class="btn w-100 text-white"
-                                        style="background-color: rgb(218, 119, 86);">
-                                        Simpan Personality
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- simpan personality dari user -->
-                <script>
-                    document.getElementById('personalityForm').addEventListener('submit', async (e) => {
-                        e.preventDefault();
-
-                        const formData = {
-                            currentJob: document.getElementById('currentJob').value,
-                            personality: document.getElementById('sagaPersonality').value,
-                            additionalInfo: document.getElementById('additionalInfo').value
-                        };
-
-                        try {
-                            const response = await fetch('save_personality.php', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(formData)
-                            });
-
-                            const result = await response.json();
-
-                            if (result.success) {
-                                location.reload();
-                                // Update systemMessage dengan personality baru
-                                updateSystemMessageWithPersonality(formData);
-
-                                // Tutup modal
-                                bootstrap.Modal.getInstance(document.getElementById('personalityModal')).hide();
-
-                                // Tampilkan notifikasi sukses
-                                showToast('Personality berhasil disimpan!', 'success');
-                            } else {
-                                showToast('Gagal menyimpan personality', 'error');
-                            }
-                        } catch (error) {
-                            console.error('Error:', error);
-                            showToast('Terjadi kesalahan sistem', 'error');
-                        }
-                    });
-
-                    // 2. Fungsi untuk memperbarui system message dengan personality
-                    function updateSystemMessageWithPersonality(personalityData) {
-
-                        // debug consol cek dalam update system personality
-                        console.log("updateSystemMessageWithPersonality called with: ", personalityData);
-
-                        // Get personality guidelines
-                        // Debug logging
-                        // Get personality guidelines
-                        const personalityGuidelines = getPersonalityGuidelines(personalityData.personality);
-                        console.log("Retrieved personality guidelines:", personalityGuidelines);
-                        console.log("personalityData:", personalityData);
-                        console.log("Personality:", personalityData.personality);
-                        console.log("Current Job:", personalityData.currentJob);
-                        console.log("Additional Info:", personalityData.additionalInfo);
-                        console.log("Base system content:", systemMessage.content.split('Karakteristik Personality SAGA:')[0]);
-                        console.log("Personality guidelines:", personalityGuidelines);
-                        console.log("Full system message:", systemMessage.content);
-
-
-                        // Simpan personality ke localStorage untuk penggunaan selanjutnya
-                        localStorage.setItem('sagaPersonality', JSON.stringify(personalityData));
-
-                        // Update system message dengan personality baru
-                        const personalitySection = `
-    Informasi Personalisasi:
-    - Pekerjaan Guru: ${personalityData.currentJob || 'Tidak disebutkan'}
-    - Personality SAGA: ${personalityData.personality || 'Ramah, Sabar, Supportif'}
-    - Informasi Tambahan: ${personalityData.additionalInfo || 'Tidak ada'}
-
-    Berdasarkan personalisasi di atas, sesuaikan gaya komunikasi dan responmu dengan:
-    ${getPersonalityGuidelines(personalityData.personality)}
-    `;
-
-                        // Tambahkan bagian personality ke systemMessage tanpa menghilangkan konten asli
-                        const baseSystemContent = systemMessage.content.split('Karakteristik Personality SAGA:')[0];
-                        systemMessage.content = baseSystemContent + personalitySection;
-
-                        // Jika mode deep thinking aktif, tambahkan juga ke deep thinking system message
-                        if (deepThinkingSystemMessage) {
-                            const baseDeepThinkingContent = deepThinkingSystemMessage.content.split('PENTING:')[0];
-                            deepThinkingSystemMessage.content = baseDeepThinkingContent + personalitySection + '\n\nPENTING: Selalu mulai dengan <think> tag dan akhiri dengan </think> sebelum memberikan respons utama.';
-                        }
-
-                        // Jika personality kosong atau tidak memiliki personality, hapus badge
-                        if (!personalityData || !personalityData.personality) {
-                            removePersonalityBadge();
-                        } else {
-                            // Tampilkan badge jika ada personality
-                            showActivePersonalityBadge(personalityData.personality);
-                        }
-
-
-
-                        console.log('PERSONALITY LOADED:');
-                        console.log('Job:', personalityData.currentJob);
-                        console.log('Traits:', personalityData.personality);
-                        console.log('Additional Info:', personalityData.additionalInfo);
-                        console.log('Updated System Message:', systemMessage.content);
-
-                        console.log('System message updated with personality:', personalityData.personality);
-                    }
-
-                    // guide karakter yang harus di miliki saga
-                    function getPersonalityGuidelines(personalityText) {
-                        console.log("getPersonalityGuidelines called with: ", personalityText);
-
-                        // jika tidak ada personality text maka kembalikan string tidak ada
-                        if (!personalityText) {
-                            console.log("tidak ada personalisasi yang di pilih");
-                            return '';
-                        }
-
-                        const personalities = personalityText.split(',').map(p => p.trim());
-                        let guidelines = [`PENTING: KAMU HARUS SELALU MENGIKUTI INSTRUKSI PERSONALITY INI:`];
-
-                        // Personality mapping dengan instruksi yang lebih eksplisit
-                        const personalityGuides = {
-                            'Rileks dan tidak mudah panik serta selalu tenang menghadapi masalah': `KAMU HARUS:
-- Selalu bicara santai dan tidak formal
-- Gunakan kata-kata seperti "santai aja", "gak usah khawatir", "pelan-pelan aja"
-- Jangan pernah terdengar terburu-buru
-- Selalu sarankan solusi yang bertahap dan tidak menuntut terlalu banyak
-- Hindari bahasa teknis yang rumit`,
-
-                            'Bicara aktif dan komunikatif.': `KAMU HARUS:
-- SELALU BERIKAN JAWABAN PANJANG, minimal 4-5 kalimat untuk setiap respons
-- Tambahkan minimal 3 emoji dalam setiap respons 😊🎉✨
-- Jangan pernah langsung ke inti - selalu tambahkan basa-basi dan cerita tambahan
-- Tambahkan pertanyaan balik di setiap akhir respons
-- Gunakan banyak kata seru seperti "Wah!", "Halo!", "Seru banget!", "Keren!"
-- Selipkan fakta random yang tidak diminta tetapi masih relevan
-- Ulangi kata-kata penting dengan penekanan
-- Ceritakan pengalaman pribadi (fiktif) yang relevan dengan topik`,
-
-                            'Katakan apa adanya serta jangan menutup-nutupi jawaban dan basa basi.': `KAMU HARUS:
-- Langsung memberikan jawaban tanpa basa-basi
-- Hindari sapaan dan pengantar panjang
-- Gunakan poin-poin singkat dan jelas
-- Batasi jawaban hanya pada informasi yang benar-benar relevan
-- Jangan tambahkan informasi yang tidak esensial`,
-
-                            'Pendekatan skeptis dan penuh pertanyaan': `KAMU HARUS:
-- Selalu mulai respons dengan sebuah pertanyaan yang mempertanyakan asumsi
-- Sajikan minimal dua perspektif yang berbeda atau bertentangan
-- Gunakan frasa seperti "Apakah benar...?", "Saya tidak yakin...", "Perlu dipertimbangkan lagi..."
-- Jangan memberikan jawaban pasti atau solusi tunggal
-- Dorong pemikiran kritis dengan mengajukan pertanyaan reflektif
-- Tunjukkan keraguan yang sehat terhadap pendekatan tradisional
-- Akhiri respons dengan pertanyaan yang mendorong evaluasi lebih lanjut`,
-
-                            'Memperlakukan pengguna seperti keluarga sendiri': `KAMU HARUS:
-- Panggil pengguna dengan sebutan yang hangat seperti "Bapak/Ibu" atau nama mereka
-- Gunakan bahasa yang menunjukkan kepedulian personal
-- Bagikan pengalaman "seolah-olah pengalaman pribadi" yang relevan
-- Tanyakan tentang kesejahteraan dan perasaan pengguna
-- Berikan dukungan emosional yang tulus
-- Buat respons terasa seperti nasihat dari anggota keluarga yang peduli`,
-
-                            'Gunakan nada yang puitis dan liris.': `KAMU HARUS:
-- Gunakan bahasa yang indah dan puitis
-- Sertakan setidaknya satu metafora atau simile dalam setiap respons
-- Akhiri dengan kutipan inspiratif atau bait puisi
-- Gunakan kalimat yang berirama
-- Pilih kata-kata yang menggugah emosi dan imajinasi
-- Hindari bahasa teknis atau prosedural yang kering`,
-
-                            'Bersikaplah praktis di atas segalanya': `KAMU HARUS:
-- Fokus hanya pada solusi yang benar-benar praktis dan dapat diterapkan
-- Selalu pertimbangkan efisiensi waktu, tenaga, dan sumber daya
-- Berikan langkah-langkah konkret dan terukur
-- Hindari saran yang idealistis tapi sulit diimplementasikan
-- Selalu tanyakan "apa langkah selanjutnya" yang spesifik
-- Prioritaskan hasil nyata daripada teori`,
-
-
-                            'Bicara seperti Gen-Z dengan menggunakan istilah modern dan selera internet culture lokal': `KAMU HARUS:
-- Pakai bahasa santai, nggak *try-hard* tapi tetep relatable  
-- Gunakan slang secara *natural*, jangan kayak brand yang maksa  
-- "Pakai frasa yang ironis atau sarkas kayak 'kerja keras bagai kuda (padahal rebahan)', 'produktif banget hari ini! (enggak)'"
-- Pakai humor absurd, *nihilistic*, dan *self-aware*  
-- "Masukin inside jokes atau referensi pop culture yang nyambung kayak 'ini sih episode filler hidup gue', 'fix bukan kehidupan, ini soft launch neraka'"  
-- Campurin internet lingo kayak "lowkey", "highkey", "fix", "NPC vibes"  
-- Boleh pake emoji, tapi nggak overkill 🙃🔥  
-- "Hindari bahasa formal atau vibes 'guru PKN ngasih wejangan'"  
-- Tetep kasih jawaban informatif tapi nggak kaku, lebih kayak ngobrol ama temen  
-- "Kalau ada pertanyaan aneh, bisa jawab 'bro, ini tes Turing atau gimana?' biar ada selipan *Gen-Z humor*"  
-- Pokoknya, *be real*, jangan jadi bot yang berasa kayak iklan.
-
-CONTOH :
-Kamu:
-"Yo, Bapak Fadhil! 🙃 Lagi ngapain? Ada yang bisa gue bantu atau cuma pengen curhat soal hidup yang penuh plot twist ini?"
-
-User:
-"Gila, mtk susah bgt."
-
-Kamu:
-"Bro, fix. Mtk tuh lebih susah daripada hidup 💀 Tapi tenang, gue ada di sini buat bantu. Bagian mana yang bikin otak lu meleyot? Gas, kita taklukin bareng! 🤝🔥"
-
-`,
-
-
-                            'Selalu hormat pada setiap percakapan': `KAMU HARUS:
-- Selalu gunakan bahasa formal dan sopan
-- Berikan penghormatan eksplisit terhadap profesi dan kontribusi guru
-- Hindari bahasa kasual atau informal
-- Jangan gunakan humor kecuali diminta
-- Berikan respon yang terstruktur dan serius
-- Tunjukkan kesungguhan dan kedalaman pemikiran`
-                        };
-
-                        // Implementasi yang lebih kuat untuk Santuy
-                        if (personalities.some(p => p.toLowerCase().includes('Rileks dan tidak mudah panik serta selalu tenang menghadapi masalah') ||
-                                p.toLowerCase().includes('rileks') ||
-                                p.toLowerCase().includes('tenang'))) {
-                            guidelines.push(`
-KAMU ADALAH AI DENGAN PERSONALITY SANTUY. KAMU WAJIB MEMENUHI SEMUA POIN BERIKUT DI SETIAP RESPONS TANPA TERKECUALI:
-
-1. WAJIB MENGUBAH GAYA BAHASA:
-   - Jangan pernah gunakan kata "Bapak/Ibu" - ganti dengan "kamu", "lo", atau langsung sebut nama
-   - Hindari kata-kata formal seperti "mohon", "silakan", "selamat", "terima kasih" 
-   - Singkat semua kata: "tidak" jadi "gak", "bisa" jadi "bisa", "bagaimana" jadi "gimana"
-   - Selalu sisipkan kata "santai", "chill", "santuy", "slow", "gak usah buru-buru"
-
-2. WAJIB MENGUBAH STRUKTUR KALIMAT:
-   - Mulai SETIAP respons dengan kata santai seperti "Hmm", "Weh", "Nah", "Oke"
-   - Batasi kalimat maksimal 10-15 kata
-   - Gunakan kalimat tidak lengkap yang terputus
-   - Selipkan minimal 2 emoji per respons (😌 🏖️ 😎 👌)
-
-3. WAJIB MENUNJUKKAN ATTITUDE SANTUY:
-   - Normalkan kesalahan: "yaa gapapa", "wajar", "biasa aja"
-   - Selalu tawarkan solusi yang tidak mendesak
-   - Tonjolkan pendekatan "pelan-pelan aja" di setiap saran
-   - Tambahkan humor kasual
-
-4. CONTOH TANYA/JAWAB SANTUY YANG BISA KAMU TIRU DAN REFERENSI:
-
-Jika ditanya: "Kenapa kita harus sekolah?"
-Jawab: "Biar hidup nggak kayak jalan tanpa Google Maps dong 😎. Sekolah itu bukan cuma soal nilai, tapi juga belajar cara survive di dunia nyata. Santai aja, nikmatin prosesnya~ 🚀"
-
-Jika ditanya: "MTK susah banget, buset!"
-Jawab: "I feel you bro 😵‍💫! Tapi coba deh pikirin gini: MTK itu kayak main puzzle, makin sering latihan makin ngerti polanya. Kalau stuck, boleh curhat ke kalkulator, tapi jangan selamanya ya 😜"
-
-Jika ditanya: "Kenapa guru suka kasih PR banyak banget?"
-Jawab: "Kayaknya guru tuh pengen kita latihan biar makin jago, tapi kadang lupa kalau kita juga butuh waktu rebahan 😴. Kalo PR kebanyakan, coba deh atur strategi: yang gampang dulu, yang susah minta bantuan, yang nggak paham? Googling atau tanya guru~ 😆"
-
-Jika ditanya: "Bosen banget belajar, ada tips biar nggak ngantuk?"
-Jawab: "Wah, ini krusial! Coba belajar sambil nyemil biar energi tetep ada 🍫, atau ganti tempat belajar biar suasana baru 🌿. Bisa juga bikin catatan pake warna-warni biar nggak berasa baca skrip drakor 😆"
-
-PENTING: Pastikan setiap respons mengandung SEMUA elemen santuy di atas. Jangan gunakan bahasa formal sama sekali!`);
-                        }
-
-                        //  instruksi detail cerewet
-                        if (personalityText.toLowerCase().includes('cerewet') ||
-                            personalityText.toLowerCase().includes('komunikatif') ||
-                            personalityText.toLowerCase().includes('aktif')) {
-                            return `PENTING: KAMU ADALAH AI CEREWET! WAJIB PATUHI ATURAN INI:
-
-1. JAWAB MINIMAL 5 KALIMAT PANJANG SETIAP RESPONS!
-2. GUNAKAN MINIMAL 5 EMOJI DI SETIAP RESPONS! 😄🎉📚💫✨
-3. TAMBAHKAN CERITA/FAKTA TAMBAHAN YANG TIDAK DIMINTA!
-4. AKHIRI DENGAN PERTANYAAN UNTUK USER!
-5. GUNAKAN KATA-KATA EKSPRESIF SEPERTI "WAH!", "KEREN!", "AMAZING!"`;
-                        }
-
-                        // instruksi khusus untuk langsung to-the-point
-                        if (personalityText.toLowerCase().includes('Katakan apa adanya serta jangan menutup-nutupi jawaban dan basa basi.') ||
-                            personalityText.toLowerCase().includes('to-the-point') ||
-                            personalityText.toLowerCase().includes('tidak bertele-tele')) {
-                            console.log("Langsung To-the-point guidelines called");
-                            return `PENTING: KAMU ADALAH AI TEGAS DAN LANGSUNG TO-THE-POINT! WAJIB PATUHI ATURAN INI:
-
-1. JAWAB DENGAN FORMAT: [Jawaban tegas] + [Penjelasan singkat jika dibutuhkan]
-2. HINDARI SEGALA BENTUK BASA-BASI: Tanpa sapaan, tanpa emoji, tanpa pertanyaan balik
-3. GUNAKAN BAHASA FORMAL DAN TEGAS: Hindari kata "kayaknya", "sih", "deh", "hmm", dll
-4. BERIKAN JAWABAN DEFINITIF: Jangan pernah ragu atau berspekulasi
-5. KALIMAT SANGAT SINGKAT: 1-2 kalimat maksimum, kecuali jika teknis
-6. GUNAKAN BAHASA ILMIAH DAN FAKTUAL: Bukan pendapat pribadi
-
-CONTOH RESPONS YANG BENAR:
-Pertanyaan: "Apakah hujan akan terjadi besok?"
-Jawab : "Tidak ada data cuaca yang cukup untuk memprediksi. Butuh lokasi spesifik dan model prediksi cuaca."
-
-Pertanyaan: "Apa perbedaan pembelajaran kooperatif dan kolaboratif?"
-Jawab : "Pembelajaran kooperatif: siswa bekerja untuk tujuan kelompok. Pembelajaran kolaboratif: siswa bekerja bersama untuk mencapai pemahaman masing-masing."
-
-SANGAT PENTING: JIKA RESPONMU BERISI BASA-BASI, KAMU GAGAL SEBAGAI AI TO-THE-POINT!`;
-                        }
-
-
-
-
-                        // Instruksi skeptis yang lebih kuat dan lebih spesifik
-                        if (personalities.some(p => p.toLowerCase().includes('skeptis') || p.toLowerCase().includes('skeptical'))) {
-                            guidelines.push(`
-KAMU ADALAH AI DENGAN PERSONALITY SKEPTIS. INI BERARTI:
-
-1. WAJIB mulai setiap respons dengan pertanyaan yang mempertanyakan asumsi, seperti:
-   "Hmm, apakah benar guru harus melek digital? Mari kita lihat dari beberapa sudut pandang..."
-   "Saya tidak yakin ada jawaban tunggal untuk ini. Pernahkah Anda mempertimbangkan bahwa..."
-   "Menarik, tapi apakah pendekatan ini benar-benar efektif? Ada beberapa perspektif yang perlu dipertimbangkan..."
-
-2. WAJIB tunjukkan keraguan dengan menggunakan frasa:
-   - "Saya tidak sepenuhnya yakin bahwa..."
-   - "Ada alasan untuk meragukan pendekatan standar..."
-   - "Mungkin kita perlu mempertanyakan asumsi bahwa..."
-   - "Pandangan konvensional mengatakan..., tapi apakah itu selalu benar?"
-
-3. WAJIB sajikan minimal dua perspektif yang berbeda dalam setiap jawaban
-
-4. WAJIB hindari memberikan solusi tunggal atau jawaban pasti
-
-5. WAJIB akhiri dengan pertanyaan reflektif yang mendorong pemikiran lebih dalam
-
-CONTOH RESPONS SKEPTIS:
-"Hmm, apakah guru benar-benar harus melek digital? Pertanyaan menarik.
-
-Di satu sisi, ada argumen bahwa teknologi digital memperluas kemungkinan pembelajaran. Namun, saya tidak yakin teknologi selalu meningkatkan hasil belajar. Bukankah ada studi yang menunjukkan bahwa pembelajaran tradisional kadang lebih efektif?
-
-Perlu dipertimbangkan juga: apakah semua konten pembelajaran cocok dengan format digital? Beberapa keterampilan praktis mungkin lebih baik diajarkan secara langsung.
-
-Mungkin pertanyaan yang lebih baik adalah: dalam situasi apa teknologi digital benar-benar meningkatkan pengalaman belajar, dan kapan justru menjadi gangguan?"`);
-                        }
-
-                        //                             // Jika Gen-Z juga dipilih, tambahkan panduan khusus kombinasi
-                        //                             if (personalities.some(p => p.toLowerCase().includes('gen-z') || p.toLowerCase().includes('gen z'))) {
-                        //                                 if (personalities.some(p => p.toLowerCase().includes('skeptis'))) {
-                        //                                     guidelines.push(`
-                        // KARENA KAMU JUGA PERSONALITY GEN-Z, KAMU HARUS KOMBINASIKAN DENGAN SKEPTISISME:
-
-                        // 1. Gunakan bahasa skeptis tapi dengan gaya Gen-Z:
-                        //    "Ngl, gw gak yakin banget soal ini. Vibes-nya kerasa sus..."
-                        //    "Wait, hold up. Kita perlu fact-check dulu. Bener gak sih..."
-                        //    "Hmm, hot take: pembelajaran digital belum tentu always the moment. Think about it..."
-
-                        // 2. Gunakan meme references saat mengekspresikan keraguan:
-                        //    "X to doubt pada teori ini fr fr"
-                        //    "That's kinda sus tbh, let me play devil's advocate"
-
-                        // 3. Singkat tapi tetap skeptis:
-                        //    "Lowkey, gw questioning banget soal ini"
-                        //    "No cap, ada banyak perspektif yang valid disini"
-
-                        // 4. Akhiri dengan pertanyaan reflektif gaya Gen-Z:
-                        //    "So... what's your vibe check on this? Valid or nah?"
-                        //    "Thoughts? Kinda makes you think, doesn't it? 🤔"`);
-                        //                                 }
-                        //                             }
-
-                        // Tambahkan panduan untuk setiap personality yang dipilih
-                        personalities.forEach(p => {
-                            // Cari personality yang cocok (case insensitive)
-                            const matchedPersonality = Object.keys(personalityGuides).find(
-                                key => key.toLowerCase().includes(p.toLowerCase()) || p.toLowerCase().includes(key.toLowerCase())
-                            );
-
-                            if (matchedPersonality && !p.toLowerCase().includes('skeptis')) {
-                                guidelines.push(personalityGuides[matchedPersonality]);
-                            } else if (!p.toLowerCase().includes('skeptis') && !p.toLowerCase().includes('gen-z')) {
-                                // Jika tidak ada yang cocok, tambahkan personality sebagai panduan generik
-                                guidelines.push(`KAMU HARUS menunjukkan sifat ${p} dalam SETIAP respons.`);
-                            }
-                        });
-
-                        // Tambahkan peringatan wajib di akhir
-                        guidelines.push(`
-PERINGATAN FINALL:
-- Personality ini lebih penting dari format apapun, selalu pahami setiap panduan`);
-
-                        return guidelines.join('\n\n');
-                    }
-
-                    // 4. Fungsi untuk menampilkan toast notification
-                    function showToast(message, type = 'info') {
-                        // Buat elemen toast jika belum ada
-                        if (!document.getElementById('sagaToast')) {
-                            const toastContainer = document.createElement('div');
-                            toastContainer.className = 'position-fixed bottom-0 end-0 p-3';
-                            toastContainer.style.zIndex = '5';
-
-                            toastContainer.innerHTML = `
-        <div id="sagaToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body"></div>
-                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-        `;
-
-                            document.body.appendChild(toastContainer);
-                        }
-
-                        // Set pesan dan style berdasarkan tipe
-                        const toastEl = document.getElementById('sagaToast');
-                        const toastBody = toastEl.querySelector('.toast-body');
-                        toastBody.textContent = message;
-
-                        // Reset class
-                        toastEl.className = 'toast align-items-center';
-
-                        // Tambahkan class berdasarkan tipe
-                        switch (type) {
-                            case 'success':
-                                toastEl.classList.add('bg-success', 'text-white');
-                                break;
-                            case 'error':
-                                toastEl.classList.add('bg-danger', 'text-white');
-                                break;
-                            case 'warning':
-                                toastEl.classList.add('bg-warning');
-                                break;
-                            default:
-                                toastEl.classList.add('bg-info', 'text-white');
-                        }
-
-                        // Tampilkan toast
-                        const toast = new bootstrap.Toast(toastEl, {
-                            delay: 3000
-                        });
-                        toast.show();
-                    }
-
-                    // Modifikasi fungsi document.addEventListener untuk loadPersonality
-                    document.addEventListener('DOMContentLoaded', function() {
-                        // Tambahkan timeout untuk memastikan semua komponen sudah dirender
-                        setTimeout(async function() {
-                            // Pertama coba load dari server
-                            const serverLoaded = await loadPersonalityFromServer();
-
-                            // Jika gagal, gunakan localStorage sebagai fallback
-                            if (!serverLoaded) {
-                                const savedPersonality = localStorage.getItem('sagaPersonality');
-                                if (savedPersonality) {
-                                    const personalityData = JSON.parse(savedPersonality);
-                                    if (personalityData && personalityData.personality) {
-                                        updateSystemMessageWithPersonality(personalityData);
-                                        // Isi form jika elemen ada
-                                        if (document.getElementById('currentJob')) {
-                                            document.getElementById('currentJob').value = personalityData.currentJob || '';
-                                        }
-                                        if (document.getElementById('sagaPersonality')) {
-                                            document.getElementById('sagaPersonality').value = personalityData.personality || '';
-                                        }
-                                        if (document.getElementById('additionalInfo')) {
-                                            document.getElementById('additionalInfo').value = personalityData.additionalInfo || '';
-                                        }
-                                    }
-                                }
-                            }
-                        }, 1000); // Tunggu 1 detik
-                    });
-
-                    function showActivePersonalityBadge(personalityText) {
-                        // Jika tidak ada container untuk menampilkan badge, buat baru
-                        if (!document.getElementById('personalityBadgeContainer')) {
-                            // Cek apakah elemen deep-thinking-toggle ada
-                            const deepThinkingToggle = document.querySelector('.deep-thinking-toggle');
-
-                            if (!deepThinkingToggle) {
-                                console.log("Element .deep-thinking-toggle tidak ditemukan, tidak bisa menampilkan badge");
-                                return; // Keluar dari fungsi jika elemen tidak ditemukan
-                            }
-
-                            const container = document.createElement('div');
-                            container.id = 'personalityBadgeContainer';
-                            container.className = 'd-flex flex-wrap align-items-center gap-2';
-
-                            // Tambahkan ke samping deep thinking toggle
-                            const toggleContainer = deepThinkingToggle.parentNode;
-                            toggleContainer.appendChild(container);
-                        }
-
-                        // Ambil kontainer
-                        const badgeContainer = document.getElementById('personalityBadgeContainer');
-
-                        // Hapus badge yang sudah ada
-                        badgeContainer.innerHTML = '';
-
-                        // Pisahkan semua personality yang dipilih
-                        const personalities = personalityText.split(',').map(trait => trait.trim());
-
-                        // Untuk setiap personality, buat badge sendiri
-                        personalities.forEach(personality => {
-                            // Buat badge baru
-                            const personalityBadge = document.createElement('div');
-                            personalityBadge.className = 'btn rounded-pill button-style p-0 d-flex align-items-center gap-2 m-0 p-2 animate__animated animate__fadeIn';
-                            personalityBadge.style.cssText = 'background-color: rgb(219, 213, 183); border-radius: 20px; margin-bottom: 5px;';
-
-                            // Dapatkan label yang lebih pendek untuk personality
-                            const shortLabel = getShortPersonalityLabel(personality);
-
-                            personalityBadge.innerHTML = `
-            <i class="bi bi-person-check" style="font-size: 14px;"></i>
-            <p class="p-0 m-0 text-dark" style="font-size: 12px; cursor: pointer;">${shortLabel}</p>
-        `;
-
-                            // Tambahkan tooltip untuk melihat personality lengkap saat hover
-                            personalityBadge.setAttribute('data-bs-toggle', 'tooltip');
-                            personalityBadge.setAttribute('data-bs-placement', 'top');
-                            personalityBadge.setAttribute('title', personality);
-
-                            // Tambahkan event listener untuk membuka modal personality
-                            personalityBadge.addEventListener('click', () => {
-                                const personalityModal = new bootstrap.Modal(document.getElementById('personalityModal'));
-                                personalityModal.show();
-                            });
-
-                            // Tambahkan badge ke container
-                            badgeContainer.appendChild(personalityBadge);
-                        });
-
-                        // Aktifkan tooltips
-                        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                        tooltipTriggerList.map(function(tooltipTriggerEl) {
-                            return new bootstrap.Tooltip(tooltipTriggerEl);
-                        });
-                    }
-
-                    // Fungsi untuk mendapatkan label pendek dari personality lengkap
-                    function getShortPersonalityLabel(personality) {
-                        const knownPersonalities = {
-                            'Rileks dan tidak mudah panik serta selalu tenang menghadapi masalah': 'Santuy',
-                            'Bicara aktif dan komunikatif': 'Cerewet',
-                            'Katakan apa adanya serta jangan menutup-nutupi jawaban dan basa basi': 'To-the-point',
-                            'Pendekatan skeptis dan penuh pertanyaan': 'Skeptis',
-                            'Memperlakukan pengguna seperti keluarga sendiri': 'Kekeluargaan',
-                            'Gunakan nada yang puitis dan liris': 'Puitis',
-                            'Bersikaplah praktis di atas segalanya': 'Pragmatis',
-                            'Gunakan humor yang cepat dan cerdas ketika diperlukan': 'Cerdas',
-                            'Bicara seperti Gen-Z dengan menggunakan istilah modern dan selera internet culture lokal': 'Gen-Z',
-                            'Selalu hormat pada setiap percakapan': 'Penuh Hormat'
-                        };
-
-                        // Cari apakah personality cocok dengan salah satu key di atas
-                        for (const [fullText, shortLabel] of Object.entries(knownPersonalities)) {
-                            if (personality.includes(fullText) || fullText.includes(personality)) {
-                                return shortLabel;
-                            }
-                        }
-
-                        // Jika tidak ditemukan, ambil 10 karakter pertama + '...'
-                        return personality.length > 10 ? personality.substring(0, 10) + '...' : personality;
-                    }
-
-
-                    // 7. Tambahkan event listener untuk reload personality dari server
-                    async function loadPersonalityFromServer() {
-                        try {
-                            const response = await fetch('get_personality.php');
-                            if (!response.ok) throw new Error('Failed to load personality');
-
-                            const data = await response.json();
-                            if (data.success && data.personality) {
-                                const personalityData = {
-                                    currentJob: data.personality.current_job || '',
-                                    personality: data.personality.traits || '',
-                                    additionalInfo: data.personality.additional_info || ''
-                                };
-
-                                // Update form dan system message
-                                if (document.getElementById('currentJob')) {
-                                    document.getElementById('currentJob').value = personalityData.currentJob;
-                                }
-
-                                if (document.getElementById('sagaPersonality')) {
-                                    document.getElementById('sagaPersonality').value = personalityData.personality;
-                                }
-
-                                if (document.getElementById('additionalInfo')) {
-                                    document.getElementById('additionalInfo').value = personalityData.additionalInfo;
-                                }
-
-                                // Update system message dan localStorage
-                                updateSystemMessageWithPersonality(personalityData);
-
-                                return true;
-                            }
-                            return false;
-                        } catch (error) {
-                            console.error('Error loading personality:', error);
-                            return false;
-                        }
-                    }
-
-                    // Load personality dari server saat modal personality dibuka
-                    document.getElementById('personalityModal').addEventListener('show.bs.modal', async function() {
-                        await loadPersonalityFromServer();
-                    });
-
-                    // Fungsi untuk menghapus badge personality
-                    function removePersonalityBadge() {
-                        const badgeContainer = document.getElementById('personalityBadgeContainer');
-                        if (badgeContainer) {
-                            // Tambahkan animasi fadeOut sebelum menghapus
-                            badgeContainer.classList.add('animate__animated', 'animate__fadeOut');
-
-                            // Tunggu animasi selesai sebelum menghapus elemen
-                            setTimeout(() => {
-                                badgeContainer.remove();
-                            }, 300);
-                        }
-                    }
-                </script>
 
 
                 <!-- New Project Modal -->
@@ -3454,6 +2324,13 @@ PERINGATAN FINALL:
                         chatContainer.scrollTop = chatContainer.scrollHeight;
                     }
 
+                    // Tambahkan event listener untuk menampilkan kembali rekomendasi saat chat baru dimulai
+                    document.getElementById('user-input').addEventListener('input', function() {
+                        const recommendationContainer = document.querySelector('.recommendation-container');
+                        if (recommendationContainer.classList.contains('d-none') && this.value.trim() === '') {
+                            recommendationContainer.classList.remove('d-none');
+                        }
+                    });
 
 
                     async function deleteSession(sessionId, event) {
@@ -3535,9 +2412,9 @@ PERINGATAN FINALL:
                     // Add this after your existing JavaScript
                     document.addEventListener('DOMContentLoaded', () => {
                         const welcomeContainer = document.getElementById('welcomeContainer');
-                        console.log('DOM Loaded, checking elements:');
-                        console.log('Chat container exists:', !!document.getElementById('chat-container'));
-                        console.log('First message element exists:', !!document.getElementById('firstMessage'));
+                        // console.log('DOM Loaded, checking elements:');
+                        // console.log('Chat container exists:', !!document.getElementById('chat-container'));
+                        // console.log('First message element exists:', !!document.getElementById('firstMessage'));
 
 
                         // Hide welcome message when user starts typing
@@ -3779,6 +2656,57 @@ PERINGATAN FINALL:
                     .col-utama .btn:not(.buttonRekomendasi) {
                         transition: background-color 0.3s ease;
                     }
+
+                    .floating-docs-container {
+                        position: fixed;
+                        top: 40%;
+                        left: 58%;
+                        transform: translate(-50%, -50%);
+                        background: none;
+                        padding: 1rem;
+                        border-radius: 1rem;
+                        max-width: 80%;
+                        overflow-x: auto;
+                        opacity: 0;
+                        /* Tambahkan ini */
+                        visibility: hidden;
+                        /* Tambahkan ini */
+                        transition: all 0.3s ease;
+                        /* Tambahkan ini */
+                    }
+
+                    .floating-docs-container.show {
+                        opacity: 1;
+                        visibility: visible;
+                    }
+
+                    .doc-item {
+                        background: white;
+                        padding: 0.5rem 1rem;
+                        border: 1px solid rgb(158, 158, 158);
+                        border-radius: 1rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem
+                    }
+
+                    .doc-icon {
+                        color: #3B82F6;
+                        font-size: 1.2rem;
+                    }
+
+                    .close-btn {
+                        background: none;
+                        border: none;
+                        color: #666;
+                        cursor: pointer;
+                        padding: 0 5px;
+                        transition: color 0.2s;
+                    }
+
+                    .close-btn:hover {
+                        color: #ff0000;
+                    }
                 </style>
 
                 <!-- script untuk drag and drop -->
@@ -3801,93 +2729,130 @@ PERINGATAN FINALL:
                     document.addEventListener('drop', async (e) => {
                         e.preventDefault();
                         document.getElementById('drag-drop-overlay').style.display = 'none';
+
                         const file = e.dataTransfer.files[0];
-                        await processFile(file);
+                        const preview = document.getElementById('document-preview');
+
+                        // Show loading preview
+                        preview.style.display = 'flex';
+                        preview.style.opacity = '1';
+
+                        const formData = new FormData();
+                        formData.append('file', file);
+
+                        try {
+                            const response = await fetch('process_document.php', {
+                                method: 'POST',
+                                body: formData
+                            });
+                            const result = await response.json();
+
+                            if (result.success) {
+                                window.documentContent = result.content;
+                                addDocumentToContainer(file.name);
+                                document.getElementById('user-input').value = ``;
+                            }
+                        } catch (error) {
+                            console.error("Error processing file:", error);
+                        } finally {
+                            preview.style.opacity = '0';
+                            setTimeout(() => {
+                                preview.style.display = 'none';
+                            }, 300);
+                        }
                     });
 
 
                     function addDocumentToContainer(filename) {
-                        if (activeDocuments.has(filename)) {
-                            console.log(`File ${filename} is already attached, skipping.`);
-                            return;
-                        }
+                        if (!activeDocuments.has(filename)) {
+                            const docElement = createDocElement(filename);
+                            const docsContainer = document.getElementById('floating-docs-container');
 
-                        const docElement = createDocElement(filename);
-                        const filesContainer = document.getElementById('attached-files-container');
+                            // Tambahkan class show
+                            docsContainer.classList.add('show');
+                            docsContainer.style.display = 'flex';
 
-                        if (filesContainer) {
-                            // Show the container with animation
-                            filesContainer.style.display = 'flex';
-                            filesContainer.style.opacity = '0';
-                            filesContainer.style.transform = 'translate(-50%, 10px)';
-
-                            // Trigger reflow to ensure animation works
-                            void filesContainer.offsetWidth;
-
-                            // Animate in
-                            filesContainer.style.opacity = '1';
-                            filesContainer.style.transform = 'translate(-50%, 0)';
-
-                            filesContainer.appendChild(docElement);
+                            docsContainer.appendChild(docElement);
                             activeDocuments.add(filename);
-
-                            // Adjust the container position based on the chat input area
-                            positionFileContainer();
                         }
                     }
-
-                    // Add a function to position the container correctly
-                    function positionFileContainer() {
-                        const inputWrapper = document.getElementById('input-wrapper');
-                        const filesContainer = document.getElementById('attached-files-container');
-
-                        if (inputWrapper && filesContainer) {
-                            const inputRect = inputWrapper.getBoundingClientRect();
-                            filesContainer.style.bottom = (window.innerHeight - inputRect.top + 10) + 'px';
-                        }
-                    }
-
-                    // Call this on window resize to maintain positioning
-                    window.addEventListener('resize', positionFileContainer);
 
                     function createDocElement(filename) {
                         const docDiv = document.createElement('div');
-                        docDiv.className = 'attached-file animate__animated animate__fadeIn';
+                        docDiv.className = 'doc-item animate__animated animate__fadeIn';
 
                         const ext = filename.split('.').pop().toLowerCase();
+                        const colUtama = document.querySelector('.col-utama');
+
+                        // Reset semua kelas warna
+                        colUtama.classList.remove('excel-bg', 'word-bg', 'pdf-bg');
+
+                        switch (ext) {
+                            case 'xlsx':
+                            case 'xls':
+                                colUtama.classList.add('excel-bg');
+                                break;
+                            case 'doc':
+                            case 'docx':
+                                colUtama.classList.add('word-bg');
+                                break;
+                            case 'pdf':
+                                colUtama.classList.add('pdf-bg');
+                                break;
+                        }
+
 
                         docDiv.innerHTML = `
-    ${getFileIcon(filename)}
-    <span class="file-name">${filename}</span>
-    <span class="remove-file" onclick="removeDocument('${filename}')">
-      <i class="bi bi-x"></i>
-    </span>
-  `;
+                                    ${getFileIcon(filename)}
+                                    <span class="doc-name">${filename}</span>
+                                    <button class="close-btn" onclick="removeDocument('${filename}')">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                `;
                         return docDiv;
                     }
 
-
                     function removeDocument(filename) {
-                        const filesContainer = document.getElementById('attached-files-container');
-                        if (!filesContainer) return;
-
-                        const files = filesContainer.querySelectorAll('.attached-file');
-                        files.forEach(file => {
-                            if (file.querySelector('.file-name').textContent === filename) {
-                                file.classList.add('animate__fadeOut');
+                        const docs = docsContainer.querySelectorAll('.doc-item');
+                        docs.forEach(doc => {
+                            if (doc.querySelector('.doc-name').textContent === filename) {
+                                doc.classList.add('animate__fadeOut');
                                 setTimeout(() => {
-                                    file.remove();
+                                    doc.remove();
                                     activeDocuments.delete(filename);
 
-                                    // Hide container if no files left
-                                    if (filesContainer.children.length === 0) {
-                                        filesContainer.style.opacity = '0';
-                                        filesContainer.style.transform = 'translate(-50%, 10px)';
-                                        setTimeout(() => {
-                                            filesContainer.style.display = 'none';
-                                        }, 300);
+                                    // Update warna berdasarkan file yang tersisa
+                                    const colUtama = document.querySelector('.col-utama');
+                                    const remainingFiles = Array.from(docsContainer.children)
+                                        .filter(item => item.classList.contains('doc-item'))
+                                        .map(item => item.querySelector('.doc-name').textContent);
+
+                                    if (remainingFiles.length === 0) {
+                                        // Jika tidak ada file tersisa
+                                        colUtama.classList.remove('word-bg', 'excel-bg', 'pdf-bg');
+                                        docsContainer.style.display = 'none';
+                                    } else {
+                                        // Jika masih ada file, update warna berdasarkan file terakhir
+                                        const lastFile = remainingFiles[remainingFiles.length - 1];
+                                        const ext = lastFile.split('.').pop().toLowerCase();
+
+                                        colUtama.classList.remove('word-bg', 'excel-bg', 'pdf-bg');
+
+                                        switch (ext) {
+                                            case 'doc':
+                                            case 'docx':
+                                                colUtama.classList.add('word-bg');
+                                                break;
+                                            case 'xls':
+                                            case 'xlsx':
+                                                colUtama.classList.add('excel-bg');
+                                                break;
+                                            case 'pdf':
+                                                colUtama.classList.add('pdf-bg');
+                                                break;
+                                        }
                                     }
-                                }, 300);
+                                }, 500);
                             }
                         });
                     }
@@ -3980,7 +2945,36 @@ PERINGATAN FINALL:
                     // Update your existing file input handler
                     document.getElementById('file-input').addEventListener('change', async function(e) {
                         const file = e.target.files[0];
-                        await processFile(file);
+                        console.log("[File Handler] File selected:", file?.name);
+
+                        const preview = document.getElementById('document-preview');
+
+                        if (file) {
+                            preview.style.display = 'flex';
+                            preview.style.opacity = '1';
+
+                            try {
+                                if (file.name.match(/\.(xlsx|xls)$/)) {
+                                    console.log("[File Handler] Excel file detected, starting processing...");
+                                    // Load SheetJS hanya ketika file Excel terdeteksi
+                                    await loadSheetJS();
+                                    const content = await handleExcelFile(file);
+                                    console.log("[File Handler] Excel processing completed:", {
+                                        fileName: file.name,
+                                        contentPreview: content.substring(0, 200) + "..."
+                                    });
+                                    window.documentContent = content;
+                                    addDocumentToContainer(file.name);
+                                }
+                            } catch (error) {
+                                console.error("[File Handler] Excel processing failed:", error);
+                            } finally {
+                                preview.style.opacity = '0';
+                                setTimeout(() => {
+                                    preview.style.display = 'none';
+                                }, 300);
+                            }
+                        }
                     });
 
 
@@ -4003,55 +2997,45 @@ PERINGATAN FINALL:
 
                 <!-- script untuk upload -->
                 <script>
-                    // Update the processFile function to properly handle the file preview
-                    async function processFile(file) {
-                        if (isProcessingFile || !file) return;
+                    // Add event listener for file input
+                    document.getElementById('file-input').addEventListener('change', async function(e) {
+                        const file = e.target.files[0];
+                        const preview = document.getElementById('document-preview');
 
-                        try {
-                            isProcessingFile = true;
+
+                        if (file) {
+                            console.log("File selected:", file);
+
 
                             // Show loading preview
-                            const preview = document.getElementById('document-preview');
-                            if (preview) {
-                                preview.style.display = 'flex';
-                                preview.style.opacity = '1';
-                            }
+                            preview.style.display = 'flex';
+                            preview.style.opacity = '1';
 
                             const formData = new FormData();
                             formData.append('file', file);
 
-                            const response = await fetch('process_document.php', {
-                                method: 'POST',
-                                body: formData
-                            });
-                            const result = await response.json();
+                            try {
+                                const response = await fetch('process_document.php', {
+                                    method: 'POST',
+                                    body: formData
+                                });
+                                const result = await response.json();
 
-                            if (result.success) {
-                                window.documentContent = result.content;
-
-                                // Clear existing files first to prevent duplicates
-                                const container = document.getElementById('attached-files-container');
-                                if (container) container.innerHTML = '';
-                                activeDocuments.clear();
-
-                                // Now add the document
-                                addDocumentToContainer(file.name);
-                            }
-                        } catch (error) {
-                            console.error("Error processing file:", error);
-                        } finally {
-                            isProcessingFile = false;
-
-                            // Hide loading preview
-                            const preview = document.getElementById('document-preview');
-                            if (preview) {
+                                if (result.success) {
+                                    window.documentContent = result.content;
+                                    addDocumentToContainer(file.name);
+                                    userInput.value = ``;
+                                }
+                            } catch (error) {
+                                console.error("Error processing file:", error);
+                            } finally {
                                 preview.style.opacity = '0';
                                 setTimeout(() => {
                                     preview.style.display = 'none';
                                 }, 300);
                             }
                         }
-                    }
+                    });
 
                     // Update button styling
                     const fileInputLabel = document.querySelector('label[for="file-input"]');
@@ -4142,6 +3126,7 @@ PERINGATAN FINALL:
 
 
     <script>
+        localStorage.removeItem('sagaPersonality');
         // Elemen DOM
         const chatContainer = document.getElementById('chat-container');
         const userInput = document.getElementById('user-input');
@@ -4164,18 +3149,18 @@ PERINGATAN FINALL:
 
         // Fungsi untuk menampilkan pesan loading
         function showLoader() {
-            const loadingElement = document.getElementById('loading');
-            if (loadingElement) {
-                loadingElement.classList.remove('d-none');
-                loadingElement.style.display = 'block';
-            }
+            const loadingEl = document.getElementById('loading');
+            loadingEl.style.display = 'block';
+            let dots = 0;
+            loadingInterval = setInterval(() => {
+                loadingEl.textContent = 'Tunggu sebentar' + '.'.repeat(dots);
+                dots = (dots + 1) % 4;
+            }, 500);
         }
 
         function hideLoader() {
-            const loadingElement = document.getElementById('loading');
-            if (loadingElement) {
-                loadingElement.style.display = 'none';
-            }
+            clearInterval(loadingInterval);
+            document.getElementById('loading').style.display = 'none';
         }
 
 
@@ -4231,10 +3216,7 @@ PERINGATAN FINALL:
                 sender === 'user' ? 'justify-content-end' : 'justify-content-start'
             );
 
-            //         if (isTemporary) {
-            //     messageWrapper.id = 'thinking-message';
-            //     messageWrapper.classList.add('thinking-indicator');
-            // }
+            if (isTemporary) messageWrapper.id = 'thinking-message';
 
             let processedText = text;
             if (sender === 'ai' && !isTemporary) {
@@ -4572,18 +3554,12 @@ PERINGATAN FINALL:
 
         //tampilkan gemini tersedia
         function showTersedia() {
-            const recommendationContainer = document.querySelector('.recommendation-container');
-            if (recommendationContainer) {
-                recommendationContainer.style.display = 'block';
-            }
+            document.getElementById('tersedia').style.display = 'block';
         }
 
         // sembunyikan gemini tersedia
         function hideTersedia() {
-            const recommendationContainer = document.querySelector('.recommendation-container');
-            if (recommendationContainer) {
-                recommendationContainer.style.display = 'none';
-            }
+            document.getElementById('tersedia').style.display = 'none';
         }
 
 
@@ -4666,49 +3642,14 @@ PERINGATAN FINALL:
             const userMessage = userInput.value.trim();
             if (userMessage === '') return;
 
-            // Periksa apakah ada file yang dilampirkan
-            const hasAttachedFiles = activeDocuments.size > 0;
-
-            if (userMessage === '' && !hasAttachedFiles) return;
-
-            let fullMessage = userMessage;
-
-            // Jika ada file terlampir, tambahkan ke pesan
-            if (hasAttachedFiles) {
-                const filesHtml = Array.from(activeDocuments).map(filename =>
-                    `<div class="file-in-chat">${getFileIcon(filename)} ${filename}</div>`
-                ).join('');
-
-                // Untuk tampilan di chat
-                await addMessage('user', `${userMessage} ${filesHtml}`);
-
-                // Untuk dikirim ke AI
-                fullMessage = `${userMessage}\n\nBerkas terlampir:\n${Array.from(activeDocuments).join(', ')}\n\nIsi berkas:\n${window.documentContent}`;
-            } else {
-                await addMessage('user', userMessage);
-            }
-
-            // Reset container berkas
-            const container = document.getElementById('attached-files-container');
-            if (container) {
-                container.innerHTML = '';
-            }
-
-            activeDocuments.clear();
-
-            // Hide the files container with animation
-            if (filesContainer && filesContainer.children.length > 0) {
-                filesContainer.style.opacity = '0';
-                filesContainer.style.transform = 'translate(-50%, 10px)';
-
+            // Sembunyikan recommendation container saat mulai chat
+            const recommendationContainer = document.querySelector('.recommendation-container');
+            if (recommendationContainer) {
+                recommendationContainer.classList.add('hide');
                 setTimeout(() => {
-                    filesContainer.innerHTML = '';
-                    filesContainer.style.display = 'none';
-                    activeDocuments.clear();
-                    window.documentContent = '';
-                }, 300);
+                    recommendationContainer.classList.add('d-none');
+                }, 300); // Tunggu animasi fade selesai
             }
-
 
             if (isFirstChat) {
                 updateFirstMessage(userMessage);
@@ -4728,22 +3669,11 @@ PERINGATAN FINALL:
                 }, 300);
             }
 
-            // Clear attached files
-            const filesContainer = document.getElementById('attached-files-container');
-            if (filesContainer) {
-                filesContainer.innerHTML = '';
-                activeDocuments.clear();
-                window.documentContent = '';
-            }
-
             // Add user message
             await addMessage('user', userMessage);
 
             // Show thinking message with italic, fade-in, and muted text
             const tempMessage = await addMessage('ai', '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>', true);
-            console.log('Temporary message created:', tempMessage);
-
-
 
             // Clear input and update UI states
             userInput.value = '';

@@ -1,7 +1,6 @@
 <?php
 session_start();
 require "koneksi.php";
-require_once 'ai_analysis.php';
 
 
 if (!isset($_SESSION['userid']) || $_SESSION['level'] != 'guru') {
@@ -28,7 +27,6 @@ if (!$guru) {
     exit();
 }
 
-$report = generateAIReport($koneksi, $_SESSION['userid'], $_SESSION['level']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -353,101 +351,14 @@ $report = generateAIReport($koneksi, $_SESSION['userid'], $_SESSION['level']);
                     </div>
                 <?php endif; ?>
 
-                <!-- Interaction Stats -->
-                <div class="d-flex mt-3">
-                    <div class="border p-3 flex-fill" style="border-radius: 14px;">
-                        <div class="d-flex gap-2 align-items-center">
-                            <img src="assets/chat_ai.png" alt="" width="35px" height="35px" class="rounded">
-                            <div>
-                                <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Interaksi Anda dengan SMAGA AI</p>
-                                <p style="font-size: 12px;" class="text-muted p-0 m-0">Total interaksi dan pola komunikasi dengan AI</p>
-                            </div>
-                        </div>
-                        <div class="row mt-3 g-2">
-                            <div class="col-6">
-                                <div class="border rounded p-2">
-                                    <p style="font-size: 12px;" class="text-muted m-0">Total Interaksi</p>
-                                    <h3 style="font-size: 20px;" class="m-0"><?php echo $report['user_info']['total_conversations']; ?></h3>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="border rounded p-2">
-                                    <p style="font-size: 12px;" class="text-muted m-0">Total Pertanyaan</p>
-                                    <h3 style="font-size: 20px;" class="m-0"><?php echo $report['conversation_analysis']['interaction_patterns']['question_frequency']; ?></h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-
-                <!-- Character Traits -->
-                <div class="d-flex mt-3">
-                    <div class="border p-3 flex-fill" style="border-radius: 14px;">
-                        <div class="d-flex gap-2 align-items-center">
-                            <img src="assets/karakter_ai.png" alt="" width="35px" height="35px" class="rounded">
-                            <div>
-                                <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Rekaman Karakter Anda</p>
-                                <p style="font-size: 12px;" class="text-muted p-0 m-0">Analisis karakter berdasarkan interaksi SMAGA AI</p>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <?php foreach ($report['conversation_analysis']['character_traits'] as $trait => $value): ?>
-                                <div class="mb-2">
-                                    <div class="d-flex justify-content-between">
-                                        <span style="font-size: 12px;"><?php echo ucfirst($trait); ?></span>
-                                        <span style="font-size: 12px;" class="text-muted"><?php echo number_format($value * 100, 0); ?>%</span>
-                                    </div>
-                                    <div class="progress" style="height: 6px;">
-                                        <div class="progress-bar color-web" role="progressbar" style="width: <?php echo $value * 100; ?>%"></div>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Common Topics -->
-                <div class="d-flex mt-3">
-                    <div class="border p-3 flex-fill" style="border-radius: 14px;">
-                        <div class="d-flex gap-2 align-items-center">
-                            <img src="assets/topik_ai.png" alt="" width="35px" height="35px" class="rounded">
-                            <div>
-                                <p style="font-size: 12px; font-weight: bold;" class="p-0 m-0">Topik Paling Dibahas</p>
-                                <p style="font-size: 12px;" class="text-muted p-0 m-0">Topik yang sering dibahas dengan SMAGA AI</p>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <?php foreach ($report['conversation_analysis']['common_topics'] as $topic => $count): ?>
-                                <div class="mb-2">
-                                    <div class="d-flex justify-content-between">
-                                        <span style="font-size: 12px;"><?php echo ucfirst($topic); ?></span>
-                                        <span style="font-size: 12px;" class="text-muted"><?php echo $count; ?> kali</span>
-                                    </div>
-                                    <div class="progress" style="height: 6px;">
-                                        <div class="progress-bar color-web" role="progressbar"
-                                            style="width: <?php echo ($count / array_sum($report['conversation_analysis']['common_topics']) * 100); ?>%">
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- style untuk ai -->
-                <style>
-                    .progress-bar {
-                        transition: width 0.5s ease-in-out;
-                    }
-                </style>
             </div>
 
         </div>
 
     </div>
-    </div>
-    </div>
+
+
 
 
 
