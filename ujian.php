@@ -492,7 +492,6 @@ $siswa = mysqli_fetch_assoc($result_siswa);
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content bg-white" style="border-radius: 16px;">
                     <div class="modal-body text-center p-4">
-                        <img src="assets/ujian_selesai.png" alt="" width="200rem">
                         <h5 class="mt-3 fw-bold">Sesi Ujian Telah Kadaluarsa</h5>
                         <p class="mb-4">Kamu tidak dapat mengakses ujian ini karena sudah menyelesaikan ujian atau sesi ujian telah berakhir.</p>
                         <div class="d-flex gap-2">
@@ -508,7 +507,6 @@ $siswa = mysqli_fetch_assoc($result_siswa);
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" style="border-radius: 16px;">
                     <div class="modal-body text-center p-4">
-                        <i class="bi bi-dash-circle-fill" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
                         <h5 class="mt-3 fw-bold">Ujian belum di mulai</h5>
                         <p class="mb-4">Kamu terlalu bersemngat, cek lagi kalau sudah waktu ujian jadi manfaatkan waktumu untuk belajar. Ok?</p>
                         <div class="d-flex gap-2 btn-group">

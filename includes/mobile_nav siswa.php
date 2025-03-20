@@ -4,10 +4,10 @@
         <div class="row w-100 mx-0">
             <?php
             $nav_items = [
-                ['url' => 'beranda.php', 'icon' => 'house', 'text' => 'Beranda'],
-                ['url' => 'ujian.php', 'icon' => 'clipboard', 'text' => 'Ujian'],
-                ['url' => 'ai.php', 'icon' => 'stars', 'text' => 'SAGA AI'],
-                ['url' => 'profil.php', 'icon' => 'person-circle', 'text' => 'Profil']
+                ['url' => 'beranda.php', 'icon' => 'house', 'text' => ''],
+                ['url' => 'ujian.php', 'icon' => 'clipboard', 'text' => ''],
+                ['url' => 'ai.php', 'icon' => 'stars', 'text' => ''],
+                ['url' => 'profil.php', 'icon' => 'person-circle', 'text' => '']
             ];
 
             $current_page = basename($_SERVER['PHP_SELF']);

@@ -285,27 +285,6 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
         </style>
 
         <div class="row justify-content-between align-items-center mb-0 mb-md-4">
-            <!-- Alert messages -->
-            <?php if (isset($_GET['pesan'])): ?>
-                <div class="alert alert-dismissible fade show <?php
-                                                                echo $_GET['pesan'] == 'hapus_berhasil' ? 'alert-success' : 'alert-danger';
-                                                                ?>" role="alert">
-                    <?php
-                    switch ($_GET['pesan']) {
-                        case 'hapus_berhasil':
-                            echo "Ujian berhasil dihapus";
-                            break;
-                        case 'hapus_gagal':
-                            echo "Gagal menghapus ujian";
-                            break;
-                        case 'tidak_ditemukan':
-                            echo "Ujian tidak ditemukan";
-                            break;
-                    }
-                    ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
 
             <div class="col-12 col-md-auto mb-3 mb-md-0">
                 <h3 style="font-weight: bold;">Ujian</h3>

@@ -762,7 +762,7 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                     <!-- Tab Kelas Umum -->
                     <div class="tab-pane fade" id="umum" role="tabpanel" aria-labelledby="umum-tab">
 
-                        <!-- kontainer muncul di mobile -->
+                        <!-- kontainer muncul di mobile
                         <div class="card shadow-none mx-2 rounded-3 border mb-2 position-relative mobile-alert-card d-md-none">
                             <button type="button" class="btn-close position-absolute close-mobile-alert" style="top: 8px; right: 8px; font-size: 0.7rem;" aria-label="Close"></button>
                             <div class="card-body d-flex align-items-center py-2 px-3">
@@ -772,7 +772,7 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                                 </div>
                                 <img src="assets/umum.png" width="70" class="ms-2" alt="Jelajahi Ilmu">
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="row g-4 mx-0" id="kelas-umum-container">
 
@@ -1127,11 +1127,10 @@ $result_kelas = mysqli_stmt_get_result($stmt_kelas);
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content rounded-4 border-0">
                             <div class="modal-body p-4 text-center">
-                                <span class="bi bi-sign-stop-lights-fill d-block mb-3" style="color: #c56548; font-size:70px;"></span>
                                 <h5 class="fw-semibold mb-2">Tunggu guru memasukkanmu kedalam kelas</h5>
                                 <p class="text-muted mb-4">Kamu akan masuk setelah guru memasukkanmu ke dalam kelas secara otomatis</p>
 
-                                <button class="btn w-100 rounded color-web text-white py-2" data-bs-dismiss="modal">
+                                <button class="btn w-100 color-web text-white py-2" data-bs-dismiss="modal" style="border-radius: 15px;">
                                     Oke, saya mengerti
                                 </button>
                             </div>

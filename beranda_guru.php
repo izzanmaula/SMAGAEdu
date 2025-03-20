@@ -398,6 +398,9 @@ $guru = mysqli_fetch_assoc($result);
         <div class="filter-container mb-4">
             <div class="d-flex align-items-center">
                 <div class="filter-pills-wrapper d-flex justify-content-start">
+                    <button class="btn btn-light border ms-2 flex-shrink-0 me-2" id="addFilterBtn" data-bs-toggle="modal" data-bs-target="#addFilterModal">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
                     <div class="filter-pills d-flex gap-2">
                         <button class="btn btn-filter active" data-filter="all">Semua</button>
                         <button class="btn btn-filter" data-filter="private">Kelas Privat</button>
@@ -408,9 +411,6 @@ $guru = mysqli_fetch_assoc($result);
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-light border ms-2 flex-shrink-0" id="addFilterBtn" data-bs-toggle="modal" data-bs-target="#addFilterModal">
-                    <i class="bi bi-plus-lg"></i>
-                </button>
             </div>
         </div>
 
@@ -461,12 +461,6 @@ $guru = mysqli_fetch_assoc($result);
                 border: 1px solid transparent;
                 border-radius: 8px;
                 transition: all 0.3s ease;
-            }
-
-            .filter-container:hover {
-                border-color: #dee2e6;
-                padding: 0.5rem;
-                box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
             }
 
             .filter-pills-wrapper {
@@ -1861,6 +1855,7 @@ $guru = mysqli_fetch_assoc($result);
             color: #6c757d;
             border-color: #dee2e6;
             transition: all 0.3s ease;
+            border-radius: 15px;
         }
 
         .btn-outline-secondary:hover {
@@ -1872,6 +1867,7 @@ $guru = mysqli_fetch_assoc($result);
             background-color: rgb(218, 119, 86) !important;
             color: white !important;
             border-color: rgb(218, 119, 86) !important;
+            border-radius: 15px;
         }
 
         .btn-check:checked+.btn-outline-secondary {

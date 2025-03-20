@@ -369,7 +369,7 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                             <div class="class-meta" style="font-size: 12px;">
                                 <div class="row g-2">
                                     <div class="col-12">
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex>
                                             <i class="bi bi-file-text me-2 text-muted"></i>
                                             <span class="text-secondary" id="deskripsi-preview">-</span>
                                         </div>
@@ -381,7 +381,7 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex">
                                             <i class="bi bi-list-check me-2 text-muted"></i>
                                             <span class="text-secondary" id="materi-preview">-</span>
                                         </div>

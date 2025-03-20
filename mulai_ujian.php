@@ -82,10 +82,12 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ujian Online</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <style>
         @keyframes warning-background {
             0% {
@@ -110,29 +112,111 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 9999;
+            z-index: 1040;
+            /* Changed from 9999 to be lower than modal */
             opacity: 0.7;
+        }
+
+        /* Tambahkan CSS ini di bagian style */
+        .soal-number[data-status="answered"] {
+            background-color: #da7756 !important;
+            color: white !important;
+        }
+
+        .soal-number[data-status="marked"] {
+            background-color: #dc3545 !important;
+            color: white !important;
+        }
+    </style>
+
+    <!-- modal animasi -->
+    <!-- style animasi modal -->
+    <style>
+        .modal-content {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal .btn {
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .modal .btn:active {
+            transform: scale(0.98);
+        }
+
+        .modal.fade .modal-dialog {
+            transform: scale(0.95);
+            transition: transform 0.2s ease-out;
+        }
+
+        .modal.show .modal-dialog {
+            transform: scale(1);
+        }
+
+        .button-beranda {
+            border-radius: 15px;
         }
     </style>
     <script>
-        // Initialize when document loads
+        let warningAudio;
+        let warningDiv;
+
+        // Fungsi yang dijalankan setelah dokumen dimuat
         document.addEventListener('DOMContentLoaded', () => {
+            // Inisialisasi warningDiv - pastikan elemen ini ada di HTML
+            warningDiv = document.getElementById('warningOverlay');
+
+            // Jika warningOverlay tidak ada di HTML, buat elemen baru
+            if (!warningDiv) {
+                warningDiv = document.createElement('div');
+                warningDiv.id = 'warningOverlay';
+                warningDiv.className = 'warning-active';
+                document.body.appendChild(warningDiv);
+            }
+
             const modal = new bootstrap.Modal(document.getElementById('startExamModal'));
             modal.show();
 
-            const warningDiv = document.getElementById('warningOverlay');
+            warningAudio = new Audio('assets/warning.mp3');
 
-            document.getElementById('startFullscreenExam').addEventListener('click', () => {
-                enableFullscreen();
-                setTimeout(() => modal.hide(), 500);
+            // Ganti event listener pada tombol start
+            document.getElementById('startFullscreenExam').addEventListener('click', function(e) {
+                // Penting: Panggil fullscreen LANGSUNG dari event klik
+                try {
+                    const element = document.documentElement;
+
+                    // Coba semua versi API fullscreen
+                    if (element.requestFullscreen) {
+                        element.requestFullscreen();
+                    } else if (element.webkitRequestFullscreen) {
+                        element.webkitRequestFullscreen();
+                    } else if (element.mozRequestFullScreen) {
+                        element.mozRequestFullScreen();
+                    } else if (element.msRequestFullscreen) {
+                        element.msRequestFullscreen();
+                    } else {
+                        alert("Browser Anda tidak mendukung mode fullscreen. Silakan tekan F11 untuk masuk mode fullscreen secara manual.");
+                    }
+
+                    // Sembunyikan modal setelah fullscreen berhasil
+                    setTimeout(() => {
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('startExamModal'));
+                        if (modal) modal.hide();
+                    }, 500);
+                } catch (error) {
+                    console.error("Fullscreen error:", error);
+                    alert("Tidak dapat masuk mode fullscreen. Silakan izinkan fitur ini di browser Anda atau tekan F11.");
+                }
             });
 
-            // Add fullscreen change listeners
+            // Tambahkan event listener untuk perubahan fullscreen
             document.addEventListener('fullscreenchange', handleFullscreenChange);
             document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
             document.addEventListener('mozfullscreenchange', handleFullscreenChange);
             document.addEventListener('MSFullscreenChange', handleFullscreenChange);
         });
+
         // Define the enableFullscreen function
 
         window.onbeforeunload = function(e) {
@@ -141,76 +225,56 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
             return 'Dilarang menutup tab ujian!';
         };
 
-        // Declare the variable at the very top, before any function definitions or event listeners
-        let warningAudio = null;
-        let warningDiv = document.createElement('div');
-        warningDiv.className = 'warning-active';
-        document.body.appendChild(warningDiv);
-
-        // Initialize when document loads
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = new bootstrap.Modal(document.getElementById('startExamModal'));
-            modal.show();
-
-            document.getElementById('startFullscreenExam').addEventListener('click', () => {
-                enableFullscreen();
-                setTimeout(() => modal.hide(), 500);
-            });
-
-            // Add fullscreen change listeners
-            document.addEventListener('fullscreenchange', handleFullscreenChange);
-            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-        });
 
         function handleFullscreenChange() {
+            console.log("Fullscreen change detected!");
+
             if (!document.fullscreenElement &&
                 !document.webkitFullscreenElement &&
                 !document.mozFullScreenElement &&
                 !document.msFullscreenElement) {
 
-                warningDiv.style.display = 'flex';
+                console.log("User keluar dari fullscreen mode");
 
-                // Create new warning audio
-                if (warningAudio) {
-                    warningAudio.pause();
-                    warningAudio.currentTime = 0;
+                // Show visual warning
+                if (warningDiv) {
+                    warningDiv.style.display = 'flex';
                 }
-                warningAudio = new Audio('assets/warning.mp3');
-                warningAudio.loop = true;
-                warningAudio.volume = 1.0;
-                warningAudio.play();
 
-                // Simple minimalist warning modal
-                document.querySelector('#startExamModal .modal-header').innerHTML =
-                    '<h5 class="modal-title fw-bold">' +
-                    '<i class="bi bi-shield-lock me-2" style="color: #da7756;"></i>' +
-                    'EduGuard</h5>';
+                // Play warning sound
+                try {
+                    if (warningAudio) {
+                        warningAudio.pause();
+                        warningAudio.currentTime = 0;
+                    }
+                    warningAudio = new Audio('assets/warning.mp3');
+                    warningAudio.loop = true;
+                    warningAudio.volume = 1.0;
+                    warningAudio.play().catch(e => console.error("Error playing audio:", e));
+                } catch (e) {
+                    console.error("Audio error:", e);
+                }
 
-                document.querySelector('#startExamModal .modal-body').innerHTML =
-                    '<div class="text-center py-3">' +
-                    '<span class="bi bi-eye-fill" style="font-size: 3rem; color:#da7756;"></span>' +
-                    '<h4 class="mt-3">PERINGATAN!</h4>' +
-                    '<p class="mb-3">Keluar dari layar penuh terdeteksi, sesi ujian terkunci</p>' +
-                    '<p class="text-muted" style="font-size:12px">Untuk alasan keamanan ujian, jika kamu memuat ulang atau kembali menuju halaman awal ujian maka kami akan menghapus seluruh jawaban ujianmu, panggil pengawasmu untuk mengisi password di bawah untuk melanjutkan ujian</p>' +
-                    '<input type="password" class="form-control" id="supervisorPassword" placeholder="Password">' +
-                    '</div>';
-
-                document.querySelector('#startExamModal .modal-footer').innerHTML =
-                    '<div class="d-flex w-100">' +
-                    '<button class="btn color-web text-white flex-fill mx-3" onclick="checkPassword()">Lanjutkan</button>' +
-                    '</div>';
-
-                const modal = new bootstrap.Modal(document.getElementById('startExamModal'), {
-                    backdrop: 'static',
-                    keyboard: false
-                });
-                modal.show();
-
+                // Show warning modal
+                try {
+                    const modalElement = document.getElementById('fullscreenWarningModal');
+                    document.getElementById('supervisorPassword').value = '';
+                    const modal = new bootstrap.Modal(modalElement);
+                    modal.show();
+                    console.log("Warning modal displayed");
+                } catch (e) {
+                    console.error("Error displaying warning modal:", e.message);
+                    console.error(e); // Log the full error
+                    alert("Peringatan: Anda keluar dari mode fullscreen! Harap hubungi pengawas ujian.");
+                }
             } else {
-                // Remove warning when back in fullscreen
-                warningDiv.style.display = 'none';
+                // Back to fullscreen mode
+                console.log("User masuk ke fullscreen mode");
+
+                if (warningDiv) {
+                    warningDiv.style.display = 'none';
+                }
+
                 if (warningAudio) {
                     warningAudio.pause();
                     warningAudio.currentTime = 0;
@@ -220,7 +284,12 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
         }
 
         function checkPassword() {
-            const password = document.getElementById('supervisorPassword').value;
+            const password = document.getElementById('supervisorPassword')?.value || '';
+            const errorElement = document.getElementById('passwordError');
+
+            // Sembunyikan pesan error sebelumnya (jika ada)
+            errorElement.classList.add('d-none');
+
             if (password === 'admin') {
                 // Stop the warning sound
                 if (warningAudio) {
@@ -228,31 +297,49 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                     warningAudio.currentTime = 0;
                     warningAudio = null;
                 }
-                enableFullscreen();
-                const modal = bootstrap.Modal.getInstance(document.getElementById('startExamModal'));
-                modal.hide();
+
+                try {
+                    enableFullscreen();
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('fullscreenWarningModal'));
+                    if (modal) modal.hide();
+                } catch (e) {
+                    console.error("Error when re-enabling fullscreen:", e);
+                    errorElement.textContent = "Terjadi kesalahan saat mencoba masuk mode fullscreen kembali";
+                    errorElement.classList.remove('d-none');
+                }
             } else {
-                alert('Password salah, panggil pengawas untuk membuka kunci');
+                // Tampilkan pesan error di dalam modal
+                errorElement.classList.remove('d-none');
+                // Kosongkan field password
+                document.getElementById('supervisorPassword').value = '';
             }
         }
 
-        // Update your existing enableFullscreen function
+        // Fungsi untuk masuk mode fullscreen
         function enableFullscreen() {
             const element = document.documentElement;
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.webkitRequestFullscreen) {
-                element.webkitRequestFullscreen();
-            } else if (element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-            } else if (element.msRequestFullscreen) {
-                element.msRequestFullscreen();
+
+            try {
+                if (element.requestFullscreen) {
+                    element.requestFullscreen().catch(err => {
+                        console.error("Fullscreen error:", err);
+                        alert("Tidak dapat masuk mode fullscreen. Harap izinkan fitur ini di browser Anda.");
+                    });
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+            } catch (e) {
+                console.error("Error enabling fullscreen:", e);
             }
 
-            // Remove warning when enabling fullscreen
-            warningDiv.classList.add('d-none');
-            const audio = document.querySelector('audio');
-            if (audio) audio.pause();
+            // Sembunyikan peringatan ketika fullscreen diaktifkan
+            if (warningDiv) {
+                warningDiv.style.display = 'none';
+            }
         }
 
         // Block keyboard shortcuts
@@ -344,8 +431,8 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
         }
 
         .soal-number {
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
         /* Mobile Styles */
         @media (max-width: 768px) {
@@ -372,6 +459,7 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                 margin-left: 0 !important;
                 width: 100%;
                 z-index: 1000;
+                border-radius: 15px;
             }
 
             .bottom-navigation button {
@@ -398,30 +486,268 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                 padding: 0;
             }
         }
+
+        /* Tambahkan styling baru untuk mobile */
+        @media (max-width: 768px) {
+
+            /* Pastikan area collapse tidak menyebabkan scrollbar horizontal */
+            #mobileInfoCollapse {
+                width: 100%;
+                padding: 0;
+            }
+
+            /* Sesuaikan ukuran soal pada tampilan mobile */
+            .soal-content {
+                height: auto;
+                padding: 10px 15px;
+                margin-bottom: 100px;
+                /* Margin untuk bottom navigation */
+            }
+
+            /* Pastikan bottom navigation tetap di bawah */
+            .bottom-navigation {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                z-index: 1000;
+                background-color: white;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Pastikan nomor soal tidak terlalu besar di mobile */
+            .soal-number {
+                width: 35px;
+                height: 35px;
+                font-size: 13px;
+            }
+        }
     </style>
 </head>
 
-<body id="examBody">
+<body id="examBody" class="pt-md-4">
     <div id="warningOverlay" class="warning-active"></div>
-    <nav class="navbar color-web">
-        <div class="container-fluid">
-            <div class="d-flex align-items-center gap-2">
-                <img src="assets/smagaedu.png" alt="" width="30px" class="logo_orange">
-                <h1 class="display-5 p-0 m-0 text-white" style="font-size: 20px;">SMAGAEdu</h1>
+    <nav class="navbar d-md-none" style="background-color: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 12px 0;">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between w-100">
+                <!-- Logo for desktop only -->
+                <!-- <div class="d-none d-md-flex align-items-center gap-2">
+                    <img src="assets/smagaedu.png" alt="SMAGAEdu" width="30px" style="border-radius: 8px;">
+                    <h1 class="m-0" style="font-size: 17px; font-weight: 600; color: #1c1c1e;">SMAGAEdu</h1>
+                </div> -->
+
+                <!-- Timer in center for mobile -->
+                <div class="d-flex d-md-none align-items-center justify-content-center mx-auto">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-clock" style="color:rgb(218, 119, 86);"></i>
+                        <span id="mobile-countdown" style="font-weight: 600; color: rgb(218, 119, 86); font-size: 15px;">00:00:00</span><span style="font-weight: 600; color: rgb(218, 119, 86); font-size: 15px;"> tersisa</span>
+                    </div>
+                </div>
+
+                <!-- Status badge for desktop only -->
+                <!-- <div class="d-none d-md-block">
+                    <span class="badge" style="background: rgba(218, 119, 86, 0.15); color: rgb(218, 119, 86); font-weight: 500; padding: 6px 10px; border-radius: 12px; font-size: 13px;">
+                        Sedang Ujian
+                    </span>
+                </div> -->
             </div>
         </div>
     </nav>
 
-    <div class="d-md-none p-2">
-        <button class="btn text-white w-100" style="background-color: rgb(255, 141, 103);" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav">
-            Daftar Soal <i class="bi bi-chevron-down"></i>
-        </button>
+    <!-- modal peringatan keluar dari fullscreen dengan iOS style -->
+    <div class="modal fade" id="fullscreenWarningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.1);">
+                <div class="modal-body text-center p-4">
+                    <div class="mb-3">
+                        <span class="bi bi-exclamation-circle" style="font-size: 3rem; color:#FF3B30;"></span>
+                    </div>
+                    <h5 class="fw-semibold mb-2">Keluar dari mode layar penuh</h5>
+                    <p class="text-secondary mb-4" style="font-size: 0.95rem;">Sesi ujian terkunci. Masukkan password pengawas untuk melanjutkan.</p>
+
+                    <div id="passwordError" class="d-none mb-3" style="background-color: #FEE2E2; border-radius: 12px; padding: 12px 15px; border-left: 4px solid #EF4444;">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-exclamation-circle" style="color: #EF4444; font-size: 16px;"></i>
+                            <p class="mb-0" style="color: #B91C1C; font-size: 14px;">Password salah, panggil pengawas untuk membuka kunci</p>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" id="supervisorPassword" placeholder="Password" style="border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);">
+                        <label for="supervisorPassword" class="text-secondary">Password Pengawas</label>
+                    </div>
+                    <div class="d-grid">
+                        <button class="btn py-2" onclick="checkPassword()"
+                            style="border-radius: 12px; background-color: rgb(206, 100, 65); color: white; font-weight: 500;">
+                            Lanjutkan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Script to sync mobile countdown with the main countdown -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update the mobile countdown every second
+            setInterval(function() {
+                const mainCountdown = document.getElementById('countdown');
+                const mobileCountdown = document.getElementById('mobile-countdown');
+                if (mainCountdown && mobileCountdown) {
+                    mobileCountdown.textContent = mainCountdown.textContent;
+                }
+            }, 1000);
+        });
+    </script>
+
+    <!-- Area collapse yang akan muncul di atas soal -->
+    <div class="collapse d-md-none" id="mobileInfoCollapse">
+        <div class="p-2">
+            <!-- Info Siswa Card -->
+            <div class="card mb-3 border" style="border-radius: 16px; background: rgba(255,255,255,0.95);">
+                <div class="card-body p-3">
+                    <!-- Konten info siswa -->
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div>
+                            <img src="<?php echo !empty($siswa['photo_url']) ?
+                                            ($siswa['photo_type'] === 'avatar' ? $siswa['photo_url'] : ($siswa['photo_type'] === 'upload' ? $siswa['photo_url'] : 'assets/pp.png'))
+                                            : 'assets/pp.png'; ?>"
+                                class="rounded-circle border"
+                                style="width: 50px; height: 50px; object-fit: cover;">
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold" style="color: #1c1c1e; font-size: 14px;"><?php echo $_SESSION['nama']; ?></h6>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge" style="background: rgba(218, 119, 86, 0.1); color: rgb(218, 119, 86); font-weight: normal; padding: 4px 8px; border-radius: 12px; font-size: 12px;">
+                                    <?php echo $data_ujian['judul']; ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daftar Soal Card -->
+            <div class="card border" style="border-radius: 16px; background: rgba(255,255,255,0.95);">
+                <div class="card-body p-3">
+                    <h6 class="card-title mb-3" style="color: #1c1c1e; font-weight: 600; font-size: 14px;">Daftar Soal</h6>
+                    <div class="d-flex flex-wrap gap-2 justify-content-start">
+                        <?php foreach ($soal_array as $index => $soal): ?>
+                            <div class="soal-number rounded-3 border-0 d-flex align-items-center justify-content-center"
+                                data-soal="<?php echo $index; ?>"
+                                data-status="unanswered"
+                                style="background: #f2f2f7; color:black; box-shadow: 0 1px 2px rgba(0,0,0,0.1); width: 35px; height: 35px; font-size: 13px;">
+                                <?php echo $index + 1; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- scrip untuk collapse informasi soal -->
+    <script>
+        // Modifikasi event handler untuk menandai soal
+        $(document).ready(function() {
+            loadAnswers();
+
+            // Inisialisasi tampilan tombol mark
+            updateMarkButtonUI(currentSoal);
+
+
+            // Handler untuk klik nomor soal
+            $('.soal-number').click(function() {
+                const index = $(this).data('soal');
+                showSoal(index);
+
+                // Jika di mobile, tutup collapse
+                if (window.innerWidth < 768) {
+                    $('#mobileInfoCollapse').collapse('hide');
+                }
+            });
+
+            // Fungsi untuk memperbarui status soal di SEMUA elemen
+            function updateSoalStatus(soalIndex, status) {
+                // Update semua elemen soal-number dengan data-soal yang sama
+                $(`.soal-number[data-soal="${soalIndex}"]`).attr('data-status', status);
+            }
+
+            // Perbarui event handler untuk tombol mark
+            $('#mark').click(function() {
+                const soalIndex = currentSoal;
+
+                if (markedQuestions.has(soalIndex)) {
+                    // Unmark soal
+                    markedQuestions.delete(soalIndex);
+                    updateSoalStatus(soalIndex, answers[soalIndex] ? 'answered' : 'unanswered');
+                } else {
+                    // Mark soal
+                    markedQuestions.add(soalIndex);
+                    updateSoalStatus(soalIndex, 'marked');
+                }
+
+                // Update tampilan tombol
+                updateMarkButtonUI(soalIndex);
+            });
+
+            // Handler untuk tombol clear
+            $('#clear').click(function() {
+                const soalIndex = currentSoal;
+
+                // Hapus visual selection
+                $(`.soal-page[data-index="${soalIndex}"] .option-card`).removeClass('selected');
+
+                // Hapus jawaban
+                saveAnswer(soalIndex, null);
+
+                // Hapus dari database
+                $.post('save_jawaban.php', {
+                    ujian_id: <?php echo $ujian_id; ?>,
+                    soal_index: soalIndex,
+                    jawaban: null
+                });
+            });
+
+            // Handler untuk klik opsi jawaban
+            $('.option-card').click(function() {
+                const soalIndex = $(this).closest('.soal-page').data('index');
+                const jawaban = $(this).data('value');
+
+                $(this).closest('.soal-page').find('.option-card').removeClass('selected');
+                $(this).addClass('selected');
+
+                // Simpan jawaban
+                saveAnswer(soalIndex, jawaban);
+
+                // Save ke server
+                $.post('save_jawaban.php', {
+                    ujian_id: <?php echo $ujian_id; ?>,
+                    soal_index: soalIndex,
+                    jawaban: jawaban
+                });
+            });
+        });
+    </script>
+
+    <!-- tampilan pada pc, normal -->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3 collapse d-md-block" id="mobileNav">
+            <div class="col-md-3 collapse d-none d-md-block">
                 <div class="soal-numbers">
+                    <!-- Logo card -->
+                    <div class="card mb-3 border" style="border-radius: 16px; background: rgba(255,255,255,0.95);">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <img src="assets/smagaedu.png" alt="SMAGAEdu Logo" class="img-fluid"
+                                    style="height: 50px; width: auto; border-radius: 10px;">
+                                <div>
+                                    <h4 class="mb-0 fw-bold" style="color: #1c1c1e;">SMAGA<span style="color: rgb(218, 119, 86);">Edu</span></h4>
+                                    <p class="text-muted mb-0" style="font-size: 14px;">EXAM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Info Siswa -->
                     <div class="card mb-3 border" style="border-radius: 16px; background: rgba(255,255,255,0.95);">
                         <div class="card-body p-4">
@@ -444,7 +770,7 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                             </div>
 
                             <!-- Countdown Timer -->
-                            <div class="p-3 rounded-4" style="background: #f2f2f7;">
+                            <div class="p-3 rounded-4 d-none d-md-flex" style="background: #f2f2f7;">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="bi bi-clock" style="color:rgb(218, 119, 86);"></i>
                                     <div class="d-flex align-items-center gap-2">
@@ -584,7 +910,7 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                                             style="max-height: 300px; width: auto; display: block;">
                                     </div>
                                 <?php endif; ?>
-                                <p class="mb-4"><?php echo $soal['pertanyaan']; ?></p>
+                                <p class="mb-4 fw-bold" style="font-size:2rem;"><?php echo $soal['pertanyaan']; ?></p>
 
                                 <?php
                                 $options = [
@@ -604,25 +930,29 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                         <?php endforeach; ?>
                     </form>
                 </div>
-                <div class="bottom-navigation d-flex justify-content-between bg-white p-3" style="box-shadow: 0 -1px 0 rgba(0,0,0,0.1);">
-                    <button class="btn" id="prev" style="border: none; background: none;">
+                <div class="bottom-navigation d-flex justify-content-between bg-white p-3 border" style="border-radius: 15px;">
+                    <button class="btn border-0 border-md-1" id="prev" style="border: 1px solid rgba(0,0,0,0.1) !important;">
                         <i class="bi bi-chevron-left" style="font-size: 24px; color: #007AFF;"></i>
                     </button>
                     <div class="d-flex gap-3">
-                        <button class="btn d-flex flex-column align-items-center" id="mark" style="border: none; background: none;">
+                        <button class="btn border-0 border-md-1 d-flex flex-column align-items-center" id="mark">
                             <i class="bi bi-bookmark" style="font-size: 24px; color: #FF3B30;"></i>
-                            <span class="d-none d-md-block" style="font-size: 12px; color: #8E8E93;">Tandai</span>
+                            <span class="d-none d-md-block text-muted" id="mark-ket" style="font-size: 12px;">Tandai</span>
                         </button>
-                        <button class="btn d-flex flex-column align-items-center" id="clear" style="border: none; background: none;">
+                        <button class="btn border-0 border-md-1 d-flex flex-column align-items-center" id="clear">
                             <i class="bi bi-x-circle" style="font-size: 24px; color: #8E8E93;"></i>
-                            <span class="d-none d-md-block" style="font-size: 12px; color: #8E8E93;">Hapus</span>
+                            <span class="d-none d-md-block text-muted" style="font-size: 12px;">Hapus</span>
                         </button>
-                        <button class="btn d-flex flex-column align-items-center" id="finish" style="border: none; background: none;">
+                        <button class="btn d-md-none border-0 border-md-1 d-flex flex-column align-items-center" data-bs-toggle="collapse" data-bs-target="#mobileInfoCollapse">
+                            <i class="bi bi-info-circle" style="font-size: 24px; color: #007AFF;"></i>
+                            <span class="d-none d-md-block text-muted" style="font-size: 12px;">Info</span>
+                        </button>
+                        <button class="btn border-0 border-md-1 d-flex flex-column align-items-center" id="finish">
                             <i class="bi bi-flag" style="font-size: 24px; color: #34C759;"></i>
-                            <span class="d-none d-md-block" style="font-size: 12px; color: #8E8E93;">Selesai</span>
+                            <span class="d-none d-md-block text-muted" style="font-size: 12px;">Selesai</span>
                         </button>
                     </div>
-                    <button class="btn" id="next" style="border: none; background: none;">
+                    <button class="btn border-0 border-md-1" id="next" style="border: 1px solid rgba(0,0,0,0.1) !important;">
                         <i class="bi bi-chevron-right" style="font-size: 24px; color: #007AFF;"></i>
                     </button>
                 </div>
@@ -630,57 +960,35 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
         </div>
     </div>
 
-    <div class="modal fade" id="finishModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal fade" id="finishModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header border-0 text-white" style="background-color: #da7756;">
-                    <h5 class="modal-title">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        EduGuard
-                    </h5>
-                </div>
-                <div class="modal-body px-4 py-4 text-center">
-                    <i class="bi bi-question-circle mb-3" style="font-size: 3rem; color:#da7756"></i>
-                    <h5 class="mb-3">Apakah Anda yakin ingin menyelesaikan ujian?</h5>
-                    <p class="text-muted small mb-0">
-                        Setelah ujian diselesaikan, kamu tidak dapat mengubah jawaban lagi
-                    </p>
-                </div>
-                <div class="modal-footer border-0 justify-content-center pb-4">
-                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-2"></i>
-                        Aku cek jawaban dulu
-                    </button>
-                    <button type="button" style="background-color: #da7756;" class="btn text-white px-4" id="confirmFinish">
-                        <i class="bi bi-check-circle me-2"></i>
-                        Ok, kumpulkan
-                    </button>
+            <div class="modal-content" style="border-radius: 16px;">
+                <div class="modal-body text-center p-4">
+                    <h5 class="mt-3 fw-bold">Selesaikan Ujian</h5>
+                    <p class="mb-4">Apakah kamu yakin ingin menyelesaikan ujian ini? Setelah ujian diselesaikan, kamu tidak dapat mengubah jawaban lagi.</p>
+                    <div class="d-flex gap-2 btn-group">
+                        <button type="button" class="btn border px-4" data-bs-dismiss="modal" style="border-radius: 12px;">Nanti</button>
+                        <button type="button" id="confirmFinish" class="btn text-white px-4" style="border-radius: 12px; background-color:rgb(218, 119, 86);">Kumpulkan</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Success Modal -->
-    <div class="modal fade" id="successModal" data-bs-backdrop="static" tabindex="-1">
+    <div class="modal fade" id="successModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header border-0 text-white" style="background-color:#da7756;">
-                    <h5 class="modal-title">
-                        <i class="bi bi-check-circle me-2"></i>
-                        Keamanan Ujian
-                    </h5>
-                </div>
-                <div class="modal-body px-4 py-5 text-center">
+            <div class="modal-content" style="border-radius: 16px;">
+                <div class="modal-body text-center p-4">
                     <div class="mb-4">
-                        <i class="bi bi-check-circle-fill" style="font-size: 5rem; color:#da7756"></i>
+                        <i class="bi bi-check-circle-fill" style="font-size: 5rem; color:rgb(218, 119, 86)"></i>
                     </div>
-                    <h4 class="mb-3">Ujian Berhasil Diselesaikan</h4>
-                    <p class="mb-4">
-                        Terima kasih telah mengerjakan ujian dengan baik.<br>
-                        Kamu bisa klik 'leave' atau atau 'tinggalkan' pada peringatan di atas
-                    </p>
-                    <div class="spinner-border" role="status" style="color: #da7756;">
-                        <span class="visually-hidden">Loading...</span>
+                    <h5 class="mt-3 fw-bold">Ujian Berhasil Diselesaikan</h5>
+                    <p class="mb-4">Terima kasih telah mengerjakan ujian dengan baik. Jawaban Anda telah tersimpan.</p>
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status" style="color: rgb(218, 119, 86);">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -691,19 +999,25 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
     <script>
         let currentSoal = 0;
         const totalSoal = <?php echo count($soal_array); ?>;
-        const answers = new Map();
+        let answers = {};
         const markedQuestions = new Set();
 
+
+        // Perbarui fungsi showSoal untuk memperbarui tampilan tombol mark
         function showSoal(index) {
             $('.soal-page').addClass('d-none');
             $(`.soal-page[data-index="${index}"]`).removeClass('d-none');
             currentSoal = index;
+
+            // Update UI tombol mark saat berpindah soal
+            updateMarkButtonUI(index);
         }
 
-        $('.soal-number').click(function() {
-            const index = $(this).data('soal');
-            showSoal(index);
-        });
+        // Fungsi untuk memperbarui status soal di SEMUA elemen
+        function updateSoalStatus(soalIndex, status) {
+            // Update semua elemen soal-number dengan data-soal yang sama
+            $(`.soal-number[data-soal="${soalIndex}"]`).attr('data-status', status);
+        }
 
         $('.option-card').click(function() {
             const soalIndex = $(this).closest('.soal-page').data('index');
@@ -712,26 +1026,17 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
             $(this).closest('.soal-page').find('.option-card').removeClass('selected');
             $(this).addClass('selected');
 
-            answers.set(soalIndex, jawaban);
-            $(`.soal-number[data-soal="${soalIndex}"]`).attr('data-status', 'answered');
+            if (answers[soalIndex]) {
+                $(`.soal-number[data-soal="${soalIndex}"]`).attr('data-status', 'answered');
+            }
+
+            answers[soalIndex] = jawaban;
 
             $.post('save_jawaban.php', {
                 ujian_id: <?php echo $ujian_id; ?>,
                 soal_index: soalIndex,
                 jawaban: jawaban
             });
-        });
-
-        $('#mark').click(() => {
-            if (markedQuestions.has(currentSoal)) {
-                markedQuestions.delete(currentSoal);
-                $(`.soal-number[data-soal="${currentSoal}"]`).attr('data-status',
-                    answers.has(currentSoal) ? 'answered' : 'unanswered'
-                );
-            } else {
-                markedQuestions.add(currentSoal);
-                $(`.soal-number[data-soal="${currentSoal}"]`).attr('data-status', 'marked');
-            }
         });
 
         $('#prev').click(() => {
@@ -746,26 +1051,49 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
             }
         });
 
-        // Simpan jawaban di localStorage
+        // Fungsi untuk simpan jawaban
         function saveAnswer(soalIndex, jawaban) {
             const storageKey = `ujian_${<?php echo $ujian_id; ?>}`;
-            let answers = JSON.parse(localStorage.getItem(storageKey) || '{}');
-            answers[soalIndex] = jawaban;
-            localStorage.setItem(storageKey, JSON.stringify(answers));
+            let storedAnswers = JSON.parse(localStorage.getItem(storageKey) || '{}');
+
+            if (jawaban === null) {
+                delete storedAnswers[soalIndex];
+                delete answers[soalIndex]; // Hapus dari variable answers juga
+            } else {
+                storedAnswers[soalIndex] = jawaban;
+                answers[soalIndex] = jawaban; // Simpan di variable answers juga
+            }
+
+            localStorage.setItem(storageKey, JSON.stringify(storedAnswers));
+
+            // Update status elemen soal-number
+            if (jawaban === null) {
+                updateSoalStatus(soalIndex, 'unanswered');
+            } else {
+                updateSoalStatus(soalIndex, markedQuestions.has(parseInt(soalIndex)) ? 'marked' : 'answered');
+            }
         }
 
         // Load jawaban saat halaman dimuat
         function loadAnswers() {
             const storageKey = `ujian_${<?php echo $ujian_id; ?>}`;
-            const answers = JSON.parse(localStorage.getItem(storageKey) || '{}');
+            const storedAnswers = JSON.parse(localStorage.getItem(storageKey) || '{}');
 
-            Object.entries(answers).forEach(([index, jawaban]) => {
-                $(`.soal-page[data-index="${index}"] .option-card[data-value="${jawaban}"]`).addClass('selected');
-                $(`.soal-number[data-soal="${index}"]`).attr('data-status', 'answered');
+            // Sync dengan variable answers - GANTI METODENYA
+            // Jangan assign langsung ke answers (yang akan error jika answers adalah const)
+            Object.keys(storedAnswers).forEach(key => {
+                answers[key] = storedAnswers[key]; // Copy data satu per satu
+            });
+
+            // Update tampilan
+            Object.entries(storedAnswers).forEach(([index, jawaban]) => {
+                const intIndex = parseInt(index);
+                $(`.soal-page[data-index="${intIndex}"] .option-card[data-value="${jawaban}"]`).addClass('selected');
+                updateSoalStatus(intIndex, markedQuestions.has(intIndex) ? 'marked' : 'answered');
             });
         }
 
-        // Update click handler
+        // Handler untuk klik opsi jawaban
         $('.option-card').click(function() {
             const soalIndex = $(this).closest('.soal-page').data('index');
             const jawaban = $(this).data('value');
@@ -773,28 +1101,29 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
             $(this).closest('.soal-page').find('.option-card').removeClass('selected');
             $(this).addClass('selected');
 
+            // Simpan jawaban
             saveAnswer(soalIndex, jawaban);
-            $(`.soal-number[data-soal="${soalIndex}"]`).attr('data-status', 'answered');
+
+            // Save ke server
+            $.post('save_jawaban.php', {
+                ujian_id: <?php echo $ujian_id; ?>,
+                soal_index: soalIndex,
+                jawaban: jawaban
+            });
         });
 
         // Panggil loadAnswers saat halaman dimuat
         $(document).ready(loadAnswers);
 
-        // Fungsi hapus jawaban
-        $('#clear').click(() => {
+        // Handler untuk tombol clear
+        $('#clear').click(function() {
             const soalIndex = currentSoal;
 
             // Hapus visual selection
             $(`.soal-page[data-index="${soalIndex}"] .option-card`).removeClass('selected');
 
-            // Hapus status jawaban
-            $(`.soal-number[data-soal="${soalIndex}"]`).attr('data-status', 'unanswered');
-
-            // Hapus dari localStorage
-            const storageKey = `ujian_${<?php echo $ujian_id; ?>}`;
-            let answers = JSON.parse(localStorage.getItem(storageKey) || '{}');
-            delete answers[soalIndex];
-            localStorage.setItem(storageKey, JSON.stringify(answers));
+            // Hapus jawaban
+            saveAnswer(soalIndex, null);
 
             // Hapus dari database
             $.post('save_jawaban.php', {
@@ -833,6 +1162,26 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                 }
             }).fail(() => alert('Terjadi kesalahan koneksi'));
         });
+
+        // Tambahkan fungsi untuk memperbarui tampilan tombol mark
+        function updateMarkButtonUI(soalIndex) {
+            const markButton = $('#mark');
+            const markKet = $('#mark-ket');
+            const markIcon = markButton.find('i'); // Ambil elemen ikon secara terpisah
+
+            if (markedQuestions.has(soalIndex)) {
+                // Soal ditandai -> tampilkan status ON
+                markButton.addClass('bg-danger');
+                markKet.removeClass('text-muted').addClass('text-white'); // Hapus text-muted sebelum menambah text-white
+                markIcon.removeClass('bi-bookmark').addClass('bi-bookmark-fill text-white'); // Tambahkan text-white ke ikon
+            } else {
+                // Soal tidak ditandai -> tampilkan status OFF
+                markButton.removeClass('bg-danger');
+                markKet.removeClass('text-white').addClass('text-muted'); // Kembalikan text-muted
+                markIcon.removeClass('bi-bookmark-fill text-white').addClass('bi-bookmark'); // Hapus text-white dari ikon
+                markKet.text('Tandai');
+            }
+        }
     </script>
 
 
@@ -871,31 +1220,52 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                     </div>
 
                     <div class="d-flex gap-2">
-                        <button type="button" class="btn text-white px-4 flex-fill" data-bs-dismiss="modal"
+                        <!-- <button class="btn text-white px-4 flex-fill" id="backButton" data-bs-dismiss="modal"
                             style="border-radius: 12px; background-color: rgb(206, 100, 65);">
                             Kembali
-                            <button type="button" class="btn text-white px-4 flex-fill" id="startFullscreenExam"
-                                style="border-radius: 12px; background-color: rgb(218, 119, 86);">
-                                Mulai Sekarang <i class="bi bi-arrow-right-circle ms-2"></i>
-                            </button>
+                        </button> -->
+                        <button type="button" class="btn text-white px-4 flex-fill" id="startFullscreenExam"
+                            style="border-radius: 12px; background-color: rgb(218, 119, 86);">
+                            Mulai Sekarang <i class="bi bi-arrow-right-circle ms-2"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script>
+        // // Handle back button click to remove all backdrops
+        // document.getElementById('backButton').addEventListener('click', function(e) {
+        //     // Remove all modal backdrops
+        //     const backdrops = document.querySelectorAll('.modal-backdrop');
+        //     backdrops.forEach(backdrop => {
+        //         backdrop.classList.remove('show');
+        //         backdrop.classList.remove('fade');
+        //         backdrop.remove();
+        //     });
+
+        //     // Reset body classes
+        //     document.body.classList.remove('modal-open');
+        //     document.body.style.overflow = '';
+        //     document.body.style.paddingRight = '';
+
+        //     // Allow default navigation
+        //     // No need to prevent default since we want to navigate to ujian.php
+        // });
+    </script>
+
     <!-- modal waktu habis -->
     <div class="modal fade" id="timeoutModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 16px;">
                 <div class="modal-body text-center p-4">
-                    <i class="bi bi-clock" style="font-size: 3rem; color:rgb(218, 119, 86);"></i>
                     <h5 class="mt-3 fw-bold">Ups, Waktu Ujian Telah Berakhir</h5>
                     <p class="mb-4">Jawaban Anda akan dikumpulkan secara otomatis, terima kasih telah mengikuti ujian</p>
                     <div class="d-flex gap-2 btn-group">
-                        <button type="button" class="btn text-white flex-fill px-4" id="confirmTimeout" style="border-radius: 12px; background-color: rgb(218, 119, 86);">
+                        <a href="ujian.php" class="btn text-white flex-fill px-4" id="confirmTimeout" style="border-radius: 12px; background-color: rgb(218, 119, 86);">
                             Mengerti
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -905,9 +1275,6 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
     <!-- script untuk fungsi batas waktu ujian -->
 
     <script>
-        const endTime = new Date('<?php echo $tanggal_selesai; ?>').getTime();
-        console.log('Waktu selesai:', new Date(endTime));
-
         function checkTimeout() {
             const now = new Date().getTime();
             console.log('Waktu sekarang:', new Date(now));
@@ -1000,6 +1367,20 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                 alert('Terjadi kesalahan saat submit jawaban');
             });
         });
+
+        function applyStyles() {
+            // Pastikan style diaplikasikan ke semua elemen soal-number
+            $('.soal-number').each(function() {
+                const soalIndex = $(this).data('soal');
+                if (markedQuestions.has(soalIndex)) {
+                    $(this).attr('data-status', 'marked');
+                } else if (answers[soalIndex]) {
+                    $(this).attr('data-status', 'answered');
+                } else {
+                    $(this).attr('data-status', 'unanswered');
+                }
+            });
+        }
     </script>
 
 </body>

@@ -348,7 +348,7 @@ $guru = mysqli_fetch_assoc($result);
                 <div class="recommendation-container" style="position: relative; margin-top: -40px;">
                     <div class="d-flex flex-wrap justify-content-center gap-2">
                         <button class="btn buttonRekomendasi button-style" id="buttonRekomendasi" onclick="fillPrompt('Berikan saya Tips mengajar efektif')">
-                            <i class="bi bi-pen-fill pe-1"></i>
+                            <i class="bi bi-pen-fill pe-1 "></i>
                             Tips mengajar efektif
                         </button>
                         <button class="btn buttonRekomendasi button-style" id="buttonRekomendasi2" onclick="fillPrompt('Berikan saya Ide aktivitas kelas')">
