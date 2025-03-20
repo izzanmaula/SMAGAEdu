@@ -3,7 +3,7 @@
         'name' => 'izzan/smaga-belajar',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'e7ec17bceda23b20a5cc0477f168100045485e7e',
+        'reference' => '5736c7b6d4f887f33a8662e5084055bd393d12b0',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'izzan/smaga-belajar' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'e7ec17bceda23b20a5cc0477f168100045485e7e',
+            'reference' => '5736c7b6d4f887f33a8662e5084055bd393d12b0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

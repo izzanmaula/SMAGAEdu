@@ -4,7 +4,15 @@ ini_set('display_errors', 1);
 
 require 'koneksi.php';
 require 'vendor/autoload.php';
+
 use PhpOffice\PhpWord\IOFactory;
+
+// Cek apakah class PhpWord tersedia
+if (!class_exists('PhpOffice\PhpWord\IOFactory')) {
+    error_log("CLASS PhpOffice\PhpWord\IOFactory TIDAK DITEMUKAN");
+    echo json_encode(['status' => 'error', 'message' => 'PhpWord library not loaded properly']);
+    exit;
+}
 
 if (!isset($_FILES['fileSoal']) || !isset($_FILES['fileJawaban'])) {
     echo json_encode(['status' => 'error', 'message' => 'Files not uploaded']);
@@ -103,14 +111,14 @@ try {
         throw new Exception('File soal dan jawaban harus diupload');
     }
 
-    $phpWord = IOFactory::load($fileSoal);
+    $phpWord = \PhpOffice\PhpWord\IOFactory::load($fileSoal);
     $soalArray = parseSoal($phpWord);
 
     if (empty($soalArray)) {
         throw new Exception('No questions found in document');
     }
 
-    $phpWord = IOFactory::load($fileJawaban);
+    $phpWord = \PhpOffice\PhpWord\IOFactory::load($fileJawaban);
     $kunciJawaban = parseKunciJawaban($phpWord);
 
     $ujian_id = $_POST['ujian_id'];
