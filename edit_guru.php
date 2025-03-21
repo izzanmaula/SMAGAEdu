@@ -443,14 +443,18 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                                         <?php
                                         $jabatan_options = [
                                             'Kepala Sekolah',
-                                            'Wakil Kepala Sekolah',
+                                            'WAKA Kurikulum',
+                                            'WAKA Kesiswaan',
+                                            'Koordinator Keagamaan',
+                                            'Koordinator Progresive Cultural School',
+                                            'Pengelola Lab Sekolah',
+                                            'Bendahara',
                                             'Bag. Kurikulum',
                                             'Bag. Kesiswaan',
                                             'Kepala Tata Usaha',
                                             'Wali Kelas',
-                                            'Bag. Ekonomi Bisnis',
-                                            'Staf IT',
                                             'Staf TU',
+                                            'Operator',
                                             'Guru Mapel',
                                             'Guru Bimbingan Konseling'
                                         ];
@@ -529,8 +533,8 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                                 <!-- Proyek -->
                                 <div class="mb-4">
                                     <label class="form-label text-secondary" style="font-size: 0.85rem; font-weight: 600;">PROYEK</label>
-                                    <div class="bg-light p-3" style="border-radius:15px;>
-                                        <input type=" text" class="form-control form-control-lg border-0 bg-white mb-2" style="border-radius:10px" name="proyek1" placeholder="Proyek 1" value="<?php echo htmlspecialchars($guru['proyek1']); ?>">
+                                    <div class="bg-light p-3" style="border-radius:15px;">
+                                        <input type="text" class="form-control form-control-lg border-0 bg-white mb-2" style="border-radius:10px" name="proyek1" placeholder="Proyek 1" value="<?php echo htmlspecialchars($guru['proyek1']); ?>">
                                         <input type="text" class="form-control form-control-lg border-0 bg-white mb-2" style="border-radius:10px" name="proyek2" placeholder="Proyek 2" value="<?php echo htmlspecialchars($guru['proyek2']); ?>">
                                         <input type="text" class="form-control form-control-lg border-0 bg-white" style="border-radius:10px" name="proyek3" placeholder="Proyek 3" value="<?php echo htmlspecialchars($guru['proyek3']); ?>">
                                     </div>

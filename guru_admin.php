@@ -441,23 +441,23 @@ if (isset($_GET['hapus'])) {
                     <div class="modal-body px-4">
                         <div class="mb-4">
                             <label for="username" class="form-label fw-medium small mb-2">Username</label>
-                            <input type="text" class="form-control bg-white border-0" style="border-radius: 12px; padding: 12px 15px;" 
+                            <input type="text" class="form-control bg-light border-0" style="border-radius: 12px; padding: 12px 15px;" 
                                 id="username" name="username" required>
                             <small class="text-muted">Username akan digunakan untuk login</small>
                         </div>
                         <div class="mb-4">
                             <label for="password" class="form-label fw-medium small mb-2">Password</label>
-                            <input type="password" class="form-control bg-white border-0" style="border-radius: 12px; padding: 12px 15px;" 
+                            <input type="password" class="form-control bg-light border-0" style="border-radius: 12px; padding: 12px 15px;" 
                                 id="password" name="password" required>
                         </div>
                         <div class="mb-4">
                             <label for="namaLengkap" class="form-label fw-medium small mb-2">Nama Lengkap</label>
-                            <input type="text" class="form-control bg-white border-0" style="border-radius: 12px; padding: 12px 15px;" 
+                            <input type="text" class="form-control bg-light border-0" style="border-radius: 12px; padding: 12px 15px;" 
                                 id="namaLengkap" name="namaLengkap" required>
                         </div>
                         <div class="mb-4">
                             <label for="jabatan" class="form-label fw-medium small mb-2">Jabatan</label>
-                            <select class="form-select bg-white border-0" style="border-radius: 12px; padding: 12px 15px;" 
+                            <select class="form-select bg-light border-0" style="border-radius: 12px; padding: 12px 15px;" 
                                 id="jabatan" name="jabatan">
                                 <option value="">Pilih Jabatan</option>
                                 <option value="Kepala Sekolah">Kepala Sekolah</option>

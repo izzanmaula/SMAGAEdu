@@ -445,9 +445,9 @@ $guru = mysqli_fetch_assoc($result);
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer border-0">
-                        <button type="button" class="btn border" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn color-web text-white" id="saveFilterBtn">Simpan</button>
+                    <div class="modal-footer btn-group border-0 gap-2">
+                        <button type="button" class="btn border rounded-3" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn color-web text-white rounded-3" id="saveFilterBtn">Simpan</button>
                     </div>
                 </div>
             </div>
