@@ -58,219 +58,220 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https: //unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module">
-        </script>
+    </script>
 
 
-        <title>Buat Soal - SMAGAEdu</title>
-        <style>
-            /* Style yang sama dengan sebelumnya */
-            body {
-                font-family: merriweather;
+    <title>Buat Soal - SMAGAEdu</title>
+    <style>
+        /* Style yang sama dengan sebelumnya */
+        body {
+            font-family: merriweather;
+        }
+
+        .color-web {
+            background-color: rgb(218, 119, 86);
+        }
+
+        .btn {
+            transition: background-color 0.3s ease;
+            border: 0;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: rgb(219, 106, 68);
+        }
+
+        .menu-samping {
+            position: fixed;
+            width: 13rem;
+            z-index: 1000;
+        }
+
+        .col-utama {
+            margin-left: 13rem;
+            animation: fadeInUp 0.5s;
+            opacity: 1;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
 
-            .color-web {
-                background-color: rgb(218, 119, 86);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
 
-            .btn {
-                transition: background-color 0.3s ease;
-                border: 0;
-                border-radius: 5px;
-            }
-
-            .btn:hover {
-                background-color: rgb(219, 106, 68);
-            }
-
+        @media (max-width: 768px) {
             .menu-samping {
-                position: fixed;
-                width: 13rem;
-                z-index: 1000;
+                display: none;
             }
 
             .col-utama {
-                margin-left: 13rem;
-                animation: fadeInUp 0.5s;
+                margin-left: 0 !important;
+            }
+        }
+
+        .soal-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .ai-button {
+            position: relative;
+            width: 45px;
+            height: 45px;
+        }
+
+        .ai-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(218, 119, 86, 0.9);
+            border-radius: 12px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-loader.show {
+            display: flex;
+        }
+
+        .ai-loader::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 3px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spinner 0.6s linear infinite;
+        }
+
+        @keyframes spinner {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .generate-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+
+        }
+
+        .generate-message {
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .generate-message i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .generate-overlay.fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+
+        .generate-overlay.fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
                 opacity: 1;
             }
 
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+            to {
+                opacity: 0;
             }
-
-            @media (max-width: 768px) {
-                .menu-samping {
-                    display: none;
-                }
-
-                .col-utama {
-                    margin-left: 0 !important;
-                }
-            }
-
-            .soal-card {
-                background-color: #f8f9fa;
-                border-radius: 8px;
-                padding: 20px;
-                margin-bottom: 15px;
-                border: 1px solid rgba(0, 0, 0, 0.1);
-            }
-
-            .ai-button {
-                position: relative;
-                width: 45px;
-                height: 45px;
-            }
-
-            .ai-loader {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(218, 119, 86, 0.9);
-                border-radius: 12px;
-                display: none;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .ai-loader.show {
-                display: flex;
-            }
-
-            .ai-loader::after {
-                content: '';
-                width: 20px;
-                height: 20px;
-                border: 3px solid #fff;
-                border-top-color: transparent;
-                border-radius: 50%;
-                animation: spinner 0.6s linear infinite;
-            }
-
-            @keyframes spinner {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-
-            .generate-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.7);
-                display: none;
-                justify-content: center;
-                align-items: center;
-                z-index: 9999;
-
-            }
-
-            .generate-message {
-                color: white;
-                text-align: center;
-                padding: 20px;
-                border-radius: 12px;
-            }
-
-            .generate-message i {
-                font-size: 2rem;
-                margin-bottom: 10px;
-            }
-
-            .generate-overlay.fade-in {
-                animation: fadeIn 0.5s ease-in-out forwards;
-            }
-
-            .generate-overlay.fade-out {
-                animation: fadeOut 0.5s ease-in-out forwards;
-            }
-
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-
-                to {
-                    opacity: 1;
-                }
-            }
-
-            @keyframes fadeOut {
-                from {
-                    opacity: 1;
-                }
-
-                to {
-                    opacity: 0;
-                }
-            }
+        }
 
 
-            .pulse {
-                animation: pulse 1.5s infinite;
-            }
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
 
-            @keyframes pulse {
-                0% {
-                    transform: scale(1);
-                }
-
-                50% {
-                    transform: scale(1.1);
-                }
-
-                100% {
-                    transform: scale(1);
-                }
-            }
-
-            .modal-content {
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            }
-
-            .modal .btn {
-                font-weight: 500;
-                transition: all 0.2s;
-            }
-
-            .modal .btn:active {
-                transform: scale(0.98);
-            }
-
-            .modal.fade .modal-dialog {
-                transform: scale(0.95);
-                transition: transform 0.2s ease-out;
-            }
-
-            .modal.show .modal-dialog {
+        @keyframes pulse {
+            0% {
                 transform: scale(1);
             }
-            .btn {
-                transition: all 0.3s ease;
+
+            50% {
+                transform: scale(1.1);
             }
 
-            .btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            100% {
+                transform: scale(1);
             }
+        }
 
-            .btn:active {
-                transform: scale(0.95);
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
-        </style>
+        .modal-content {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal .btn {
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .modal .btn:active {
+            transform: scale(0.98);
+        }
+
+        .modal.fade .modal-dialog {
+            transform: scale(0.95);
+            transition: transform 0.2s ease-out;
+        }
+
+        .modal.show .modal-dialog {
+            transform: scale(1);
+        }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 
 <body>
@@ -730,10 +731,10 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                 <div class="modal-body px-4">
                     <div class="alert border bg-light" style="border-radius: 15px;">
                         <div class="d-flex">
-                            <i class="bi bi-exclamation-circle fs-4 me-3 text-black" style="font-size: 30px;"></i>
+                            <i class="bi bi-stars fs-4 me-3" style="font-size: 30px; color:rgb(219, 106, 68)"></i>
                             <div>
-                                <p class="fw- p-0 m-0 fw-bold" style="font-size: 14px;">Dukungan upload soal bergambar belum tersedia</p>
-                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">Hingga saat ini, input word hanya mendukung input soal tanpa gambar secara otomatis. Kami akan segera memperbaiki secepat mungkin</p>
+                                <p class="fw- p-0 m-0 fw-bold" style="font-size: 14px;">Bantu SAGA memahami soal Anda</p>
+                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">Direkomendasikan untuk mengikuti template soal dan jawaban yang telah di sediakan, tindakan berikut mempermudah proses analisis SAGA dalam dokumen Anda</p>
                             </div>
                         </div>
                     </div>
@@ -793,13 +794,24 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                     <button type="button" class="btn-close rounded-circle" style="background-color: #e4e4e4; opacity: 1; padding: 12px;" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body px-4">
+                    <div class="alert border bg-light" style="border-radius: 15px;">
+                        <div class="d-flex">
+                            <i class="bi bi-exclamation-circle-fill fs-4 me-3" style="font-size: 30px; color:rgb(219, 106, 68)"></i>
+                            <div>
+                                <p class="fw- p-0 m-0 fw-bold" style="font-size: 14px;">Tetap bijak menggunakan SAGA</p>
+                                <p class="p-0 m-0 text-muted" style="font-size: 12px;">Dimohon untuk tetap bijak dalam penggunakan SAGA AI, semakin Anda banyak meminta soal maka semakin banyak token atau penggunaan SAGA AI mengingat sumber data terbatas</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <form id="formAiSoal">
                         <div class="mb-4">
                             <label class="form-label fw-medium mb-2" style="font-size: 15px;">Jumlah Soal</label>
-                            <input type="number" class="form-control" name="jumlah_soal" min="1" max="2" value="2"
+                            <input type="number" class="form-control" name="jumlah_soal" min="1" max="10" value="1" 
+                                onchange="this.value = this.value > 10 ? 10 : this.value"
                                 style="border-radius: 12px; height: 50px; font-size: 16px; border: 1px solid #e4e4e4; background-color: #f5f5f5;">
                             <div class="form-text mt-2" style="font-size: 12px; color: #8e8e93;">
-                                Semakin banyak soal Anda minta, semakin banyak waktu pembuatan soal. Tentukan dengan bijak.
+                                Maksimal input 10 soal
                             </div>
                         </div>
 
@@ -821,6 +833,25 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                                 <option value="pilihan_ganda">Pilihan Ganda</option>
                             </select>
                         </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-medium mb-2" style="font-size: 15px;">Baris Perintah</label>
+                            <div class="alert border bg-light" style="border-radius: 15px;">
+                                <div class="d-flex">
+                                    <div>
+                                        <p class="p-0 m-0 text-muted" style="font-size: 12px;"><span class="fw-bold text-black">PERHATIAN</span> Setelah baris <span style="background-color:rgb(218, 119, 86);" class="rounded px-1 text-white">WAJIB IKUTI FORMAT INI DENGAN SANGAT TEPAT:</span> kami himbau untuk tidak mengubahnya, hal ini merupakan panduan bagaimana SAGA AI menginputkan permintaan soal Anda ke dalam LMS</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="position-relative">
+                                <textarea id="promptPreview" name="custom_prompt" class="form-control" rows="6"
+                                    style="border-radius: 12px; font-size: 14px; border: 1px solid #e4e4e4; background-color: #f5f5f5; font-family: monospace;"></textarea>
+                                <div class="form-text mt-2" style="font-size: 12px; color: #8e8e93;">
+                                    Anda dapat menyesuaikan prompt di atas sesuai kebutuhan sebelum menghasilkan soal.
+                                </div>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer border-0 gap-2">
@@ -834,8 +865,133 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
         </div>
     </div>
 
-    <!-- Tambahkan script untuk mengatur pesan yang berubah -->
+    <!-- script untuk menampilkan promt sebelum buat soal -->
     <script>
+        // Script untuk menampilkan preview prompt
+        document.addEventListener('DOMContentLoaded', function() {
+            const formAiSoal = document.getElementById('formAiSoal');
+            const promptPreview = document.getElementById('promptPreview');
+
+            // Fungsi untuk mengupdate preview prompt
+            function updatePromptPreview() {
+                const jumlahSoal = formAiSoal.querySelector('[name="jumlah_soal"]').value;
+                const kesulitan = formAiSoal.querySelector('[name="kesulitan"]').value;
+                const tipeSoal = formAiSoal.querySelector('[name="tipe_soal"]').value;
+                const mataPelajaran = "<?php echo addslashes($ujian['mata_pelajaran']); ?>";
+                const tingkat = "<?php echo $ujian['tingkat']; ?>";
+
+                // Ambil materi ujian (jika ada)
+                const materiList = <?php
+                                    $materi_json = "[]";
+                                    if (!empty($ujian['materi'])) {
+                                        $materi_json = $ujian['materi'];
+                                    }
+                                    echo $materi_json;
+                                    ?>;
+
+                // Buat prompt dasar
+                let prompt = `Buatkan ${jumlahSoal} soal ` +
+                    (tipeSoal == 'pilihan_ganda' ? "pilihan ganda" : "uraian") +
+                    ` untuk mata pelajaran ${mataPelajaran} kelas ${tingkat} dengan tingkat kesulitan ` +
+                    kesulitan.toUpperCase() + `.\n\n`;
+
+                // Tambahkan panduan tingkat kesulitan
+                const difficultyGuidelines = {
+                    'mudah': "- Gunakan konsep dasar dan pengetahuan faktual\n" +
+                        "- Soal bersifat ingatan dan pemahaman sederhana\n" +
+                        "- Jawaban mudah ditemukan dalam materi dasar",
+                    'sedang': "- Gabungkan beberapa konsep dasar\n" +
+                        "- Butuh analisis sederhana\n" +
+                        "- Memerlukan pemahaman konseptual",
+                    'sulit': "- Gunakan analisis kompleks\n" +
+                        "- Kombinasikan multiple konsep\n" +
+                        "- Membutuhkan pemecahan masalah\n" +
+                        "- Aplikasi konsep dalam konteks baru",
+                    'sangat_sulit': "- Membutuhkan analisis sangat mendalam\n" +
+                        "- Evaluasi dan sintesis konsep\n" +
+                        "- Penalaran tingkat tinggi\n" +
+                        "- Pemecahan masalah kompleks"
+                };
+
+                prompt += `Panduan tingkat kesulitan:\n${difficultyGuidelines[kesulitan]}\n\n`;
+
+                // Tambahkan daftar materi jika ada
+                if (materiList && materiList.length > 0) {
+                    prompt += "Materi yang harus dicakup:\n";
+                    materiList.forEach(materi => {
+                        prompt += `- ${materi}\n`;
+                    });
+                    prompt += "\n";
+                }
+
+                // Tambahkan format berdasarkan tipe soal
+                if (tipeSoal == 'pilihan_ganda') {
+                    prompt += `format yang diinginkan:
+1. setiap soal harus memiliki 4 pilihan jawaban (A, B, C, D)
+2. sertakan kunci jawaban untuk setiap soal
+3. jawaban harus bervariasi (tidak selalu A atau B)
+4. tingkat kesulitan soal harus bervariasi
+5. soal harus sesuai dengan tingkat pemahaman siswa kelas ${tingkat}
+
+--- WAJIB IKUTI FORMAT INI DENGAN SANGAT TEPAT: ---
+
+Soal: [pertanyaan tanpa nomor]
+A. [jawaban]
+B. [jawaban] 
+C. [jawaban]
+D. [jawaban]
+Jawaban: [A/B/C/D]
+---
+
+Contoh:
+Soal: Berapakah hasil dari 5 x 5?
+A. 15
+B. 20
+C. 25
+D. 30
+Jawaban: C
+---
+
+ATURAN PENTING:
+- JANGAN GUNAKAN PENOMORAN PADA SOAL (1., 2., dst)
+- DILARANG menggunakan format lain (tidak boleh ada '**', 'Soal 1:', dll)
+- WAJIB gunakan separator '---' di antara soal
+- WAJIB mulai tiap soal dengan kata 'Soal:' (tanpa nomor)
+- DILARANG memberikan komentar atau teks tambahan`;
+                } else {
+                    prompt += `Format yang diinginkan:
+1. Soal harus dalam bentuk uraian yang menguji pemahaman
+2. Tingkat kesulitan soal harus bervariasi
+3. Soal harus sesuai dengan tingkat pemahaman siswa kelas ${tingkat}
+
+Berikan output dengan format TEPAT seperti ini untuk setiap soal:
+1. [tuliskan pertanyaan pertama]
+2. [tuliskan pertanyaan kedua]
+(dan seterusnya)
+
+Contoh format output yang diharapkan:
+1. Jelaskan proses fotosintesis pada tumbuhan dan sebutkan faktor-faktor yang mempengaruhinya!
+2. Mengapa mata pelajaran matematika penting dalam kehidupan sehari-hari? Berikan contoh penerapannya!`;
+                }
+
+                // Tampilkan prompt di textarea
+                promptPreview.value = prompt;
+            }
+
+            // Update preview saat halaman dimuat
+            if (formAiSoal && promptPreview) {
+                updatePromptPreview();
+
+                // Update preview saat nilai form berubah
+                const formInputs = formAiSoal.querySelectorAll('input, select');
+                formInputs.forEach(input => {
+                    input.addEventListener('change', updatePromptPreview);
+                });
+            }
+        });
+    </script>
+    <!-- Tambahkan script untuk mengatur pesan yang berubah -->
+    <!-- <script>
         // Array pesan SAGA
         const messages = [
             "Halo <?php echo htmlspecialchars($guru['namaLengkap']); ?>, saya SAGA, kesulitan membuat soal?",
@@ -910,7 +1066,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                 element.style.opacity = '1';
             }, 500);
         }
-    </script>
+    </script> -->
 
 
     <!-- overlay untuk generate soal -->
@@ -934,7 +1090,7 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
             const spinner = button.querySelector('.spinner-border');
             const buttonText = button.querySelector('span');
             const overlay = document.getElementById('generateOverlay');
-
+            const customPrompt = document.getElementById('promptPreview').value;
 
             try {
                 // Update button state
@@ -957,7 +1113,8 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                         kesulitan: formData.get('kesulitan'),
                         ujian_id: <?php echo $ujian_id; ?>,
                         mata_pelajaran: "<?php echo addslashes($ujian['mata_pelajaran']); ?>",
-                        tingkat: "<?php echo $ujian['tingkat']; ?>"
+                        tingkat: "<?php echo $ujian['tingkat']; ?>",
+                        custom_prompt: customPrompt // Tambahkan prompt kustom
                     }).toString()
                 });
 

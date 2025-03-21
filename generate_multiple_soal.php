@@ -70,58 +70,59 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         
     }
 
-    if($tipe_soal == 'pilihan_ganda') {
-        $prompt .= "format yang diinginkan:
-            1. setiap soal harus memiliki 4 pilihan jawaban (A, B, C, D)
-            2. sertakan kunci jawaban untuk setiap soal
-            3. jawaban harus bervariasi (tidak selalu A atau B)
-            4. tingkat kesulitan soal harus bervariasi
-            5. soal harus sesuai dengan tingkat pemahaman siswa kelas {$tingkat}
-            
-            WAJIB IKUTI FORMAT INI DENGAN SANGAT TEPAT:
-            
-            Soal: [pertanyaan tanpa nomor]
-            A. [jawaban]
-            B. [jawaban] 
-            C. [jawaban]
-            D. [jawaban]
-            Jawaban: [A/B/C/D]
-            ---
-            
-            Contoh:
-            Soal: Berapakah hasil dari 5 x 5?
-            A. 15
-            B. 20
-            C. 25
-            D. 30
-            Jawaban: C
-            ---
-            
-            ATURAN PENTING:
-            - JANGAN GUNAKAN PENOMORAN PADA SOAL (1., 2., dst)
-            - DILARANG menggunakan format lain (tidak boleh ada '**', 'Soal 1:', dll)
-            - WAJIB gunakan separator '---' di antara soal
-            - WAJIB mulai tiap soal dengan kata 'Soal:' (tanpa nomor)
-            - DILARANG memberikan komentar atau teks tambahan";
-
-
-    } 
-    else {
-        $prompt .= "Format yang diinginkan:
-    1. Soal harus dalam bentuk uraian yang menguji pemahaman
-    2. Tingkat kesulitan soal harus bervariasi
-    3. Soal harus sesuai dengan tingkat pemahaman siswa kelas {$tingkat}
-    
-    Berikan output dengan format TEPAT seperti ini untuk setiap soal:
-    1. [tuliskan pertanyaan pertama]
-    2. [tuliskan pertanyaan kedua]
-    (dan seterusnya)
-    
-    Contoh format output yang diharapkan:
-    1. Jelaskan proses fotosintesis pada tumbuhan dan sebutkan faktor-faktor yang mempengaruhinya!
-    2. Mengapa mata pelajaran matematika penting dalam kehidupan sehari-hari? Berikan contoh penerapannya!";
+    if (!empty($_POST['custom_prompt'])) {
+        $prompt = $_POST['custom_prompt'];
+    } else {
+        if($tipe_soal == 'pilihan_ganda') {
+            $prompt .= "format yang diinginkan:
+                1. setiap soal harus memiliki 4 pilihan jawaban (A, B, C, D)
+                2. sertakan kunci jawaban untuk setiap soal
+                3. jawaban harus bervariasi (tidak selalu A atau B)
+                4. tingkat kesulitan soal harus bervariasi
+                5. soal harus sesuai dengan tingkat pemahaman siswa kelas {$tingkat}
+                
+                WAJIB IKUTI FORMAT INI DENGAN SANGAT TEPAT:
+                
+                Soal: [pertanyaan tanpa nomor]
+                A. [jawaban]
+                B. [jawaban] 
+                C. [jawaban]
+                D. [jawaban]
+                Jawaban: [A/B/C/D]
+                ---
+                
+                Contoh:
+                Soal: Berapakah hasil dari 5 x 5?
+                A. 15
+                B. 20
+                C. 25
+                D. 30
+                Jawaban: C
+                ---
+                
+                ATURAN PENTING:
+                - JANGAN GUNAKAN PENOMORAN PADA SOAL (1., 2., dst)
+                - DILARANG menggunakan format lain (tidak boleh ada '**', 'Soal 1:', dll)
+                - WAJIB gunakan separator '---' di antara soal
+                - WAJIB mulai tiap soal dengan kata 'Soal:' (tanpa nomor)
+                - DILARANG memberikan komentar atau teks tambahan";
+        } 
+        else {
+            $prompt .= "Format yang diinginkan:
+                1. Soal harus dalam bentuk uraian yang menguji pemahaman
+                2. Tingkat kesulitan soal harus bervariasi
+                3. Soal harus sesuai dengan tingkat pemahaman siswa kelas {$tingkat}
+                
+                Berikan output dengan format TEPAT seperti ini untuk setiap soal:
+                1. [tuliskan pertanyaan pertama]
+                2. [tuliskan pertanyaan kedua]
+                (dan seterusnya)
+                
+                Contoh format output yang diharapkan:
+                1. Jelaskan proses fotosintesis pada tumbuhan dan sebutkan faktor-faktor yang mempengaruhinya!
+                2. Mengapa mata pelajaran matematika penting dalam kehidupan sehari-hari? Berikan contoh penerapannya!";
+        }
     }
-
     try {
      // Setup API Groq
      $apiKey = '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';  // Ganti dengan API key Anda
@@ -130,7 +131,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
      // Lakukan request ke API
      $data = [
-         'model' => 'mixtral-8x7b-32768',
+         'model' => 'llama-3.1-8b-instant',
          'messages' => [
              [
                  'role' => 'system',
