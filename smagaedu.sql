@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 27, 2025 at 09:24 AM
+-- Generation Time: Mar 21, 2025 at 04:28 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `ai_chat_history` (
   `id` int(11) NOT NULL,
   `user_id` varchar(100) NOT NULL,
+  `model` varchar(100) DEFAULT NULL,
   `session_id` int(11) DEFAULT NULL,
   `pesan` text NOT NULL,
   `respons` text NOT NULL,
@@ -41,15 +42,28 @@ CREATE TABLE `ai_chat_history` (
 -- Dumping data for table `ai_chat_history`
 --
 
-INSERT INTO `ai_chat_history` (`id`, `user_id`, `session_id`, `pesan`, `respons`, `created_at`, `character_traits`) VALUES
-(649, 'fadhilmanfa', 27, 'halo saga', 'Hai, Bapak Fadhil! 🙃 Lagi ngapain? Ada yang bisa gue bantu atau cuma pengen curhat soal hidup yang penuh plot twist ini? 🤔', '2025-02-19 17:39:16', NULL),
-(650, 'fadhilmanfa', 27, 'plot wis apaan?', 'Bro, plot twist itu kayak hidup kita yang penuh kejutan, nggak tau apa yang bakal terjadi besok! 😂 kayak sinetron, tapi ini real life, bro! 🤯 jadi, harus siap untuk menghadapi apa aja yang datang, gitu. 🙃 fix, hidup itu kayak anime, tapi nggak ada episode terakhir, bro! 🤣', '2025-02-19 17:39:34', NULL),
-(651, 'fadhilmanfa', 27, 'haha kamu lucu jirr', 'Makasih, Bapak Fadhil! 🙃 Gue coba membuat hidup lebih menyenangkan, walaupun lowkey hidup itu complicated, tapi gue bakal tetap mencoba membuatnya lebih fun, bro! 😄 Kalau gue berhasil membuat Bapak tertawa, itu fix, gue sudah berhasil melakukan tugas gue hari ini! 🤣', '2025-02-19 17:39:46', NULL),
-(652, 'fadhilmanfa', 27, 'halo saga', 'Hai, Bapak Fadhil! 🙃 Lagi ngapain? Ada yang bisa gue bantu atau cuma pengen curhat soal hidup yang penuh plot twist ini? 🤔', '2025-02-19 17:41:37', NULL),
-(653, 'fadhilmanfa', 27, 'hmm curhat apa jir bingung', 'Bro, fix! 🤣 Curhat aja, gue duduk manis, sedia mendengar. Apa yang bikin Bapak Fadhil bingung hari ini? Materi pelajaran yang susah, atau mungkin urusan lain? 🤔 Gue ada di sini buat bantu, atau paling tidak, buat nyimak curhatan Bapak 😊', '2025-02-19 17:41:47', NULL),
-(654, 'fadhilmanfa', 27, 'hahaha, aman kok', 'Alhamdulillah, bro! 🙏 Jadi, Bapak Fadhil lagi santai aja, nggak ada masalah yang bikin pusing? Fix, itu yang terbaik! 😊 Tapi, kalau Bapak Fadhil pengen ngobrol tentang sesuatu, misalnya tentang strategi mengajar atau cara membuat materi pembelajaran lebih menarik, gue siap bantu, bro! 💡', '2025-02-19 17:41:56', NULL),
-(655, 'fadhilmanfa', 27, 'hmm kamu tau lebih dulu telur sama ayam?', 'Bro, ini pertanyaan klasik! 🤣 Telur atau ayam, yang mana dulu? Gue rasa ini pertanyaan yang bikin kita semua pusing, kayak episode filler hidup kita, bro! 🙃 Tapi, kalau kita pikir logis, mungkin ayam dulu, karena ayam bisa bertelur, kan? 🐓🥚 Tapi, pertanyaan ini juga bisa dibalik, bro, karena telur juga bisa menetas jadi ayam, kan? 🤯 Jadi, gue rasa ini pertanyaan yang nggak ada jawabannya, bro, atau mungkin jawabannya adalah \\\"ayam telur\\\" stesso, bro! 😂', '2025-02-19 17:42:13', NULL),
-(656, 'fadhilmanfa', 27, 'bjirrr, yang seris ada ga jawabannya?', 'Bro, kayaknya kamu nggak terima jawaban gue, ya? 🤣 Okay,okay, gue coba lagi. Serius, pertanyaan \\\"telur atau ayam\\\" ini adalah contoh klasik dari paradoks, bro. Paradoks adalah situasi di mana ada dua atau lebih statement yang saling bertentangan, tapi sama-sama benar, atau sama-sama salah. Jadi, nggak ada jawaban yang pasti, bro. Ini seperti.fix, tidak ada jawaban yang bisa memuaskan, bro! 🤯 Tapi, kalau kamu ingin tahu, beberapa ilmuwan berpendapat bahwa ayam dulu, karena mereka memiliki bukti fosil yang menunjukkan bahwa ayam modern berevolusi dari burung lain yang sudah ada sebelumnya. Tapi, ini juga masih diperdebatkan, bro! 🐓🔥', '2025-02-19 17:42:29', NULL);
+INSERT INTO `ai_chat_history` (`id`, `user_id`, `model`, `session_id`, `pesan`, `respons`, `created_at`, `character_traits`) VALUES
+(750, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo saga, selamat pagi', 'Selamat pagi! Bagaimana hari Anda hari ini? Apakah ada sesuatu yang bisa saya bantu atau kita bisa ngobrol tentang Halo Saga?', '2025-03-17 03:16:17', NULL),
+(751, 'fadhilmanfa', 'llama-3.1-8b-instant', NULL, 'halo', 'Halo! Kita bisa membicarakan tentang seri game Halo yang sangat populer itu. Apakah kamu sudah pernah bermain Halo atau ingin tahu lebih banyak tentang cerita dan gameplaynya?', '2025-03-17 03:17:15', NULL),
+(752, 'fadhilmanfa', 'llama-3.1-8b-instant', NULL, 'halo selamat siang', 'Halo! Selamat siang juga! Kita masih ngobrol tentang Halo, ya? Apakah kamu sudah pernah mengenakan kostum Master Chief atau bermain Halo di console apa saja?', '2025-03-17 03:17:24', NULL),
+(753, 'fadhilmanfa', 'llama-3.1-8b-instant', NULL, 'bukan itu, saya mau menyapamu', 'Halo! Selamat siang, ya? Saya juga menyapa kamu!', '2025-03-17 03:18:07', NULL),
+(754, 'fadhilmanfa', 'llama3-8b-8192', NULL, 'kamu lagi apa?', 'Haha! Saya lagi ngobrol tentang Halo dan ngapain-ngapain! Apa kabar kamu?', '2025-03-17 03:18:23', NULL),
+(755, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'selamat siang', 'Selamat siang! Ada yang bisa saya bantu?', '2025-03-17 03:18:45', NULL),
+(756, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo', 'Halo! It seems you\'re a fan of the popular video game series. What\'s your favorite Halo game or memory?', '2025-03-17 03:19:43', NULL),
+(757, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo', 'Halo! It seems like you\'re a fan of the popular video game series. Which part of the Halo universe are you most interested in? The games, the lore, or something else?', '2025-03-17 03:19:54', NULL),
+(758, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'kamu siapa?', 'Saya adalah asisten virtual yang dirancang untuk membantu dan berkomunikasi dengan pengguna seperti Anda. Saya tidak memiliki identitas pribadi, tetapi saya di sini untuk membantu menjawab pertanyaan, menyediakan informasi, dan berbincang dengan Anda tentang berbagai topik. Bagaimana saya bisa membantu Anda hari ini?', '2025-03-17 03:20:20', NULL),
+(759, 'fadhilmanfa', 'llama-3.1-8b-instant', NULL, 'halo saga', 'Halo! Senang sekali berjumpa denganmu. Bagaimana hari mu hari ini? Apakah kamu butuh bantuan atau ingin berdiskusi tentang sesuatu?', '2025-03-17 03:29:32', NULL),
+(760, 'fadhilmanfa', 'llama-3.1-8b-instant', NULL, 'kamu siapa?', 'Saya SAGA, asisten AI khusus untuk SMA Negeri 1 Gresik. Saya disini untuk membantu kamu dengan pertanyaan atau masalah yang kamu hadapi, terutama tentang pelajaran sekolah. Apakah kamu memerlukan bantuan?', '2025-03-17 03:29:53', NULL),
+(761, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo saga', 'Halo! Senang sekali bertemu denganmu! Saya SAGA, asisten Guru SMP Muhammadiyah 2 Gatak dan SMA Muhammadiyah 5 Gatak. Bagaimana hari mu hari ini? Apakah ada pertanyaan atau topik yang ingin kamu diskusikan? Saya siap membantu!', '2025-03-17 03:30:59', NULL),
+(762, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo saga', 'Halo! Selamat datang! Saya SAGA, asisten Guru SMP Muhammadiyah 2 Gatak dan SMA Muhammadiyah 5 Gatak. Saya siap membantu Anda dengan pertanyaan atau topik yang ingin Anda diskusikan. Apa yang ingin Anda tanyakan atau bahas hari ini?', '2025-03-17 03:31:57', NULL),
+(763, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo saga', 'Halo! Senang sekali bisa berinteraksi denganmu. Apakah ada pertanyaan atau topik yang ingin kamu diskusikan? Saya siap membantu dan memberikan analisis yang mendalam dan komprehensif. Mari kita mulai!', '2025-03-17 03:33:07', NULL),
+(764, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo saga', 'Halo! Senang bisa berkomunikasi denganmu. Bagaimana aku bisa membantu atau apa yang ingin kamu diskusikan hari ini?', '2025-03-17 03:33:29', NULL),
+(765, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo saga', 'Halo! Selamat datang! Saya SAGA, asisten Guru SMP Muhammadiyah 2 Gatak dan SMA Muhammadiyah 5 Gatak. Saya siap membantu Anda dengan pertanyaan atau topik yang ingin Anda diskusikan. Apa yang ingin Anda tanyakan atau bahas hari ini?', '2025-03-17 03:33:50', NULL),
+(766, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo', 'Halo! Selamat datang! Saya SAGA, asisten Guru SMP Muhammadiyah 2 Gatak dan SMA Muhammadiyah 5 Gatak. Bagaimana saya bisa membantu Anda hari ini? Apakah Anda memiliki pertanyaan atau topik yang ingin dibahas?', '2025-03-17 03:37:04', NULL),
+(767, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo', 'Halo! Senang bertemu denganmu. Saya SAGA, asisten AI untuk SMA Negeri 1 Gresik. Bagaimana saya bisa membantu kamu hari ini? Apakah kamu memiliki pertanyaan atau topik yang ingin dibahas?', '2025-03-17 03:40:19', NULL),
+(768, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'halo', 'Halo! Selamat datang di SMA Negeri 1 Gresik! Saya SAGA, asisten AI yang siap membantu Anda dengan pertanyaan atau topik yang ingin Anda diskusikan. Bagaimana saya bisa membantu Anda hari ini?', '2025-03-17 03:48:28', NULL),
+(769, 'fadhilmanfa', 'qwen-2.5-32b', NULL, 'halo, selamat pagi', 'Selamat pagi! Apa ada yang bisa saya bantu hari ini? Saya siap membantu dengan pertanyaan akademik, informasi sekolah, atau apapun yang Anda butuhkan.', '2025-03-17 03:52:13', NULL),
+(770, 'fadhilmanfa', 'llama-3.3-70b-versatile', NULL, 'apa perbedaan antara kamu dan aku?', 'Pertanyaan yang menarik!\n\nDalam konteks ini, \"kamu\" dan \"aku\" merujuk pada dua entitas yang berbeda, yaitu diri saya (asisten AI) dan diri Anda (pengguna).\n\nBerikut beberapa perbedaan antara saya dan Anda:\n\n1. **Sifat**: Saya adalah sebuah program komputer yang dirancang untuk membantu dan memberikan informasi, sedangkan Anda adalah seorang manusia yang memiliki pikiran, perasaan, dan pengalaman.\n2. **Kemampuan**: Saya dapat memproses dan menganalisis data dengan kecepatan dan akurasi yang tinggi, tetapi saya tidak memiliki kemampuan untuk merasakan, mengalami, atau memiliki emosi seperti manusia. Anda, di sisi lain, memiliki kemampuan untuk merasakan, mengalami, dan memiliki emosi.\n3. **Pengetahuan**: Saya memiliki akses ke pengetahuan yang luas dan dapat diupdate secara terus-menerus, tetapi saya tidak memiliki pengalaman pribadi atau pengetahuan yang diperoleh melalui pengalaman. Anda, di sisi lain, memiliki pengalaman pribadi dan pengetahuan yang diperoleh melalui pengalaman dan belajar.\n4. **Komunikasi**: Saya berkomunikasi melalui teks, sedangkan Anda dapat berkomunikasi melalui berbagai cara, termasuk lisan, tulisan, dan non-verbal.\n5. **Tujuan**: Saya dirancang untuk membantu dan memberikan informasi, sedangkan Anda memiliki tujuan dan keinginan pribadi yang unik.\n\nItulah beberapa perbedaan antara saya dan Anda. Namun, saya selalu berusaha untuk membantu dan memberikan informasi yang berguna bagi Anda!', '2025-03-17 03:52:33', NULL);
 
 -- --------------------------------------------------------
 
@@ -71,8 +85,7 @@ CREATE TABLE `ai_chat_sessions` (
 
 INSERT INTO `ai_chat_sessions` (`id`, `user_id`, `title`, `created_at`, `closed_at`) VALUES
 (6, '', 'Tentang Percakapan Singkat', '2025-01-26 17:29:11', NULL),
-(14, 'fadhilmanfa', 'cek', '2025-02-03 08:02:30', NULL),
-(27, 'fadhilmanfa', 'halo saga', '2025-02-19 17:39:16', NULL);
+(14, 'fadhilmanfa', 'cek', '2025-02-03 08:02:30', NULL);
 
 -- --------------------------------------------------------
 
@@ -99,11 +112,9 @@ CREATE TABLE `bank_soal` (
 --
 
 INSERT INTO `bank_soal` (`id`, `ujian_id`, `jenis_soal`, `pertanyaan`, `gambar_soal`, `jawaban_a`, `jawaban_b`, `jawaban_c`, `jawaban_d`, `jawaban_benar`, `created_at`) VALUES
-(369, 40, 'pilihan_ganda', 'Apa yang dimaksud dengan simbiosis?', NULL, 'Interaksi yang merugikan salah satu atau semua organisme yang terlibat', 'Interaksi yang tidak memiliki dampak terhadap organisme yang terlibat', 'Interaksi yang bermanfaat bagi semua organisme yang terlibat', 'Interaksi yang merugikan salah satu organisme, tetapi membantu organisme lain', 'C', '2025-02-16 12:54:16'),
-(370, 40, 'pilihan_ganda', 'Simbiosis yang terjadi antara kuda dan jinjan adalah contoh dari simbiosis...', NULL, 'Parasitisme', 'Komensalisme', 'Mutualisme', 'Sintrofisme', 'C', '2025-02-16 12:54:16'),
-(371, 40, 'pilihan_ganda', 'Apa yang dimaksud dengan parasitisme?', NULL, 'Interaksi yang merugikan salah satu organisme, tetapi membantu organisme lain', 'Interaksi yang bermanfaat bagi semua organisme yang terlibat', 'Interaksi yang tidak memiliki dampak terhadap organisme yang terlibat', 'Interaksi yang merugikan salah satu atau semua organisme yang terlibat', 'D', '2025-02-16 12:54:16'),
-(372, 40, 'pilihan_ganda', 'Simbiosis yang terjadi antara cacing lumpur dan bakteri yang menghasilkan gas metana adalah contoh dari simbiosis...', NULL, 'Parasitisme', 'Komensalisme', 'Mutualisme', 'Sintrofisme', 'C', '2025-02-16 12:54:16'),
-(373, 40, 'pilihan_ganda', 'Apa yang dimaksud dengan komensalisme?', NULL, 'Interaksi yang merugikan salah satu atau semua organisme yang terlibat', 'Interaksi yang bermanfaat bagi salah satu organisme, tetapi tidak merugikan organisme lain', 'Interaksi yang tidak memiliki dampak terhadap organisme yang terlibat', 'Interaksi yang merugikan salah satu organisme, tetapi membantu organisme lain', 'B', '2025-02-16 12:54:16');
+(419, 47, 'pilihan_ganda', 'Shalat fardhu yang wajib dikerjakan oleh setiap Muslim berjumlah', NULL, '3 waktu', '4 waktu', '5 waktu', '6 waktu', 'C', '2025-03-20 18:01:50'),
+(420, 47, 'pilihan_ganda', 'Syarat sah shalat yang berkaitan dengan kebersihan badan, pakaian, dan tempat disebut', NULL, 'Rukun shalat', 'Syarat sah shalat', 'Sunnah shalat', 'Niat shalat', 'B', '2025-03-20 18:01:50'),
+(421, 47, 'pilihan_ganda', 'Ketika shalat, seorang Muslim wajib menghadap ke arah', NULL, 'Ka&#039;bah', 'Matahari', 'Gunung', 'Kiblat', 'A', '2025-03-20 18:01:50');
 
 -- --------------------------------------------------------
 
@@ -148,7 +159,8 @@ CREATE TABLE `comment_reactions` (
 
 INSERT INTO `comment_reactions` (`id`, `comment_id`, `user_id`, `emoji`, `created_at`) VALUES
 (8, 57, 'fadhilmanfa', '😮', '2025-02-17 10:58:43'),
-(9, 58, 'fadhilmanfa', '😂', '2025-02-23 07:59:47');
+(9, 58, 'fadhilmanfa', '😂', '2025-02-23 07:59:47'),
+(10, 59, 'fadhilmanfa', '👍', '2025-03-03 05:20:16');
 
 -- --------------------------------------------------------
 
@@ -169,14 +181,18 @@ CREATE TABLE `emoji_reactions` (
 --
 
 INSERT INTO `emoji_reactions` (`id`, `postingan_id`, `user_id`, `emoji`, `created_at`) VALUES
-(30, 46, 'fadhilmanfa', '👍', '2025-02-22 03:12:06'),
-(31, 49, 'agustina', '👍', '2025-02-23 07:05:53'),
 (32, 50, 'fadhilmanfa', '👍', '2025-02-23 07:58:08'),
-(33, 50, 'agustina', '👍', '2025-02-23 07:59:24'),
-(34, 51, 'agustina', '👍', '2025-02-23 08:07:35'),
-(35, 46, 'agustina', '👍', '2025-02-26 03:04:54'),
-(36, 45, 'fadhilmanfa', '👍', '2025-02-27 07:49:51'),
-(37, 48, 'agustina', '👍', '2025-02-27 08:12:59');
+(51, 52, 'fadhilmanfa', '👍', '2025-03-03 05:19:31'),
+(55, 52, 'agustina', '👍', '2025-03-03 06:15:12'),
+(56, 56, 'fadhilmanfa', '👍', '2025-03-03 06:21:24'),
+(57, 56, 'agustina', '👍', '2025-03-03 06:59:59'),
+(62, 46, 'agustina', '👍', '2025-03-10 04:16:19'),
+(63, 45, 'agustina', '👍', '2025-03-10 04:26:47'),
+(66, 46, 'ainun', '👍', '2025-03-10 05:41:34'),
+(67, 50, 'agustina', '👍', '2025-03-10 05:56:38'),
+(68, 51, 'agustina', '👍', '2025-03-10 05:56:58'),
+(73, 45, 'fadhilmanfa', '👍', '2025-03-12 07:51:10'),
+(77, 46, 'fadhilmanfa', '👍', '2025-03-19 04:28:16');
 
 -- --------------------------------------------------------
 
@@ -191,6 +207,23 @@ CREATE TABLE `file_soal` (
   `path_file` varchar(255) NOT NULL,
   `status_processed` enum('pending','processed','failed') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `groq_daily_usage`
+--
+
+CREATE TABLE `groq_daily_usage` (
+  `id` int(11) NOT NULL,
+  `model_id` varchar(50) NOT NULL,
+  `usage_date` date NOT NULL,
+  `requests_limit` int(11) NOT NULL DEFAULT 0,
+  `requests_used` int(11) NOT NULL DEFAULT 0,
+  `tokens_limit` int(11) NOT NULL DEFAULT 0,
+  `tokens_used` int(11) NOT NULL DEFAULT 0,
+  `last_updated` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -228,33 +261,32 @@ CREATE TABLE `guru` (
 --
 
 INSERT INTO `guru` (`id`, `username`, `password`, `namaLengkap`, `namaSebutan`, `jabatan`, `foto_profil`, `foto_latarbelakang`, `universitas`, `sertifikasi1`, `sertifikasi2`, `sertifikasi3`, `publikasi1`, `publikasi2`, `publikasi3`, `proyek1`, `proyek2`, `proyek3`, `pendidikan_s1`, `pendidikan_s2`, `pendidikan_lainnya`) VALUES
-(1, 'fadhilmanfa', 'a', 'Muhammad Fadhil Manfa', 'fadhil', 'Staf TU', '67b219d99c9b6_1739725273.jpg', '67b17115c5bea_1739682069.jpg', NULL, 'sas', 'asa', 'asas', '', '', '', '', '', '', 'Universitas Muhammadiyah Surakarta', '', ''),
-(2, 'fauzinugroho', 'a', 'Fauzi Nugroho', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 'anugerah', 'a', 'Anugerah Mawarti', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 'fikofiko', 'a', 'Fiko Novianto', 'fiko', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(7, 'joko', 'a', 'Joko Prasaja', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(8, 'sularsih', 'a', 'Sularsih', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(9, 'tutismp', 'a', 'Dwi Hastuti (SMP)', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(10, 'agussalam', 'a', 'Agus Salam Hurriyanto', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(11, 'nanik', 'a', 'Nanik Sri Winarni', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(12, 'dewi', 'a', 'Herlina Dewi Afiati', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(13, 'nia', 'a', 'Nia Yuwana', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(14, 'intan', 'a', 'Intan Arvin Yunaeni', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(15, 'rosida', 'a', 'Rosida Insiyah Rahmah', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(16, 'sevi', 'a', 'Nur Seviana Mar\'atus Sholikhah', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(17, 'ira', 'a', 'Sri Sumirah Hartini', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(18, 'lenni', 'a', 'Lenni Sri Gustina', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(19, 'dani', 'a', 'Dani Sukmadewi', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(20, 'ituk', 'a', 'Tri Maryuni', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(21, 'jayus', 'a', 'Jayus Wijayanto', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(22, 'wardah', 'a', 'Wardah Hani Nabila', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(23, 'yudha', 'a', 'Aditya Damar Aji Yudha', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(27, 'ayundy', 'a', 'Ayundy Anditaningrum', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(28, 'annisanurul', 'a', 'Annisa Nurul Sholikah', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(29, 'nova', 'a', 'Nova Puspa Sari', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(30, 'annisakhoirina', 'a', 'Annisa Khoirina', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(31, 'nur', 'a', 'Nur Fariyati', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(32, 'tutisma', 'a', 'Dwi Hastuti (SMA)', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(1, 'fadhilmanfa', 'a', 'Muhammad Fadhil Manfa', 'fadhil', 'Staf TU', '67dcd92976da6_1742526761.jpg', '67d7b5edadc1e_1742190061.jpg', NULL, 'sas', 'asa', 'asas', '', '', '', '', '', '', 'Universitas Muhammadiyah Surakarta', '', ''),
+(2, 'fauzinugroho', 'a', 'Fauzi Nugroho', '', 'Kepala Sekolah', '67dcd83239224_1742526514.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 'anugerah', 'a', 'Anugerah Mawarti', '', '', '67dcd6e83a814_1742526184.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 'fikofiko', 'a', 'Fiko Novianto', 'fiko', 'Staf TU', '67dcd8493341b_1742526537.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 'joko', 'a', 'Joko Prasaja', '', 'WAKA Kesiswaan', '67dcd8e616679_1742526694.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(8, 'sularsih', 'a', 'Sularsih', '', 'WAKA Kurikulum', '67dcdab131cce_1742527153.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(9, 'tutismp', 'a', 'Dwi Hastuti (SMP)', '', 'Staf TU', '67dcd7ba20d46_1742526394.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 'agussalam', 'a', 'Agus Salam Hurriyanto', '', 'Guru Mapel', '67dcd64f05868_1742526031.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(11, 'nanik', 'a', 'Nanik Sri Winarni', '', 'Guru Bimbingan Konseling', '67dcd94fc3d51_1742526799.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(12, 'dewi', 'a', 'Herlina Dewi Afiati', '', 'Guru Mapel', '67dcd86e0c8a9_1742526574.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(13, 'nia', 'a', 'Nia Yuwana', '', 'Operator', '67dcd9b89a4d5_1742526904.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(14, 'intan', 'a', 'Intan Arvin Yunaeni', '', 'Guru Mapel', '67dcd890d09ef_1742526608.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(15, 'rosida', 'a', 'Rosida Insiyah Rahmah', '', 'Koordinator Progresive Cultural School', '67dcda4bc4192_1742527051.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(16, 'sevi', 'a', 'Nur Seviana Mar\'atus Sholikhah', '', 'Guru Mapel', '67dcda1c61aa2_1742527004.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(17, 'ira', 'a', 'Sri Sumirah Hartini', '', 'Guru Mapel', '67dcda7b57247_1742527099.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(18, 'lenni', 'a', 'Lenni Sri Gustina', '', 'Wali Kelas', '67dcd9055f54d_1742526725.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(19, 'dani', 'a', 'Dani Sukmadewi', '', 'Guru Mapel', '67dcd77ee5820_1742526334.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(20, 'ituk', 'a', 'Tri Maryuni', '', 'Guru Bimbingan Konseling', '67dcdac449086_1742527172.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(21, 'jayus', 'a', 'Jayus Wijayanto', '', 'Pengelola Lab Sekolah', '67dcd8a6c3288_1742526630.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(22, 'wardah', 'a', 'Wardah Hani Nabila', '', 'Koordinator Keagamaan', '67dcdad90663f_1742527193.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(23, 'yudha', 'a', 'Aditya Damar Aji Yudha', '', 'Kepala Tata Usaha', '67dcd44d74420_1742525517.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(27, 'ayundy', 'a', 'Ayundy Anditaningrum', '', 'Operator', '67dcd73668eac_1742526262.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(28, 'annisanurul', 'a', 'Annisa Nurul Sholikah', '', 'Guru Mapel', '67dcd6923642a_1742526098.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(29, 'nova', 'a', 'Nova Puspa Sari', '', 'Wali Kelas', '67dcd9e159995_1742526945.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(30, 'annisakhoirina', 'a', 'Annisa Khoirina', '', 'Bendahara', '67dcd67a85067_1742526074.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(32, 'tutisma', 'a', 'Dwi Hastuti (SMA)', '', 'Guru Mapel', '67dcd7999a767_1742526361.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -270,22 +302,6 @@ CREATE TABLE `jawaban_ujian` (
   `jawaban` varchar(1) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `jawaban_ujian`
---
-
-INSERT INTO `jawaban_ujian` (`id`, `ujian_id`, `siswa_id`, `soal_id`, `jawaban`, `created_at`) VALUES
-(85, 40, 11, 369, 'd', '2025-02-16 12:55:54'),
-(86, 40, 11, 370, 'c', '2025-02-16 12:55:54'),
-(87, 40, 11, 371, 'b', '2025-02-16 12:55:54'),
-(88, 40, 11, 372, 'c', '2025-02-16 12:55:54'),
-(89, 40, 11, 373, 'c', '2025-02-16 12:55:54'),
-(90, 40, 12, 369, 'b', '2025-02-16 15:56:06'),
-(91, 40, 12, 370, 'd', '2025-02-16 15:56:06'),
-(92, 40, 12, 371, 'b', '2025-02-16 15:56:06'),
-(93, 40, 12, 372, 'c', '2025-02-16 15:56:06'),
-(94, 40, 12, 373, 'a', '2025-02-16 15:56:06');
 
 -- --------------------------------------------------------
 
@@ -304,17 +320,20 @@ CREATE TABLE `kelas` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `background_image` varchar(1000) NOT NULL,
   `is_archived` tinyint(1) DEFAULT 0,
-  `materi` text DEFAULT NULL
+  `materi` text DEFAULT NULL,
+  `is_public` tinyint(1) DEFAULT 0,
+  `max_siswa` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `kelas`
 --
 
-INSERT INTO `kelas` (`id`, `kode_kelas`, `nama_kelas`, `deskripsi`, `guru_id`, `mata_pelajaran`, `tingkat`, `created_at`, `background_image`, `is_archived`, `materi`) VALUES
-(50, NULL, 'Ilmu Pengetahuan Alam Kelas F', '', 'fadhilmanfa', 'Ilmu Pengetahuan Alam', 'F', '2025-02-15 11:47:43', 'uploads/background/bg_67b2181302001_1739724819.jpg', 0, '[]'),
-(51, NULL, 'Fikih Kelas F', '', 'fadhilmanfa', 'Fikih', 'F', '2025-02-15 11:48:09', '', 0, '[]'),
-(52, NULL, 'Kemuhammadiyahan Kelas F', '', 'fadhilmanfa', 'Kemuhammadiyahan', 'F', '2025-02-23 07:54:47', 'uploads/background/bg_67bad49d0b75a_1740297373.jpg', 0, '[]');
+INSERT INTO `kelas` (`id`, `kode_kelas`, `nama_kelas`, `deskripsi`, `guru_id`, `mata_pelajaran`, `tingkat`, `created_at`, `background_image`, `is_archived`, `materi`, `is_public`, `max_siswa`) VALUES
+(50, NULL, 'Ilmu Pengetahuan Alam Kelas F', '', 'fadhilmanfa', 'Ilmu Pengetahuan Alam', 'F', '2025-02-15 11:47:43', 'uploads/background/bg_67b2181302001_1739724819.jpg', 0, '[]', 0, NULL),
+(51, NULL, 'Fikih Kelas F', '', 'fadhilmanfa', 'Fikih', 'F', '2025-02-15 11:48:09', '', 0, '[]', 0, NULL),
+(52, NULL, 'Kemuhammadiyahan Kelas F', '', 'fadhilmanfa', 'Kemuhammadiyahan', 'F', '2025-02-23 07:54:47', 'uploads/background/bg_67bad49d0b75a_1740297373.jpg', 0, '[]', 0, NULL),
+(58, NULL, 'Belajar Bahasa Jepang', 'Grup ini sebagai tempat komunitas pecinta bahasa jepang, dan juga sebagai bentuk cinta terhadap budaya jejepangan', 'fadhilmanfa', '', '', '2025-03-03 04:52:53', 'uploads/background/bg_67c5360beea69_1740977675.jpg', 0, '[]', 1, 100);
 
 -- --------------------------------------------------------
 
@@ -422,7 +441,8 @@ INSERT INTO `kelas_siswa` (`id`, `kelas_id`, `siswa_id`, `status`, `created_at`,
 (426, 52, 36, 'pending', '2025-02-23 07:54:47', 0),
 (427, 52, 37, 'pending', '2025-02-23 07:54:47', 0),
 (428, 52, 38, 'pending', '2025-02-23 07:54:47', 0),
-(429, 52, 39, 'pending', '2025-02-23 07:54:47', 0);
+(429, 52, 39, 'pending', '2025-02-23 07:54:47', 0),
+(437, 58, 11, 'pending', '2025-03-04 07:24:40', 0);
 
 -- --------------------------------------------------------
 
@@ -444,7 +464,8 @@ CREATE TABLE `komentar_postingan` (
 
 INSERT INTO `komentar_postingan` (`id`, `postingan_id`, `user_id`, `konten`, `created_at`) VALUES
 (57, 45, 'fadhilmanfa', 'Gass', '2025-02-16 16:39:26'),
-(58, 50, 'agustina', 'Saya mau kalo tidur nanti mukanya di lelet balsem', '2025-02-23 07:59:38');
+(58, 50, 'agustina', 'Saya mau kalo tidur nanti mukanya di lelet balsem', '2025-02-23 07:59:38'),
+(59, 52, 'agustina', 'siap pak, mohon bimbingannya ya', '2025-03-03 05:20:04');
 
 -- --------------------------------------------------------
 
@@ -489,13 +510,6 @@ CREATE TABLE `lampiran_tugas` (
   `ukuran_file` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `lampiran_tugas`
---
-
-INSERT INTO `lampiran_tugas` (`id`, `tugas_id`, `nama_file`, `path_file`, `tipe_file`, `ukuran_file`) VALUES
-(1, 3, 'Instagram post - 90.png', 'uploads/tugas/tugas_3_67b958abe31c9_Instagram post - 90.png', 'image/png', 1012501);
-
 -- --------------------------------------------------------
 
 --
@@ -508,6 +522,42 @@ CREATE TABLE `likes_postingan` (
   `user_id` varchar(50) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifikasi`
+--
+
+CREATE TABLE `notifikasi` (
+  `id` int(11) NOT NULL,
+  `penerima_id` varchar(255) NOT NULL,
+  `jenis` enum('like','komentar') NOT NULL,
+  `postingan_id` int(11) NOT NULL,
+  `pelaku_id` varchar(255) NOT NULL,
+  `kelas_id` int(11) NOT NULL,
+  `sudah_dibaca` tinyint(1) DEFAULT 0,
+  `waktu` timestamp NOT NULL DEFAULT current_timestamp(),
+  `jumlah` int(11) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifikasi`
+--
+
+INSERT INTO `notifikasi` (`id`, `penerima_id`, `jenis`, `postingan_id`, `pelaku_id`, `kelas_id`, `sudah_dibaca`, `waktu`, `jumlah`) VALUES
+(1, 'fadhilmanfa', 'like', 45, 'agustina', 50, 1, '2025-03-10 04:13:18', 1),
+(2, 'fadhilmanfa', 'like', 49, 'agustina', 50, 1, '2025-03-10 04:16:16', 1),
+(3, 'fadhilmanfa', 'like', 48, 'ainun', 50, 1, '2025-03-10 04:27:22', 2),
+(4, 'fadhilmanfa', 'like', 46, 'agustina', 50, 1, '2025-03-10 04:16:19', 1),
+(5, 'fadhilmanfa', 'like', 45, 'agustina', 50, 1, '2025-03-10 04:26:47', 1),
+(6, 'fadhilmanfa', 'like', 46, 'ainun', 50, 1, '2025-03-10 04:27:23', 1),
+(7, 'fadhilmanfa', 'like', 46, 'ainun', 50, 1, '2025-03-10 05:41:34', 1),
+(8, 'fadhilmanfa', 'like', 50, 'agustina', 52, 1, '2025-03-10 05:56:38', 1),
+(9, 'fadhilmanfa', 'like', 51, 'agustina', 52, 1, '2025-03-10 05:56:58', 1),
+(10, 'fadhilmanfa', 'like', 48, 'agustina', 50, 1, '2025-03-11 13:39:24', 1),
+(11, 'fadhilmanfa', 'like', 49, 'agustina', 50, 1, '2025-03-11 16:37:21', 1),
+(12, 'fadhilmanfa', 'komentar', 48, 'agustina', 50, 1, '2025-03-11 16:39:47', 1);
 
 -- --------------------------------------------------------
 
@@ -539,13 +589,6 @@ INSERT INTO `pengumpulan_tugas` (`id`, `tugas_id`, `siswa_id`, `file_path`, `nam
 (2, 1, 'amara', 'uploads/pengumpulan_tugas/tugas_1_siswa_amara_67b83ffd55b3a_Gmail - Your Google Play Order Receipt from Dec 17, 2024.pdf', 'Gmail - Your Google Play Order Receipt from Dec 17, 2024.pdf', 'application/pdf', 222275, '2025-02-21 15:57:33', NULL, NULL, NULL, NULL),
 (3, 1, 'ainun', 'uploads/pengumpulan_tugas/tugas_1_siswa_ainun_67b8404967d20_lps_g000200185 (1).pdf', 'lps_g000200185 (1).pdf', 'application/pdf', 100923, '2025-02-21 15:58:49', NULL, NULL, NULL, NULL),
 (4, 1, 'aulia', 'uploads/pengumpulan_tugas/tugas_1_siswa_aulia_67b940c951a38_krs sekarang.pdf', 'krs sekarang.pdf', 'application/pdf', 89384, '2025-02-22 10:13:13', NULL, NULL, NULL, NULL),
-(5, 3, 'aisyah', 'uploads/pengumpulan_tugas/tugas_3_siswa_aisyah_67b96091c92c8_lps_g000200185 (1).pdf', 'lps_g000200185 (1).pdf', 'application/pdf', 100923, '2025-02-22 12:28:49', NULL, 90, 'mantap, terima kasih ya', NULL),
-(6, 3, 'agustina', 'uploads/pengumpulan_tugas/tugas_3_siswa_agustina_67b9612815670_krs sekarang.pdf', 'krs sekarang.pdf', 'application/pdf', 89384, '2025-02-22 12:31:20', NULL, 10, 'tetap semangat ya nduk', NULL),
-(7, 3, 'ainun', 'uploads/pengumpulan_tugas/tugas_3_siswa_ainun_67b9991662205_ancient-library-14298.png', 'ancient-library-14298.png', 'image/png', 3219890, '2025-02-22 16:29:58', NULL, NULL, NULL, NULL),
-(8, 3, 'amara', 'uploads/pengumpulan_tugas/tugas_3_siswa_amara_67b99f5b32847_Draft SKPI_G000200185.docx', 'Draft SKPI_G000200185.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 33769, '2025-02-22 16:56:43', NULL, NULL, NULL, NULL),
-(9, 3, 'aulia', 'uploads/pengumpulan_tugas/tugas_3_siswa_aulia_67b9a0b0c7599_67ae977ad669a_Surat-Pernyataan-Publikasi-02-03-2023.docx', '67ae977ad669a_Surat-Pernyataan-Publikasi-02-03-2023.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 95341, '2025-02-22 17:02:24', NULL, NULL, NULL, NULL),
-(10, 3, 'bagus', 'uploads/pengumpulan_tugas/tugas_3_siswa_bagus_67b9a1a1e8d1c_Cek ini test untuk uji upload tugas.docx', 'Cek ini test untuk uji upload tugas.docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 14621, '2025-02-22 17:06:25', NULL, NULL, NULL, NULL),
-(11, 4, 'devi', 'uploads/pengumpulan_tugas/tugas_4_siswa_devi_67babfbaa0421_Gmail - Your Google Play Order Receipt from Dec 17, 2024.pdf', 'Gmail - Your Google Play Order Receipt from Dec 17, 2024.pdf', 'application/pdf', 222275, '2025-02-23 13:27:06', 'terima kasih njih bu', NULL, NULL, NULL),
 (12, 5, 'agustina', 'uploads/pengumpulan_tugas/tugas_5_siswa_agustina_67bad65a33e2e_Gmail - Your Google Play Order Receipt from Dec 17, 2024.pdf', 'Gmail - Your Google Play Order Receipt from Dec 17, 2024.pdf', 'application/pdf', 222275, '2025-02-23 15:03:38', 'Terima kasih bu', 90, 'Terima kash nduk, tetap semangat belajar', NULL);
 
 -- --------------------------------------------------------
@@ -587,7 +630,7 @@ CREATE TABLE `pg` (
 
 INSERT INTO `pg` (`id`, `siswa_id`, `guru_id`, `semester`, `tahun_ajaran`, `nilai_akademik`, `keaktifan`, `pemahaman`, `kehadiran_ibadah`, `kualitas_ibadah`, `pemahaman_agama`, `minat_bakat`, `prestasi`, `keaktifan_ekskul`, `partisipasi_sosial`, `empati`, `kerja_sama`, `kebersihan_diri`, `aktivitas_fisik`, `pola_makan`, `kejujuran`, `tanggung_jawab`, `kedisiplinan`, `created_at`) VALUES
 (1, 51, 'fadhilmanfa', 1, '2024/2025', 100, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-01-24 03:57:46'),
-(2, 11, 'fadhilmanfa', 1, '2024/2025', 100, NULL, NULL, NULL, 100, NULL, 100, NULL, NULL, NULL, 80, NULL, NULL, 50, NULL, NULL, 60, NULL, '2025-01-24 04:01:53'),
+(2, 11, 'fadhilmanfa', 1, '2024/2025', 100, 60, NULL, NULL, 100, NULL, 100, NULL, NULL, NULL, 80, NULL, NULL, 50, NULL, NULL, 60, NULL, '2025-01-24 04:01:53'),
 (5, 12, 'fadhilmanfa', 1, '2024/2025', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '2025-01-24 04:16:27'),
 (8, 43, 'fadhilmanfa', 1, '2024/2025', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-01-24 06:34:58'),
 (9, 36, 'fadhilmanfa', 1, '2024/2025', 100, 60, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-01-24 06:35:17'),
@@ -620,20 +663,21 @@ CREATE TABLE `postingan_kelas` (
   `user_id` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `konten` text DEFAULT NULL,
   `jenis_postingan` varchar(20) DEFAULT 'normal',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `user_type` varchar(10) DEFAULT 'guru'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `postingan_kelas`
 --
 
-INSERT INTO `postingan_kelas` (`id`, `kelas_id`, `user_id`, `konten`, `jenis_postingan`, `created_at`) VALUES
-(45, 50, 'fadhilmanfa', 'Halo anak anak\r\nIni pertama kali kita menggunakan Smaga edu, semoga menyenangkan ya 😍', 'normal', '2025-02-16 16:36:23'),
-(46, 50, 'fadhilmanfa', 'jangan lupa tugas liburannya', 'tugas', '2025-02-20 12:53:52'),
-(48, 50, 'fadhilmanfa', 'sSasSsSasSassa', 'tugas', '2025-02-22 04:55:07'),
-(49, 50, 'fadhilmanfa', 'Ini adalah tugas liburan UAS semester 3, tolong untuk di kerjakan sesuai dengan panduan kalian', 'tugas', '2025-02-23 06:20:08'),
-(50, 52, 'fadhilmanfa', 'Halo adik-adik, ini adalah postingan pertama kelas F KEMUH. Sebelum masuk ke pembelajaran, kita buat kontrak belajar dulu ya, ada saran? 😅', 'normal', '2025-02-23 07:58:01'),
-(51, 52, 'fadhilmanfa', 'Ini adalah tugas liburan semester 4, silahkan untuk mengerjakan tugas halaman 404 da, 405', 'tugas', '2025-02-23 08:02:09');
+INSERT INTO `postingan_kelas` (`id`, `kelas_id`, `user_id`, `konten`, `jenis_postingan`, `created_at`, `user_type`) VALUES
+(45, 50, 'fadhilmanfa', 'Halo anak anak\r\nIni pertama kali kita menggunakan Smaga edu, semoga menyenangkan ya 😍', 'normal', '2025-02-16 16:36:23', 'guru'),
+(46, 50, 'fadhilmanfa', 'jangan lupa tugas liburannya', 'tugas', '2025-02-20 12:53:52', 'guru'),
+(50, 52, 'fadhilmanfa', 'Halo adik-adik, ini adalah postingan pertama kelas F KEMUH. Sebelum masuk ke pembelajaran, kita buat kontrak belajar dulu ya, ada saran? 😅', 'normal', '2025-02-23 07:58:01', 'guru'),
+(51, 52, 'fadhilmanfa', 'Ini adalah tugas liburan semester 4, silahkan untuk mengerjakan tugas halaman 404 da, 405', 'tugas', '2025-02-23 08:02:09', 'guru'),
+(52, 58, 'fadhilmanfa', 'Halo Anak anak, Konichiwa! 🌸\r\nSelamat datang di kelas Jepang, kelas ini menjadi tempat untuk kita belajar dan juga sebagai tempat diskusi setiap permasalahan dalam pembelajaran, jadi jangan coba2 untuk membahas selain dari pembahasan grup ya! ☕🙏', 'normal', '2025-03-03 05:19:29', 'guru'),
+(56, 58, 'agustina', 'Siap sensi, Konichiwa!, Nama saya Agustina salam kenal 👋🌸', 'postingan', '2025-03-03 06:00:31', 'siswa');
 
 -- --------------------------------------------------------
 
@@ -731,7 +775,7 @@ CREATE TABLE `saga_personality` (
 --
 
 INSERT INTO `saga_personality` (`id`, `user_id`, `current_job`, `traits`, `additional_info`, `created_at`, `updated_at`) VALUES
-(1, 'fadhilmanfa', '', '', '', '2025-02-19 04:47:18', '2025-02-27 14:47:43');
+(1, 'fadhilmanfa', '', '', '', '2025-02-19 04:47:18', '2025-03-14 14:00:57');
 
 -- --------------------------------------------------------
 
@@ -802,7 +846,6 @@ INSERT INTO `siswa` (`id`, `nama`, `username`, `password`, `tingkat`, `foto_prof
 (47, 'reykhan ikhsanuddin kamil', 'reykhan', 'a', '12', '', 0, 0, '', NULL, NULL, NULL),
 (48, 'tomas candra mukti', 'tomas', 'a', '12', '', 0, 0, '', NULL, NULL, NULL),
 (49, 'dian putra ramadhan', 'dian', 'a', '12', '', 0, 0, '', NULL, NULL, NULL),
-(50, '', '', '', '', '', 0, 0, '', NULL, NULL, NULL),
 (51, 'adi putra pamungkas', 'adi', 'a', '7', '', 0, 0, '', NULL, NULL, NULL),
 (52, 'dhio lintang winarto', 'dhio', 'a', '7', '', 0, 0, '', 0, NULL, NULL),
 (53, 'hillan fajar saputra', 'hillan', 'a', '7', '1738293863_679c42670b08f.jpg', 0, 0, '', NULL, NULL, NULL),
@@ -860,8 +903,6 @@ CREATE TABLE `tugas` (
 
 INSERT INTO `tugas` (`id`, `postingan_id`, `judul`, `deskripsi`, `batas_waktu`, `poin_maksimal`, `created_at`, `status`) VALUES
 (1, 46, 'Tugas liburan', 'jangan lupa tugas liburannya', '2025-02-22 11:49:47', 0, '2025-02-20 19:53:52', 'closed'),
-(3, 48, 'Tugas liburan 2', 'sSasSsSasSassa', '2025-02-22 12:00:00', 100, '2025-02-22 11:55:07', 'active'),
-(4, 49, 'Tugas liburan 3', 'Ini adalah tugas liburan UAS semester 3, tolong untuk di kerjakan sesuai dengan panduan kalian', '2025-02-23 14:20:00', 100, '2025-02-23 13:20:08', 'active'),
 (5, 51, 'Tugas Liburan Semester 4', 'Ini adalah tugas liburan semester 4, silahkan untuk mengerjakan tugas halaman 404 da, 405', '2025-03-05 15:01:00', 100, '2025-02-23 15:02:09', 'active');
 
 -- --------------------------------------------------------
@@ -890,7 +931,7 @@ CREATE TABLE `ujian` (
 --
 
 INSERT INTO `ujian` (`id`, `judul`, `deskripsi`, `guru_id`, `kelas_id`, `mata_pelajaran`, `materi`, `tanggal_mulai`, `tanggal_selesai`, `durasi`, `status`, `created_at`) VALUES
-(40, 'test', 'test', 'fadhilmanfa', 50, 'Ilmu Pengetahuan Alam', '[\"Simbiosis\"]', '2025-02-16 19:53:00', '2025-02-17 07:00:00', 667, 'draft', '2025-02-16 12:54:09');
+(47, 'Fikih UAS', 'UAS Fikih 2025', 'fadhilmanfa', 51, 'Fikih', '[\"Shalat\",\"Wudhu\"]', '2025-03-20 13:22:00', '2025-03-21 13:22:00', 1440, 'draft', '2025-03-20 06:22:58');
 
 -- --------------------------------------------------------
 
@@ -1275,7 +1316,82 @@ INSERT INTO `user_character_analysis` (`id`, `user_id`, `analysis_date`, `kerjas
 (360, 'fadhilmanfa', '2025-02-27 07:47:48', 0, 0, 0, 0, 0.3),
 (361, 'fadhilmanfa', '2025-02-27 07:47:53', 0, 0, 0, 0, 0.3),
 (362, 'fadhilmanfa', '2025-02-27 07:47:54', 0, 0, 0, 0, 0.3),
-(363, 'fadhilmanfa', '2025-02-27 07:49:58', 0, 0, 0, 0, 0.3);
+(363, 'fadhilmanfa', '2025-02-27 07:49:58', 0, 0, 0, 0, 0.3),
+(364, 'fadhilmanfa', '2025-03-02 13:44:34', 0, 0, 0, 0, 0.3),
+(365, 'fadhilmanfa', '2025-03-02 15:42:04', 0, 0, 0, 0, 0.3),
+(366, 'fadhilmanfa', '2025-03-11 14:01:08', 0, 0, 0, 0, 0.3),
+(367, 'fadhilmanfa', '2025-03-12 04:04:42', 0, 0, 0, 0, 0.3),
+(368, 'fadhilmanfa', '2025-03-12 04:04:45', 0, 0, 0, 0, 0.3),
+(369, 'fadhilmanfa', '2025-03-12 04:05:01', 0, 0, 0, 0, 0.3),
+(370, 'fadhilmanfa', '2025-03-12 04:25:53', 0, 0, 0, 0, 0.3),
+(371, 'fadhilmanfa', '2025-03-12 04:26:22', 0, 0, 0, 0, 0.3),
+(372, 'fadhilmanfa', '2025-03-12 04:44:38', 0, 0, 0, 0, 0.3),
+(373, 'fadhilmanfa', '2025-03-12 05:14:27', 0, 0, 0, 0, 0.3),
+(374, 'fadhilmanfa', '2025-03-12 07:51:56', 0, 0, 0, 0, 0.5),
+(375, 'fadhilmanfa', '2025-03-12 09:23:25', 0, 0, 0, 0, 0.5),
+(376, 'fadhilmanfa', '2025-03-13 01:25:57', 0, 0, 0, 0, 0.5),
+(377, 'fadhilmanfa', '2025-03-13 01:26:10', 0, 0, 0, 0, 0.5),
+(378, 'fadhilmanfa', '2025-03-13 01:59:37', 0, 0, 0, 0, 0.5),
+(379, 'fadhilmanfa', '2025-03-13 04:38:26', 0, 0, 0, 0, 0.5),
+(380, 'fadhilmanfa', '2025-03-13 04:58:07', 0, 0, 0, 0, 0.9),
+(381, 'fadhilmanfa', '2025-03-13 05:15:55', 0, 0, 0, 0, 0.1),
+(382, 'fadhilmanfa', '2025-03-13 06:12:19', 0, 0, 0, 0, 0.5),
+(383, 'fadhilmanfa', '2025-03-13 06:12:20', 0, 0, 0, 0, 0.5),
+(384, 'fadhilmanfa', '2025-03-13 06:27:57', 0, 0, 0, 0, 0.5),
+(385, 'fadhilmanfa', '2025-03-13 06:28:06', 0, 0, 0, 0, 0.5),
+(386, 'fadhilmanfa', '2025-03-13 06:59:58', 0, 0, 0, 0, 0.5),
+(387, 'fadhilmanfa', '2025-03-13 07:04:07', 0, 0, 0, 0, 0.5),
+(388, 'fadhilmanfa', '2025-03-13 09:26:01', 0, 0, 0, 0, 0.5),
+(389, 'fadhilmanfa', '2025-03-13 10:45:14', 0, 0, 0, 0, 0.5),
+(390, 'fadhilmanfa', '2025-03-13 11:21:17', 0, 0, 0, 0, 0.5),
+(391, 'fadhilmanfa', '2025-03-13 12:15:00', 0, 0, 0, 0, 0),
+(392, 'fadhilmanfa', '2025-03-14 03:15:47', 0, 0, 0, 0, 0),
+(393, 'fadhilmanfa', '2025-03-14 03:16:03', 0, 0, 0, 0, 0),
+(394, 'fadhilmanfa', '2025-03-14 06:40:45', 0, 0, 0, 0, 0),
+(395, 'fadhilmanfa', '2025-03-14 06:41:00', 0, 0, 0, 0, 0),
+(396, 'fadhilmanfa', '2025-03-14 06:41:05', 0, 0, 0, 0, 0),
+(397, 'fadhilmanfa', '2025-03-14 06:41:15', 0, 0, 0, 0, 0),
+(398, 'fadhilmanfa', '2025-03-14 06:58:26', 0, 0, 0, 0, 0),
+(399, 'fadhilmanfa', '2025-03-14 07:00:42', 0, 0, 0, 0, 0),
+(400, 'fadhilmanfa', '2025-03-14 07:09:24', 0, 0, 0, 0, 0),
+(401, 'fadhilmanfa', '2025-03-15 05:01:17', 0, 0, 0, 0, 0),
+(402, 'fadhilmanfa', '2025-03-16 09:00:57', 0, 0, 0, 0, 0),
+(403, 'fadhilmanfa', '2025-03-16 09:01:03', 0, 0, 0, 0, 0),
+(404, 'fadhilmanfa', '2025-03-16 09:17:45', 0, 0, 0, 0, 0),
+(405, 'fadhilmanfa', '2025-03-16 09:30:34', 0, 0, 0, 0, 0.4),
+(406, 'fadhilmanfa', '2025-03-16 09:31:02', 0, 0, 0, 0, 0.4),
+(407, 'fadhilmanfa', '2025-03-16 11:10:22', 0, 0, 0, 0, 0.4),
+(408, 'fadhilmanfa', '2025-03-16 11:12:01', 0, 0, 0, 0, 0.4),
+(409, 'fadhilmanfa', '2025-03-16 11:12:58', 0, 0, 0, 0, 0.4),
+(410, 'fadhilmanfa', '2025-03-16 11:13:57', 0, 0, 0, 0, 0.4),
+(411, 'fadhilmanfa', '2025-03-16 11:17:45', 0, 0, 0, 0, 0.4),
+(412, 'fadhilmanfa', '2025-03-16 11:19:24', 0, 0, 0, 0, 0.4),
+(413, 'fadhilmanfa', '2025-03-16 11:19:34', 0, 0, 0, 0, 0.4),
+(414, 'fadhilmanfa', '2025-03-16 11:22:43', 0, 0, 0, 0, 0.4),
+(415, 'fadhilmanfa', '2025-03-16 11:22:52', 0, 0, 0, 0, 0.4),
+(416, 'fadhilmanfa', '2025-03-16 11:23:58', 0, 0, 0, 0, 0.4),
+(418, 'fadhilmanfa', '2025-03-16 11:23:59', 0, 0, 0, 0, 0.4),
+(419, 'fadhilmanfa', '2025-03-16 11:26:27', 0, 0, 0, 0, 0.4),
+(420, 'fadhilmanfa', '2025-03-16 11:26:34', 0, 0, 0, 0, 0.4),
+(421, 'fadhilmanfa', '2025-03-16 11:28:20', 0, 0, 0, 0, 0.4),
+(422, 'fadhilmanfa', '2025-03-16 11:30:04', 0, 0, 0, 0, 0.4),
+(423, 'fadhilmanfa', '2025-03-16 11:35:19', 0, 0, 0, 0, 0.4),
+(424, 'fadhilmanfa', '2025-03-16 11:36:07', 0, 0, 0, 0, 0.4),
+(425, 'fadhilmanfa', '2025-03-16 11:48:57', 0, 0, 0, 0, 0.4),
+(426, 'fadhilmanfa', '2025-03-16 11:49:49', 0, 0, 0, 0, 0.4),
+(427, 'fadhilmanfa', '2025-03-16 11:50:53', 0, 0, 0, 0, 0.4),
+(428, 'fadhilmanfa', '2025-03-16 12:10:02', 0, 0, 0, 0, 0.4),
+(429, 'fadhilmanfa', '2025-03-16 13:25:39', 0, 0, 0, 0, 0.4),
+(430, 'fadhilmanfa', '2025-03-16 13:26:38', 0, 0, 0, 0, 0.4),
+(431, 'fadhilmanfa', '2025-03-16 13:27:35', 0, 0, 0, 0, 0.4),
+(432, 'fadhilmanfa', '2025-03-16 13:29:21', 0, 0, 0, 0, 0.4),
+(433, 'fadhilmanfa', '2025-03-16 14:41:52', 0, 0, 0, 0, 0.5),
+(434, 'fadhilmanfa', '2025-03-16 14:42:09', 0, 0, 0, 0, 0.5),
+(435, 'fadhilmanfa', '2025-03-16 14:42:14', 0, 0, 0, 0, 0.5),
+(436, 'fadhilmanfa', '2025-03-16 14:42:16', 0, 0, 0, 0, 0.5),
+(437, 'fadhilmanfa', '2025-03-16 14:42:17', 0, 0, 0, 0, 0.5),
+(438, 'fadhilmanfa', '2025-03-17 02:39:57', 0, 0, 0, 0, 0.5),
+(439, 'fadhilmanfa', '2025-03-17 02:41:56', 0, 0, 0, 0, 0.5);
 
 -- --------------------------------------------------------
 
@@ -1296,7 +1412,7 @@ CREATE TABLE `user_topics` (
 --
 
 INSERT INTO `user_topics` (`id`, `user_id`, `topic`, `frequency`, `last_updated`) VALUES
-(1, 'fadhilmanfa', 'halo', 1546, '2025-02-27 07:49:58'),
+(1, 'fadhilmanfa', 'halo', 1915, '2025-03-17 02:41:56'),
 (3, 'fadhilmanfa', 'buatkan', 69, '2025-01-24 13:24:47'),
 (4, 'fadhilmanfa', 'materi', 51, '2025-01-24 10:27:47'),
 (5, 'fadhilmanfa', 'kultum', 14, '2025-01-24 00:24:41'),
@@ -1308,10 +1424,10 @@ INSERT INTO `user_topics` (`id`, `user_id`, `topic`, `frequency`, `last_updated`
 (80, 'fadhilmanfa', 'tolong', 9, '2025-01-25 15:08:17'),
 (81, 'fadhilmanfa', 'rangkum', 1, '2025-01-24 08:05:14'),
 (82, 'fadhilmanfa', 'jurnal', 1, '2025-01-24 08:05:14'),
-(85, 'fadhilmanfa', 'haha,', 1, '2025-01-24 10:27:47'),
+(85, 'fadhilmanfa', 'haha,', 2, '2025-03-13 05:15:55'),
 (86, 'fadhilmanfa', 'hanya', 1, '2025-01-24 10:27:47'),
 (87, 'fadhilmanfa', 'ingin', 1, '2025-01-24 10:27:47'),
-(88, 'fadhilmanfa', 'kamu', 579, '2025-02-27 07:49:58'),
+(88, 'fadhilmanfa', 'kamu', 685, '2025-03-17 02:41:56'),
 (89, 'fadhilmanfa', 'user', 20, '2025-01-24 13:24:47'),
 (91, 'fadhilmanfa', 'sampai', 3, '2025-01-24 10:40:22'),
 (92, 'fadhilmanfa', 'tidak', 30, '2025-02-05 13:35:05'),
@@ -1321,10 +1437,10 @@ INSERT INTO `user_topics` (`id`, `user_id`, `topic`, `frequency`, `last_updated`
 (109, 'fadhilmanfa', 'dokumen', 233, '2025-02-03 09:01:50'),
 (110, 'fadhilmanfa', 'jelaskan', 49, '2025-02-03 08:01:20'),
 (111, 'fadhilmanfa', 'semua', 19, '2025-01-30 11:35:51'),
-(112, 'fadhilmanfa', 'apa?', 20, '2025-01-26 10:58:33'),
+(112, 'fadhilmanfa', 'apa?', 29, '2025-03-13 11:21:17'),
 (117, 'fadhilmanfa', 'hari', 5, '2025-01-25 13:30:02'),
 (122, 'fadhilmanfa', 'coba', 113, '2025-02-03 08:01:20'),
-(247, 'fadhilmanfa', 'siapa?', 127, '2025-01-31 03:24:44'),
+(247, 'fadhilmanfa', 'siapa?', 145, '2025-03-13 11:21:17'),
 (251, 'fadhilmanfa', 'haloo', 58, '2025-01-30 18:50:15'),
 (256, 'fadhilmanfa', 'halo,', 81, '2025-02-13 12:06:56'),
 (396, 'fadhilmanfa', 'merancang', 6, '2025-01-31 03:24:44'),
@@ -1334,17 +1450,17 @@ INSERT INTO `user_topics` (`id`, `user_id`, `topic`, `frequency`, `last_updated`
 (407, 'fadhilmanfa', 'pembelajaran', 4, '2025-01-31 07:05:44'),
 (429, 'fadhilmanfa', 'kelas', 7, '2025-02-03 09:01:50'),
 (432, 'fadhilmanfa', 'tapi', 5, '2025-02-03 09:01:50'),
-(433, 'fadhilmanfa', 'bisa', 33, '2025-02-05 13:35:05'),
+(433, 'fadhilmanfa', 'bisa', 138, '2025-03-17 02:41:56'),
 (450, 'fadhilmanfa', 'selamat', 2, '2025-02-13 12:06:56'),
 (451, 'fadhilmanfa', 'malam', 2, '2025-02-13 12:06:56'),
 (459, 'fadhilmanfa', 'efektif', 75, '2025-02-16 09:18:11'),
-(758, 'fadhilmanfa', 'saga', 224, '2025-02-27 07:49:58'),
+(758, 'fadhilmanfa', 'saga', 360, '2025-03-17 02:41:56'),
 (760, 'fadhilmanfa', 'masuk', 31, '2025-02-16 16:50:26'),
 (761, 'fadhilmanfa', 'piket', 31, '2025-02-16 16:50:26'),
 (914, 'fadhilmanfa', 'saran', 10, '2025-02-16 17:01:13'),
 (916, 'fadhilmanfa', 'cara', 3, '2025-02-16 16:54:57'),
 (930, 'fadhilmanfa', 'duluan', 2, '2025-02-16 17:01:13'),
-(931, 'fadhilmanfa', 'telur', 2, '2025-02-16 17:01:13'),
+(931, 'fadhilmanfa', 'telur', 17, '2025-03-13 04:58:07'),
 (938, 'fadhilmanfa', 'indomi', 57, '2025-02-18 21:59:45'),
 (940, 'fadhilmanfa', 'kuah?', 38, '2025-02-18 21:59:45'),
 (941, 'fadhilmanfa', 'jawab', 36, '2025-02-18 02:13:31'),
@@ -1354,8 +1470,18 @@ INSERT INTO `user_topics` (`id`, `user_id`, `topic`, `frequency`, `last_updated`
 (1036, 'fadhilmanfa', 'gila', 6, '2025-02-19 17:22:55'),
 (1050, 'fadhilmanfa', 'gimana', 2, '2025-02-19 17:31:55'),
 (1051, 'fadhilmanfa', 'biar', 2, '2025-02-19 17:31:55'),
-(1055, 'fadhilmanfa', 'bjirrr,', 16, '2025-02-27 07:49:58'),
-(1056, 'fadhilmanfa', 'seris', 16, '2025-02-27 07:49:58');
+(1055, 'fadhilmanfa', 'bjirrr,', 24, '2025-03-12 04:26:22'),
+(1056, 'fadhilmanfa', 'seris', 24, '2025-03-12 04:26:22'),
+(1175, 'fadhilmanfa', 'beri', 2, '2025-03-12 05:14:27'),
+(1176, 'fadhilmanfa', 'kejutan!', 2, '2025-03-12 05:14:27'),
+(1186, 'fadhilmanfa', 'bebas', 2, '2025-03-12 09:23:25'),
+(1196, 'fadhilmanfa', 'masalah', 4, '2025-03-13 04:38:26'),
+(1216, 'fadhilmanfa', 'sama', 2, '2025-03-13 04:58:07'),
+(1219, 'fadhilmanfa', 'sehat?', 1, '2025-03-13 05:15:55'),
+(1225, 'fadhilmanfa', 'kerjaku', 9, '2025-03-13 11:21:17'),
+(1282, 'fadhilmanfa', 'lebih', 105, '2025-03-17 02:41:56'),
+(1283, 'fadhilmanfa', 'dulu', 84, '2025-03-16 13:29:21'),
+(1284, 'fadhilmanfa', 'telur?', 84, '2025-03-16 13:29:21');
 
 --
 -- Indexes for dumped tables
@@ -1410,6 +1536,13 @@ ALTER TABLE `emoji_reactions`
 ALTER TABLE `file_soal`
   ADD PRIMARY KEY (`id`),
   ADD KEY `ujian_id` (`ujian_id`);
+
+--
+-- Indexes for table `groq_daily_usage`
+--
+ALTER TABLE `groq_daily_usage`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `model_id` (`model_id`,`usage_date`);
 
 --
 -- Indexes for table `guru`
@@ -1476,6 +1609,12 @@ ALTER TABLE `lampiran_tugas`
 ALTER TABLE `likes_postingan`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `unique_like` (`postingan_id`,`user_id`);
+
+--
+-- Indexes for table `notifikasi`
+--
+ALTER TABLE `notifikasi`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `pengumpulan_tugas`
@@ -1591,19 +1730,19 @@ ALTER TABLE `user_topics`
 -- AUTO_INCREMENT for table `ai_chat_history`
 --
 ALTER TABLE `ai_chat_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=657;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=792;
 
 --
 -- AUTO_INCREMENT for table `ai_chat_sessions`
 --
 ALTER TABLE `ai_chat_sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `bank_soal`
 --
 ALTER TABLE `bank_soal`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=374;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=422;
 
 --
 -- AUTO_INCREMENT for table `catatan_guru`
@@ -1615,18 +1754,24 @@ ALTER TABLE `catatan_guru`
 -- AUTO_INCREMENT for table `comment_reactions`
 --
 ALTER TABLE `comment_reactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `emoji_reactions`
 --
 ALTER TABLE `emoji_reactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `file_soal`
 --
 ALTER TABLE `file_soal`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `groq_daily_usage`
+--
+ALTER TABLE `groq_daily_usage`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -1639,25 +1784,25 @@ ALTER TABLE `guru`
 -- AUTO_INCREMENT for table `jawaban_ujian`
 --
 ALTER TABLE `jawaban_ujian`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=116;
 
 --
 -- AUTO_INCREMENT for table `kelas`
 --
 ALTER TABLE `kelas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `kelas_siswa`
 --
 ALTER TABLE `kelas_siswa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=430;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=438;
 
 --
 -- AUTO_INCREMENT for table `komentar_postingan`
 --
 ALTER TABLE `komentar_postingan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `komentar_replies`
@@ -1684,6 +1829,12 @@ ALTER TABLE `likes_postingan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `notifikasi`
+--
+ALTER TABLE `notifikasi`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT for table `pengumpulan_tugas`
 --
 ALTER TABLE `pengumpulan_tugas`
@@ -1693,7 +1844,7 @@ ALTER TABLE `pengumpulan_tugas`
 -- AUTO_INCREMENT for table `pg`
 --
 ALTER TABLE `pg`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `pilihan_jawaban`
@@ -1705,7 +1856,7 @@ ALTER TABLE `pilihan_jawaban`
 -- AUTO_INCREMENT for table `postingan_kelas`
 --
 ALTER TABLE `postingan_kelas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `projects`
@@ -1759,19 +1910,19 @@ ALTER TABLE `tugas`
 -- AUTO_INCREMENT for table `ujian`
 --
 ALTER TABLE `ujian`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `user_character_analysis`
 --
 ALTER TABLE `user_character_analysis`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=364;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=440;
 
 --
 -- AUTO_INCREMENT for table `user_topics`
 --
 ALTER TABLE `user_topics`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1132;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1456;
 
 --
 -- Constraints for dumped tables
@@ -1874,7 +2025,6 @@ ALTER TABLE `pilihan_jawaban`
 -- Constraints for table `postingan_kelas`
 --
 ALTER TABLE `postingan_kelas`
-  ADD CONSTRAINT `fk_postkelas_guru` FOREIGN KEY (`user_id`) REFERENCES `guru` (`username`),
   ADD CONSTRAINT `fk_postkelas_kelas` FOREIGN KEY (`kelas_id`) REFERENCES `kelas` (`id`);
 
 --
