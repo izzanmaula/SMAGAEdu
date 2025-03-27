@@ -1153,7 +1153,7 @@ async function handleGeneratePDF() {
                                                 <i class="bi bi-circle" style="color: rgb(206, 100, 65);"></i>
                                             </div>
                                             <div>
-                                                <h6 class="mb-0 fw-semibold">Pendampingan Belajar</h6>
+                                                <h6 class="mb-0 fw-semibold">Pendampingan Ibadah</h6>
                                                 <span class="ios-value"><?php echo number_format($ibadah, 1); ?>%</span>
                                             </div>
                                         </div>

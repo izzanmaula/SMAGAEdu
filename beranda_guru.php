@@ -111,6 +111,7 @@ $guru = mysqli_fetch_assoc($result);
     .color-web:hover {
         background-color: rgb(206, 100, 65);
     }
+
     /* Button click effect for all buttons */
     button {
         transition: transform 0.2s ease;
@@ -1366,7 +1367,7 @@ $guru = mysqli_fetch_assoc($result);
                                         </div>
                                     </div>
 
-                                    <div class= "d-flex align-items-center text-muted small mt-1">
+                                    <div class="d-flex align-items-center text-muted small mt-1">
                                         <i class="bi bi-mortarboard me-2"></i>
                                         <?php
                                         $tingkat = $kelas['tingkat'];
@@ -1777,6 +1778,10 @@ $guru = mysqli_fetch_assoc($result);
             const privateForm = document.getElementById('private_class_form');
             const publicForm = document.getElementById('public_class_form');
 
+            document.querySelectorAll('#public_class_form input, #public_class_form select, #public_class_form textarea').forEach(el => {
+                el.disabled = true;
+            });
+
             // Set initial active state for the privat button
             document.querySelector('label[for="kelas_privat"]').classList.add('active-tab');
 
@@ -1799,6 +1804,15 @@ $guru = mysqli_fetch_assoc($result);
                         privateForm.style.display = 'none';
                         publicForm.style.display = 'block';
 
+                        // Disable semua elemen form privat
+                        document.querySelectorAll('#private_class_form input, #private_class_form select, #private_class_form textarea').forEach(el => {
+                            el.disabled = true;
+                        });
+                        // Enable semua elemen form publik
+                        document.querySelectorAll('#public_class_form input, #public_class_form select, #public_class_form textarea').forEach(el => {
+                            el.disabled = false;
+                        });
+
                         // Remove required from private form fields
                         document.getElementById('mata_pelajaran').removeAttribute('required');
                         document.getElementById('tingkat').removeAttribute('required');
@@ -1813,6 +1827,15 @@ $guru = mysqli_fetch_assoc($result);
                         infoText.textContent = "Pilih siswa secara manual untuk bergabung dengan kelas ini. Hak akses kelas sepenuhnya diberikan kepada Anda. Cocok untuk pembelajaran formal.";
                         privateForm.style.display = 'block';
                         publicForm.style.display = 'none';
+
+                        // Enable semua elemen form privat
+                        document.querySelectorAll('#private_class_form input, #private_class_form select, #private_class_form textarea').forEach(el => {
+                            el.disabled = false;
+                        });
+                        // Disable semua elemen form publik
+                        document.querySelectorAll('#public_class_form input, #public_class_form select, #public_class_form textarea').forEach(el => {
+                            el.disabled = true;
+                        });
 
                         // Add required to private form fields
                         document.getElementById('mata_pelajaran').setAttribute('required', '');
@@ -2122,10 +2145,12 @@ $guru = mysqli_fetch_assoc($result);
                 }
             });
 
-            closeNotifBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                notificationDropdown.classList.remove('show');
-            });
+            if (closeNotifBtn) {
+                closeNotifBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    notificationDropdown.classList.remove('show');
+                });
+            };
 
             // Close when clicking outside
             document.addEventListener('click', function(e) {

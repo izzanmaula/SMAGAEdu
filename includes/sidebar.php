@@ -24,8 +24,7 @@ $is_admin = $_SESSION['level'] == 'admin';
                 ['url' => 'ujian_admin.php', 'icon' => 'bi-file-text', 'text' => 'Ujian'],
                 ['url' => 'guru_admin.php', 'icon' => 'bi-person-badge', 'text' => 'Guru'],
                 ['url' => 'siswa_admin.php', 'icon' => 'bi-people', 'text' => 'Siswa'],
-                ['url' => 'pg_admin.php', 'icon' => 'bi-journal-text', 'text' => 'Monitor', 'subtitle' => 'P. GUIDENCE'],
-                ['url' => 'bantuan.php', 'icon' => 'bantuan_outfill.png', 'text' => 'Bantuan', 'is_image' => true]
+                ['url' => 'pg_admin.php', 'icon' => 'bi-journal-text', 'text' => 'Monitor', 'subtitle' => 'P. GUIDENCE']
             ];
         } elseif ($is_guru) {
             $menu_items = [
@@ -35,7 +34,6 @@ $is_admin = $_SESSION['level'] == 'admin';
                 ['url' => 'ai_guru.php', 'icon' => 'bi-stars', 'text' => 'SAGA AI'],
                 ['url' => 'raport_pg.php', 'icon' => 'bi-journal-text', 'text' => 'Raport', 'subtitle' => 'P. GUIDENCE'],
                 ['url' => 'monitor_pg.php', 'icon' => 'bi-eyeglasses', 'text' => 'Monitor', 'subtitle' => 'P. GUIDENCE'],
-                ['url' => 'bantuan.php', 'icon' => 'bantuan_outfill.png', 'text' => 'Bantuan', 'is_image' => true]
             ];
         } else {
             $menu_items = [
@@ -43,7 +41,6 @@ $is_admin = $_SESSION['level'] == 'admin';
                 ['url' => 'ujian.php', 'icon' => 'bi-file-text', 'text' => 'Ujian'],
                 ['url' => 'profil.php', 'icon' => 'bi-person', 'text' => 'Profil'],
                 ['url' => 'ai.php', 'icon' => 'bi-stars', 'text' => 'SAGA AI'],
-                ['url' => 'bantuan.php', 'icon' => 'bantuan_outfill.png', 'text' => 'Bantuan', 'is_image' => true]
             ];
         }
 

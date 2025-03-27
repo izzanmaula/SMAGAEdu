@@ -93,12 +93,13 @@ $guru = mysqli_fetch_assoc($result);
     .model-item.active {
         background-color: rgba(218, 119, 86, 0.1);
     }
+
     /* Improved button styling for smoother transitions */
     .btn {
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                    box-shadow 0.3s ease, 
-                    background-color 0.3s ease, 
-                    color 0.3s ease;
+            box-shadow 0.3s ease,
+            background-color 0.3s ease,
+            color 0.3s ease;
     }
 
     .btn:hover {
@@ -654,7 +655,7 @@ $guru = mysqli_fetch_assoc($result);
                                 id: 'gemma2-9b-it',
                                 name: 'Gemma2 9B',
                                 desc: 'Seimbang'
-                            },                            
+                            },
                             {
                                 id: 'llama-3.1-8b-instant',
                                 name: 'LLaMA 3.1 8B',
@@ -952,7 +953,13 @@ $guru = mysqli_fetch_assoc($result);
                             const contextualized_chunks = chunks.join(' ').substring(0, 2000);
                             contextMessage = [{
                                 role: "system",
-                                content: `Document context: ${contextualized_chunks}`
+                                content: `DOKUMEN YANG DIUPLOAD USER:
+                                Nama File: ${file.name}
+                                
+                                ISI DOKUMEN:
+                                ${contextualized_chunks}
+                                
+                                INSTRUKSI: Gunakan informasi dari dokumen di atas untuk membantu menjawab pertanyaan user.`
                             }];
                         }
 
@@ -2769,6 +2776,7 @@ $guru = mysqli_fetch_assoc($result);
 
                             if (result.success) {
                                 window.documentContent = result.content;
+                                console.log("Document content loaded:", window.documentContent.substring(0, 100) + "...");
                                 addDocumentToContainer(file.name);
                                 document.getElementById('user-input').value = ``;
                             }
@@ -2984,6 +2992,7 @@ $guru = mysqli_fetch_assoc($result);
                                         contentPreview: content.substring(0, 200) + "..."
                                     });
                                     window.documentContent = content;
+                                    window.documentFileName = file.name;
                                     addDocumentToContainer(file.name);
                                 }
                             } catch (error) {
@@ -3043,6 +3052,7 @@ $guru = mysqli_fetch_assoc($result);
 
                                 if (result.success) {
                                     window.documentContent = result.content;
+                                    window.documentFileName = file.name;
                                     addDocumentToContainer(file.name);
                                     userInput.value = ``;
                                 }
@@ -3252,7 +3262,7 @@ $guru = mysqli_fetch_assoc($result);
             style="background-color: ${sender === 'user' ? 'rgb(239, 239, 239)' : 'transparent'}; 
                 max-width: ${sender === 'user' ? '30rem' : '40rem'}">
             <img src="${sender === 'user' ? userImage : aiImage}" 
-                class="chat-profile bg-white ms-2 me-2 rounded-circle" 
+                class="chat-profile bg-white border ms-2 me-2 rounded-circle" 
                 alt="${sender} profile" 
                 style="width: 20px; height: 20px; object-fit: cover;">
             <div class="chat-bubble rounded p-2 align-content-center"
@@ -3465,6 +3475,8 @@ $guru = mysqli_fetch_assoc($result);
             // Gunakan model yang dipilih dari dropdown
             const modelId = window.activeModelId || 'llama-3.3-70b-versatile';
 
+            
+
             // Deep thinking tetap bisa digunakan
             const isDeepThinking = document.getElementById('deepThinkingToggle').checked;
             const selectedSystemMessage = isDeepThinking ? deepThinkingSystemMessage : systemMessage;
@@ -3484,11 +3496,18 @@ $guru = mysqli_fetch_assoc($result);
             // Proses konten dokumen jika ada
             let contextMessage = [];
             if (docContent) {
+                console.log('menambahkan ke dalam ai')
                 const chunks = docContent.match(/[^.!?]+[.!?]+/g) || [];
                 const contextualized_chunks = chunks.join(' ').substring(0, 2000); // Batasi panjang teks
                 contextMessage = [{
                     role: "system",
-                    content: `Document context: ${contextualized_chunks}`
+                    content: `DOKUMEN YANG DIUPLOAD USER:
+    Nama File: ${window.documentFileName || "Dokumen"}
+    
+    ISI DOKUMEN:
+    ${contextualized_chunks}
+    
+    INSTRUKSI: Gunakan informasi dari dokumen di atas untuk membantu menjawab pertanyaan user.`
                 }];
             }
 

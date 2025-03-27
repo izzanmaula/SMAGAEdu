@@ -149,7 +149,7 @@ if (!$guru) {
     </div>
 
     <!-- ini isi kontennya -->
-    <div class="col col-inti p-0 p-md-3">
+    <div class="col col-inti p-0 p-md-3 pb-md-5">
         <style>
             .col-inti {
                 margin-left: 0;

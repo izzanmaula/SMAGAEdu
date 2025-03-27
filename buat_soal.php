@@ -835,20 +835,17 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label fw-medium mb-2" style="font-size: 15px;">Baris Perintah</label>
-                            <div class="alert border bg-light" style="border-radius: 15px;">
+                            <label class="form-label fw-medium mb-2" style="font-size: 15px;">Preview Baris Perintah</label>
+                            <!-- <div class="alert border bg-light" style="border-radius: 15px;">
                                 <div class="d-flex">
                                     <div>
-                                        <p class="p-0 m-0 text-muted" style="font-size: 12px;"><span class="fw-bold text-black">PERHATIAN</span> Setelah baris <span style="background-color:rgb(218, 119, 86);" class="rounded px-1 text-white">WAJIB IKUTI FORMAT INI DENGAN SANGAT TEPAT:</span> kami himbau untuk tidak mengubahnya, hal ini merupakan panduan bagaimana SAGA AI menginputkan permintaan soal Anda ke dalam LMS</p>
+                                        <p class="p-0 m-0 text-muted" style="font-size: 12px;"><span class="fw-bold text-black">PERHATIAN</span> Baris perintah di bawah merupakan promt SAGA AI dalam memproses soal Anda. </p>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="position-relative">
                                 <textarea id="promptPreview" name="custom_prompt" class="form-control" rows="6"
                                     style="border-radius: 12px; font-size: 14px; border: 1px solid #e4e4e4; background-color: #f5f5f5; font-family: monospace;"></textarea>
-                                <div class="form-text mt-2" style="font-size: 12px; color: #8e8e93;">
-                                    Anda dapat menyesuaikan prompt di atas sesuai kebutuhan sebelum menghasilkan soal.
-                                </div>
                             </div>
                         </div>
 
@@ -856,8 +853,8 @@ $total_soal = mysqli_fetch_assoc($result_soal)['total_soal'];
                 </div>
                 <div class="modal-footer border-0 gap-2">
                     <button type="button" class="btn btn-light flex-fill border" style="border-radius: 12px; font-size: 15px;" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn color-web text-white flex-fill" style="border-radius: 12px; font-size: 15px;" onclick="generateMultipleSoal()">
-                        <span>Generate Soal</span>
+                    <button type="button" class="btn color-web text-white bi bi-stars flex-fill" style="border-radius: 12px; font-size: 15px;" onclick="generateMultipleSoal()">
+                        <span>Mulai Keajaiban</span>
                         <div class="spinner-border spinner-border-sm ms-2 d-none" role="status"></div>
                     </button>
                 </div>
@@ -1073,8 +1070,8 @@ Contoh format output yang diharapkan:
     <div id="generateOverlay" class="generate-overlay">
         <div class="generate-message">
             <img src="assets/ai.gif" style="width:100px;" alt="Deskripsi gambar">
-            <h5 class="mb-1">Sedang Membuat Soal</h5>
-            <p class="mb-0">Mohon tunggu sebentar</p>
+            <h5 class="mb-1">Sedang Menciptakan Keajaiban</h5>
+            <p class="mb-0" style="font-size: 12px;">Meramu soal sesuai permintaan Anda</p>
         </div>
     </div>
 
