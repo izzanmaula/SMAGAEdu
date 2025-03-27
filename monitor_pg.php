@@ -877,8 +877,8 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                                     <i class="bi bi-eyeglasses"></i>
                                 </div>
                                 <div>
-                                    <h5 class="card-title mb-0 small fw-bold">Distribusi Nilai Keseluruhan</h5>
-                                    <p class="text-muted small mb-0" style="font-size: 12px;">Menunjukkan penyebaran nilai siswa di berbagai aspek untuk melihat tren yang menonjol.</p>
+                                    <h5 class="card-title mb-0 small fw-bold">Distribusi Nilai</h5>
+                                    <p class="text-muted small mb-0" style="font-size: 12px;">Menunjukkan nilai siswa secara keseluruhan</p>
                                 </div>
                             </div>
                         </div>

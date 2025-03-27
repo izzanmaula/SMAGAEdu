@@ -93,6 +93,24 @@ $guru = mysqli_fetch_assoc($result);
     .model-item.active {
         background-color: rgba(218, 119, 86, 0.1);
     }
+    /* Improved button styling for smoother transitions */
+    .btn {
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                    box-shadow 0.3s ease, 
+                    background-color 0.3s ease, 
+                    color 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition-duration: 0.1s;
+    }
 </style>
 
 <body>
@@ -298,26 +316,28 @@ $guru = mysqli_fetch_assoc($result);
                         }
                     </style>
                     <div class="gap-2 mb-4 d-flex">
-                        <button class="btn btn-sm bg-white text-black d-flex align-items-center gap-2 px-3 py-2 border"
+                        <button class="btn btn-sm bg-light text-black d-flex align-items-center gap-2 px-3 py-2 border"
                             onclick="window.location.reload()"
                             style="border-radius: 15px;">
                             <i class="bi bi-arrow-clockwise"></i>
                             <span class="button-text d-none d-md-inline" style="font-size: 13px;">Baru</span>
                         </button>
-                        <button class="btn btn-sm bg-white text-black d-flex align-items-center gap-2 px-3 py-2 border"
+                        <button class="btn btn-sm bg-light text-black d-flex align-items-center gap-2 px-3 py-2 border"
                             data-bs-toggle="modal"
                             data-bs-target="#historyModal"
                             style="border-radius: 15px;">
                             <i class="bi bi-clock-history"></i>
                             <span class="button-text d-none d-md-inline" style="font-size: 13px;">Riwayat</span>
                         </button>
-                        <button class="btn btn-sm d-flex text-black bg-white align-items-center gap-2 px-3 py-2 border"
+
+                        <!-- MAINTENANCEEE - MASIH BUG DI PERSONALITY AI -->
+                        <!-- <button class="btn btn-sm d-flex text-black bg-white align-items-center gap-2 px-3 py-2 border"
                             data-bs-toggle="modal"
                             data-bs-target="#projectModal"
-                            style="border-radius: 15px;">
+                            style="border-radius: 15px;">-
                             <i class="bi bi-gear"></i>
                             <span class="button-text d-none d-md-inline" style="font-size: 13px;">Pengaturan</span>
-                        </button>
+                        </button> -->
                     </div>
 
                     <style>
@@ -621,68 +641,68 @@ $guru = mysqli_fetch_assoc($result);
                                 isDefault: true
                             },
                             {
-                                id: 'llama-3.1-8b-instant',
-                                name: 'LLaMA 3.1 8B',
-                                desc: 'Tercepat untuk harian'
-                            },
-                            {
-                                id: 'mixtral-8x7b-32768',
-                                name: 'Mixtral 8x7B',
-                                desc: 'Terbaik untuk text panjang'
-                            },
-                            {
                                 id: 'deepseek-r1-distill-llama-70b',
                                 name: 'DeepSeek Llama 70B',
                                 desc: 'Terbaik untuk matematika atau analisis dalam'
                             },
                             {
+                                id: 'mistral-saba-24b',
+                                name: 'Mistral Saba 24B',
+                                desc: 'Terbaik untuk text panjang'
+                            },
+                            {
                                 id: 'gemma2-9b-it',
                                 name: 'Gemma2 9B',
-                                desc: 'Moderat, terbaik untuk pertanyaan umum'
-                            }
+                                desc: 'Seimbang'
+                            },                            
+                            {
+                                id: 'llama-3.1-8b-instant',
+                                name: 'LLaMA 3.1 8B',
+                                desc: 'Tercepat'
+                            },
                         ];
 
                         // Set model aktif secara default
                         window.activeModelId = 'llama-3.3-70b-versatile';
 
-     // Fungsi untuk mengatur model yang dipilih
-window.setActiveModel = function(modelId) {
-    window.activeModelId = modelId;
-    const selectedModel = aiModels.find(m => m.id === modelId);
+                        // Fungsi untuk mengatur model yang dipilih
+                        window.setActiveModel = function(modelId) {
+                            window.activeModelId = modelId;
+                            const selectedModel = aiModels.find(m => m.id === modelId);
 
-    // Update UI
-    const displayElement = document.getElementById('current-model-name');
-    if (displayElement && selectedModel) {
-        displayElement.textContent = selectedModel.name;
-    }
+                            // Update UI
+                            const displayElement = document.getElementById('current-model-name');
+                            if (displayElement && selectedModel) {
+                                displayElement.textContent = selectedModel.name;
+                            }
 
-    // Simpan di localStorage untuk persistensi
-    localStorage.setItem('preferredModel', modelId);
-    console.log(`Model changed to: ${selectedModel?.name} (${modelId})`);
-    
-    // TAMBAHAN BARU: Update semua ikon centang di dropdown
-    setTimeout(() => {
-        document.querySelectorAll('.model-item').forEach(item => {
-            // Hapus semua tanda active dan ikon centang terlebih dahulu
-            item.classList.remove('active');
-            const existingCheckIcon = item.querySelector('.bi-check-circle-fill');
-            if (existingCheckIcon) existingCheckIcon.remove();
-            
-            // Jika ini adalah item yang dipilih, tambahkan kelas active dan ikon centang
-            if (item.dataset.modelId === modelId) {
-                item.classList.add('active');
-                const checkIcon = document.createElement('i');
-                checkIcon.className = 'bi bi-check-circle-fill ms-auto';
-                checkIcon.style.color = 'rgb(218, 119, 86)';
-                item.appendChild(checkIcon);
-            } else {
-                // Reset border gambar model untuk item yang tidak dipilih
-                const modelImg = item.querySelector('.model-img');
-                if (modelImg) modelImg.style.border = '1px solid #dee2e6';
-            }
-        });
-    }, 100); // Delay singkat untuk memastikan DOM telah diperbarui
-};
+                            // Simpan di localStorage untuk persistensi
+                            localStorage.setItem('preferredModel', modelId);
+                            console.log(`Model changed to: ${selectedModel?.name} (${modelId})`);
+
+                            // TAMBAHAN BARU: Update semua ikon centang di dropdown
+                            setTimeout(() => {
+                                document.querySelectorAll('.model-item').forEach(item => {
+                                    // Hapus semua tanda active dan ikon centang terlebih dahulu
+                                    item.classList.remove('active');
+                                    const existingCheckIcon = item.querySelector('.bi-check-circle-fill');
+                                    if (existingCheckIcon) existingCheckIcon.remove();
+
+                                    // Jika ini adalah item yang dipilih, tambahkan kelas active dan ikon centang
+                                    if (item.dataset.modelId === modelId) {
+                                        item.classList.add('active');
+                                        const checkIcon = document.createElement('i');
+                                        checkIcon.className = 'bi bi-check-circle-fill ms-auto';
+                                        checkIcon.style.color = 'rgb(218, 119, 86)';
+                                        item.appendChild(checkIcon);
+                                    } else {
+                                        // Reset border gambar model untuk item yang tidak dipilih
+                                        const modelImg = item.querySelector('.model-img');
+                                        if (modelImg) modelImg.style.border = '1px solid #dee2e6';
+                                    }
+                                });
+                            }, 100); // Delay singkat untuk memastikan DOM telah diperbarui
+                        };
 
 
 
@@ -812,10 +832,10 @@ window.setActiveModel = function(modelId) {
 
                             // Definisikan gambar untuk setiap model
                             const modelImages = {
-                                'llama-3.3-70b-versatile': 'assets/llama.png', // Ganti dengan path gambar Anda
-                                'llama-3.1-8b-instant': 'assets/llama.png',
-                                'mixtral-8x7b-32768': 'assets/mixtral.png',
+                                'llama-3.3-70b-versatile': 'assets/llama.png',
                                 'deepseek-r1-distill-llama-70b': 'assets/deepseek.png',
+                                'llama-3.1-8b-instant': 'assets/llama.png',
+                                'mistral-saba-24b': 'assets/mixtral.png',
                                 'gemma2-9b-it': 'assets/google.png'
                                 // Tambahkan model lain sesuai kebutuhan
                             };
@@ -902,7 +922,7 @@ window.setActiveModel = function(modelId) {
 
                     // Modifikasi getAIResponse untuk menggunakan model yang dipilih
                     async function getAIResponse(userMessage) {
-                        const API_KEY = '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';
+                        const API_KEY = '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';
                         const API_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
 
                         // Gunakan model dari dropdown
@@ -3439,7 +3459,7 @@ window.setActiveModel = function(modelId) {
         };
 
         async function getAIResponse(userMessage) {
-            const API_KEY = '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';
+            const API_KEY = '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';
             const API_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
 
             // Gunakan model yang dipilih dari dropdown
@@ -3510,17 +3530,45 @@ window.setActiveModel = function(modelId) {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${API_KEY}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'accept': 'application/json'
                     },
                     body: JSON.stringify({
                         model: modelId, // Gunakan model ID dari pilihan
                         messages: messages,
                         temperature: 0.7
-                    })
+                    }),
+                    mode: 'cors'
                 });
 
                 // Handle response
                 if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Groq API Error:', errorData);
+
+                    // Handle different error types with specific messages
+                    if (errorData.error) {
+                        const errorCode = errorData.error.code;
+                        const errorMsg = errorData.error.message;
+
+                        switch (errorCode) {
+                            case 'model_decommissioned':
+                                return `⚠️ Model ${modelId} tidak tersedia oleh Penyedia AI. Silakan pilih model lain dan hubungi Tim IT Anda.`;
+
+                            case 'invalid_api_key':
+                            case 'expired_api_key':
+                                return '⚠️ Kunci API tidak aktif. Hubungi Tim IT Anda.';
+
+                            case 'insufficient_quota':
+                                return '⚠️ Kuota percakapan Anda telah habis, silahkan hubungi Tim IT Anda untuk meningkatkan paket pembelian layanan AI.';
+
+                            case 'rate_limit_exceeded':
+                                return '⚠️ Anda terlalu banyak permintaan dalam waktu singkat. Silakan coba lagi setelah beberapa saat.';
+
+                            default:
+                                return `⚠️ API Error (${errorCode}): ${errorMsg}`;
+                        }
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 

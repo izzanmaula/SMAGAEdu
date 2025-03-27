@@ -377,11 +377,11 @@ $guru = mysqli_fetch_assoc($result);
                                 <p class="mb-0 small">Memuat notifikasi...</p>
                             </div>
                         </div>
-                        <div id="notification-footer" class="notification-footer d-flex p-2 text-end border-top">
+                        <!-- <div id="notification-footer" class="notification-footer d-flex p-2 text-end border-top">
                             <button id="markAllAsRead" class="btn flex-fill text-white shadow-none" style="background-color: rgb(206, 100, 65); border-radius:10px;">
                                 <span class="fst-normal">Baca semua</span>
                             </button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <button class="btn button-beranda btn-sm btn-light border px-3 py-2" data-bs-toggle="modal" data-bs-target="#modal_tambah_kelas">
@@ -2261,8 +2261,9 @@ $guru = mysqli_fetch_assoc($result);
                 container.innerHTML = `
             <div class="notification-scroll">
                 <div class="text-center py-5 text-muted d-flex flex-column align-items-center justify-content-center" style="height: 100%; border-radius:15px;">
-                    <i class="bi bi-bell-slash fs-4 mb-2"></i>
-                    <p class="mb-0 small">Belum ada notifikasi</p>
+
+                    <p class="mb-0 fw-bold small">Belum ada notifikasi</p>
+                    <p class="mb-0" style="font-size:11px;">Seluruh notifikasi akan tampil di sini</p>
                 </div>
             </div>
         `;
