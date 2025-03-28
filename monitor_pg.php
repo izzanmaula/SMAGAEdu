@@ -281,7 +281,7 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
         }
 
         .table-responsive {
-            border-radius: 15px; 
+            border-radius: 15px;
             overflow: hidden;
         }
 
@@ -307,12 +307,13 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
             font-size: 1.5rem;
         }
 
-        .aspect-card {
+        /* .aspect-card {
             padding: 1rem;
             border-radius: 15px;
             margin-bottom: 1rem;
             background-color: white;
-        }
+            border: whitesmoke solid 1px;
+        } */
 
         .aspect-title {
             font-size: 0.9rem;
@@ -419,13 +420,14 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
             <div class="d-flex align-items-center">
                 <form method="GET" class="d-flex align-items-center me-2">
                     <div class="me-2">
-                        <select name="semester" class="form-select" onchange="this.form.submit()">
+                        <select name="semester" class="btn btn-sm btn-light border px-3 py-2" style="border-radius: 15px;" onchange="this.form.submit()">
                             <option value="1" <?php echo ($selected_semester == 1) ? 'selected' : ''; ?>>Semester 1</option>
                             <option value="2" <?php echo ($selected_semester == 2) ? 'selected' : ''; ?>>Semester 2</option>
                         </select>
                     </div>
                     <div>
-                        <select name="tahun_ajaran" class="form-select" onchange="this.form.submit()">
+                        <select name="tahun_ajaran" class="btn btn-sm btn-light border px-3 py-2" style="border-radius: 15px;" onchange="this.form.submit()">
+                            <i class="bi bi-calendar me-2"></i>
                             <?php
                             $current_year = date('Y');
                             for ($i = $current_year - 5; $i <= $current_year + 5; $i++) {
@@ -440,50 +442,60 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                         <input type="hidden" name="siswa_id" value="<?php echo $_GET['siswa_id']; ?>">
                     <?php endif; ?>
                 </form>
-                <button onclick="printContent()" class="btn bg-white border text-black d-flex align-items-center gap-2">
-                    <i class="bi bi-printer-fill"></i> Cetak
+                <button onclick="printContent()" class="btn btn-sm btn-light border px-3 py-2" style="border-radius: 15px;">
+                    <i class="bi bi-printer me-2"></i>Cetak
                 </button>
             </div>
         </div>
 
         <!-- Print-specific styles -->
         <style type="text/css" media="print">
-            .sidebar, .offcanvas, .navbar, .dashboard-header, .btn-back, .btn-print, form,
-            .footer, #sidebar, .mobile-nav, .settings-modal, header {
+            .sidebar,
+            .offcanvas,
+            .navbar,
+            .dashboard-header,
+            .btn-back,
+            .btn-print,
+            form,
+            .footer,
+            #sidebar,
+            .mobile-nav,
+            .settings-modal,
+            header {
                 display: none !important;
             }
-            
+
             .col-utama {
                 margin-left: 0 !important;
                 width: 100% !important;
                 padding: 0 !important;
             }
-            
+
             body {
                 background-color: white;
             }
-            
+
             @page {
                 size: auto;
                 margin: 15mm 10mm 15mm 10mm;
             }
-            
+
             .dashboard-header h4 {
                 font-size: 18pt;
                 text-align: center;
                 margin-bottom: 20px;
             }
-            
+
             .card {
                 break-inside: avoid;
             }
-            
+
             .card-header {
                 background-color: #f8f9fa !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
-            
+
             .progress-bar {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
@@ -504,17 +516,17 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="d-flex align-items-center">
                             <img src="<?php
-                                    if (!empty($current_student['info']['photo_type'])) {
-                                        if ($current_student['info']['photo_type'] === 'avatar') {
-                                            echo $current_student['info']['photo_url'];
-                                        } else if ($current_student['info']['photo_type'] === 'upload') {
-                                            echo 'uploads/profil/' . $current_student['info']['foto_profil'];
+                                        if (!empty($current_student['info']['photo_type'])) {
+                                            if ($current_student['info']['photo_type'] === 'avatar') {
+                                                echo $current_student['info']['photo_url'];
+                                            } else if ($current_student['info']['photo_type'] === 'upload') {
+                                                echo 'uploads/profil/' . $current_student['info']['foto_profil'];
+                                            }
+                                        } else {
+                                            echo 'assets/pp.png';
                                         }
-                                    } else {
-                                        echo 'assets/pp.png';
-                                    }
-                                    ?>"
-                                class="rounded-circle border shadow-sm me-3"
+                                        ?>"
+                                class="rounded-circle border me-3"
                                 width="70px" height="70px"
                                 style="object-fit: cover;">
                             <div>
@@ -610,178 +622,304 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                         <div class="col-md-12">
                             <h6 class="mb-3">Detail Nilai Per Komponen</h6>
 
-                            <div class="row">
+                            <div class="row g-3">
                                 <!-- Akademik -->
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-mortarboard-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Nilai Akademik</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-mortarboard-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['nilai_akademik'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Nilai Akademik</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['nilai_akademik'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-lightning-charge-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Keaktifan</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-lightning-charge-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['keaktifan'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Keaktifan</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['keaktifan'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-book-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Pemahaman</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-book-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['pemahaman'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Pemahaman</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['pemahaman'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Ibadah -->
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-heart-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Kehadiran Ibadah</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-heart-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['kehadiran_ibadah'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Kehadiran Ibadah</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['kehadiran_ibadah'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-stars me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Kualitas Ibadah</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-stars" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['kualitas_ibadah'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Kualitas Ibadah</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['kualitas_ibadah'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-globe me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Pemahaman Agama</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-globe" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['pemahaman_agama'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Pemahaman Agama</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['pemahaman_agama'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Pengembangan Diri -->
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-lightbulb-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Minat Bakat</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-lightbulb-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['minat_bakat'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Minat Bakat</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['minat_bakat'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-award-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Prestasi</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-award-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['prestasi'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Prestasi</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['prestasi'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-person-arms-up me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Keaktifan Ekskul</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-person-arms-up" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['keaktifan_ekskul'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Keaktifan Ekskul</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['keaktifan_ekskul'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Sosial -->
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-people-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Partisipasi Sosial</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-people-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['partisipasi_sosial'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Partisipasi Sosial</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['partisipasi_sosial'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-emoji-smile-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Empati</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-emoji-smile-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['empati'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Empati</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['empati'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-handshake-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Kerja Sama</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-hand-index-thumb-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['kerja_sama'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Kerja Sama</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['kerja_sama'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Kesehatan -->
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-droplet-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Kebersihan Diri</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-droplet-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['kebersihan_diri'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Kebersihan Diri</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['kebersihan_diri'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-bicycle me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Aktivitas Fisik</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-bicycle" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['aktivitas_fisik'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Aktivitas Fisik</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['aktivitas_fisik'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-apple me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Pola Makan</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-apple" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['pola_makan'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Pola Makan</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['pola_makan'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Karakter -->
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-patch-check-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Kejujuran</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-patch-check-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['kejujuran'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Kejujuran</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['kejujuran'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-clipboard-check-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Tanggung Jawab</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-clipboard-check-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['tanggung_jawab'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Tanggung Jawab</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['tanggung_jawab'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="aspect-card">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <i class="bi bi-exclamation-octagon-fill me-2" style="font-size: 1.2rem;"></i>
-                                            <p class="aspect-title mb-0">Kedisiplinan</p>
+                                <div class="col-md-3">
+                                    <div class="card rounded-4 border-1 h-100" style="position: relative; overflow: hidden;">
+                                        <div style="position: absolute; right: -20px; bottom: -70px; opacity: 0.1;">
+                                            <i class="bi bi-exclamation-octagon-fill" style="font-size: 140px; color: rgb(218, 119, 86);"></i>
                                         </div>
-                                        <p class="aspect-value"><?php echo number_format($current_student['pg']['kedisiplinan'] ?? 0, 1); ?>%</p>
+                                        <div class="card-body p-4">
+                                            <div>
+                                                <h6 class="mb-2">Kedisiplinan</h6>
+                                                <h3 class="m-0 fw-bold">
+                                                    <?php echo number_format($current_student['pg']['kedisiplinan'] ?? 0, 1); ?>
+                                                    <span class="fs-6 fw-normal text-muted">%</span>
+                                                </h3>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -911,20 +1049,20 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                                         <thead>
                                             <tr>
                                                 <th>Nama</th>
-                                                <th>Kelas</th>
-                                                <th>Nilai</th>
+                                                <th class="text-center">Kelas</th>
+                                                <th class="text-center">Nilai</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($top_students as $student): ?>
                                                 <tr>
-                                                    <td><?php echo htmlspecialchars($student['nama']); ?></td>
-                                                    <td><?php echo htmlspecialchars($student['tingkat']); ?></td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center">
-                                                            <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <td><?php echo ucwords(htmlspecialchars($student['nama'])); ?></td>
+                                                    <td class="text-center"><?php echo htmlspecialchars($student['tingkat']); ?></td>
+                                                    <td class="text-center">
+                                                        <div class="text-center">
+                                                            <!-- <div class="progress flex-grow-1 me-2" style="height: 8px;">
                                                                 <div class="progress-bar" role="progressbar" style="width: <?php echo $student['overall']; ?>%"></div>
-                                                            </div>
+                                                            </div> -->
                                                             <span class="fw-bold"><?php echo number_format($student['overall'], 1); ?>%</span>
                                                         </div>
                                                     </td>
@@ -964,20 +1102,20 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                                         <thead>
                                             <tr>
                                                 <th>Nama</th>
-                                                <th>Kelas</th>
+                                                <th class="text-center">Kelas</th>
                                                 <th>Nilai</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($bottom_students as $student): ?>
                                                 <tr>
-                                                    <td><?php echo htmlspecialchars($student['nama']); ?></td>
-                                                    <td><?php echo htmlspecialchars($student['tingkat']); ?></td>
+                                                    <td><?php echo ucwords(htmlspecialchars($student['nama'])); ?></td>
+                                                    <td class="text-center"><?php echo htmlspecialchars($student['tingkat']); ?></td>
                                                     <td>
                                                         <div class="d-flex align-items-center">
-                                                            <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                            <!-- <div class="progress flex-grow-1 me-2" style="height: 8px;">
                                                                 <div class="progress-bar bg-warning" role="progressbar" style="width: <?php echo $student['overall']; ?>%"></div>
-                                                            </div>
+                                                            </div> -->
                                                             <span class="fw-bold"><?php echo number_format($student['overall'], 1); ?>%</span>
                                                         </div>
                                                     </td>
@@ -1024,14 +1162,14 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                                         <th>Sosial</th>
                                         <th>Kesehatan</th>
                                         <th>Karakter</th>
-                                        <th>Nilai Total</th>
+                                        <th>Total</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($students_data as $student): ?>
                                         <tr>
-                                            <td><?php echo htmlspecialchars($student['nama']); ?></td>
+                                            <td><?php echo ucwords(htmlspecialchars($student['nama'])); ?></td>
                                             <td><?php echo htmlspecialchars($student['tingkat']); ?></td>
                                             <td><?php echo number_format($student['akademik'], 1); ?>%</td>
                                             <td><?php echo number_format($student['ibadah'], 1); ?>%</td>
@@ -1041,16 +1179,15 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                                             <td><?php echo number_format($student['karakter'], 1); ?>%</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <!-- <div class="progress flex-grow-1 me-2" style="height: 8px;">
                                                         <div class="progress-bar" role="progressbar" style="width: <?php echo $student['overall']; ?>%"></div>
-                                                    </div>
+                                                    </div> -->
                                                     <span class="fw-bold"><?php echo number_format($student['overall'], 1); ?>%</span>
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="?siswa_id=<?php echo $student['id']; ?>&semester=<?php echo $selected_semester; ?>&tahun_ajaran=<?php echo $selected_tahun_ajaran; ?>" class="btn d-flex align-items-center gap-2 justify-content-center btn-sm color-web text-white btn-sm">
-                                                    <i class="bi bi-eye"></i>
-                                                    <p class="p-0 m-0" style="font-size: 12px;">Detail</p>
+                                                <a href="?siswa_id=<?php echo $student['id']; ?>&semester=<?php echo $selected_semester; ?>&tahun_ajaran=<?php echo $selected_tahun_ajaran; ?>" class="btn btn-sm btn-light border px-3 py-2 d-flex" style="border-radius: 15px;font-size:12px">
+                                                    <i class="bi bi-search me-2"></i>Detail
                                                 </a>
                                             </td>
                                         </tr>
@@ -1068,7 +1205,7 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
             </div>
 
             <script>
-                // Initialize DataTable
+                // Initialize DataTable with iOS-style UI
                 $(document).ready(function() {
                     $('#studentsTable').DataTable({
                         responsive: true,
@@ -1079,7 +1216,7 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                         ], // Add option to show all entries
                         language: {
                             search: "Cari:",
-                            lengthMenu: "Tampilkan _MENU_ data",
+                            lengthMenu: "_MENU_ Data",
                             info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
                             infoEmpty: "Tidak ada data yang tersedia",
                             infoFiltered: "(disaring dari total _MAX_ data)",
@@ -1094,15 +1231,94 @@ if ($siswa_id && isset($students_data[$siswa_id])) {
                         order: [
                             [8, 'desc']
                         ], // Sort by total score column
+                        dom: '<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center justify-items-center"l><"d-flex"f>>rtip',
                         drawCallback: function() {
-                            // Apply custom styling to active pagination button
+                            // iOS-style pagination buttons
+                            $('.paginate_button').css({
+                                'border-radius': '8px',
+                                'margin': '0 2px',
+                                'border': 'none',
+                                'transition': 'all 0.2s ease'
+                            });
+
+                            // iOS-style for current pagination button
                             $('.paginate_button.current').css({
                                 'background-color': 'rgb(218, 119, 86)',
-                                'border-color': 'rgb(218, 119, 86)',
-                                'color': 'white !important'
+                                'color': 'white',
+                                'font-weight': '500',
+                                'box-shadow': '0 2px 5px rgba(218, 119, 86, 0.3)'
                             });
-                            // Force text color since DataTables might override it
-                            $('.paginate_button.current').addClass('text-white');
+                            
+                            // Update previous and next buttons with primary color
+                            $('.paginate_button.previous, .paginate_button.next').css({
+                                'color': 'rgb(218, 119, 86)',
+                                'font-weight': '500'
+                            });
+
+                            // Update font size for info text (showing X of Y entries)
+                            $('.dataTables_info').css({
+                                'font-size': '12px'
+                            });
+
+                            // iOS-style search input
+                            $('input[type="search"]').css({
+                                'border-radius': '10px',
+                                'border': '1px solid #dee2e6',
+                                'padding': '8px 12px',
+                                'background-color': '#f8f9fa',
+                                'box-shadow': 'none',
+                                'transition': 'all 0.3s ease'
+                            });
+
+                            // iOS-style select
+                            $('.dataTables_length select').css({
+                                'border-radius': '10px',
+                                'border': '1px solid #dee2e6',
+                                'padding': '6px 10px',
+                                'background-color': '#f8f9fa',
+                                'appearance': 'none',
+                                'background-image': 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23464a4e\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")',
+                                'background-repeat': 'no-repeat',
+                                'background-position': 'right 8px center',
+                                'background-size': '12px',
+                                'padding-right': '28px'
+                            });
+
+                            // Apply horizontal alignment
+                            $('.dataTables_info, .dataTables_paginate').addClass('d-flex align-items-center mt-3');
+                            $('.dataTables_paginate').addClass('justify-content-end');
+                            
+                            // Add hover effect for pagination buttons
+                            $('.paginate_button.previous, .paginate_button.next').hover(
+                                function() {
+                                    $(this).css({
+                                        'background-color': 'rgba(218, 119, 86, 0.1)',
+                                        'color': 'rgb(218, 119, 86)'
+                                    });
+                                },
+                                function() {
+                                    $(this).css({
+                                        'background-color': 'transparent',
+                                        'color': 'rgb(218, 119, 86)'
+                                    });
+                                }
+                            );
+                        },
+                        initComplete: function() {
+                            // Add iOS-style focus effect for search input
+                            $('input[type="search"]').on('focus', function() {
+                                $(this).css({
+                                    'background-color': 'white',
+                                    'border-color': 'rgb(218, 119, 86)',
+                                    'box-shadow': '0 0 0 3px rgba(218, 119, 86, 0.15)'
+                                });
+                            }).on('blur', function() {
+                                $(this).css({
+                                    'background-color': '#f8f9fa',
+                                    'border-color': '#dee2e6',
+                                    'box-shadow': 'none'
+                                });
+                            });
                         }
                     });
                 });
