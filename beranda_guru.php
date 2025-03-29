@@ -100,7 +100,7 @@ $guru = mysqli_fetch_assoc($result);
     }
 
     body {
-        font-family: merriweather;
+        font-family: merriweather, sans-serif;
     }
 
     .color-web {

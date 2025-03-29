@@ -93,25 +93,6 @@ $guru = mysqli_fetch_assoc($result);
     .model-item.active {
         background-color: rgba(218, 119, 86, 0.1);
     }
-
-    /* Improved button styling for smoother transitions */
-    .btn {
-        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-            box-shadow 0.3s ease,
-            background-color 0.3s ease,
-            color 0.3s ease;
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn:active {
-        transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition-duration: 0.1s;
-    }
 </style>
 
 <body>
@@ -201,6 +182,210 @@ $guru = mysqli_fetch_assoc($result);
                 }
             }
 
+            .welcome-view {
+                padding: 2rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 80vh;
+            }
+
+            .welcome-card {
+                background-color: white;
+                border-radius: 16px;
+                padding: 2rem;
+                /* text-align: center; */
+                max-width: 650px;
+                width: 100%;
+                animation: fadeInUp 0.5s ease;
+            }
+
+            .welcome-avatar {
+                width: 50px;
+                height: 50px;
+                margin: 0 auto;
+                border-radius: 50%;
+                padding: 10px;
+                background-color: rgba(218, 119, 86, 0.1);
+            }
+
+            .welcome-input {
+                width: 100%;
+
+            }
+
+            .welcome-input .form-control {
+                border-radius: 10px 0 0 10px;
+                border: 1px solid #dee2e6;
+                resize: none;
+                height: 150%;
+                box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+            }
+
+            .welcome-input .btn {
+                border-radius: 0 10px 10px 0;
+            }
+
+            #welcome-user-input:focus {
+                box-shadow: 0 .5rem 1rem rgba(144, 144, 144, 0.17);
+                border-color: rgba(218, 119, 86, 0.5);
+            }
+
+            .welcome-input-container {
+                background-color: white;
+                border: 1px solid #dee2e6;
+                border-radius: 15px;
+                padding: 5px 10px;
+                box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
+                display: flex;
+                align-items: center;
+            }
+
+            .welcome-input-container .form-control {
+                border-radius: 0;
+                box-shadow: none;
+                padding: 8px;
+                max-height: 100px;
+                overflow-y: auto;
+            }
+
+            .welcome-model-selector {
+                min-width: 120px;
+                border-right: 1px solid #eee;
+                padding-right: 8px;
+                margin-right: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .welcome-model-selector:active {
+                transform: scale(0.98);
+            }
+
+            .welcome-model-selector button:focus {
+                box-shadow: none;
+                border-color: rgba(218, 119, 86, 0.7);
+                transform: scale(1);
+            }
+
+            .welcome-controls {
+                border-left: 1px solid #eee;
+                padding-left: 8px;
+                margin-left: 8px;
+            }
+
+            .welcome-model-dropdown {
+                width: 240px;
+                max-height: 320px;
+                overflow-y: auto;
+                z-index: 1050;
+                animation: fadeInUp 0.2s ease;
+            }
+
+            #welcome-user-input:focus {
+                outline: none;
+                box-shadow: none;
+            }
+
+            .quick-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                justify-content: left;
+                margin-top: 3rem;
+            }
+
+            .quick-btn {
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 15px;
+                padding: 8px 15px;
+                font-size: 12px;
+                transition: all 0.2s;
+                text-align: left;
+            }
+
+            .quick-btn:hover {
+                background-color: rgba(218, 119, 86, 0.1);
+                border-color: rgb(218, 119, 86);
+                transform: translateY(-2px);
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            #welcomeView,
+            #chatView {
+                transition: opacity 0.4s ease, transform 0.4s ease;
+            }
+
+            #welcomeView.fade-out {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            #chatView.fade-in {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            #chatView {
+                animation: fadeInUp 0.4s ease forwards;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .welcome-model-dropdown .model-item,
+            .welcome-model-dropdown .model-item.active,
+            .welcome-model-dropdown .model-item h6,
+            .welcome-model-dropdown .model-item.active h6,
+            .welcome-model-dropdown .model-item p,
+            .welcome-model-dropdown .model-item.active p {
+                color: #212529 !important;
+                /* Ensure text is always black */
+            }
+
+            .welcome-model-dropdown .model-item:hover {
+                background-color: #f8f9fa;
+            }
+
+            .welcome-model-dropdown .model-item.active {
+                background-color: rgba(218, 119, 86, 0.1);
+            }
+
+            /* Responsif untuk mobile */
+            @media (max-width: 768px) {
+                .welcome-card {
+                    padding: 1.5rem;
+                }
+
+                .quick-actions {
+                    flex-direction: column;
+                }
+
+                .quick-btn {
+                    width: 100%;
+                }
+            }
+
 
             @media (max-width: 768px) {
                 .menu-samping {
@@ -218,7 +403,197 @@ $guru = mysqli_fetch_assoc($result);
             }
         </style>
         <div class="container-fluid p-0 m-0 mt-4">
-            <div class="">
+            <!-- 1. WELCOME VIEW - Awalnya ditampilkan -->
+            <div id="welcomeView" class="welcome-view">
+                <div class="welcome-card">
+                    <!-- <img src="assets/smagaedu.png" class="welcome-avatar mb-3" alt="SAGA"> -->
+                    <h4 class="fw-bold mb-5" style="font-size: 30px;">Halo <?php
+                                                                            // Get first name only from guru's full name
+                                                                            $namaGuru = $guru['namaLengkap'];
+                                                                            $namaPertama = explode(' ', $namaGuru)[0];
+                                                                            echo $namaPertama;
+                                                                            ?>, Apa kabar?</h4>
+                    <!-- <p class="text-muted mb-3">Asisten AI Anda untuk membantu pembelajaran dan manajemen kelas menjadi lebih efektif.</p> -->
+
+                    <!-- Input message dalam welcome box -->
+                    <div class="welcome-input mb-3">
+                        <div class="input-group welcome-input-container">
+                            <!-- Model selector -->
+                            <div class="welcome-model-selector">
+                                <button class="btn border-0 d-flex align-items-center gap-1 text-muted"
+                                    id="welcome-model-btn" style="background: transparent;">
+                                    <i class="bi bi-stars" style="font-size: 14px;"></i>
+                                    <span id="welcome-model-name" style="font-size: 12px;">LLaMA 3.3 70B</span>
+                                </button>
+                            </div>
+
+                            <!-- Input textarea -->
+                            <textarea id="welcome-user-input" class="form-control border-0"
+                                placeholder="Tanyakan sesuatu kepada SAGA apapun yang Anda pikirkan" rows="2"></textarea>
+
+                            <!-- File upload and send buttons -->
+                            <div class="welcome-controls d-flex">
+                                <button class="btn border-0" style="background: transparent;"
+                                    onclick="document.getElementById('welcome-file-input').click()">
+                                    <i class="bi bi-paperclip text-muted"></i>
+                                    <input type="file" id="welcome-file-input" accept=".pdf,.doc,.docx,.xlsx,.xls" style="display: none;">
+                                </button>
+
+                                <button id="welcome-send-button" class="btn rounded-4" style="background-color: rgb(218, 119, 86); color: white;">
+                                    <i class="bi bi-arrow-up"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Dropdown untuk model selection -->
+                        <ul id="welcome-model-list" class="dropdown-menu welcome-model-dropdown" style="display: none;">
+                            <!-- Model items will be populated by JavaScript -->
+                        </ul>
+                    </div>
+
+                    <!-- <p class="text-muted small mb-2">Atau pilih pertanyaan cepat:</p> -->
+                    <div class="quick-actions">
+                        <button class="btn quick-btn" onclick="sendQuickQuestion('Bagaimana cara membuat materi pembelajaran yang menarik?')">
+                            <i class="bi bi-file-earmark-text me-2"></i>Materi Pembelajaran
+                        </button>
+                        <button class="btn quick-btn" onclick="sendQuickQuestion('Berikan saya strategi manajemen kelas untuk siswa yang tidak fokus')">
+                            <i class="bi bi-people me-2"></i>Manajemen Kelas
+                        </button>
+                        <button class="btn quick-btn" onclick="sendQuickQuestion('Berikan ide kegiatan kelompok untuk pelajaran sains')">
+                            <i class="bi bi-lightbulb me-2"></i>Ide Kegiatan
+                        </button>
+                        <button class="btn quick-btn" onclick="sendQuickQuestion('Berikan contoh rubrik penilaian untuk presentasi siswa')">
+                            <i class="bi bi-clipboard-check me-2"></i>Rubrik Penilaian
+                        </button>
+                        <button class="btn quick-btn" onclick="sendQuickQuestion('Bagaimana cara memotivasi siswa yang kurang bersemangat belajar?')">
+                            <i class="bi bi-emoji-smile me-2"></i>Motivasi Siswa
+                        </button>
+                        <button class="btn quick-btn" onclick="sendQuickQuestion('Rekomendasi teknologi pembelajaran untuk meningkatkan partisipasi siswa')">
+                            <i class="bi bi-laptop me-2"></i>Teknologi Pembelajaran
+                        </button>
+                        <button class="btn quick-btn" onclick="sendQuickQuestion('Cara menangani konflik antar siswa di kelas')">
+                            <i class="bi bi-shield me-2"></i>Resolusi Konflik
+                        </button>
+                        <button class="btn quick-btn" onclick="sendQuickQuestion('Strategi untuk pendidikan inklusif di kelas reguler')">
+                            <i class="bi bi-person-plus me-2"></i>Pendidikan Inklusif
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Clone model items dari chat view ke welcome view
+                    const populateWelcomeModelList = () => {
+                        const welcomeModelList = document.getElementById('welcome-model-list');
+                        const originalModelList = document.getElementById('model-list-container');
+
+                        if (welcomeModelList && originalModelList) {
+                            welcomeModelList.innerHTML = originalModelList.innerHTML;
+
+                            // Add event listeners to the cloned items
+                            welcomeModelList.querySelectorAll('.model-item').forEach(item => {
+                                item.addEventListener('click', function() {
+                                    const modelId = this.dataset.modelId;
+                                    setActiveModel(modelId);
+                                    document.getElementById('welcome-model-name').textContent =
+                                        this.querySelector('h6').textContent;
+                                    welcomeModelList.style.display = 'none';
+                                });
+                            });
+                        }
+                    };
+
+                    // Toggle welcome model dropdown
+                    const welcomeModelBtn = document.getElementById('welcome-model-btn');
+                    if (welcomeModelBtn) {
+                        welcomeModelBtn.addEventListener('click', function(e) {
+                            const modelList = document.getElementById('welcome-model-list');
+                            populateWelcomeModelList();
+
+                            // Toggle display
+                            if (modelList.style.display === 'none') {
+                                // Show dropdown
+                                modelList.style.display = 'block';
+
+                                // Position the dropdown below the button
+                                const btnRect = welcomeModelBtn.getBoundingClientRect();
+                                modelList.style.position = 'absolute';
+                                modelList.style.top = `${btnRect.bottom + 5}px`; // Position below button
+                                modelList.style.left = `${btnRect.left}px`;
+
+                                // Add document click listener to detect outside clicks
+                                setTimeout(() => {
+                                    document.addEventListener('click', documentClickHandler);
+                                }, 0);
+                            } else {
+                                // Hide dropdown
+                                modelList.style.display = 'none';
+                                document.removeEventListener('click', documentClickHandler);
+                            }
+
+                            // Prevent this click from immediately closing the dropdown
+                            e.stopPropagation();
+                        });
+
+                        // Function to handle document clicks
+                        function documentClickHandler(e) {
+                            const modelList = document.getElementById('welcome-model-list');
+                            const welcomeModelBtn = document.getElementById('welcome-model-btn');
+
+                            // If click is outside both the dropdown and the button, close the dropdown
+                            if (!modelList.contains(e.target) && !welcomeModelBtn.contains(e.target)) {
+                                modelList.style.display = 'none';
+                                document.removeEventListener('click', documentClickHandler);
+                            }
+                        }
+                    }
+
+                    // File upload from welcome view
+                    const welcomeFileInput = document.getElementById('welcome-file-input');
+                    if (welcomeFileInput) {
+                        welcomeFileInput.addEventListener('change', async function(e) {
+                            const file = e.target.files[0];
+                            if (file) {
+                                // Switch to chat view first
+                                switchToChat();
+
+                                // Then process the file same as in chat view
+                                const preview = document.getElementById('document-preview');
+                                preview.style.display = 'flex';
+                                preview.style.opacity = '1';
+
+                                const formData = new FormData();
+                                formData.append('file', file);
+
+                                try {
+                                    const response = await fetch('process_document.php', {
+                                        method: 'POST',
+                                        body: formData
+                                    });
+                                    const result = await response.json();
+
+                                    if (result.success) {
+                                        window.documentContent = result.content;
+                                        window.documentFileName = file.name;
+                                        addDocumentToContainer(file.name);
+                                    }
+                                } catch (error) {
+                                    console.error("Error processing file:", error);
+                                } finally {
+                                    preview.style.opacity = '0';
+                                    setTimeout(() => {
+                                        preview.style.display = 'none';
+                                    }, 300);
+                                }
+                            }
+                        });
+                    }
+                });
+            </script>
+
+            <!-- view pad chat mode -->
+            <div id="chatView" class="chat-view" style="display: none;">
                 <div class="d-flex justify-content-between">
                     <div class="headerChat">
                         <h3 class="mb-0 fw-bold">Saga</h3>
@@ -675,6 +1050,15 @@ $guru = mysqli_fetch_assoc($result);
                             const displayElement = document.getElementById('current-model-name');
                             if (displayElement && selectedModel) {
                                 displayElement.textContent = selectedModel.name;
+                            }
+
+                            // Di dalam fungsi setActiveModel, tambahkan:
+                            const welcomeModelName = document.getElementById('welcome-model-name');
+                            if (welcomeModelName) {
+                                const selectedModel = aiModels.find(m => m.id === modelId);
+                                if (selectedModel) {
+                                    welcomeModelName.textContent = selectedModel.name;
+                                }
                             }
 
                             // Simpan di localStorage untuk persistensi
@@ -2496,6 +2880,44 @@ $guru = mysqli_fetch_assoc($result);
                         }
                     });
 
+                    // Dapatkan referensi ke welcome container
+                    const welcomeContainer = document.getElementById('welcomeContainer');
+
+                    // Sembunyikan welcome message saat user mulai mengetik
+                    document.getElementById('user-input').addEventListener('input', () => {
+                        if (welcomeContainer) {
+                            welcomeContainer.style.opacity = '0';
+                            welcomeContainer.style.transform = 'translate(-50%, -60%)';
+                            setTimeout(() => {
+                                welcomeContainer.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+
+                    // Juga sembunyikan saat user klik tombol kirim
+                    document.getElementById('send-button').addEventListener('click', () => {
+                        if (welcomeContainer) {
+                            welcomeContainer.style.opacity = '0';
+                            welcomeContainer.style.transform = 'translate(-50%, -60%)';
+                            setTimeout(() => {
+                                welcomeContainer.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+
+                    // Tambahkan ke fungsi sendMessage yang sudah ada
+                    const originalSendMessage = sendMessage;
+                    sendMessage = async function() {
+                        if (welcomeContainer) {
+                            welcomeContainer.style.opacity = '0';
+                            welcomeContainer.style.transform = 'translate(-50%, -60%)';
+                            setTimeout(() => {
+                                welcomeContainer.style.display = 'none';
+                            }, 300);
+                        }
+                        await originalSendMessage.apply(this, arguments);
+                    };
+
                     function loadChat(pesan, respons) {
                         chatContainer.innerHTML = '';
                         addMessage('user', pesan);
@@ -3475,7 +3897,7 @@ $guru = mysqli_fetch_assoc($result);
             // Gunakan model yang dipilih dari dropdown
             const modelId = window.activeModelId || 'llama-3.3-70b-versatile';
 
-            
+
 
             // Deep thinking tetap bisa digunakan
             const isDeepThinking = document.getElementById('deepThinkingToggle').checked;
@@ -3775,6 +4197,80 @@ $guru = mysqli_fetch_assoc($result);
         // Event listener untuk tombol Kirim
         sendButton.addEventListener('click', sendMessage);
 
+        // Tambahkan ini di akhir file sebelum  terakhir
+
+        // Fungsi untuk beralih dari welcome view ke chat view
+        function switchToChat() {
+            const welcomeView = document.getElementById('welcomeView');
+            const chatView = document.getElementById('chatView');
+
+            // Add fade-out class to welcome view
+            welcomeView.classList.add('fade-out');
+
+            // After animation completes, hide welcome view and show chat view
+            setTimeout(() => {
+                welcomeView.style.display = 'none';
+                chatView.style.display = 'block';
+
+                // Reset classes for next time
+                welcomeView.classList.remove('fade-out');
+            }, 400); // Match timing with CSS transition
+        }
+        // Fungsi untuk mengirim pertanyaan cepat dari welcome view
+        function sendQuickQuestion(question) {
+            // Set pertanyaan ke input utama
+            document.getElementById('user-input').value = question;
+
+            // Beralih ke tampilan chat
+            switchToChat();
+
+            // Kirim pesan
+            sendMessage();
+        }
+
+        // Tambahkan event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Welcome input dan button
+            const welcomeInput = document.getElementById('welcome-user-input');
+            const welcomeSendBtn = document.getElementById('welcome-send-button');
+
+            // Event untuk welcome input - Enter untuk kirim
+            if (welcomeInput) {
+                welcomeInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        const message = this.value.trim();
+                        if (message) {
+                            // Set pesan ke input utama
+                            document.getElementById('user-input').value = message;
+
+                            // Beralih ke tampilan chat
+                            switchToChat();
+
+                            // Kirim pesan
+                            sendMessage();
+                        }
+                    }
+                });
+            }
+
+            // Event untuk welcome send button
+            if (welcomeSendBtn) {
+                welcomeSendBtn.addEventListener('click', function() {
+                    const message = welcomeInput.value.trim();
+                    if (message) {
+                        // Set pesan ke input utama
+                        document.getElementById('user-input').value = message;
+
+                        // Beralih ke tampilan chat
+                        switchToChat();
+
+                        // Kirim pesan
+                        sendMessage();
+                    }
+                });
+            }
+        });
         // Event listener untuk tombol Enter
         userInput.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {

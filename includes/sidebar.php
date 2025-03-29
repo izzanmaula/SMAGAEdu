@@ -4,7 +4,7 @@ $is_admin = $_SESSION['level'] == 'admin';
 ?>
 
 <!-- style global -->
-<style>
+<!-- <style>
     /* Button click effect for all buttons */
     button {
         transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -25,7 +25,7 @@ $is_admin = $_SESSION['level'] == 'admin';
         transform: scale(0.96) translateY(0);
         box-shadow: 0 1px 4px rgba(0,0,0,0.1);
     }
-</style>
+</style> -->
 
 
 <div class="col-auto vh-100 p-3 p-md-4 menu-samping d-none d-md-block" style="background-color:rgb(238, 236, 226)">
