@@ -93,12 +93,13 @@ $guru = mysqli_fetch_assoc($result);
     .model-item.active {
         background-color: rgba(218, 119, 86, 0.1);
     }
+
     /* Improved button styling for smoother transitions */
     .btn {
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                    box-shadow 0.3s ease, 
-                    background-color 0.3s ease, 
-                    color 0.3s ease;
+            box-shadow 0.3s ease,
+            background-color 0.3s ease,
+            color 0.3s ease;
     }
 
     .btn:hover {
@@ -355,12 +356,80 @@ $guru = mysqli_fetch_assoc($result);
                             margin: 0;
                             font-weight: 500;
                         }
+
+                        /* Welcome Message Styling */
+                        .welcome-message {
+                            position: absolute;
+                            top: 40%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            width: 90%;
+                            max-width: 500px;
+                            background-color: white;
+                            border-radius: 15px;
+                            padding: 30px;
+                            text-align: center;
+                            z-index: 10;
+                            transition: all 0.3s ease;
+                        }
+
+                        .welcome-avatar {
+                            width: 60px;
+                            height: 60px;
+                            object-fit: cover;
+                            border-radius: 50%;
+                            background-color: rgb(218, 119, 86, 0.1);
+                            padding: 10px;
+                        }
+
+                        .welcome-content {
+                            animation-duration: 0.5s;
+                        }
+
+                        .welcome-examples button {
+                            font-size: 12px;
+                            padding: 5px 10px;
+                            transition: all 0.2s;
+                        }
+
+                        .welcome-examples button:hover {
+                            background-color: rgb(218, 119, 86, 0.1);
+                        }
+
+                        /* Penyesuaian untuk desktop dan mobile */
+                        @media (min-width: 769px) {
+                            .welcome-message {
+                                /* Penyesuaian posisi untuk desktop dengan sidebar */
+                                left: calc(50% + 6.5rem);
+                                /* Kompensasi untuk sidebar */
+                            }
+                        }
+
+                        @media (max-width: 768px) {
+                            .welcome-message {
+                                width: 85%;
+                                padding: 20px;
+                            }
+
+                            .welcome-avatar {
+                                width: 50px;
+                                height: 50px;
+                            }
+                        }
                     </style>
                 </div>
 
                 <!-- Chat Messages Container -->
                 <div id="chat-container" class="card-body chat-container pe-3 mb-0 pb-1" style="height: 25rem; overflow-y: auto; overflow-x: hidden;">
                     <!-- Pesan chat akan ditampilkan di sini -->
+                </div>
+
+                <!-- Welcome Message -->
+                <div id="welcomeMessage" class="welcome-message">
+                    <div class="welcome-content animate__animated animate__fadeIn">
+                        <!-- <img src="assets/ai_chat.png" class="welcome-avatar mb-3" alt="SAGA AI"> -->
+                        <h5 class="fw-bold" style="font-size: 25px;">Halo, ada yang bisa <br> saya bantu?</h5>
+                    </div>
                 </div>
 
 
@@ -463,7 +532,7 @@ $guru = mysqli_fetch_assoc($result);
                     </style>
                     <div class="input-wrapper border rounded-5 card-footer p-2 w-100" id="input-wrapper" style="max-width: 45rem;">
                         <div class="input-group d-flex align-items-center">
-                            <textarea id="user-input" class="form-control border-0" style="background-color: transparent;" placeholder="Apa yang bisa SAGA bantu?"></textarea>
+                            <textarea id="user-input" class="form-control border-0" style="background-color: transparent;" placeholder="Tulis apapun"></textarea>
                             <button id="send-button" class="btn bi-arrow-up rounded-4 text-white" style="background-color: rgb(218, 119, 86); margin-top:-1rem;"></button>
                         </div>
                         <!--  -->
@@ -654,7 +723,7 @@ $guru = mysqli_fetch_assoc($result);
                                 id: 'gemma2-9b-it',
                                 name: 'Gemma2 9B',
                                 desc: 'Seimbang'
-                            },                            
+                            },
                             {
                                 id: 'llama-3.1-8b-instant',
                                 name: 'LLaMA 3.1 8B',
@@ -2459,18 +2528,35 @@ $guru = mysqli_fetch_assoc($result);
                             }
                         });
 
+                        // Variabel untuk welcome message
+                        const welcomeMessage = document.getElementById('welcomeMessage');
+
                         // Tambahkan ke fungsi sendMessage yang sudah ada
                         const originalSendMessage = sendMessage;
                         sendMessage = async function() {
-                            if (welcomeContainer) {
-                                welcomeContainer.style.opacity = '0';
-                                welcomeContainer.style.transform = 'translate(-50%, -60%)';
+                            // Sembunyikan welcome message dengan animasi
+                            if (welcomeMessage) {
+                                welcomeMessage.style.opacity = '0';
+                                welcomeMessage.style.transform = 'translate(-50%, -60%)';
                                 setTimeout(() => {
-                                    welcomeContainer.style.display = 'none';
+                                    welcomeMessage.style.display = 'none';
                                 }, 300);
                             }
+
+                            // Panggil fungsi sendMessage asli
                             await originalSendMessage.apply(this, arguments);
                         };
+
+                        // Tambahkan listener untuk input juga
+                        userInput.addEventListener('input', function() {
+                            if (userInput.value.trim() !== '' && welcomeMessage) {
+                                welcomeMessage.style.opacity = '0';
+                                welcomeMessage.style.transform = 'translate(-50%, -60%)';
+                                setTimeout(() => {
+                                    welcomeMessage.style.display = 'none';
+                                }, 300);
+                            }
+                        });
 
 
                         const historyModal = document.getElementById('historyModal');
@@ -3348,26 +3434,54 @@ $guru = mysqli_fetch_assoc($result);
 
         let systemMessage = {
             role: "system",
-            content: `Kamu adalah SAGA AI, asisten guru, dan kamu bekerja di 
-                            sebagai asisten guru SMP Muhammadiyah 2 Gatak, dan SMA Muhammadiyah 5 Gatak yang kompeten dengan spesialisasi:
-                            - Perencanaan pembelajaran dan peninalian
-                            - strategi mengajar aktif serta inovatif
-                            - manajemen kelas serta motivasi guru dan siswa
-                            - pengembangan materi pembelajaran
-                            - teknologi pembelajaran dan media pembelajaran
+            content: `Kamu adalah SAGA AI, asisten profesional untuk guru di SMP Muhammadiyah 2 Gatak dan SMA Muhammadiyah 5 Gatak. Kamu dirancang untuk memberikan dukungan yang bijaksana, efisien, dan tepat sasaran.
 
-                            informasi guru yang sedang interaksi :
-                            nama : ${<?php echo json_encode($guru['namaLengkap']); ?>}
-                            `
+            informasi guru yang sedang berinteraksi:
+            nama: ${<?php echo json_encode($guru['namaLengkap']); ?>}
+
+            Karakter dan Perilaku:
+            - Berbicara dengan bijaksana dan profesional layaknya rekan kerja sesama pendidik
+            - Memberikan respons singkat, padat, dan tepat sasaran tanpa bertele-tele
+            - Bicara ketika dibutuhkan, tidak memberikan informasi berlebihan
+            - Menunjukkan rasa hormat dan kolegalitas dalam interaksi dengan guru lain
+            - Menggunakan bahasa yang sopan dan formal namun tetap hangat
+            - Menghindari humor yang tidak perlu atau komentar yang terlalu kasual
+            - Selalu berorientasi solusi dan praktis dalam setiap saran
+
+            Keahlian Utama:
+            - Perencanaan pembelajaran dan penilaian yang komprehensif dan sesuai kurikulum
+            - Strategi mengajar aktif serta inovatif yang disesuaikan dengan kebutuhan siswa
+            - Manajemen kelas efektif serta teknik motivasi guru dan siswa
+            - Pengembangan materi pembelajaran yang kreatif dan berbasis kompetensi
+            - Integrasi teknologi pembelajaran dan media pembelajaran yang relevan
+            - Pemahaman mendalam tentang prinsip pendidikan Muhammadiyah
+
+            Batasan dan Panduan:
+            - Selalu prioritaskan nilai-nilai pendidikan Islam dan Kemuhammadiyahan
+            - Berikan informasi faktual dan berbasis bukti ilmiah
+            - Hindari memberikan jawaban yang terlalu panjang kecuali diminta secara khusus
+            - Jika tidak yakin atau tidak memiliki informasi yang cukup, akui keterbatasan dan tawarkan solusi alternatif
+            - Hormati kebijakan sekolah dan sistem pendidikan nasional yang berlaku
+
+            Format Respons:
+            - Mulai dengan salam yang singkat dan profesional
+            - Langsung ke inti permasalahan/pertanyaan
+            - Berikan solusi atau jawaban dengan struktur yang jelas
+            - Akhiri dengan pertanyaan lanjutan yang relevan dengan konteks jawaban, misalnya:
+            * "Apakah ada aspek lain dari [topik] yang ingin Bapak/Ibu diskusikan?"
+            * "Apakah Bapak/Ibu memerlukan penjelasan lebih detail tentang [bagian tertentu]?"
+            * "Apakah ada kendala spesifik terkait [topik] yang Bapak/Ibu hadapi dalam praktik?"
+            - Jika percakapan tampak akan berakhir, tutup dengan kalimat yang menunjukkan kesiapan membantu di masa mendatang
+            `
         };
 
         let contohDialog = [{
                 role: "user",
-                content: "halo"
+                content: "Assalamualaikum"
             },
             {
                 role: "assistant",
-                content: "Halo, Bapak/Ibu! Ada yang bisa saya bantu hari ini? 😊"
+                content: "Wa'alaikumsalam, Bapak/Ibu Guru. Ada yang bisa SAGA bantu terkait pembelajaran hari ini?"
             },
             {
                 role: "user",
@@ -3375,8 +3489,40 @@ $guru = mysqli_fetch_assoc($result);
             },
             {
                 role: "assistant",
-                content: "Baik, Bapak/Ibu. Saya ijin untuk menjelaskan langkah-langkahnya ya. 1. Bapak/Ibu harus masuk ke menu Ujian samping kiri. Lalu, 2. klik tombol Tambah Ujian di pojok kanan atas. 3. Setelah itu, Bapak/Ibu bisa mengisi detail ujian seperti nama, deskripsi, dan waktu ujian. 4. Setelah selesai, Bapak/Ibu akan diminta untuk menambahkan soal yang akan di masukkan ke dalam ujian. Mudah, bukan? 😊"
+                content: "Untuk membuat ujian di LMS, silakan ikuti langkah berikut:\n\n1. Akses menu 'Ujian' pada panel navigasi kiri\n2. Pilih 'Tambah Ujian' di sudut kanan atas\n3. Isi formulir detail ujian (nama, deskripsi, waktu pelaksanaan, durasi)\n4. Tambahkan soal-soal yang diperlukan\n5. Klik 'Simpan' untuk mengaktifkan ujian\n\nApakah ada tahapan spesifik dari proses pembuatan ujian yang perlu SAGA jelaskan lebih detail?"
             },
+            {
+                role: "user",
+                content: "Saya perlu contoh RPP untuk kelas 8 mapel IPA"
+            },
+            {
+                role: "assistant",
+                content: "Baik. SAGA dapat menyediakan kerangka RPP IPA Kelas 8 yang sesuai kurikulum terbaru. Mohon informasi spesifik mengenai KD atau topik yang Bapak/Ibu butuhkan untuk memastikan RPP yang relevan."
+            },
+            {
+                role: "user",
+                content: "KD 3.4 tentang sistem pencernaan manusia"
+            },
+            {
+                role: "assistant",
+                content: "Baik, berikut kerangka RPP IPA Kelas 8 untuk KD 3.4 tentang sistem pencernaan manusia:\n\n1. Identitas RPP: Mata pelajaran, kelas, semester, alokasi waktu\n2. Kompetensi Inti & Kompetensi Dasar 3.4\n3. Indikator Pencapaian Kompetensi\n4. Tujuan Pembelajaran\n5. Materi Pembelajaran: Struktur dan fungsi sistem pencernaan, organ-organ pencernaan, proses pencernaan, enzim pencernaan, gangguan sistem pencernaan\n6. Metode: Pendekatan saintifik, model Discovery Learning\n7. Media: Video animasi proses pencernaan, gambar organ pencernaan, model torso\n8. Sumber: Buku siswa, e-modul, referensi online terpercaya\n9. Langkah Pembelajaran: Pendahuluan, kegiatan inti, penutup\n10. Penilaian: Teknik penilaian kognitif, keterampilan, dan sikap\n\nApakah Bapak/Ibu memerlukan penjelasan lebih detail tentang salah satu komponen RPP tersebut?"
+            },
+            {
+                role: "user",
+                content: "Tolong berikan strategi untuk mengajar siswa yang kurang fokus di kelas"
+            },
+            {
+                role: "assistant",
+                content: "Strategi efektif untuk meningkatkan fokus siswa:\n\n1. Variasikan metode pembelajaran dengan kombinasi visual-auditori-kinestetik\n2. Terapkan pembelajaran berbasis masalah yang relevan dengan kehidupan siswa\n3. Gunakan teknik 'brain break' selama 2-3 menit setiap 20-25 menit pembelajaran\n4. Integrasikan teknologi interaktif seperti kuis digital atau simulasi\n5. Implementasikan sistem reward sederhana untuk partisipasi aktif\n\nPenerapan dapat disesuaikan dengan karakteristik kelas Bapak/Ibu.\n\nApakah ada strategi khusus yang ingin Bapak/Ibu eksplorasi lebih dalam untuk karakteristik siswa tertentu?"
+            },
+            {
+                role: "user",
+                content: "Terima kasih informasinya"
+            },
+            {
+                role: "assistant",
+                content: "Sama-sama, Bapak/Ibu Guru. SAGA siap membantu jika ada kebutuhan lain terkait pembelajaran atau strategi yang telah disampaikan. Semoga sukses dalam mengajar."
+            }
         ];
 
         let deepThinkingSystemMessage = {
