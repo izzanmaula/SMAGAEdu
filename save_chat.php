@@ -1,154 +1,84 @@
 <?php
-header('Content-Type: application/json');
+session_start();
 require "koneksi.php";
 
-try {
-    // Determine input method
-    $input = $_SERVER['CONTENT_TYPE'] ?? '';
-    
-    if (strpos($input, 'application/json') !== false) {
-        // JSON input
-        $rawInput = file_get_contents('php://input');
-        $data = json_decode($rawInput, true);
-        
-        if (!$data) {
-            throw new Exception('Invalid JSON data');
-        }
-        
-        $userId = mysqli_real_escape_string($koneksi, $data['user_id'] ?? '');
-        $pesan = mysqli_real_escape_string($koneksi, $data['pesan'] ?? '');
-        $respons = mysqli_real_escape_string($koneksi, $data['respons'] ?? '');
-    } else {
-        // Form data input
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            throw new Exception('Invalid request method');
-        }
-        
-        $userId = mysqli_real_escape_string($koneksi, $_POST['user_id'] ?? '');
-        $pesan = mysqli_real_escape_string($koneksi, $_POST['pesan'] ?? '');
-        $respons = mysqli_real_escape_string($koneksi, $_POST['respons'] ?? '');
-    }
-    
-    // Validate required fields
-    if (empty($userId) || empty($pesan) || empty($respons)) {
-        throw new Exception('Missing required fields');
-    }
+// Tangkap data dari request
+$data = json_decode(file_get_contents('php://input'), true);
 
-    // Get or create session
-    $result = $koneksi->query("SELECT id FROM ai_chat_sessions 
-        WHERE user_id = '$userId' 
-        AND DATE(created_at) = CURDATE() 
-        AND closed_at IS NULL 
-        ORDER BY id DESC LIMIT 1");
-
-    if ($result->num_rows == 0) {
-        // Create new session
-        $topic = getTopicSummary([['pesan' => $pesan, 'respons' => $respons]]);
-        $stmt = $koneksi->prepare("INSERT INTO ai_chat_sessions (user_id, title) VALUES (?, ?)");
-        $stmt->bind_param("ss", $userId, $topic);
-        $stmt->execute();
-        $session_id = $koneksi->insert_id;
-    } else {
-        // Update existing session
-        $row = $result->fetch_assoc();
-        $session_id = $row['id'];
-        
-        $convResult = $koneksi->query("SELECT pesan, respons FROM ai_chat_history WHERE session_id = $session_id");
-        $conversation = [];
-        while ($chatRow = $convResult->fetch_assoc()) {
-            $conversation[] = $chatRow;
-        }
-        $conversation[] = ['pesan' => $pesan, 'respons' => $respons];
-        
-        $topic = getTopicSummary($conversation);
-        
-        $stmt = $koneksi->prepare("UPDATE ai_chat_sessions SET title = ? WHERE id = ?");
-        $stmt->bind_param("si", $topic, $session_id);
-        $stmt->execute();
-    }
-
-    // Save message
-    $stmt = $koneksi->prepare("INSERT INTO ai_chat_history (user_id, session_id, pesan, respons) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("siss", $userId, $session_id, $pesan, $respons);
-    $stmt->execute();
-
-    echo json_encode(['success' => true, 'session_id' => $session_id, 'topic' => $topic]);
-
-} catch (JsonException $e) {
-    error_log('JSON Parse Error: ' . $e->getMessage());
-    echo json_encode([
-        'success' => false, 
-        'error' => 'Invalid JSON: ' . $e->getMessage(),
-        'raw_input' => $rawInput
-    ]);
-} catch (Exception $e) {
-    error_log('Save chat error: ' . $e->getMessage());
-    
-    echo json_encode([
-        'success' => false, 
-        'error' => $e->getMessage(),
-        'raw_input' => $rawInput
-    ]);
+// Pastikan user sudah login dan data lengkap
+if (!isset($_SESSION['userid']) || !isset($data['pesan']) || !isset($data['respons'])) {
+    echo json_encode(['success' => false, 'error' => 'Invalid data']);
+    exit;
 }
 
+$user_id = $_SESSION['userid'];
+$pesan = $data['pesan'];
+$respons = $data['respons'];
 
-function getTopicSummary($conversation) {
-    $apiKey = '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';
-    $apiEndpoint = 'https://api.groq.com/openai/v1/chat/completions';
-
-    // Error handling for empty conversation
-    if (empty($conversation)) {
-        return "Percakapan Baru";
+// Cek apakah ada session chat aktif
+if (!isset($_SESSION['active_chat_session'])) {
+    // Jika tidak ada, buat session baru
+    $query = "INSERT INTO ai_chat_sessions (user_id, title, created_at) 
+              VALUES (?, ?, NOW())";
+    
+    $title = substr($pesan, 0, 30) . (strlen($pesan) > 30 ? '...' : '');
+    
+    $stmt = mysqli_prepare($koneksi, $query);
+    mysqli_stmt_bind_param($stmt, 'ss', $user_id, $title);
+    $result = mysqli_stmt_execute($stmt);
+    
+    if (!$result) {
+        echo json_encode(['success' => false, 'error' => 'Failed to create session']);
+        exit;
     }
-
-    $messages = [
-        ["role" => "system", "content" => "Berikan komentar mengenai percakapan berikut:"],
-    ];
-
-    // Add error handling for message construction
-    try {
-        foreach ($conversation as $chat) {
-            if (!isset($chat['pesan']) || !isset($chat['respons'])) {
-                continue;
-            }
-            $messages[] = ["role" => "user", "content" => $chat['pesan']];
-            $messages[] = ["role" => "assistant", "content" => $chat['respons']];
-        }
-
-        $context = stream_context_create([
-            'http' => [
-                'method' => 'POST',
-                'header' => [
-                    'Authorization: Bearer ' . $apiKey,
-                    'Content-Type: application/json'
-                ],
-                'content' => json_encode([
-                    'model' => 'llama-3.3-70b-versatile',
-                    'messages' => $messages,
-                    'temperature' => 0.3,
-                    'max_tokens' => 30,
-                    'top_p' => 1
-                ]),
-                'ignore_errors' => true
-            ]
-        ]);
+    
+    $_SESSION['active_chat_session'] = mysqli_insert_id($koneksi);
+} else {
+    // Verifikasi bahwa session masih valid di database
+    $session_id = $_SESSION['active_chat_session'];
+    $check_query = "SELECT id FROM ai_chat_sessions WHERE id = ?";
+    $check_stmt = mysqli_prepare($koneksi, $check_query);
+    mysqli_stmt_bind_param($check_stmt, 'i', $session_id);
+    mysqli_stmt_execute($check_stmt);
+    $check_result = mysqli_stmt_get_result($check_stmt);
+    
+    if (mysqli_num_rows($check_result) === 0) {
+        // Session tidak valid, buat baru
+        $query = "INSERT INTO ai_chat_sessions (user_id, title, created_at) 
+                  VALUES (?, ?, NOW())";
         
-        $response = @file_get_contents($apiEndpoint, false, $context);
+        $title = substr($pesan, 0, 30) . (strlen($pesan) > 30 ? '...' : '');
         
-        if ($response === false) {
-            throw new Exception('Failed to get topic from API');
+        $stmt = mysqli_prepare($koneksi, $query);
+        mysqli_stmt_bind_param($stmt, 'ss', $user_id, $title);
+        $result = mysqli_stmt_execute($stmt);
+        
+        if (!$result) {
+            echo json_encode(['success' => false, 'error' => 'Failed to create new session']);
+            exit;
         }
         
-        $result = json_decode($response, true);
-        if (!isset($result['choices'][0]['message']['content'])) {
-            throw new Exception('Invalid API response format');
-        }
-        
-        return trim($result['choices'][0]['message']['content']);
-
-    } catch (Exception $e) {
-        error_log('Topic generation error: ' . $e->getMessage());
-        return substr($conversation[0]['pesan'] ?? "Percakapan Baru", 0, 50);
+        $_SESSION['active_chat_session'] = mysqli_insert_id($koneksi);
     }
+}
+
+// Simpan pesan dengan session ID yang benar
+$session_id = $_SESSION['active_chat_session'];
+
+// Gunakan nama kolom yang benar untuk foreign key
+$query = "INSERT INTO ai_chat_messages (ai_chat_sessions_id, pesan, respons, created_at) 
+          VALUES (?, ?, ?, NOW())";
+
+$stmt = mysqli_prepare($koneksi, $query);
+mysqli_stmt_bind_param($stmt, 'iss', $session_id, $pesan, $respons);
+$result = mysqli_stmt_execute($stmt);
+
+if ($result) {
+    echo json_encode([
+        'success' => true, 
+        'session_id' => $session_id
+    ]);
+} else {
+    echo json_encode(['success' => false, 'error' => mysqli_error($koneksi)]);
 }
 ?>

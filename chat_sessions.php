@@ -2,24 +2,34 @@
 session_start();
 require "koneksi.php";
 
-$userid = $_SESSION['userid'];
+header('Content-Type: application/json');
 
+if (!isset($_SESSION['userid'])) {
+    echo json_encode([]);
+    exit;
+}
+
+$user_id = $_SESSION['userid'];
+
+// Ambil pesan pertama untuk setiap session sebagai judul
 $query = "SELECT s.*, 
-    COUNT(h.id) as message_count,
-    MIN(h.pesan) as title
-    FROM ai_chat_sessions s
-    JOIN ai_chat_history h ON s.id = h.session_id
-    WHERE s.user_id = ?
-    GROUP BY s.id
-    ORDER BY s.created_at DESC";
+          (SELECT COUNT(*) FROM ai_chat_messages m WHERE m.ai_chat_sessions_id = s.id) as message_count,
+          (SELECT pesan FROM ai_chat_messages m WHERE m.ai_chat_sessions_id = s.id ORDER BY m.created_at ASC LIMIT 1) as first_message
+          FROM ai_chat_sessions s
+          WHERE s.user_id = ?
+          ORDER BY s.created_at DESC";
 
-$stmt = $koneksi->prepare($query);
-$stmt->bind_param("s", $userid);
-$stmt->execute();
-$result = $stmt->get_result();
+$stmt = mysqli_prepare($koneksi, $query);
+mysqli_stmt_bind_param($stmt, 's', $user_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
 $sessions = [];
-while ($row = $result->fetch_assoc()) {
+while ($row = mysqli_fetch_assoc($result)) {
+    // Gunakan pesan pertama sebagai judul jika tersedia
+    if (!empty($row['first_message'])) {
+        $row['title'] = $row['first_message'];
+    }
     $sessions[] = $row;
 }
 

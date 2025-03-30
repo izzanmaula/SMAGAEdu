@@ -318,7 +318,7 @@ $guru = mysqli_fetch_assoc($result);
                     </style>
                     <div class="gap-2 mb-4 d-flex">
                         <button class="btn btn-sm bg-light text-black d-flex align-items-center gap-2 px-3 py-2 border"
-                            onclick="window.location.reload()"
+                            onclick="createNewChatSession()"
                             style="border-radius: 15px;">
                             <i class="bi bi-arrow-clockwise"></i>
                             <span class="button-text d-none d-md-inline" style="font-size: 13px;">Baru</span>
@@ -428,7 +428,7 @@ $guru = mysqli_fetch_assoc($result);
                 <div id="welcomeMessage" class="welcome-message">
                     <div class="welcome-content animate__animated animate__fadeIn">
                         <!-- <img src="assets/ai_chat.png" class="welcome-avatar mb-3" alt="SAGA AI"> -->
-                        <h5 class="fw-bold" style="font-size: 25px;">Halo, ada yang bisa <br> saya bantu?</h5>
+                        <h5 class="fw-bold" style="font-size:28px">Halo, ada yang bisa <br> saya bantu?</h5>
                     </div>
                 </div>
 
@@ -2263,13 +2263,31 @@ $guru = mysqli_fetch_assoc($result);
 
                 <!-- script history -->
                 <script>
-                    // Fungsi untuk menampilkan riwayat
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Periksa apakah ada active_chat_session
+                        fetch('check_active_session.php')
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.has_active_session) {
+                                    currentSessionId = data.session_id;
+                                    console.log('Active session loaded:', currentSessionId);
+                                } else {
+                                    currentSessionId = null;
+                                    console.log('No active session');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error checking session:', error);
+                            });
+                    });
+
+
                     function loadHistory() {
                         fetch('chat_sessions.php')
                             .then(response => response.json())
                             .then(sessions => {
                                 const historyList = document.getElementById('historyList');
-                                if (!historyList) return; // Guard clause untuk mencegah error
+                                if (!historyList) return;
 
                                 historyList.innerHTML = '';
 
@@ -2284,7 +2302,7 @@ $guru = mysqli_fetch_assoc($result);
                                 }
 
                                 sessions.forEach(session => {
-                                    if (!session) return; // Skip jika session undefined
+                                    if (!session) return;
 
                                     const date = new Date(session.created_at);
                                     const formattedDate = new Intl.DateTimeFormat('id-ID', {
@@ -2312,13 +2330,6 @@ $guru = mysqli_fetch_assoc($result);
                             <i class="bi bi-trash2"></i>
                         </button>
                     </div>
-
-                    <style>
-                    .delete-session {
-                    border-style : solid;
-                    border-color : red !important;
-                                    }
-                    </style>
                 `;
 
                                     sessionDiv.onclick = () => loadSessionChats(session.id);
@@ -2338,7 +2349,71 @@ $guru = mysqli_fetch_assoc($result);
                             });
                     }
 
-                    // Fungsi untuk memuat riwayat chat
+                    async function createNewChatSession() {
+                        try {
+                            // Tampilkan loading jika perlu
+                            showLoader();
+
+                            // Panggil API untuk membuat session baru
+                            const response = await fetch('create_new_session.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            });
+
+                            const result = await response.json();
+
+                            if (result.success) {
+                                // Reset semua data client-side
+                                conversationHistory = [];
+                                window.documentContent = '';
+                                if (typeof activeDocuments !== 'undefined') {
+                                    activeDocuments.clear();
+                                }
+
+                                // Reset UI
+                                chatContainer.innerHTML = '';
+                                document.getElementById('user-input').value = '';
+
+                                // Tampilkan welcome message
+                                const welcomeMessage = document.getElementById('welcomeMessage');
+                                if (welcomeMessage) {
+                                    welcomeMessage.style.display = 'block';
+                                    welcomeMessage.style.opacity = '1';
+                                    welcomeMessage.style.transform = 'translate(-50%, -50%)';
+                                }
+
+                                // Reset first message
+                                const firstMessage = document.getElementById('firstMessage');
+                                if (firstMessage) {
+                                    firstMessage.classList.add('d-none');
+                                    if (firstMessage.querySelector('.first-message-text')) {
+                                        firstMessage.querySelector('.first-message-text').textContent = '';
+                                    }
+                                }
+
+                                // Tampilkan rekomendasi
+                                const recommendationContainer = document.querySelector('.recommendation-container');
+                                if (recommendationContainer) {
+                                    recommendationContainer.classList.remove('d-none', 'hide');
+                                }
+
+                                // Set sesi baru
+                                currentSessionId = result.session_id;
+                                isFirstChat = true;
+
+                                console.log('New chat session created:', result.session_id);
+                            } else {
+                                console.error('Failed to create new session:', result.error);
+                            }
+                        } catch (error) {
+                            console.error('Error creating new session:', error);
+                        } finally {
+                            hideLoader();
+                        }
+                    }
+
                     function loadSessionChats(sessionId) {
                         if (!sessionId) return;
 
@@ -2348,6 +2423,16 @@ $guru = mysqli_fetch_assoc($result);
 
                         // Sembunyikan recommendation container
                         document.querySelector('.recommendation-container').classList.add('d-none');
+
+                        // Sembunyikan welcome message
+                        const welcomeMessage = document.getElementById('welcomeMessage');
+                        if (welcomeMessage) {
+                            welcomeMessage.style.opacity = '0';
+                            welcomeMessage.style.transform = 'translate(-50%, -60%)';
+                            setTimeout(() => {
+                                welcomeMessage.style.display = 'none';
+                            }, 300);
+                        }
 
                         fetch(`get_session_messages.php?session_id=${sessionId}`)
                             .then(response => response.json())
@@ -2381,6 +2466,37 @@ $guru = mysqli_fetch_assoc($result);
                                 $('#historyModal').modal('hide');
                             });
                     }
+
+                    function startNewSession() {
+                        // Simpan state bahwa ini adalah sesi baru dalam localStorage
+                        localStorage.setItem('new_session', 'true');
+                        // Refresh halaman
+                        window.location.reload();
+                    }
+
+                    // Tambahkan pada event DOMContentLoaded
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Periksa apakah ini adalah sesi baru
+                        if (localStorage.getItem('new_session') === 'true') {
+                            // Hapus flag
+                            localStorage.removeItem('new_session');
+
+                            // Reset status sesi aktif
+                            currentSessionId = null;
+
+                            // Lakukan panggilan AJAX untuk me-reset sesi di server
+                            fetch('reset_session.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
+                            }).then(response => {
+                                console.log('Session reset successfully');
+                            }).catch(error => {
+                                console.error('Error resetting session:', error);
+                            });
+                        }
+                    });
 
 
                     // Fungsi khusus untuk menambahkan pesan riwayat tanpa animasi
