@@ -120,7 +120,7 @@ $nav_items = $is_guru ? [
                             <i class="bi bi-chevron-right text-secondary"></i>
                         </div>
                     </a>
-                    <div class="list-group-item">
+                    <!-- <div class="list-group-item">
                         <div class="d-flex align-items-center py-3">
                             <div class="icon-container bg-secondary-subtle rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
                                 <i class="bi bi-moon-stars text-secondary"></i>
@@ -133,7 +133,7 @@ $nav_items = $is_guru ? [
                                 <input class="form-check-input" type="checkbox" role="switch" id="darkModeSwitch">
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <a href="logout.php" class="list-group-item list-group-item-action">
                         <div class="d-flex align-items-center py-3">
                             <div class="icon-container bg-danger-subtle rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
@@ -148,7 +148,7 @@ $nav_items = $is_guru ? [
                 </div>
             </div>
             <div class="modal-footer border-0 d-flex justify-content-center mb-2">
-                <button type="button" class="btn btn-sm rounded-pill px-3" data-bs-dismiss="modal" style="background-color: rgb(218, 119, 86); color: white;">Tutup</button>
+                <button type="button" class="btn btn-sm flex-fill py-2 px-3" data-bs-dismiss="modal" style="background-color: rgb(218, 119, 86); color: white; border-radius:15px">Tutup</button>
             </div>
         </div>
     </div>

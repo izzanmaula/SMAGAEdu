@@ -275,7 +275,7 @@ $guru = mysqli_fetch_assoc($result);
                 right: 0;
                 width: 350px;
                 background: white;
-                border-radius: 8px;
+                border-radius: 15px;
                 box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
                 z-index: 1060;
                 display: none;
@@ -371,6 +371,9 @@ $guru = mysqli_fetch_assoc($result);
 
                     <!-- Notification Dropdown -->
                     <div class="notification-dropdown shadow-sm border" id="notificationDropdown">
+                        <div class="p-4 pb-0">
+                            <h5 class="fw-bold">Notifikasi</h5>
+                        </div>
                         <div class="notification-body" id="notification-list">
                             <!-- Notifications will be loaded here -->
                             <div class="text-center py-4 text-muted">

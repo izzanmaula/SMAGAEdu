@@ -109,15 +109,12 @@ $is_admin = $_SESSION['level'] == 'admin';
                     ?>
                 </span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-start w-100 shadow-sm border-0 py-2" style="font-size: 13px;">
-                <li>
+            <ul class="dropdown-menu w-100 shadow-sm border-0 py-2" style="font-size: 13px;">
+                <!-- <li>
                     <a class="dropdown-item py-2 px-3" href="#" data-bs-toggle="modal" data-bs-target="#modal_pengaturan">
                         <i class="bi bi-gear me-2 text-muted"></i>Pengaturan
                     </a>
-                </li>
-                <li>
-                    <hr class="dropdown-divider mx-2">
-                </li>
+                </li> -->
                 <li>
                     <a class="dropdown-item py-2 px-3 text-danger" href="logout.php">
                         <i class="bi bi-box-arrow-right me-2"></i>Keluar

@@ -1253,8 +1253,6 @@ function getProfilePhoto($user_type, $data)
                                 height: auto !important;
                                 min-height: auto !important;
                             }
-
-                            .modal {}
                         }
                     </style>
                     <div class="modal-dialog modal-dialog-centered">
