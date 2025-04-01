@@ -103,8 +103,8 @@ require "koneksi.php";
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content" style="border-radius: 15px;">
                                                 <div class="modal-body text-center p-4">
-                                                    <div class="">
-                                                        <img src="assets/password-salah.png" alt="" width="300rem">
+                                                    <div class="mb-4">
+                                                    <i class="bi bi-exclamation-circle-fill text-danger" style="font-size: 70px;"></i>
                                                     </div>
                                                     <h5 class="mb-2 fw-bold">ID atau Password Salah</h5>
                                                     <p class="">

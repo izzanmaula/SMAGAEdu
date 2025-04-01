@@ -1484,11 +1484,11 @@ function getProfilePhoto($user_type, $data)
                                             </style>
                                         </div>
                                     </div>
-                                    
-                                        <!-- Post Button -->
-                                        <button type="submit" class="btn flex-fill btnPrimary text-white px-4">
-                                            <p class="p-0 m-0">Kirim</p>
-                                        </button>
+
+                                    <!-- Post Button -->
+                                    <button type="submit" class="btn flex-fill btnPrimary text-white px-4">
+                                        <p class="p-0 m-0">Kirim</p>
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -1826,7 +1826,7 @@ function getProfilePhoto($user_type, $data)
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end animate slideIn">
                                         <li>
-                                            <?php if ($post['user_type'] == 'guru' || ($_SESSION['level'] == 'admin')): ?>
+                                            <?php if ($post['user_type'] == 'guru' || ($_SESSION['level'] == 'admin') || ($_SESSION['level'] == 'guru')): ?>
                                                 <a class="dropdown-item d-flex align-items-center gap-2" href="#"
                                                     onclick="showDeleteConfirmation(<?php echo $post['id']; ?>)">
                                                     <i class="fas fa-trash-alt text-danger"></i>
@@ -3734,15 +3734,33 @@ function getProfilePhoto($user_type, $data)
 
                 const imageContainer = document.getElementById("imageContainer");
 
-                // Set grid class based on number of images
-                if (images.length === 1) {
-                    imageContainer.classList.add("one");
-                } else if (images.length === 2) {
-                    imageContainer.classList.add("two");
-                } else if (images.length === 3) {
-                    imageContainer.classList.add("three");
-                } else if (images.length >= 4) {
-                    imageContainer.classList.add("four");
+                // Check if imageContainer exists
+                if (imageContainer) {
+                    // Set grid class based on number of images
+                    if (images.length === 1) {
+                        imageContainer.classList.add("one");
+                    } else if (images.length === 2) {
+                        imageContainer.classList.add("two");
+                    } else if (images.length === 3) {
+                        imageContainer.classList.add("three");
+                    } else if (images.length >= 4) {
+                        imageContainer.classList.add("four");
+                    }
+
+                    // Add images to the grid
+                    images.forEach(src => {
+                        const img = document.createElement("img");
+                        img.src = src;
+                        img.alt = "Image";
+                        img.setAttribute("data-bs-toggle", "modal");
+                        img.setAttribute("data-bs-target", "#imageModal");
+                        img.addEventListener("click", () => {
+                            document.getElementById("modalImage").src = src;
+                        });
+                        imageContainer.appendChild(img);
+                    });
+                } else {
+                    console.log("Element with ID 'imageContainer' not found");
                 }
 
                 // Add images to the grid
@@ -4285,22 +4303,6 @@ function getProfilePhoto($user_type, $data)
                                 }
                             }
                         </style>
-
-                        <script>
-                            function togglePassword(button) {
-                                const card = button.closest('.info-card');
-                                const passwordSpan = card.querySelector('.password-dots');
-                                const icon = button.querySelector('i');
-
-                                if (passwordSpan.textContent === '•••••••') {
-                                    passwordSpan.textContent = '<?php echo htmlspecialchars($siswa['password']); ?>';
-                                    icon.classList.replace('bi-eye', 'bi-eye-slash');
-                                } else {
-                                    passwordSpan.textContent = '•••••••';
-                                    icon.classList.replace('bi-eye-slash', 'bi-eye');
-                                }
-                            }
-                        </script>
 
 
                         <!-- Modal Konfirmasi Keluarkan Siswa -->
