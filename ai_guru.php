@@ -112,6 +112,318 @@ $guru = mysqli_fetch_assoc($result);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition-duration: 0.1s;
     }
+
+    /* Tambahkan style di bagian <style> atau file CSS Anda */
+    .chat-bubble h1,
+    .chat-bubble h2,
+    .chat-bubble h3,
+    .chat-bubble h4,
+    .chat-bubble h5,
+    .chat-bubble h6 {
+        margin-top: 0.75rem;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .chat-bubble h1 {
+        font-size: 1.5rem;
+    }
+
+    .chat-bubble h2 {
+        font-size: 1.4rem;
+    }
+
+    .chat-bubble h3 {
+        font-size: 1.3rem;
+    }
+
+    .chat-bubble h4 {
+        font-size: 1.2rem;
+    }
+
+    .chat-bubble h5 {
+        font-size: 1.1rem;
+    }
+
+    .chat-bubble pre {
+        background-color: #f5f5f5;
+        padding: 0.75rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 0.75rem 0;
+    }
+
+    .chat-bubble code {
+        font-family: monospace;
+        background-color: #f5f5f5;
+        padding: 0.1rem 0.3rem;
+        border-radius: 3px;
+        font-size: 0.9em;
+    }
+
+    .canvas-editor h1,
+    .canvas-editor h2,
+    .canvas-editor h3,
+    .canvas-editor h4,
+    .canvas-editor h5,
+    .canvas-editor h6 {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    /* CANVASS */
+    .canvas-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 100vh;
+        background-color: white;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transition: width 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .canvas-container.active {
+        width: 60%;
+    }
+
+    .canvas-header {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .canvas-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .canvas-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+    }
+
+    .canvas-editor {
+        min-height: 100%;
+        outline: none;
+        font-size: 14px;
+        line-height: 1.6;
+        font-family: 'Merriweather', serif;
+    }
+
+    .canvas-footer {
+        padding: 15px;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    /* Editor toolbar canvas footer */
+    .editor-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .format-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        transition: all 0.2s;
+    }
+
+    .format-btn:hover {
+        background-color: #f8f9fa;
+    }
+
+    .format-btn.active {
+        background-color: #e9ecef;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Styling untuk area chat ketika canvas aktif */
+    .col-utama.canvas-active {
+        margin-left: 60% !important;
+        transition: margin-left 0.3s ease;
+    }
+
+
+    /* Tambahkan CSS ini di bagian <head> dokumen */
+    .canvas-container.active {
+        width: 60% !important;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 1500 !important;
+    }
+
+    .col-utama.canvas-active {
+        margin-left: 60% !important;
+        transition: margin-left 0.3s ease !important;
+    }
+
+
+    /* Tambahkan style ini di bagian CSS */
+    .canvas-button-container {
+        opacity: 0;
+        transform: translateY(-10px);
+        animation: fadeInDown 0.5s forwards;
+    }
+
+    @keyframes fadeInDown {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .typing-container {
+        white-space: pre-wrap;
+    }
+
+    /* Format untuk elemen di dalam canvas */
+    .canvas-editor h1,
+    .canvas-editor h2,
+    .canvas-editor h3,
+    .canvas-editor h4,
+    .canvas-editor h5,
+    .canvas-editor h6 {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .canvas-editor p {
+        margin-bottom: 0.75rem;
+    }
+
+    .canvas-editor ol,
+    .canvas-editor ul {
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+    }
+
+    .canvas-editor li {
+        margin-bottom: 0.25rem;
+    }
+
+    .canvas-editor pre {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    .canvas-editor code {
+        font-family: monospace;
+    }
+
+
+    /* Styling canvas untuk mobile */
+    @media (max-width: 768px) {
+        .canvas-container {
+            /* Reset properti horizontal yang sudah ada */
+            left: 0;
+            width: 100% !important;
+
+            /* Atur properti vertikal untuk animasi slide-up */
+            bottom: -100%;
+            top: auto;
+            height: 90vh;
+            transition: bottom 0.3s ease;
+        }
+
+        .canvas-container.active {
+            /* Untuk mobile, geser dari bawah ke atas */
+            bottom: 0 !important;
+            width: 100% !important;
+        }
+
+        /* Reset margin untuk col-utama di mobile */
+        .col-utama.canvas-active {
+            margin-left: 0 !important;
+        }
+
+        /* Tambahkan border radius di bagian atas canvas untuk mobile */
+        .canvas-container {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+
+        /* Tambahkan indicator drag di atas canvas */
+        .canvas-container::before {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 5px;
+            background-color: #ccc;
+            border-radius: 3px;
+            margin: 8px auto;
+        }
+
+        .editor-toolbar {
+            overflow-x: auto;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        .canvas-footer .d-flex {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .canvas-footer .d-flex:last-child {
+            width: 100%;
+        }
+
+        .canvas-footer .btn {
+            width: 100%;
+        }
+    }
+
+    /* canvas button */
+
+    #canvasModeBtn {
+        transition: all 0.3s ease;
+    }
+
+    #canvasModeBtn.active {
+        background-color: rgb(218, 119, 86) !important;
+        color: white !important;
+    }
+
+    #canvasModeBtn.active i {
+        color: white !important;
+    }
+
+    #canvasModeBtn.active p {
+        color: white !important;
+    }
+
+
+    @media (max-width: 768px) {
+        .menu-samping {
+            display: none;
+        }
+
+        .col-utama {
+            margin-left: 0;
+            margin-top: 1rem;
+        }
+
+        .peringatan {
+            display: none;
+        }
+    }
 </style>
 
 <body>
@@ -179,6 +491,63 @@ $guru = mysqli_fetch_assoc($result);
         </div>
     </div>
 
+    <div id="canvas-container" class="canvas-container">
+        <div class="canvas-header">
+            <h5 class="canvas-title p-0 m-0">Editor Konten</h5>
+            <div class="canvas-actions">
+                <button id="copy-canvas" class="btn btn-sm btn-light" title="Salin konten">
+                    <i class="bi bi-clipboard"></i>
+                </button>
+                <button id="close-canvas" class="btn btn-sm btn-light" title="Tutup editor">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div class="canvas-body">
+            <div id="canvas-editor" contenteditable="true" class="canvas-editor"></div>
+        </div>
+        <div class="canvas-footer">
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <div class="editor-toolbar d-flex gap-2">
+                    <button class="btn btn-sm btn-light format-btn" data-format="bold" title="Bold">
+                        <i class="bi bi-type-bold"></i>
+                    </button>
+                    <button class="btn btn-sm btn-light format-btn" data-format="italic" title="Italic">
+                        <i class="bi bi-type-italic"></i>
+                    </button>
+                    <button class="btn btn-sm btn-light format-btn" data-format="underline" title="Underline">
+                        <i class="bi bi-type-underline"></i>
+                    </button>
+                    <div class="vr mx-1"></div>
+                    <button class="btn btn-sm btn-light format-btn" data-format="h1" title="Heading 1">
+                        <i class="bi bi-type-h1"></i>
+                    </button>
+                    <button class="btn btn-sm btn-light format-btn" data-format="h2" title="Heading 2">
+                        <i class="bi bi-type-h2"></i>
+                    </button>
+                    <button class="btn btn-sm btn-light format-btn" data-format="h3" title="Heading 3">
+                        <i class="bi bi-type-h3"></i>
+                    </button>
+                    <div class="vr mx-1"></div>
+                    <button class="btn btn-sm btn-light format-btn" data-format="ul" title="Bullet List">
+                        <i class="bi bi-list-ul"></i>
+                    </button>
+                    <button class="btn btn-sm btn-light format-btn" data-format="ol" title="Numbered List">
+                        <i class="bi bi-list-ol"></i>
+                    </button>
+                </div>
+                <div class="d-flex gap-2">
+                    <button id="export-canvas" class="btn btn-sm btn-primary" style="border-radius: 15px; padding: 5px 15px;">
+                        <i class="bi bi-file-earmark-word me-1"></i> Export
+                    </button>
+                    <button id="update-canvas" class="btn btn-sm" style="background-color: rgb(218, 119, 86); color: white; border-radius: 15px; padding: 5px 15px;">
+                        <i class="bi bi-pen me-1"></i> Revisi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- ini isi kontennya -->
     <div class="col pt-0 pb-0 p-4 col-utama">
@@ -200,23 +569,10 @@ $guru = mysqli_fetch_assoc($result);
                     transform: translateY(0);
                 }
             }
-
-
-            @media (max-width: 768px) {
-                .menu-samping {
-                    display: none;
-                }
-
-                .col-utama {
-                    margin-left: 0;
-                    margin-top: 1rem;
-                }
-
-                .peringatan {
-                    display: none;
-                }
-            }
         </style>
+
+
+
         <div class="container-fluid p-0 m-0 mt-4">
             <div class="">
                 <div class="d-flex justify-content-between">
@@ -561,6 +917,44 @@ $guru = mysqli_fetch_assoc($result);
                                 </ul>
                             </div>
 
+                            <button class="btn rounded-pill border button-style p-2 d-flex align-items-center gap-2" id="canvasModeBtn">
+                                <i class="bi bi-easel-fill" style="font-size: 16px;"></i>
+                                <p class="p-0 m-0 text-dark" style="font-size: 12px; cursor: pointer;">Canvas</p>
+                            </button>
+
+                            <!-- canvas mode toogle -->
+                            <script>
+                                // Canvas Mode handling
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    // Inisialisasi variabel untuk canvas mode
+                                    window.canvasModeEnabled = false;
+
+                                    // Ambil referensi ke tombol
+                                    const canvasModeBtn = document.getElementById('canvasModeBtn');
+
+                                    if (canvasModeBtn) {
+                                        // Tambahkan event listener untuk toggle mode
+                                        canvasModeBtn.addEventListener('click', function() {
+                                            // Toggle status
+                                            window.canvasModeEnabled = !window.canvasModeEnabled;
+
+                                            // Update UI untuk menunjukkan status aktif/nonaktif
+                                            if (window.canvasModeEnabled) {
+                                                canvasModeBtn.classList.add('active');
+                                                canvasModeBtn.style.backgroundColor = 'rgb(218, 119, 86)';
+                                                canvasModeBtn.querySelector('p').style.color = 'white';
+                                            } else {
+                                                canvasModeBtn.classList.remove('active');
+                                                canvasModeBtn.style.backgroundColor = '';
+                                                canvasModeBtn.querySelector('p').style.color = 'black';
+                                            }
+
+                                            console.log('Canvas Mode:', window.canvasModeEnabled ? 'ON' : 'OFF');
+                                        });
+                                    }
+                                });
+                            </script>
+
                             <!-- Checkbox bernalar tersembunyi untuk kompatibilitas -->
                             <input class="form-check-input d-none" type="checkbox" id="deepThinkingToggle">
 
@@ -705,28 +1099,28 @@ $guru = mysqli_fetch_assoc($result);
                         // Definisikan model-model AI yang tersedia
                         const aiModels = [{
                                 id: 'llama-3.3-70b-versatile',
-                                name: 'LLaMA 3.3 70B',
-                                desc: 'Paling cerdas & lengkap',
+                                name: 'SAGA Opus',
+                                desc: 'Model Tercerdas saat ini',
                                 isDefault: true
                             },
                             {
                                 id: 'deepseek-r1-distill-llama-70b',
-                                name: 'DeepSeek Llama 70B',
-                                desc: 'Terbaik untuk matematika atau analisis dalam'
+                                name: 'SAGA Opus Thinking',
+                                desc: 'Terbaik untuk analisis'
                             },
                             {
                                 id: 'mistral-saba-24b',
-                                name: 'Mistral Saba 24B',
+                                name: 'SAGA Haiku',
                                 desc: 'Terbaik untuk text panjang'
                             },
                             {
                                 id: 'gemma2-9b-it',
-                                name: 'Gemma2 9B',
+                                name: 'SAGA Mini',
                                 desc: 'Seimbang'
                             },
                             {
                                 id: 'llama-3.1-8b-instant',
-                                name: 'LLaMA 3.1 8B',
+                                name: 'SAGA Ultra Mini',
                                 desc: 'Tercepat'
                             },
                         ];
@@ -901,12 +1295,11 @@ $guru = mysqli_fetch_assoc($result);
 
                             // Definisikan gambar untuk setiap model
                             const modelImages = {
-                                'llama-3.3-70b-versatile': 'assets/llama.png',
-                                'deepseek-r1-distill-llama-70b': 'assets/deepseek.png',
-                                'llama-3.1-8b-instant': 'assets/llama.png',
-                                'mistral-saba-24b': 'assets/mixtral.png',
-                                'gemma2-9b-it': 'assets/google.png'
-                                // Tambahkan model lain sesuai kebutuhan
+                                'llama-3.3-70b-versatile': 'assets/brain.png',
+                                'deepseek-r1-distill-llama-70b': 'assets/search.png',
+                                'llama-3.1-8b-instant': 'assets/fast.png',
+                                'mistral-saba-24b': 'assets/text.png',
+                                'gemma2-9b-it': 'assets/fast.png'
                             };
 
                             aiModels.forEach(model => {
@@ -2647,22 +3040,99 @@ $guru = mysqli_fetch_assoc($result);
                         // Variabel untuk welcome message
                         const welcomeMessage = document.getElementById('welcomeMessage');
 
-                        // Tambahkan ke fungsi sendMessage yang sudah ada
+                        // Modifikasi fungsi sendMessage yang sudah ada
                         const originalSendMessage = sendMessage;
-                        sendMessage = async function() {
-                            // Sembunyikan welcome message dengan animasi
-                            if (welcomeMessage) {
-                                welcomeMessage.style.opacity = '0';
-                                welcomeMessage.style.transform = 'translate(-50%, -60%)';
+                        // Modifikasi fungsi sendMessage yang sudah ada
+                        window.sendMessage = async function() {
+                            const userMessageText = userInput.value.trim();
+                            if (userMessageText === '') return;
+
+                            // Sembunyikan recommendation container saat mulai chat
+                            const recommendationContainer = document.querySelector('.recommendation-container');
+                            if (recommendationContainer) {
+                                recommendationContainer.classList.add('hide');
                                 setTimeout(() => {
-                                    welcomeMessage.style.display = 'none';
+                                    recommendationContainer.classList.add('d-none');
                                 }, 300);
                             }
 
-                            // Panggil fungsi sendMessage asli
-                            await originalSendMessage.apply(this, arguments);
-                        };
+                            if (isFirstChat) {
+                                updateFirstMessage(userMessageText);
+                                isFirstChat = false;
+                            }
 
+                            // Add user message
+                            await addMessage('user', userMessageText);
+
+                            // Show thinking message with italic, fade-in, and muted text
+                            const tempMessage = await addMessage('ai', '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>', true);
+
+                            // Clear input and update UI states
+                            userInput.value = '';
+                            hideTersedia();
+                            showLoader();
+
+                            try {
+                                // Check if it's a revision request for canvas content
+                                const isRevisionRequest = window.canvasActive && checkIfRevisionRequest(userMessageText);
+
+                                if (isRevisionRequest) {
+                                    // Handle revision request
+                                    await handleCanvasRevision(userMessageText);
+                                    tempMessage.remove();
+                                    return;
+                                }
+
+                                // Normal flow - get AI response
+                                const aiResponse = await getAIResponse(userMessageText);
+
+                                // Remove temporary message
+                                tempMessage.remove();
+
+                                // Cek apakah canvas mode diaktifkan
+                                if (window.canvasModeEnabled) {
+                                    // Tampilkan pengantar di chat
+                                    await addMessage('ai', 'Jawaban telah disiapkan. Silakan lihat di canvas untuk tampilan lengkap.');
+
+                                    // Tampilkan konten utama di canvas
+                                    showCanvas(aiResponse, 'konten');
+                                } else {
+                                    // Cek apakah konten panjang seperti biasa
+                                    const contentInfo = detectLongContent(aiResponse, userMessageText);
+
+                                    if (contentInfo.isLong) {
+                                        // Tampilkan pengantar di chat
+                                        await addMessage('ai', contentInfo.chatContent);
+
+                                        // Tambahkan tombol canvas
+                                        addCanvasButton(contentInfo.contentType);
+
+                                        // Tampilkan konten utama di canvas
+                                        showCanvas(contentInfo.canvasContent, contentInfo.contentType);
+
+                                        // Tampilkan penutup di chat jika ada
+                                        if (contentInfo.closingContent) {
+                                            setTimeout(async () => {
+                                                await addMessage('ai', contentInfo.closingContent);
+                                            }, 1000);
+                                        }
+                                    } else {
+                                        // Tampilkan respons normal
+                                        await addMessage('ai', aiResponse);
+                                    }
+                                }
+
+                                // Save to database
+                                await saveToDatabase(userMessageText, aiResponse);
+                            } catch (error) {
+                                console.error('Error:', error);
+                                tempMessage.remove();
+                                await addMessage('ai', 'Maaf, terjadi kesalahan saat memproses pesan Anda.');
+                            } finally {
+                                hideLoader();
+                                showTersedia();
+                            }
+                        };
                         // Tambahkan listener untuk input juga
                         userInput.addEventListener('input', function() {
                             if (userInput.value.trim() !== '' && welcomeMessage) {
@@ -3393,21 +3863,51 @@ $guru = mysqli_fetch_assoc($result);
                 '<div class="ai-thinking animate__animated animate__fadeIn">$1</div>'
             );
 
+            // Handle markdown headers
+            text = text.replace(/^##### (.*?)$/gm, '<h5>$1</h5>');
+            text = text.replace(/^#### (.*?)$/gm, '<h4>$1</h4>');
+            text = text.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+            text = text.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+            text = text.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+
             // Handle bold text
             text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // Handle italics
+            text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Handle code blocks
+            text = text.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+            // Handle inline code
+            text = text.replace(/`(.*?)`/g, '<code>$1</code>');
 
             const lines = text.split('\n');
             let inList = false;
             let listType = 'ul';
 
             const processedLines = lines.map(line => {
+                // Handle list items
                 const listMatch = line.match(/^\s*([*\-])(\s+)(.*)/);
+                const numberedListMatch = line.match(/^\s*(\d+\.)(\s+)(.*)/);
+
                 if (listMatch) {
                     const [_, symbol, space, content] = listMatch;
                     const isNested = space.length > 1;
                     let listHtml = '';
                     if (!inList) {
                         listType = symbol === '*' ? 'ul' : 'ul';
+                        listHtml += `<${listType} class="chat-list">`;
+                        inList = true;
+                    }
+                    listHtml += `<li${isNested ? ' style="margin-left: 1.5rem"' : ''}>${content}</li>`;
+                    return listHtml;
+                } else if (numberedListMatch) {
+                    const [_, number, space, content] = numberedListMatch;
+                    const isNested = space.length > 1;
+                    let listHtml = '';
+                    if (!inList) {
+                        listType = 'ol';
                         listHtml += `<${listType} class="chat-list">`;
                         inList = true;
                     }
@@ -3554,6 +4054,7 @@ $guru = mysqli_fetch_assoc($result);
 
             informasi guru yang sedang berinteraksi:
             nama: ${<?php echo json_encode($guru['namaLengkap']); ?>}
+            jabatan : ${<?php echo json_encode($guru['jabatan']); ?>}
 
             Karakter dan Perilaku:
             - Berbicara dengan bijaksana dan profesional layaknya rekan kerja sesama pendidik
@@ -3594,11 +4095,11 @@ $guru = mysqli_fetch_assoc($result);
 
         let contohDialog = [{
                 role: "user",
-                content: "Assalamualaikum"
+                content: "halo saga"
             },
             {
                 role: "assistant",
-                content: "Wa'alaikumsalam, Bapak/Ibu Guru. Ada yang bisa SAGA bantu terkait pembelajaran hari ini?"
+                content: "Halo Bapak/Ibu Guru. Ada yang bisa SAGA hari ini?"
             },
             {
                 role: "user",
@@ -3643,7 +4144,7 @@ $guru = mysqli_fetch_assoc($result);
             {
                 role: "user",
                 content: "kamu siapa?"
-            },{
+            }, {
                 role: "assistant",
                 content: "Saya SAGA atau SMAGA Asistant \n\n Saya di sini bekerja di SMP dan SMA Muhammadiyah Gatak sebagai pembantu Bapak/Ibu dalam mengajar. \n\n Ada yang bisa saya bantu Bapak/Ibu?"
             }
@@ -4033,7 +4534,1220 @@ $guru = mysqli_fetch_assoc($result);
                 sendMessage();
             }
         });
+
+        function detectLongContent(aiResponse, userMessage) {
+            // Menambahkan logging untuk debugging
+            console.log("Detecting content for model:", window.activeModelId);
+            console.log("Response length:", aiResponse.length);
+
+            const LONG_CONTENT_THRESHOLD = 600; // Turunkan threshold
+
+            const LONG_CONTENT_KEYWORDS = [
+                'RPP', 'silabus', 'ceramah', 'pidato', 'rencana pembelajaran',
+                'materi ajar', 'kode program', 'function', 'class', 'puisi',
+                'narasi', 'cerpen', 'essay', 'makalah', 'laporan', 'artikel',
+                'pembelajaran digital' // Tambahkan keyword dari prompt user
+            ];
+
+            // Keywords dalam prompt yang pasti memerlukan canvas
+            const FORCE_CANVAS_KEYWORDS = [
+                'buatkan makalah', 'buat makalah', 'makalah sederhana',
+                'buatkan essay', 'buat essay', 'tulis essay',
+                'tulis laporan', 'tulis artikel'
+            ];
+
+            const EXCLUDE_KEYWORDS = [
+                'apa itu', 'definisi', 'pengertian', 'jelaskan', 'terangkan'
+            ];
+
+
+            if (userMessage) {
+                const userMessageLower = userMessage.toLowerCase();
+                for (const keyword of FORCE_CANVAS_KEYWORDS) {
+                    if (userMessageLower.includes(keyword)) {
+                        console.log("Force canvas keyword detected:", keyword);
+                        return {
+                            isLong: true,
+                            contentType: 'makalah',
+                            chatContent: `Berikut adalah makalah yang Anda minta. Silakan lihat di canvas untuk tampilan lengkap.`,
+                            canvasContent: aiResponse,
+                            closingContent: ''
+                        };
+                    }
+                }
+            }
+
+
+            // PENTING: Cek apakah prompt secara langsung meminta makalah
+            for (const keyword of FORCE_CANVAS_KEYWORDS) {
+                if (userMessage && userMessage.toLowerCase().includes(keyword)) {
+                    console.log("Force canvas keyword detected:", keyword);
+                    return {
+                        isLong: true,
+                        contentType: 'makalah',
+                        chatContent: `Berikut adalah makalah yang Anda minta. Silakan lihat di canvas untuk tampilan lengkap.`,
+                        canvasContent: aiResponse,
+                        closingContent: ''
+                    };
+                }
+            }
+
+            // Cek keyword pengecualian
+            for (const keyword of EXCLUDE_KEYWORDS) {
+                if (userMessage && userMessage.toLowerCase().includes(keyword)) {
+                    return {
+                        isLong: false
+                    };
+                }
+            }
+
+            // Pisahkan konten utama dan penutup
+            let mainContent = aiResponse;
+            let closingContent = '';
+
+            // Pola untuk mendeteksi kalimat penutup/pertanyaan
+            const closingPatterns = [
+                /Apakah Bapak\/Ibu memerlukan.+\?$/m,
+                /Apakah ada aspek lain.+\?$/m,
+                /Bagaimana pendapat Bapak\/Ibu.+\?$/m,
+                /Ada pertanyaan lain.+\?$/m
+            ];
+
+            // Cari kalimat penutup
+            for (const pattern of closingPatterns) {
+                const match = aiResponse.match(pattern);
+                if (match) {
+                    const matchIndex = aiResponse.lastIndexOf(match[0]);
+                    mainContent = aiResponse.substring(0, matchIndex).trim();
+                    closingContent = match[0];
+                    break;
+                }
+            }
+
+            // Jika tidak ada pola yang cocok, coba pisahkan paragraf terakhir
+            if (mainContent === aiResponse && mainContent.includes('\n\n')) {
+                const paragraphs = mainContent.split('\n\n');
+                const lastParagraph = paragraphs.pop();
+
+                if (lastParagraph.includes('?')) {
+                    closingContent = lastParagraph;
+                    mainContent = paragraphs.join('\n\n');
+                }
+            }
+
+            // Tentukan jenis konten
+            let contentType = '';
+            for (const keyword of LONG_CONTENT_KEYWORDS) {
+                if (mainContent.toLowerCase().includes(keyword.toLowerCase()) ||
+                    (userMessage && userMessage.toLowerCase().includes(keyword.toLowerCase()))) {
+                    contentType = keyword;
+                    break;
+                }
+            }
+
+            // Deteksi kode program
+            if (mainContent.includes('```')) {
+                contentType = 'kode program';
+            }
+
+            // Hitung jumlah paragraf dan heading
+            const paragraphCount = (aiResponse.match(/\n\n/g) || []).length + 1;
+            const hasHeadings = /^#+\s/m.test(aiResponse);
+            const hasKeyword = LONG_CONTENT_KEYWORDS.some(keyword =>
+                aiResponse.toLowerCase().includes(keyword.toLowerCase()) ||
+                (userMessage && userMessage.toLowerCase().includes(keyword.toLowerCase()))
+            );
+
+            // Logika yang LEBIH INKLUSIF untuk mendeteksi konten panjang - gunakan OR bukan AND
+            const isLong =
+                mainContent.length > LONG_CONTENT_THRESHOLD || // Konten panjang ATAU
+                paragraphCount >= 3 || // Banyak paragraf ATAU
+                hasHeadings || // Ada heading ATAU
+                contentType !== ''; // Ada keyword terdeteksi
+
+            console.log("Content detection:", {
+                model: window.activeModelId,
+                length: aiResponse.length,
+                paragraphs: paragraphCount,
+                hasHeadings: hasHeadings,
+                hasKeyword: hasKeyword,
+                isLong: isLong
+            });
+
+            if (isLong) {
+                let chatContent = '';
+                if (contentType) {
+                    chatContent = `Berikut adalah ${contentType} yang Anda minta. Silakan lihat di canvas untuk tampilan lengkap.`;
+                } else {
+                    chatContent = `Saya telah menyiapkan konten yang Anda minta. Silakan lihat di canvas untuk tampilan lengkap.`;
+                }
+
+                return {
+                    isLong: true,
+                    contentType: contentType || 'makalah',
+                    chatContent: chatContent,
+                    canvasContent: mainContent,
+                    closingContent: closingContent
+                };
+            }
+
+            return {
+                isLong: false
+            };
+        }
+
+        // Fungsi untuk menampilkan canvas
+        function showCanvas(content, contentType = 'konten') {
+            try {
+                console.log("showCanvas called with content type:", contentType);
+
+                const theCanvas = document.getElementById('canvas-container');
+                const canvasEditor = document.getElementById('canvas-editor');
+                const colUtama = document.querySelector('.col-utama');
+
+                if (!theCanvas || !canvasEditor) {
+                    console.error("Canvas elements not found", {
+                        theCanvas,
+                        canvasEditor
+                    });
+                    return;
+                }
+
+                // Update title di canvas
+                const canvasTitle = theCanvas.querySelector('.canvas-title');
+                if (canvasTitle) {
+                    canvasTitle.textContent = contentType.charAt(0).toUpperCase() + contentType.slice(1);
+                }
+
+                // Reset posisi untuk mobile jika perlu
+                if (isMobileDevice()) {
+                    theCanvas.style.bottom = "0";
+                }
+
+                // Simpan konten untuk referensi
+                window.currentCanvasContent = content;
+                window.currentCanvasType = contentType;
+
+                // Tampilkan canvas
+                theCanvas.classList.add('active');
+
+                // Tambahkan class canvas-active ke col-utama hanya jika bukan mobile
+                if (!isMobileDevice()) {
+                    colUtama.classList.add('canvas-active');
+                }
+
+                window.canvasActive = true;
+
+                // Type content setelah canvas aktif dengan sedikit delay
+                setTimeout(() => {
+                    typeContentInCanvas(content);
+                }, 100);
+
+                console.log("Canvas activated");
+            } catch (error) {
+                console.error("Error in showCanvas:", error);
+            }
+        }
+
+        // Format konten untuk canvas
+        // Format konten untuk canvas
+        function formatCanvasContent(content) {
+            // Format headers
+            content = content.replace(/^##### (.*?)$/gm, '<h5>$1</h5>');
+            content = content.replace(/^#### (.*?)$/gm, '<h4>$1</h4>');
+            content = content.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+            content = content.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+            content = content.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+
+            // Format bold text
+            content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // Format italics
+            content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Format code blocks
+            content = content.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+            // Format inline code
+            content = content.replace(/`(.*?)`/g, '<code>$1</code>');
+
+            // Format lists
+            let formattedContent = '';
+            let inList = false;
+            let listType = '';
+
+            content.split('\n').forEach(line => {
+                // Numbered list
+                if (/^\d+\.\s+/.test(line)) {
+                    if (!inList || listType !== 'ol') {
+                        if (inList) formattedContent += `</${listType}>`;
+                        formattedContent += '<ol>';
+                        inList = true;
+                        listType = 'ol';
+                    }
+                    formattedContent += `<li>${line.replace(/^\d+\.\s+/, '')}</li>`;
+                }
+                // Bullet list
+                else if (/^[\*\-]\s+/.test(line)) {
+                    if (!inList || listType !== 'ul') {
+                        if (inList) formattedContent += `</${listType}>`;
+                        formattedContent += '<ul>';
+                        inList = true;
+                        listType = 'ul';
+                    }
+                    formattedContent += `<li>${line.replace(/^[\*\-]\s+/, '')}</li>`;
+                }
+                // Regular paragraph
+                else {
+                    if (inList) {
+                        formattedContent += `</${listType}>`;
+                        inList = false;
+                    }
+                    if (line.trim()) {
+                        formattedContent += `<p>${line}</p>`;
+                    } else {
+                        formattedContent += line;
+                    }
+                }
+            });
+
+            if (inList) {
+                formattedContent += `</${listType}>`;
+            }
+
+            return formattedContent;
+        }
+
+        // Tutup canvas
+        function closeCanvas() {
+            console.log('closeCanvas function called'); // Debug log
+
+            const canvasContainer = document.getElementById('canvas-container');
+            const colUtama = document.querySelector('.col-utama');
+
+            // Tambahkan class untuk animasi menutup
+            if (isMobileDevice()) {
+                canvasContainer.style.bottom = '-100%'; // Untuk mobile, geser ke bawah
+            }
+
+            canvasContainer.classList.remove('active');
+            colUtama.classList.remove('canvas-active');
+
+            console.log('Canvas classes removed'); // Debug log
+
+            // Reset style tambahan yang mungkin ditambahkan
+            setTimeout(() => {
+                if (isMobileDevice()) {
+                    canvasContainer.style.bottom = ''; // Reset style
+                }
+                console.log('Canvas transition completed'); // Debug log
+                window.dispatchEvent(new Event('resize'));
+            }, 300);
+        }
+
+
+        // Tambahkan fungsi untuk mengecek apakah device mobile
+        function isMobileDevice() {
+            return window.innerWidth <= 768;
+        }
+
+        // Salin konten canvas
+        function copyCanvasContent() {
+            const canvasEditor = document.getElementById('canvas-editor');
+            const content = canvasEditor.innerText;
+
+            navigator.clipboard.writeText(content)
+                .then(() => {
+                    // Tampilkan notifikasi sukses
+                    const toast = document.createElement('div');
+                    toast.className = 'position-fixed top-0 end-0 p-3';
+                    toast.style.zIndex = '5000';
+                    toast.innerHTML = `
+        <div class="toast show" role="alert">
+          <div class="toast-header">
+            <strong class="me-auto">SAGA AI</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+          </div>
+          <div class="toast-body">
+            Konten berhasil disalin!
+          </div>
+        </div>
+      `;
+                    document.body.appendChild(toast);
+
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 3000);
+                })
+                .catch(err => {
+                    console.error('Gagal menyalin konten:', err);
+                });
+        }
+
+        // Tambahkan ini untuk menghubungkan tombol perbarui di canvas
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Pasang event listener untuk tombol-tombol canvas
+                document.getElementById('close-canvas').addEventListener('click', function() {
+                    closeCanvas();
+                });
+
+                document.getElementById('copy-canvas').addEventListener('click', function() {
+                    copyCanvasContent();
+                });
+
+                // Cari dan ganti fungsi event listener untuk tombol update-canvas
+                document.getElementById('update-canvas').addEventListener('click', function() {
+                    // Jika mobile, tutup canvas terlebih dahulu
+                    if (isMobileDevice()) {
+                        closeCanvas();
+                    }
+
+                    // Buat pesan revisi dari AI
+                    const messageWrapper = document.createElement('div');
+                    messageWrapper.classList.add('d-flex', 'mb-3', 'justify-content-start');
+                    messageWrapper.innerHTML = `
+        <div class="d-flex chat-message align-items-center pt-1 pb-1 p-2 rounded-4" 
+            style="background-color: transparent; max-width: 40rem;">
+            <img src="${aiImage}" 
+                class="chat-profile bg-white ms-2 me-2 rounded-circle" 
+                alt="ai profile" 
+                style="width: 20px; height: 20px; object-fit: cover;">
+            <div class="chat-bubble rounded p-2 align-content-center"
+                style="font-size: 13px; background-color: transparent; width: 100%">
+                <p class="chat-paragraph">Silakan berikan instruksi revisi Anda.</p>
+            </div>
+        </div>
+    `;
+
+                    // Tambahkan ke chat container
+                    const chatContainer = document.getElementById('chat-container');
+                    chatContainer.appendChild(messageWrapper);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                    // Masukkan kata "revisi" ke input
+                    const userInput = document.getElementById('user-input');
+                    userInput.value = "revisi: ";
+
+                    // Fokuskan input
+                    userInput.focus();
+                    userInput.setSelectionRange(userInput.value.length, userInput.value.length);
+                });
+            } catch (e) {
+                console.error("Error setting up canvas buttons:", e);
+            }
+        });
+
+        //         // Update konten canvas dengan AI
+        //         async function updateCanvasWithAI() {
+        //             const canvasEditor = document.getElementById('canvas-editor');
+        //             const currentContent = canvasEditor.innerText;
+        //             const userPrompt = prompt("Masukkan instruksi untuk mengubah konten:", "Revisi konten menjadi lebih singkat dan padat");
+
+        //             if (!userPrompt) return; // Cancel jika user tidak memasukkan apa-apa
+
+        //             // Tampilkan loading
+        //             canvasEditor.innerHTML += '<div id="canvas-loading" class="text-center my-3"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Memperbarui konten...</p></div>';
+
+        //             try {
+        //                 const prompt = `Berikut ini adalah konten yang perlu direvisi:
+
+        // ${currentContent}
+
+        // Instruksi revisi: ${userPrompt}
+
+        // Harap berikan versi yang direvisi sesuai instruksi. Berikan HANYA konten hasil revisi, tanpa penjelasan tambahan.`;
+
+        //                 // Gunakan fungsi getAIResponse yang sudah ada
+        //                 const response = await getAIResponse(prompt);
+
+        //                 // Hapus loading
+        //                 document.getElementById('canvas-loading')?.remove();
+
+        //                 // Update canvas dengan respons AI
+        //                 canvasEditor.innerHTML = formatCanvasContent(response);
+
+        //             } catch (error) {
+        //                 console.error('Error updating canvas with AI:', error);
+        //                 document.getElementById('canvas-loading')?.remove();
+        //                 canvasEditor.innerHTML += '<div class="alert alert-danger">Gagal memperbarui konten. Silakan coba lagi.</div>';
+        //             }
+        //         }
+
+        // Tambahkan variable untuk tracking canvas
+        window.canvasActive = false;
+        window.currentCanvasContent = '';
+        window.currentCanvasType = '';
+
+        // Fungsi untuk memeriksa apakah pesan adalah permintaan revisi
+        function checkIfRevisionRequest(message) {
+            const revisionKeywords = [
+                'revisi', 'ubah', 'ganti', 'modifikasi', 'edit', 'perbaiki',
+                'perbarui', 'update', 'koreksi'
+            ];
+
+            const messageLC = message.toLowerCase();
+            return revisionKeywords.some(keyword => messageLC.includes(keyword));
+        }
+
+        // Fungsi untuk menangani permintaan revisi canvas
+        async function handleCanvasRevision(revisionRequest) {
+            // Tambahkan pesan konfirmasi ke chat
+            await addMessage('ai', `Saya akan merevisi ${window.currentCanvasType} sesuai permintaan Anda.`);
+
+            // Gunakan AI untuk merevisi konten
+            const revisionPrompt = `
+Berikut adalah ${window.currentCanvasType} yang perlu direvisi:
+
+${window.currentCanvasContent}
+
+Permintaan revisi: ${revisionRequest}
+
+Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten hasil revisi lengkap, tanpa penjelasan tambahan.`;
+
+            try {
+                // Ambil referensi ke canvas editor
+                const canvasEditor = document.getElementById('canvas-editor');
+
+                // Simpan konten asli untuk digunakan dalam animasi
+                const originalContent = canvasEditor.innerHTML;
+
+                // Buat wrapper untuk animasi pulse
+                canvasEditor.innerHTML = `<div id="canvas-revision-content">${originalContent}</div>`;
+                const contentWrapper = document.getElementById('canvas-revision-content');
+
+                // Tambahkan animasi pulse (fade in/out) ke konten
+                let pulseCount = 0;
+                const pulseAnimation = setInterval(() => {
+                    // Toggle opacity untuk efek kedap-kedip halus
+                    contentWrapper.style.opacity = contentWrapper.style.opacity === '0.4' ? '1' : '0.4';
+                    contentWrapper.style.transition = 'opacity 0.7s ease';
+
+                    pulseCount++;
+                    // Hentikan animasi setelah 5 kali pulse jika respons belum kembali
+                    if (pulseCount > 10) {
+                        clearInterval(pulseAnimation);
+                        contentWrapper.style.opacity = '1';
+                    }
+                }, 700);
+
+                // Dapatkan respons revisi
+                const revisedContent = await getAIResponse(revisionPrompt);
+
+                // Hentikan animasi pulse
+                clearInterval(pulseAnimation);
+
+                // Reset opacity untuk memastikan konten terlihat
+                if (contentWrapper) contentWrapper.style.opacity = '1';
+
+                // Tampilkan hasil revisi dengan animasi fade in per paragraf
+                await fadeInRevisedContent(revisedContent);
+
+                // Simpan konten baru
+                window.currentCanvasContent = revisedContent;
+            } catch (error) {
+                console.error('Error revising canvas content:', error);
+                const canvasEditor = document.getElementById('canvas-editor');
+                canvasEditor.innerHTML += '<div class="alert alert-danger">Gagal merevisi konten. Silakan coba lagi.</div>';
+            }
+        }
+
+        // Fungsi baru untuk menampilkan konten hasil revisi dengan animasi fade in per paragraf
+        async function fadeInRevisedContent(content) {
+            const canvasEditor = document.getElementById('canvas-editor');
+
+            // Format konten menggunakan fungsi yang sudah ada
+            const formattedContent = formatCanvasContent(content);
+
+            // Kosongkan canvas
+            canvasEditor.innerHTML = '';
+
+            // Split konten menjadi paragraf (elemen HTML)
+            const contentElement = document.createElement('div');
+            contentElement.innerHTML = formattedContent;
+            const paragraphs = Array.from(contentElement.children);
+
+            // Buat container untuk paragraf
+            const container = document.createElement('div');
+            canvasEditor.appendChild(container);
+
+            // Tampilkan paragraf satu per satu dengan animasi fade in
+            for (let i = 0; i < paragraphs.length; i++) {
+                const paragraph = paragraphs[i];
+
+                // Buat wrapper untuk animasi
+                const paraWrapper = document.createElement('div');
+                paraWrapper.classList.add('fade-in-paragraph');
+                paraWrapper.style.opacity = '0';
+                paraWrapper.style.transform = 'translateY(10px)';
+                paraWrapper.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+
+                // Tambahkan paragraf ke wrapper
+                paraWrapper.appendChild(paragraph.cloneNode(true));
+
+                // Tambahkan wrapper ke container
+                container.appendChild(paraWrapper);
+
+                // Animasi fade in
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        paraWrapper.style.opacity = '1';
+                        paraWrapper.style.transform = 'translateY(0)';
+                        setTimeout(resolve, 100); // Sedikit delay untuk memastikan animasi berjalan halus
+                    }, 80 * i); // Delay bertahap untuk efek cascading
+                });
+            }
+
+            // Auto-scroll ke atas setelah konten baru ditampilkan
+            canvasEditor.scrollTop = 0;
+        }
+
+        // Tambahkan CSS untuk animasi
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+@keyframes fadeInParagraph {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-paragraph {
+    animation: fadeInParagraph 0.5s ease forwards;
+}
+
+#canvas-revision-content {
+    transition: opacity 0.7s ease;
+}
+`;
+        document.head.appendChild(styleElement);
+
+        // Fungsi untuk menambahkan tombol canvas
+        function addCanvasButton(contentType) {
+            const chatContainer = document.getElementById('chat-container');
+            const lastMessage = chatContainer.lastElementChild;
+
+            if (!lastMessage) return;
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'canvas-button-container my-2';
+            buttonContainer.innerHTML = `
+        <button class="btn btn-sm bg-light text-black d-flex align-items-center ms-5 gap-2 px-3 py-2 border"
+               style="border-radius: 15px;">
+            <i class="bi bi-files-alt"></i>
+            <span class="button-text d-none d-md-inline" style="font-size: 13px;">Buka ${contentType} di Canvas</span>
+        </button>
+    `;
+
+            // Tambahkan button setelah pesan terakhir
+            chatContainer.insertBefore(buttonContainer, lastMessage.nextSibling);
+
+            // Perbaikan event listener
+            buttonContainer.querySelector('button').addEventListener('click', function() {
+                console.log("Canvas button clicked");
+                // Pastikan konten tersimpan dan panggil showCanvas secara eksplisit
+                if (window.currentCanvasContent) {
+                    showCanvas(window.currentCanvasContent, contentType || 'konten');
+                } else {
+                    console.error("Canvas content not available");
+                    alert("Maaf, konten tidak tersedia. Silakan coba lagi.");
+                }
+            });
+        }
+
+        // Fungsi typing untuk canvas
+        async function typeContentInCanvas(content) {
+            const canvasEditor = document.getElementById('canvas-editor');
+            if (!canvasEditor) return;
+
+            // Simpan konten asli untuk referensi
+            window.currentCanvasContent = content;
+
+            // Format konten dengan HTML yang sesuai
+            const formattedContent = formatCanvasContent(content);
+
+            // Kosongkan canvas
+            canvasEditor.innerHTML = '';
+
+            // Buat elemen untuk menampung typing effect
+            const typingContainer = document.createElement('div');
+            typingContainer.className = 'typing-container';
+            canvasEditor.appendChild(typingContainer);
+
+            // Mulai typing animation
+            let currentText = '';
+            const textChunks = splitContentIntoChunks(formattedContent);
+
+            for (const chunk of textChunks) {
+                // Mulai dengan tag HTML jika ada
+                if (chunk.startsWith('<')) {
+                    currentText += chunk;
+                    typingContainer.innerHTML = currentText;
+                    // Tunggu sedikit untuk tag HTML
+                    await new Promise(resolve => setTimeout(resolve, 10));
+                } else {
+                    // Typing effect untuk text biasa
+                    for (let i = 0; i < chunk.length; i++) {
+                        currentText += chunk[i];
+                        typingContainer.innerHTML = currentText;
+                        await new Promise(resolve => setTimeout(resolve, 5));
+                    }
+                }
+
+                // Auto-scroll saat typing
+                canvasEditor.scrollTop = canvasEditor.scrollHeight;
+            }
+        }
+
+        // Setup editor untuk toolbar canvas footer
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup editor toolbar
+            setupEditorToolbar();
+
+            // Setup export button
+            document.getElementById('export-canvas').addEventListener('click', exportToWord);
+        });
+
+        function setupEditorToolbar() {
+            const formatButtons = document.querySelectorAll('.format-btn');
+            const editor = document.getElementById('canvas-editor');
+
+            formatButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const format = this.getAttribute('data-format');
+                    formatText(format);
+                });
+            });
+
+            // Function to apply formatting
+            function formatText(format) {
+                // Save current selection
+                const selection = window.getSelection();
+                const range = selection.getRangeAt(0);
+
+                // Apply different formatting based on format type
+                switch (format) {
+                    case 'bold':
+                        document.execCommand('bold', false, null);
+                        break;
+                    case 'italic':
+                        document.execCommand('italic', false, null);
+                        break;
+                    case 'underline':
+                        document.execCommand('underline', false, null);
+                        break;
+                    case 'h1':
+                        document.execCommand('formatBlock', false, '<h1>');
+                        break;
+                    case 'h2':
+                        document.execCommand('formatBlock', false, '<h2>');
+                        break;
+                    case 'h3':
+                        document.execCommand('formatBlock', false, '<h3>');
+                        break;
+                    case 'ul':
+                        document.execCommand('insertUnorderedList', false, null);
+                        break;
+                    case 'ol':
+                        document.execCommand('insertOrderedList', false, null);
+                        break;
+                }
+
+                // Focus back on editor
+                editor.focus();
+            }
+        }
+
+        function exportToWord() {
+            // Get content
+            const canvasEditor = document.getElementById('canvas-editor');
+            const content = canvasEditor.innerHTML;
+
+            // Create a properly formatted Word HTML document
+            const wordContent = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:w="urn:schemas-microsoft-com:office:word" 
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+            <meta charset="utf-8">
+            <title>Export from SAGA AI</title>
+            <!--[if gte mso 9]>
+            <xml>
+                <w:WordDocument>
+                    <w:View>Print</w:View>
+                    <w:Zoom>90</w:Zoom>
+                    <w:DoNotOptimizeForBrowser/>
+                </w:WordDocument>
+            </xml>
+            <![endif]-->
+            <style>
+                body {
+                    font-family: 'Calibri', sans-serif;
+                    font-size: 12pt;
+                }
+                h1, h2, h3, h4, h5, h6 {
+                    margin-top: 12pt;
+                    margin-bottom: 6pt;
+                    font-weight: bold;
+                }
+                p {
+                    margin: 6pt 0;
+                }
+                /* Add more styles as needed */
+            </style>
+        </head>
+        <body>
+            ${content}
+        </body>
+        </html>
+    `;
+
+            // Create Blob and download
+            const blob = new Blob([wordContent], {
+                type: 'application/msword'
+            });
+            const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14);
+            const filename = `SAGA_Export_${timestamp}.doc`;
+
+            // Create download link
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+
+            // Append to body, click, and remove
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Show success message
+            showExportNotification('Konten berhasil diunduh');
+        }
+
+        function showExportNotification(message) {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.style.zIndex = '5000';
+            toast.innerHTML = `
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="bi bi-check-circle-fill me-2 text-success"></i>
+                <strong class="me-auto">SAGA AI</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        </div>
+    `;
+
+            // Add to document
+            document.body.appendChild(toast);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Check if we're on mobile and adjust UI
+        function adjustForMobile() {
+            if (window.innerWidth <= 768) {
+                const toolbar = document.querySelector('.editor-toolbar');
+                if (toolbar) {
+                    // Keep only essential formatting options on mobile
+                    const essentialFormats = ['bold', 'italic', 'ul'];
+                    document.querySelectorAll('.format-btn').forEach(btn => {
+                        const format = btn.getAttribute('data-format');
+                        if (!essentialFormats.includes(format)) {
+                            btn.style.display = 'none';
+                        }
+                    });
+                }
+            }
+        }
+
+        // Call on load and resize
+        window.addEventListener('load', adjustForMobile);
+        window.addEventListener('resize', adjustForMobile);
+
+        // Helper untuk split konten menjadi chunks (HTML tags dan text)
+        function splitContentIntoChunks(content) {
+            const chunks = [];
+            let currentChunk = '';
+            let inTag = false;
+
+            for (let i = 0; i < content.length; i++) {
+                const char = content[i];
+
+                if (char === '<') {
+                    if (currentChunk) {
+                        chunks.push(currentChunk);
+                        currentChunk = '';
+                    }
+                    inTag = true;
+                    currentChunk = char;
+                } else if (char === '>' && inTag) {
+                    currentChunk += char;
+                    chunks.push(currentChunk);
+                    currentChunk = '';
+                    inTag = false;
+                } else {
+                    currentChunk += char;
+
+                    // Buat chunk baru setiap beberapa karakter jika tidak dalam tag
+                    if (!inTag && currentChunk.length >= 50 && [' ', '.', '!', '?', ',', '\n'].includes(char)) {
+                        chunks.push(currentChunk);
+                        currentChunk = '';
+                    }
+                }
+            }
+
+            if (currentChunk) {
+                chunks.push(currentChunk);
+            }
+
+            return chunks;
+        }
+
+
+        // Setup event listeners setelah DOM loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pasang event listener untuk tombol-tombol canvas
+            document.getElementById('close-canvas').addEventListener('click', closeCanvas);
+            document.getElementById('copy-canvas').addEventListener('click', copyCanvasContent);
+            // document.getElementById('update-canvas').addEventListener('click', updateCanvasWithAI);
+
+            // Modifikasi fungsi sendMessage yang sudah ada
+            const originalSendMessage = sendMessage;
+            window.sendMessage = async function() {
+                const userMessageText = userInput.value.trim();
+                if (userMessageText === '') return;
+
+                // Sembunyikan welcome/recommendation containers
+                const recommendationContainer = document.querySelector('.recommendation-container');
+                if (recommendationContainer) {
+                    recommendationContainer.classList.add('hide');
+                    setTimeout(() => {
+                        recommendationContainer.classList.add('d-none');
+                    }, 300);
+                }
+
+                // Update first message if needed
+                if (isFirstChat) {
+                    updateFirstMessage(userMessageText);
+                    isFirstChat = false;
+                }
+
+                // Add user message to chat
+                await addMessage('user', userMessageText);
+
+                // Show thinking message
+                const tempMessage = await addMessage('ai', '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>', true);
+
+                // Clear input and update UI states
+                userInput.value = '';
+                hideTersedia();
+                showLoader();
+
+                try {
+                    // Check if it's a revision request for canvas content
+                    const isRevisionRequest = window.canvasActive && checkIfRevisionRequest(userMessageText);
+
+                    if (isRevisionRequest) {
+                        // Handle revision request
+                        await handleCanvasRevision(userMessageText);
+                        tempMessage.remove();
+                        return;
+                    }
+
+                    // Normal flow - get AI response
+                    const aiResponse = await getAIResponse(userMessageText);
+
+                    // Remove temporary message
+                    tempMessage.remove();
+
+                    // Check if response is a long content
+                    const contentInfo = detectLongContent(aiResponse, userMessageText);
+
+                    // Di dalam kondisi if (contentInfo.isLong) pada fungsi sendMessage
+                    if (contentInfo.isLong) {
+                        // Tampilkan pengantar di chat
+                        await addMessage('ai', contentInfo.chatContent);
+
+                        // Simpan konten canvas untuk digunakan nanti
+                        window.currentCanvasContent = contentInfo.canvasContent;
+                        window.currentCanvasType = contentInfo.contentType || 'konten';
+
+                        // Tambahkan tombol canvas
+                        addCanvasButton(contentInfo.contentType);
+
+                        // Tampilkan konten utama di canvas
+                        showCanvas(contentInfo.canvasContent, contentInfo.contentType);
+
+                        // Tampilkan penutup di chat jika ada
+                        if (contentInfo.closingContent) {
+                            setTimeout(async () => {
+                                await addMessage('ai', contentInfo.closingContent);
+                            }, 1000);
+                        }
+                    } else {
+                        // Tampilkan respons normal
+                        await addMessage('ai', aiResponse);
+                    }
+
+                    // Save to database
+                    await saveToDatabase(userMessageText, aiResponse);
+                } catch (error) {
+                    console.error('Error:', error);
+                    tempMessage.remove();
+                    await addMessage('ai', 'Maaf, terjadi kesalahan saat memproses pesan Anda.');
+                } finally {
+                    hideLoader();
+                    showTersedia();
+                }
+            };
+        });
+
+        // Tambahkan kode ini untuk mengaktifkan swipe down untuk menutup canvas di mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('canvas-container');
+            let startY = 0;
+            let distY = 0;
+
+            function handleTouchStart(e) {
+                startY = e.touches[0].clientY;
+            }
+
+            function handleTouchMove(e) {
+                // Cek apakah sedang di bagian atas canvas
+                const isAtTop = canvas.scrollTop <= 0;
+
+                if (isAtTop) {
+                    distY = e.touches[0].clientY - startY;
+
+                    // Jika swipe ke bawah lebih dari 30px
+                    if (distY > 30) {
+                        e.preventDefault(); // Hindari scroll
+                        canvas.style.bottom = `-${distY/3}px`; // Efek drag
+                    }
+                }
+            }
+
+            function handleTouchEnd(e) {
+                // Jika swipe cukup jauh ke bawah, tutup canvas
+                if (distY > 100) {
+                    closeCanvas();
+                } else {
+                    // Reset posisi canvas
+                    canvas.style.bottom = '0';
+                }
+                startY = 0;
+                distY = 0;
+            }
+
+            canvas.addEventListener('touchstart', handleTouchStart, {
+                passive: false
+            });
+            canvas.addEventListener('touchmove', handleTouchMove, {
+                passive: false
+            });
+            canvas.addEventListener('touchend', handleTouchEnd);
+        });
+
+
+        // Tambahkan kode ini di bagian DOMContentLoaded untuk memperbaiki tombol silang di mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ambil referensi ke tombol close
+            const closeButton = document.getElementById('close-canvas');
+
+            // Hapus event listener lama jika ada (untuk mencegah duplikasi)
+            closeButton.removeEventListener('click', closeCanvas);
+
+            // Tambahkan listener baru dengan peningkatan area klik
+            closeButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Hentikan event bubbling
+                console.log('Close button clicked'); // Debug log
+                closeCanvas();
+            });
+
+            // Tambahkan CSS untuk memperbesar area klik di mobile
+            const style = document.createElement('style');
+            style.textContent = `
+        @media (max-width: 768px) {
+            #close-canvas {
+                padding: 10px !important;  /* Area klik lebih besar */
+                z-index: 10000 !important; /* z-index sangat tinggi */
+                position: relative;        /* Pastikan posisi relatif */
+            }
+            
+            #close-canvas::before {
+                content: '';
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                bottom: -10px;
+                left: -10px;
+                z-index: -1;
+            }
+            
+            .canvas-header {
+                position: sticky;          /* Header tetap terlihat */
+                top: 0;
+                background: white;
+                z-index: 9999;
+                padding: 15px !important;
+            }
+        }
+    `;
+            document.head.appendChild(style);
+        });
     </script>
+    <!-- <script>
+        // DEBUG CANVAS
+        // Fungsi untuk menguji canvas
+        window.testCanvas = function() {
+            const longContent = `Ini adalah contoh konten panjang untuk menguji canvas. 
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
+    nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in 
+    reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla 
+    pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+    culpa qui officia deserunt mollit anim id est laborum.`;
+
+            showCanvas(longContent);
+            console.log("Test canvas called");
+        };
+
+        // Tambahkan tombol tes di dokumen
+        document.addEventListener('DOMContentLoaded', function() {
+            const testBtn = document.createElement('button');
+            testBtn.innerText = "Test Canvas";
+            testBtn.style.position = "fixed";
+            testBtn.style.right = "10px";
+            testBtn.style.bottom = "10px";
+            testBtn.style.zIndex = "9999";
+            testBtn.onclick = window.testCanvas;
+            document.body.appendChild(testBtn);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Force show canvas saat tombol diklik
+            document.getElementById('close-canvas').addEventListener('click', function() {
+                console.log("CANVAS DEBUG: Close button clicked");
+                closeCanvas();
+            });
+
+            // Tambahkan handler untuk tombol show canvas yang bisa diuji
+            const showCanvasBtn = document.createElement('button');
+            showCanvasBtn.innerText = "Show Canvas";
+            showCanvasBtn.style.position = "fixed";
+            showCanvasBtn.style.right = "10px";
+            showCanvasBtn.style.bottom = "50px";
+            showCanvasBtn.style.zIndex = "9999";
+            showCanvasBtn.onclick = function() {
+                const canvasContainer = document.getElementById('canvas-container');
+                const colUtama = document.querySelector('.col-utama');
+
+                // Force toggle class active
+                canvasContainer.classList.toggle('active');
+                colUtama.classList.toggle('canvas-active');
+                console.log("CANVAS DEBUG: Toggled canvas classes manually");
+            };
+            document.body.appendChild(showCanvasBtn);
+        });
+
+        // Tambahkan ini di bagian akhir file
+        function testCanvasManual() {
+            try {
+                // Tes sederhana tanpa menggunakan formatCanvasContent
+                const theCanvas = document.getElementById('canvas-container');
+                const editor = document.getElementById('canvas-editor');
+                const main = document.querySelector('.col-utama');
+
+                console.log("Canvas elements:", {
+                    canvas: !!theCanvas,
+                    editor: !!editor,
+                    main: !!main
+                });
+
+                if (theCanvas && editor) {
+                    editor.innerHTML = '<p>Ini adalah tes canvas manual</p><p>Baris kedua untuk test</p>';
+                    theCanvas.classList.add('active');
+                    main.classList.add('canvas-active');
+                    console.log("Manual canvas activation attempted");
+                }
+            } catch (e) {
+                console.error("Manual canvas test error:", e);
+            }
+        }
+
+        // Tambahkan tombol tes manual
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Tombol test canvas lama
+                const testBtn = document.createElement('button');
+                testBtn.innerText = "Test Canvas";
+                testBtn.style.position = "fixed";
+                testBtn.style.right = "10px";
+                testBtn.style.bottom = "10px";
+                testBtn.style.zIndex = "9999";
+                testBtn.onclick = window.testCanvas;
+                document.body.appendChild(testBtn);
+
+                // Tombol test canvas manual baru
+                const manualBtn = document.createElement('button');
+                manualBtn.innerText = "Manual Canvas Test";
+                manualBtn.style.position = "fixed";
+                manualBtn.style.right = "10px";
+                manualBtn.style.bottom = "50px";
+                manualBtn.style.zIndex = "9999";
+                manualBtn.onclick = testCanvasManual;
+                document.body.appendChild(manualBtn);
+            } catch (e) {
+                console.error("Error creating test buttons:", e);
+            }
+        });
+    </script> -->
+    <!-- <script>
+        // Debugging helper - tambahkan di bagian bawah dokumen
+        document.addEventListener('DOMContentLoaded', function() {
+            const debugBtn = document.createElement('button');
+            debugBtn.textContent = "Debug Canvas";
+            debugBtn.style.position = "fixed";
+            debugBtn.style.bottom = "10px";
+            debugBtn.style.right = "10px";
+            debugBtn.style.zIndex = "9999";
+            debugBtn.style.padding = "5px 10px";
+            debugBtn.style.backgroundColor = "#f8f9fa";
+            debugBtn.style.border = "1px solid #dee2e6";
+            debugBtn.style.borderRadius = "4px";
+
+            debugBtn.addEventListener('click', function() {
+                console.log("Canvas active:", window.canvasActive);
+                console.log("Current canvas type:", window.currentCanvasType);
+                console.log("Current canvas content available:", !!window.currentCanvasContent);
+
+                const canvas = document.getElementById('canvas-container');
+                console.log("Canvas element:", canvas);
+                console.log("Canvas has active class:", canvas.classList.contains('active'));
+
+                if (window.currentCanvasContent) {
+                    showCanvas(window.currentCanvasContent, window.currentCanvasType || 'debug');
+                } else {
+                    showCanvas("Ini adalah konten test untuk canvas debugging", "debug");
+                }
+            });
+
+            document.body.appendChild(debugBtn);
+        });
+    </script> -->
     </div>
 
 </body>
