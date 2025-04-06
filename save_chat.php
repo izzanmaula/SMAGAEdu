@@ -14,6 +14,8 @@ if (!isset($_SESSION['userid']) || !isset($data['pesan']) || !isset($data['respo
 $user_id = $_SESSION['userid'];
 $pesan = $data['pesan'];
 $respons = $data['respons'];
+// Ambil nilai uses_canvas jika ada, defaultnya 0
+$uses_canvas = isset($data['uses_canvas']) ? (int)$data['uses_canvas'] : 0;
 
 // Cek apakah ada session chat aktif
 if (!isset($_SESSION['active_chat_session'])) {
@@ -65,12 +67,12 @@ if (!isset($_SESSION['active_chat_session'])) {
 // Simpan pesan dengan session ID yang benar
 $session_id = $_SESSION['active_chat_session'];
 
-// Gunakan nama kolom yang benar untuk foreign key
-$query = "INSERT INTO ai_chat_messages (ai_chat_sessions_id, pesan, respons, created_at) 
-          VALUES (?, ?, ?, NOW())";
+// Tambahkan uses_canvas ke query
+$query = "INSERT INTO ai_chat_messages (ai_chat_sessions_id, pesan, respons, created_at, uses_canvas) 
+          VALUES (?, ?, ?, NOW(), ?)";
 
 $stmt = mysqli_prepare($koneksi, $query);
-mysqli_stmt_bind_param($stmt, 'iss', $session_id, $pesan, $respons);
+mysqli_stmt_bind_param($stmt, 'issi', $session_id, $pesan, $respons, $uses_canvas);
 $result = mysqli_stmt_execute($stmt);
 
 if ($result) {

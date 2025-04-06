@@ -182,7 +182,7 @@ $guru = mysqli_fetch_assoc($result);
         background-color: white;
         box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         z-index: 1000;
-        transition: width 0.3s ease;
+        transition: width 0.3s ease-in-out;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -217,6 +217,12 @@ $guru = mysqli_fetch_assoc($result);
         font-size: 14px;
         line-height: 1.6;
         font-family: 'Merriweather', serif;
+        transition: opacity 0.5s ease;
+        opacity: 0;
+    }
+
+    .canvas-editor.fade-in {
+        opacity: 1;
     }
 
     .canvas-footer {
@@ -287,6 +293,23 @@ $guru = mysqli_fetch_assoc($result);
 
     .typing-container {
         white-space: pre-wrap;
+    }
+
+    /* TEXT TRUNCRATE UNTUK BUTTON LUAR CANVAS */
+    /* Tambahkan ke bagian <style> yang sudah ada */
+    .first-message-text {
+        display: inline-block;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    @media (max-width: 768px) {
+        .first-message-text {
+            max-width: 100px;
+        }
     }
 
     /* Format untuk elemen di dalam canvas */
@@ -493,7 +516,7 @@ $guru = mysqli_fetch_assoc($result);
 
     <div id="canvas-container" class="canvas-container">
         <div class="canvas-header">
-            <h5 class="canvas-title p-0 m-0">Editor Konten</h5>
+            <h5 class="canvas-title p-0 m-0">Canvas Anda</h5>
             <div class="canvas-actions">
                 <button id="copy-canvas" class="btn btn-sm btn-light" title="Salin konten">
                     <i class="bi bi-clipboard"></i>
@@ -2837,15 +2860,53 @@ $guru = mysqli_fetch_assoc($result);
                                         updateFirstMessage(firstMessage.pesan);
                                     }
 
-                                    // Tampilkan semua pesan tanpa animasi
-                                    messages.forEach(message => {
+                                    // Flag untuk melacak apakah ada canvas yang perlu ditampilkan
+                                    let canvasContent = null;
+                                    let hasCanvasMessages = false;
+
+                                    if (hasCanvasMessages && canvasContent) {
+                                        setTimeout(() => {
+                                            showCanvas(canvasContent, 'konten', false); // Parameter ketiga false
+                                        }, 500);
+                                    }
+
+                                    // Tampilkan semua pesan
+                                    messages.forEach((message, index) => {
                                         if (message && message.pesan) {
                                             addHistoryMessage('user', message.pesan);
                                         }
+
                                         if (message && message.respons) {
-                                            addHistoryMessage('ai', message.respons);
+                                            // Cek apakah pesan ini menggunakan canvas
+                                            if (message.uses_canvas == 1) {
+                                                hasCanvasMessages = true;
+
+                                                // Tampilkan pengantar di chat
+                                                addHistoryMessage('ai', 'Jawaban telah disiapkan. Silakan lihat di canvas untuk tampilan lengkap.');
+
+                                                // Simpan konten untuk canvas (simpan konten dari pesan terakhir yang menggunakan canvas)
+                                                canvasContent = message.respons;
+
+                                                // Tambahkan tombol canvas
+                                                addCanvasButton('konten');
+                                            } else {
+                                                // Pesan normal - tampilkan lengkap
+                                                addHistoryMessage('ai', message.respons);
+                                            }
                                         }
                                     });
+
+                                    // Jika ada pesan dengan canvas, tampilkan canvas setelah semua pesan dimuat
+                                    if (hasCanvasMessages && canvasContent) {
+                                        // Tandai konten sebagai sudah di-type untuk mencegah animasi ulang
+                                        window.contentTyped = true;
+                                        window.lastTypedContent = canvasContent;
+
+                                        // Tampilkan canvas setelah delay singkat
+                                        setTimeout(() => {
+                                            showCanvas(canvasContent, 'konten', false);
+                                        }, 500);
+                                    }
                                 } else {
                                     addHistoryMessage('ai', 'Tidak ada pesan dalam chat ini');
                                 }
@@ -3043,96 +3104,96 @@ $guru = mysqli_fetch_assoc($result);
                         // Modifikasi fungsi sendMessage yang sudah ada
                         const originalSendMessage = sendMessage;
                         // Modifikasi fungsi sendMessage yang sudah ada
-                        window.sendMessage = async function() {
-                            const userMessageText = userInput.value.trim();
-                            if (userMessageText === '') return;
+                        // window.sendMessage = async function() {
+                        //     const userMessageText = userInput.value.trim();
+                        //     if (userMessageText === '') return;
 
-                            // Sembunyikan recommendation container saat mulai chat
-                            const recommendationContainer = document.querySelector('.recommendation-container');
-                            if (recommendationContainer) {
-                                recommendationContainer.classList.add('hide');
-                                setTimeout(() => {
-                                    recommendationContainer.classList.add('d-none');
-                                }, 300);
-                            }
+                        //     // Sembunyikan recommendation container saat mulai chat
+                        //     const recommendationContainer = document.querySelector('.recommendation-container');
+                        //     if (recommendationContainer) {
+                        //         recommendationContainer.classList.add('hide');
+                        //         setTimeout(() => {
+                        //             recommendationContainer.classList.add('d-none');
+                        //         }, 300);
+                        //     }
 
-                            if (isFirstChat) {
-                                updateFirstMessage(userMessageText);
-                                isFirstChat = false;
-                            }
+                        //     if (isFirstChat) {
+                        //         updateFirstMessage(userMessageText);
+                        //         isFirstChat = false;
+                        //     }
 
-                            // Add user message
-                            await addMessage('user', userMessageText);
+                        //     // Add user message
+                        //     await addMessage('user', userMessageText);
 
-                            // Show thinking message with italic, fade-in, and muted text
-                            const tempMessage = await addMessage('ai', '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>', true);
+                        //     // Show thinking message with italic, fade-in, and muted text
+                        //     const tempMessage = await addMessage('ai', '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>', true);
 
-                            // Clear input and update UI states
-                            userInput.value = '';
-                            hideTersedia();
-                            showLoader();
+                        //     // Clear input and update UI states
+                        //     userInput.value = '';
+                        //     hideTersedia();
+                        //     showLoader();
 
-                            try {
-                                // Check if it's a revision request for canvas content
-                                const isRevisionRequest = window.canvasActive && checkIfRevisionRequest(userMessageText);
+                        //     try {
+                        //         // Check if it's a revision request for canvas content
+                        //         const isRevisionRequest = window.canvasActive && checkIfRevisionRequest(userMessageText);
 
-                                if (isRevisionRequest) {
-                                    // Handle revision request
-                                    await handleCanvasRevision(userMessageText);
-                                    tempMessage.remove();
-                                    return;
-                                }
+                        //         if (isRevisionRequest) {
+                        //             // Handle revision request
+                        //             await handleCanvasRevision(userMessageText);
+                        //             tempMessage.remove();
+                        //             return;
+                        //         }
 
-                                // Normal flow - get AI response
-                                const aiResponse = await getAIResponse(userMessageText);
+                        //         // Normal flow - get AI response
+                        //         const aiResponse = await getAIResponse(userMessageText);
 
-                                // Remove temporary message
-                                tempMessage.remove();
+                        //         // Remove temporary message
+                        //         tempMessage.remove();
 
-                                // Cek apakah canvas mode diaktifkan
-                                if (window.canvasModeEnabled) {
-                                    // Tampilkan pengantar di chat
-                                    await addMessage('ai', 'Jawaban telah disiapkan. Silakan lihat di canvas untuk tampilan lengkap.');
+                        //         // Cek apakah canvas mode diaktifkan
+                        //         if (window.canvasModeEnabled) {
+                        //             // Tampilkan pengantar di chat
+                        //             await addMessage('ai', 'Jawaban telah disiapkan. Silakan lihat di canvas untuk tampilan lengkap.');
 
-                                    // Tampilkan konten utama di canvas
-                                    showCanvas(aiResponse, 'konten');
-                                } else {
-                                    // Cek apakah konten panjang seperti biasa
-                                    const contentInfo = detectLongContent(aiResponse, userMessageText);
+                        //             // Tampilkan konten utama di canvas
+                        //             showCanvas(aiResponse, 'konten');
+                        //         } else {
+                        //             // Cek apakah konten panjang seperti biasa
+                        //             const contentInfo = detectLongContent(aiResponse, userMessageText);
 
-                                    if (contentInfo.isLong) {
-                                        // Tampilkan pengantar di chat
-                                        await addMessage('ai', contentInfo.chatContent);
+                        //             if (contentInfo.isLong) {
+                        //                 // Tampilkan pengantar di chat
+                        //                 await addMessage('ai', contentInfo.chatContent);
 
-                                        // Tambahkan tombol canvas
-                                        addCanvasButton(contentInfo.contentType);
+                        //                 // Tambahkan tombol canvas
+                        //                 addCanvasButton(contentInfo.contentType);
 
-                                        // Tampilkan konten utama di canvas
-                                        showCanvas(contentInfo.canvasContent, contentInfo.contentType);
+                        //                 // Tampilkan konten utama di canvas
+                        //                 showCanvas(contentInfo.canvasContent, contentInfo.contentType);
 
-                                        // Tampilkan penutup di chat jika ada
-                                        if (contentInfo.closingContent) {
-                                            setTimeout(async () => {
-                                                await addMessage('ai', contentInfo.closingContent);
-                                            }, 1000);
-                                        }
-                                    } else {
-                                        // Tampilkan respons normal
-                                        await addMessage('ai', aiResponse);
-                                    }
-                                }
+                        //                 // Tampilkan penutup di chat jika ada
+                        //                 if (contentInfo.closingContent) {
+                        //                     setTimeout(async () => {
+                        //                         await addMessage('ai', contentInfo.closingContent);
+                        //                     }, 1000);
+                        //                 }
+                        //             } else {
+                        //                 // Tampilkan respons normal
+                        //                 await addMessage('ai', aiResponse);
+                        //             }
+                        //         }
 
-                                // Save to database
-                                await saveToDatabase(userMessageText, aiResponse);
-                            } catch (error) {
-                                console.error('Error:', error);
-                                tempMessage.remove();
-                                await addMessage('ai', 'Maaf, terjadi kesalahan saat memproses pesan Anda.');
-                            } finally {
-                                hideLoader();
-                                showTersedia();
-                            }
-                        };
+                        //         // Save to database
+                        //         await saveToDatabase(userMessageText, aiResponse);
+                        //     } catch (error) {
+                        //         console.error('Error:', error);
+                        //         tempMessage.remove();
+                        //         await addMessage('ai', 'Maaf, terjadi kesalahan saat memproses pesan Anda.');
+                        //     } finally {
+                        //         hideLoader();
+                        //         showTersedia();
+                        //     }
+                        // };
                         // Tambahkan listener untuk input juga
                         userInput.addEventListener('input', function() {
                             if (userInput.value.trim() !== '' && welcomeMessage) {
@@ -4387,7 +4448,8 @@ $guru = mysqli_fetch_assoc($result);
                 const data = {
                     user_id: '<?php echo $_SESSION["userid"]; ?>',
                     pesan: message,
-                    respons: aiResponse
+                    respons: aiResponse,
+                    uses_canvas: window.canvasModeEnabled ? 1 : 0 // Tambahkan info canvas mode
                 };
 
                 console.log('Preparing to send data:', data);
@@ -4400,27 +4462,7 @@ $guru = mysqli_fetch_assoc($result);
                     body: JSON.stringify(data)
                 });
 
-                const responseText = await response.text();
-                console.log('Raw server response:', responseText);
-
-                try {
-                    const responseData = JSON.parse(responseText);
-
-                    if (!responseData.success) {
-                        console.error('Server returned error:', responseData.error);
-                    }
-
-                    // Hanya panggil updateCurrentTopic jika responseData.topic ada dan fungsi tersebut masih diperlukan
-                    if (responseData.success && responseData.topic && typeof updateCurrentTopic === 'function') {
-                        // Cek juga apakah elemen currentTopic ada di DOM
-                        if (document.getElementById('currentTopic')) {
-                            updateCurrentTopic(responseData.topic);
-                        }
-                    }
-                } catch (parseError) {
-                    console.error('Failed to parse server response:', parseError);
-                    console.log('Unparseable response:', responseText);
-                }
+                // Sisa kode sama seperti sebelumnya
             } catch (error) {
                 console.error('Saving to database error:', error);
             }
@@ -4499,18 +4541,68 @@ $guru = mysqli_fetch_assoc($result);
             hideTersedia();
             showLoader();
 
+
+
             try {
                 // Update conversation with Excel data
                 updateConversationWithExcel();
-
-                // Get AI response
-                const aiResponse = await getAIResponse(userMessage);
 
                 // Remove temporary message
                 tempMessage.remove();
 
                 // Show AI response
                 await addMessage('ai', aiResponse);
+
+                // Check if it's a revision request for canvas content
+                const isRevisionRequest = window.canvasActive && checkIfRevisionRequest(userMessageText);
+
+                if (isRevisionRequest) {
+                    // Handle revision request
+                    await handleCanvasRevision(userMessageText);
+                    tempMessage.remove();
+                    return;
+                }
+
+                // Normal flow - get AI response
+                const aiResponse = await getAIResponse(userMessageText);
+
+                // Remove temporary message
+                tempMessage.remove();
+
+                // Cek apakah canvas mode diaktifkan
+                if (window.canvasModeEnabled) {
+                    // Ekstrak konten dalam tag <konten> jika ada
+                    const extractedContent = extractCanvasContent(aiResponse);
+
+                    if (extractedContent.hasCanvasContent) {
+                        // Tampilkan chat content jika ada
+                        if (extractedContent.chatContent) {
+                            await addMessage('ai', extractedContent.chatContent);
+                        } else {
+                            // Jika tidak ada chat content, tampilkan pesan default
+                            await addMessage('ai', 'Jawaban telah disiapkan. Silakan lihat di canvas untuk tampilan lengkap.');
+                        }
+
+                        // Simpan konten untuk canvas
+                        window.currentCanvasContent = extractedContent.canvasContent;
+                        window.currentCanvasType = 'konten';
+
+                        // Tambahkan tombol canvas dan tampilkan canvas
+                        addCanvasButton('konten');
+                        showCanvas(extractedContent.canvasContent, 'konten');
+                    } else {
+                        // Tidak ada tag <konten>, tampilkan seluruh respons di canvas
+                        await addMessage('ai', 'Jawaban telah disiapkan. Silakan lihat di canvas untuk tampilan lengkap.');
+                        window.currentCanvasContent = aiResponse;
+                        window.currentCanvasType = 'konten';
+                        addCanvasButton('konten');
+                        showCanvas(aiResponse, 'konten');
+                    }
+                } else {
+                    // Canvas mode tidak aktif, tampilkan respons normal
+                    await addMessage('ai', aiResponse);
+                }
+
 
                 // Save to database
                 await saveToDatabase(userMessage, aiResponse);
@@ -4522,6 +4614,8 @@ $guru = mysqli_fetch_assoc($result);
                 hideLoader();
                 showTersedia();
             }
+
+
         }
 
         // Event listener untuk tombol Kirim
@@ -4535,171 +4629,58 @@ $guru = mysqli_fetch_assoc($result);
             }
         });
 
+        // Fungsi untuk memisahkan konten dalam tag <konten> dan teks normal
+        function extractCanvasContent(text) {
+            const contentRegex = /<konten>([\s\S]*?)<\/konten>/g;
+            const matches = [...text.matchAll(contentRegex)];
+
+            // Ekstrak semua konten dalam tag <konten>
+            let canvasContent = '';
+            if (matches.length > 0) {
+                canvasContent = matches.map(match => match[1]).join('\n\n');
+            }
+
+            // Hapus tag <konten> dan isinya dari teks asli untuk chat
+            const chatContent = text.replace(contentRegex, '').trim();
+
+            return {
+                chatContent: chatContent,
+                canvasContent: canvasContent,
+                hasCanvasContent: canvasContent.length > 0
+            };
+        }
+
         function detectLongContent(aiResponse, userMessage) {
-            // Menambahkan logging untuk debugging
-            console.log("Detecting content for model:", window.activeModelId);
-            console.log("Response length:", aiResponse.length);
-
-            const LONG_CONTENT_THRESHOLD = 600; // Turunkan threshold
-
-            const LONG_CONTENT_KEYWORDS = [
-                'RPP', 'silabus', 'ceramah', 'pidato', 'rencana pembelajaran',
-                'materi ajar', 'kode program', 'function', 'class', 'puisi',
-                'narasi', 'cerpen', 'essay', 'makalah', 'laporan', 'artikel',
-                'pembelajaran digital' // Tambahkan keyword dari prompt user
-            ];
-
-            // Keywords dalam prompt yang pasti memerlukan canvas
-            const FORCE_CANVAS_KEYWORDS = [
-                'buatkan makalah', 'buat makalah', 'makalah sederhana',
-                'buatkan essay', 'buat essay', 'tulis essay',
-                'tulis laporan', 'tulis artikel'
-            ];
-
-            const EXCLUDE_KEYWORDS = [
-                'apa itu', 'definisi', 'pengertian', 'jelaskan', 'terangkan'
-            ];
-
-
-            if (userMessage) {
-                const userMessageLower = userMessage.toLowerCase();
-                for (const keyword of FORCE_CANVAS_KEYWORDS) {
-                    if (userMessageLower.includes(keyword)) {
-                        console.log("Force canvas keyword detected:", keyword);
-                        return {
-                            isLong: true,
-                            contentType: 'makalah',
-                            chatContent: `Berikut adalah makalah yang Anda minta. Silakan lihat di canvas untuk tampilan lengkap.`,
-                            canvasContent: aiResponse,
-                            closingContent: ''
-                        };
-                    }
-                }
-            }
-
-
-            // PENTING: Cek apakah prompt secara langsung meminta makalah
-            for (const keyword of FORCE_CANVAS_KEYWORDS) {
-                if (userMessage && userMessage.toLowerCase().includes(keyword)) {
-                    console.log("Force canvas keyword detected:", keyword);
-                    return {
-                        isLong: true,
-                        contentType: 'makalah',
-                        chatContent: `Berikut adalah makalah yang Anda minta. Silakan lihat di canvas untuk tampilan lengkap.`,
-                        canvasContent: aiResponse,
-                        closingContent: ''
-                    };
-                }
-            }
-
-            // Cek keyword pengecualian
-            for (const keyword of EXCLUDE_KEYWORDS) {
-                if (userMessage && userMessage.toLowerCase().includes(keyword)) {
-                    return {
-                        isLong: false
-                    };
-                }
-            }
-
-            // Pisahkan konten utama dan penutup
-            let mainContent = aiResponse;
-            let closingContent = '';
-
-            // Pola untuk mendeteksi kalimat penutup/pertanyaan
-            const closingPatterns = [
-                /Apakah Bapak\/Ibu memerlukan.+\?$/m,
-                /Apakah ada aspek lain.+\?$/m,
-                /Bagaimana pendapat Bapak\/Ibu.+\?$/m,
-                /Ada pertanyaan lain.+\?$/m
-            ];
-
-            // Cari kalimat penutup
-            for (const pattern of closingPatterns) {
-                const match = aiResponse.match(pattern);
-                if (match) {
-                    const matchIndex = aiResponse.lastIndexOf(match[0]);
-                    mainContent = aiResponse.substring(0, matchIndex).trim();
-                    closingContent = match[0];
-                    break;
-                }
-            }
-
-            // Jika tidak ada pola yang cocok, coba pisahkan paragraf terakhir
-            if (mainContent === aiResponse && mainContent.includes('\n\n')) {
-                const paragraphs = mainContent.split('\n\n');
-                const lastParagraph = paragraphs.pop();
-
-                if (lastParagraph.includes('?')) {
-                    closingContent = lastParagraph;
-                    mainContent = paragraphs.join('\n\n');
-                }
-            }
-
-            // Tentukan jenis konten
-            let contentType = '';
-            for (const keyword of LONG_CONTENT_KEYWORDS) {
-                if (mainContent.toLowerCase().includes(keyword.toLowerCase()) ||
-                    (userMessage && userMessage.toLowerCase().includes(keyword.toLowerCase()))) {
-                    contentType = keyword;
-                    break;
-                }
-            }
-
-            // Deteksi kode program
-            if (mainContent.includes('```')) {
-                contentType = 'kode program';
-            }
-
-            // Hitung jumlah paragraf dan heading
-            const paragraphCount = (aiResponse.match(/\n\n/g) || []).length + 1;
-            const hasHeadings = /^#+\s/m.test(aiResponse);
-            const hasKeyword = LONG_CONTENT_KEYWORDS.some(keyword =>
-                aiResponse.toLowerCase().includes(keyword.toLowerCase()) ||
-                (userMessage && userMessage.toLowerCase().includes(keyword.toLowerCase()))
-            );
-
-            // Logika yang LEBIH INKLUSIF untuk mendeteksi konten panjang - gunakan OR bukan AND
-            const isLong =
-                mainContent.length > LONG_CONTENT_THRESHOLD || // Konten panjang ATAU
-                paragraphCount >= 3 || // Banyak paragraf ATAU
-                hasHeadings || // Ada heading ATAU
-                contentType !== ''; // Ada keyword terdeteksi
-
-            console.log("Content detection:", {
-                model: window.activeModelId,
-                length: aiResponse.length,
-                paragraphs: paragraphCount,
-                hasHeadings: hasHeadings,
-                hasKeyword: hasKeyword,
-                isLong: isLong
-            });
-
-            if (isLong) {
-                let chatContent = '';
-                if (contentType) {
-                    chatContent = `Berikut adalah ${contentType} yang Anda minta. Silakan lihat di canvas untuk tampilan lengkap.`;
-                } else {
-                    chatContent = `Saya telah menyiapkan konten yang Anda minta. Silakan lihat di canvas untuk tampilan lengkap.`;
-                }
-
-                return {
-                    isLong: true,
-                    contentType: contentType || 'makalah',
-                    chatContent: chatContent,
-                    canvasContent: mainContent,
-                    closingContent: closingContent
-                };
-            }
-
+            // Selalu kembalikan false untuk mencegah pembukaan canvas otomatis
             return {
                 isLong: false
             };
         }
 
-        // Fungsi untuk menampilkan canvas
-        function showCanvas(content, contentType = 'konten') {
+        // Tambahkan variabel global untuk melacak status konten
+        // Tambahkan variabel global untuk melacak status konten
+        window.contentTyped = false;
+        window.lastTypedContent = '';
+
+        // Tambahkan fungsi ini ke kode Anda
+        function cleanCanvasContent(content) {
+            // Hapus hanya kalimat terakhir yang mengandung pertanyaan
+            const paragraphs = content.trim().split(/\n\s*\n/);
+            const lastPara = paragraphs[paragraphs.length - 1];
+            if (lastPara && /(\?|apakah|tolong|mohon)/i.test(lastPara)) {
+                paragraphs.pop();
+            }
+            return paragraphs.join('\n\n');
+        }
+
+        // Modifikasi fungsi showCanvas
+        function showCanvas(content, contentType = 'konten', animate = true) {
             try {
                 console.log("showCanvas called with content type:", contentType);
+                console.log("showCanvas with animate:", animate);
+
+                const cleanedContent = cleanCanvasContent(content);
+
 
                 const theCanvas = document.getElementById('canvas-container');
                 const canvasEditor = document.getElementById('canvas-editor');
@@ -4714,10 +4695,10 @@ $guru = mysqli_fetch_assoc($result);
                 }
 
                 // Update title di canvas
-                const canvasTitle = theCanvas.querySelector('.canvas-title');
-                if (canvasTitle) {
-                    canvasTitle.textContent = contentType.charAt(0).toUpperCase() + contentType.slice(1);
-                }
+                // const canvasTitle = theCanvas.querySelector('.canvas-title');
+                // if (canvasTitle) {
+                //     canvasTitle.textContent = contentType.charAt(0).toUpperCase() + contentType.slice(1);
+                // }
 
                 // Reset posisi untuk mobile jika perlu
                 if (isMobileDevice()) {
@@ -4725,8 +4706,9 @@ $guru = mysqli_fetch_assoc($result);
                 }
 
                 // Simpan konten untuk referensi
-                window.currentCanvasContent = content;
+                window.currentCanvasContent = cleanedContent;
                 window.currentCanvasType = contentType;
+                canvasEditor.classList.add('fade-in'); // Tambahkan ini
 
                 // Tampilkan canvas
                 theCanvas.classList.add('active');
@@ -4737,85 +4719,54 @@ $guru = mysqli_fetch_assoc($result);
                 }
 
                 window.canvasActive = true;
+                updateButtonAppearance(true);
 
-                // Type content setelah canvas aktif dengan sedikit delay
-                setTimeout(() => {
-                    typeContentInCanvas(content);
-                }, 100);
+                // Cek apakah konten ini sudah pernah di-type atau sama dengan konten terakhir
+                if (!animate || (window.contentTyped && window.lastTypedContent === cleanedContent)) {
+                    canvasEditor.style.opacity = 0;
+                    canvasEditor.innerHTML = formatCanvasContent(cleanedContent);
 
-                console.log("Canvas activated");
+                    // Animasi fade-in
+                    setTimeout(() => {
+                        canvasEditor.style.transition = 'opacity 0.5s ease';
+                        canvasEditor.style.opacity = 1;
+                    }, 100);
+                } else {
+                    setTimeout(() => {
+                        typeContentInCanvas(cleanedContent);
+                        window.contentTyped = true;
+                        window.lastTypedContent = cleanedContent;
+                    }, 100);
+                }
+
+                console.log("Canvas activated with", animate ? "animation" : "fade effect");
             } catch (error) {
                 console.error("Error in showCanvas:", error);
             }
         }
 
         // Format konten untuk canvas
-        // Format konten untuk canvas
         function formatCanvasContent(content) {
-            // Format headers
-            content = content.replace(/^##### (.*?)$/gm, '<h5>$1</h5>');
-            content = content.replace(/^#### (.*?)$/gm, '<h4>$1</h4>');
-            content = content.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
-            content = content.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
-            content = content.replace(/^# (.*?)$/gm, '<h1>$1</h1>');
+            // Handle nested tags and complex markdown
+            content = content
+                .replace(/^######\s?(.+)$/gm, '<h6>$1</h6>')
+                .replace(/^#####\s?(.+)$/gm, '<h5>$1</h5>')
+                .replace(/^####\s?(.+)$/gm, '<h4>$1</h4>')
+                .replace(/^###\s?(.+)$/gm, '<h3>$1</h3>')
+                .replace(/^##\s?(.+)$/gm, '<h2>$1</h2>')
+                .replace(/^#\s?(.+)$/gm, '<h1>$1</h1>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/(\n\s*-\s.*)+/g, m => `<ul>${m.replace(/-\s(.*)/g, '<li>$1</li>')}</ul>`)
+                .replace(/(\n\s*\d+\.\s.*)+/g, m => `<ol>${m.replace(/\d+\.\s(.*)/g, '<li>$1</li>')}</ol>`);
 
-            // Format bold text
-            content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-            // Format italics
-            content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-            // Format code blocks
-            content = content.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-
-            // Format inline code
-            content = content.replace(/`(.*?)`/g, '<code>$1</code>');
-
-            // Format lists
-            let formattedContent = '';
-            let inList = false;
-            let listType = '';
-
-            content.split('\n').forEach(line => {
-                // Numbered list
-                if (/^\d+\.\s+/.test(line)) {
-                    if (!inList || listType !== 'ol') {
-                        if (inList) formattedContent += `</${listType}>`;
-                        formattedContent += '<ol>';
-                        inList = true;
-                        listType = 'ol';
-                    }
-                    formattedContent += `<li>${line.replace(/^\d+\.\s+/, '')}</li>`;
-                }
-                // Bullet list
-                else if (/^[\*\-]\s+/.test(line)) {
-                    if (!inList || listType !== 'ul') {
-                        if (inList) formattedContent += `</${listType}>`;
-                        formattedContent += '<ul>';
-                        inList = true;
-                        listType = 'ul';
-                    }
-                    formattedContent += `<li>${line.replace(/^[\*\-]\s+/, '')}</li>`;
-                }
-                // Regular paragraph
-                else {
-                    if (inList) {
-                        formattedContent += `</${listType}>`;
-                        inList = false;
-                    }
-                    if (line.trim()) {
-                        formattedContent += `<p>${line}</p>`;
-                    } else {
-                        formattedContent += line;
-                    }
-                }
-            });
-
-            if (inList) {
-                formattedContent += `</${listType}>`;
-            }
-
-            return formattedContent;
+            // Handle paragraphs
+            return content.split('\n\n').map(p => {
+                if (!p.startsWith('<')) return `<p>${p}</p>`;
+                return p;
+            }).join('\n');
         }
 
         // Tutup canvas
@@ -4832,6 +4783,9 @@ $guru = mysqli_fetch_assoc($result);
 
             canvasContainer.classList.remove('active');
             colUtama.classList.remove('canvas-active');
+
+            window.canvasActive = false;
+            updateButtonAppearance(false);
 
             console.log('Canvas classes removed'); // Debug log
 
@@ -4979,21 +4933,26 @@ $guru = mysqli_fetch_assoc($result);
         window.currentCanvasContent = '';
         window.currentCanvasType = '';
 
-        // Fungsi untuk memeriksa apakah pesan adalah permintaan revisi
-        function checkIfRevisionRequest(message) {
-            const revisionKeywords = [
-                'revisi', 'ubah', 'ganti', 'modifikasi', 'edit', 'perbaiki',
-                'perbarui', 'update', 'koreksi'
-            ];
-
-            const messageLC = message.toLowerCase();
-            return revisionKeywords.some(keyword => messageLC.includes(keyword));
-        }
-
-        // Fungsi untuk menangani permintaan revisi canvas
         async function handleCanvasRevision(revisionRequest) {
-            // Tambahkan pesan konfirmasi ke chat
-            await addMessage('ai', `Saya akan merevisi ${window.currentCanvasType} sesuai permintaan Anda.`);
+            // Buat satu elemen chat yang akan diupdate secara bertahap
+            const aiMessageElement = await addMessage('ai', `Saya akan merevisi ${window.currentCanvasType} sesuai permintaan Anda.`);
+
+            // Ambil referensi ke bubble chat untuk diupdate nanti
+            const chatBubble = aiMessageElement.querySelector('.chat-bubble');
+
+            // Tunggu 1.5 detik untuk menampilkan pesan pertama
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Fade out pesan pertama
+            chatBubble.style.transition = 'opacity 0.5s ease';
+            chatBubble.style.opacity = '0';
+
+            // Tunggu fade out selesai
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Update ke "Sedang berpikir..." dan fade in
+            chatBubble.innerHTML = '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>';
+            chatBubble.style.opacity = '1';
 
             // Gunakan AI untuk merevisi konten
             const revisionPrompt = `
@@ -5009,22 +4968,19 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
                 // Ambil referensi ke canvas editor
                 const canvasEditor = document.getElementById('canvas-editor');
 
-                // Simpan konten asli untuk digunakan dalam animasi
+                // Simpan konten asli
                 const originalContent = canvasEditor.innerHTML;
 
                 // Buat wrapper untuk animasi pulse
                 canvasEditor.innerHTML = `<div id="canvas-revision-content">${originalContent}</div>`;
                 const contentWrapper = document.getElementById('canvas-revision-content');
 
-                // Tambahkan animasi pulse (fade in/out) ke konten
+                // Tambahkan animasi pulse ke konten canvas
                 let pulseCount = 0;
                 const pulseAnimation = setInterval(() => {
-                    // Toggle opacity untuk efek kedap-kedip halus
                     contentWrapper.style.opacity = contentWrapper.style.opacity === '0.4' ? '1' : '0.4';
                     contentWrapper.style.transition = 'opacity 0.7s ease';
-
                     pulseCount++;
-                    // Hentikan animasi setelah 5 kali pulse jika respons belum kembali
                     if (pulseCount > 10) {
                         clearInterval(pulseAnimation);
                         contentWrapper.style.opacity = '1';
@@ -5034,72 +4990,106 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
                 // Dapatkan respons revisi
                 const revisedContent = await getAIResponse(revisionPrompt);
 
+                const cleanedRevisedContent = cleanCanvasContent(revisedContent);
+
                 // Hentikan animasi pulse
                 clearInterval(pulseAnimation);
-
-                // Reset opacity untuk memastikan konten terlihat
                 if (contentWrapper) contentWrapper.style.opacity = '1';
 
-                // Tampilkan hasil revisi dengan animasi fade in per paragraf
-                await fadeInRevisedContent(revisedContent);
+                // Tampilkan hasil revisi dengan animasi fade in sekaligus
+                await fadeInRevisedContent(cleanedRevisedContent);
 
                 // Simpan konten baru
-                window.currentCanvasContent = revisedContent;
+                window.currentCanvasContent = cleanedRevisedContent;
+
+                // Fade out pesan "Sedang berpikir..."
+                chatBubble.style.opacity = '0';
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Update chat message ke pesan selesai dan fade in
+                chatBubble.innerHTML = 'Konten telah saya revisi, apakah ada yang bisa saya bantu kembali?';
+                chatBubble.style.opacity = '1';
+
+                // Simpan revisi ke database
+                if (currentSessionId) {
+                    try {
+                        const response = await fetch('save_canvas_revision.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                session_id: currentSessionId,
+                                revision_content: revisedContent
+                            })
+                        });
+
+                        const result = await response.json();
+                        console.log('Revision save result:', result);
+                    } catch (error) {
+                        console.error('Error saving canvas revision:', error);
+                    }
+                }
             } catch (error) {
                 console.error('Error revising canvas content:', error);
-                const canvasEditor = document.getElementById('canvas-editor');
-                canvasEditor.innerHTML += '<div class="alert alert-danger">Gagal merevisi konten. Silakan coba lagi.</div>';
+
+                // Update chat message untuk menunjukkan error
+                chatBubble.style.opacity = '0';
+                await new Promise(resolve => setTimeout(resolve, 500));
+                chatBubble.innerHTML = 'Maaf, terjadi kesalahan saat merevisi konten. Silakan coba lagi.';
+                chatBubble.style.opacity = '1';
             }
         }
 
-        // Fungsi baru untuk menampilkan konten hasil revisi dengan animasi fade in per paragraf
+        // Tombol "Baru"
+        const newChatButton = document.querySelector('button[onclick="createNewChatSession()"]');
+        if (newChatButton) {
+            const originalClickHandler = newChatButton.onclick;
+            newChatButton.onclick = function(event) {
+                if (window.canvasActive) {
+                    closeCanvas();
+                }
+                return originalClickHandler.call(this, event);
+            };
+        }
+
+        // Tombol "Riwayat"
+        const historyButton = document.querySelector('button[data-bs-toggle="modal"][data-bs-target="#historyModal"]');
+        if (historyButton) {
+            historyButton.addEventListener('click', function() {
+                if (window.canvasActive) {
+                    closeCanvas();
+                }
+            });
+        }
+
+        // Saat Canvas aktif, hanya tampilkan icon
+        updateButtonAppearance();
+
         async function fadeInRevisedContent(content) {
             const canvasEditor = document.getElementById('canvas-editor');
 
-            // Format konten menggunakan fungsi yang sudah ada
+            // Format konten
             const formattedContent = formatCanvasContent(content);
 
-            // Kosongkan canvas
-            canvasEditor.innerHTML = '';
-
-            // Split konten menjadi paragraf (elemen HTML)
-            const contentElement = document.createElement('div');
-            contentElement.innerHTML = formattedContent;
-            const paragraphs = Array.from(contentElement.children);
-
-            // Buat container untuk paragraf
+            // Buat container untuk animasi fade-in
             const container = document.createElement('div');
+            container.className = 'revised-content';
+            container.style.opacity = '0';
+            container.style.transition = 'opacity 0.8s ease';
+            container.innerHTML = formattedContent;
+
+            // Kosongkan canvas dan tambahkan container
+            canvasEditor.innerHTML = '';
             canvasEditor.appendChild(container);
 
-            // Tampilkan paragraf satu per satu dengan animasi fade in
-            for (let i = 0; i < paragraphs.length; i++) {
-                const paragraph = paragraphs[i];
-
-                // Buat wrapper untuk animasi
-                const paraWrapper = document.createElement('div');
-                paraWrapper.classList.add('fade-in-paragraph');
-                paraWrapper.style.opacity = '0';
-                paraWrapper.style.transform = 'translateY(10px)';
-                paraWrapper.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-
-                // Tambahkan paragraf ke wrapper
-                paraWrapper.appendChild(paragraph.cloneNode(true));
-
-                // Tambahkan wrapper ke container
-                container.appendChild(paraWrapper);
-
-                // Animasi fade in
-                await new Promise(resolve => {
-                    setTimeout(() => {
-                        paraWrapper.style.opacity = '1';
-                        paraWrapper.style.transform = 'translateY(0)';
-                        setTimeout(resolve, 100); // Sedikit delay untuk memastikan animasi berjalan halus
-                    }, 80 * i); // Delay bertahap untuk efek cascading
-                });
-            }
-
-            // Auto-scroll ke atas setelah konten baru ditampilkan
-            canvasEditor.scrollTop = 0;
+            // Animasi fade-in untuk seluruh konten sekaligus
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    container.style.opacity = '1';
+                    setTimeout(resolve, 800); // Tunggu animasi selesai
+                }, 100);
+            });
         }
 
         // Tambahkan CSS untuk animasi
@@ -5126,7 +5116,6 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
 `;
         document.head.appendChild(styleElement);
 
-        // Fungsi untuk menambahkan tombol canvas
         function addCanvasButton(contentType) {
             const chatContainer = document.getElementById('chat-container');
             const lastMessage = chatContainer.lastElementChild;
@@ -5136,22 +5125,22 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
             const buttonContainer = document.createElement('div');
             buttonContainer.className = 'canvas-button-container my-2';
             buttonContainer.innerHTML = `
-        <button class="btn btn-sm bg-light text-black d-flex align-items-center ms-5 gap-2 px-3 py-2 border"
-               style="border-radius: 15px;">
-            <i class="bi bi-files-alt"></i>
-            <span class="button-text d-none d-md-inline" style="font-size: 13px;">Buka ${contentType} di Canvas</span>
-        </button>
-    `;
+                <button class="btn btn-sm bg-light text-black d-flex align-items-center ms-5 gap-2 px-3 py-2 border"
+                       style="border-radius: 15px;">
+                    <i class="bi bi-easel"></i>
+                    <span class="button-text d-none d-md-inline" style="font-size: 13px;">Buka di Canvas</span>
+                </button>
+            `;
 
             // Tambahkan button setelah pesan terakhir
             chatContainer.insertBefore(buttonContainer, lastMessage.nextSibling);
 
-            // Perbaikan event listener
+            // Perbaikan event listener - tambahkan parameter false untuk menonaktifkan animasi
             buttonContainer.querySelector('button').addEventListener('click', function() {
                 console.log("Canvas button clicked");
                 // Pastikan konten tersimpan dan panggil showCanvas secara eksplisit
                 if (window.currentCanvasContent) {
-                    showCanvas(window.currentCanvasContent, contentType || 'konten');
+                    showCanvas(window.currentCanvasContent, window.currentCanvasType || 'konten', false); // Tambahkan parameter false
                 } else {
                     console.error("Canvas content not available");
                     alert("Maaf, konten tidak tersedia. Silakan coba lagi.");
@@ -5414,6 +5403,29 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
             return chunks;
         }
 
+        // Fungsi untuk mengubah tampilan tombol
+        function updateButtonAppearance(canvasIsActive = false) {
+            const buttonTexts = document.querySelectorAll('.button-text');
+            buttonTexts.forEach(text => {
+                if (canvasIsActive || window.canvasActive) {
+                    text.classList.add('d-none');
+                } else {
+                    text.classList.remove('d-none');
+                }
+            });
+        }
+
+        // Tambahkan fungsi ini sebelum fungsi sendMessage()
+        function checkIfRevisionRequest(message) {
+            const revisionKeywords = [
+                'revisi', 'ubah', 'ganti', 'modifikasi', 'edit', 'perbaiki',
+                'perbarui', 'update', 'koreksi', 'tambahkan', 'hapus'
+            ];
+
+            const messageLC = message.toLowerCase();
+            return revisionKeywords.some(keyword => messageLC.includes(keyword));
+        }
+
 
         // Setup event listeners setelah DOM loaded
         document.addEventListener('DOMContentLoaded', function() {
@@ -5424,11 +5436,13 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
 
             // Modifikasi fungsi sendMessage yang sudah ada
             const originalSendMessage = sendMessage;
+            // Modifikasi fungsi sendMessage()
+            // Modifikasi fungsi sendMessage()
             window.sendMessage = async function() {
                 const userMessageText = userInput.value.trim();
                 if (userMessageText === '') return;
 
-                // Sembunyikan welcome/recommendation containers
+                // Sembunyikan recommendation container
                 const recommendationContainer = document.querySelector('.recommendation-container');
                 if (recommendationContainer) {
                     recommendationContainer.classList.add('hide');
@@ -5437,17 +5451,13 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
                     }, 300);
                 }
 
-                // Update first message if needed
                 if (isFirstChat) {
                     updateFirstMessage(userMessageText);
                     isFirstChat = false;
                 }
 
-                // Add user message to chat
+                // Add user message
                 await addMessage('user', userMessageText);
-
-                // Show thinking message
-                const tempMessage = await addMessage('ai', '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>', true);
 
                 // Clear input and update UI states
                 userInput.value = '';
@@ -5459,44 +5469,38 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
                     const isRevisionRequest = window.canvasActive && checkIfRevisionRequest(userMessageText);
 
                     if (isRevisionRequest) {
-                        // Handle revision request
+                        // Handle revision request yang sudah menangani pesan sendiri
                         await handleCanvasRevision(userMessageText);
-                        tempMessage.remove();
                         return;
                     }
 
-                    // Normal flow - get AI response
+                    // Buat pesan temporary hanya untuk kasus non-revisi
+                    const tempMessage = await addMessage('ai', '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>', true);
+
+                    // Get AI response
                     const aiResponse = await getAIResponse(userMessageText);
 
                     // Remove temporary message
                     tempMessage.remove();
 
-                    // Check if response is a long content
-                    const contentInfo = detectLongContent(aiResponse, userMessageText);
+                    // Simpan konten untuk canvas
+                    window.currentCanvasContent = aiResponse;
+                    window.currentCanvasType = 'konten';
 
-                    // Di dalam kondisi if (contentInfo.isLong) pada fungsi sendMessage
-                    if (contentInfo.isLong) {
-                        // Tampilkan pengantar di chat
-                        await addMessage('ai', contentInfo.chatContent);
+                    // Cek apakah Canvas Mode diaktifkan
+                    if (window.canvasModeEnabled) {
 
-                        // Simpan konten canvas untuk digunakan nanti
-                        window.currentCanvasContent = contentInfo.canvasContent;
-                        window.currentCanvasType = contentInfo.contentType || 'konten';
+                        // Bersihkan konten untuk canvas
+                        const cleanedResponse = cleanCanvasContent(aiResponse);
 
-                        // Tambahkan tombol canvas
-                        addCanvasButton(contentInfo.contentType);
+                        // Simpan kedua versi konten
+                        window.currentCanvasContent = cleanedResponse; // Versi bersih untuk canvas
 
-                        // Tampilkan konten utama di canvas
-                        showCanvas(contentInfo.canvasContent, contentInfo.contentType);
 
-                        // Tampilkan penutup di chat jika ada
-                        if (contentInfo.closingContent) {
-                            setTimeout(async () => {
-                                await addMessage('ai', contentInfo.closingContent);
-                            }, 1000);
-                        }
+                        await addMessage('ai', 'Jawaban telah disiapkan. Silakan lihat di canvas untuk tampilan lengkap.');
+                        addCanvasButton('konten');
+                        showCanvas(cleanedResponse, 'konten');
                     } else {
-                        // Tampilkan respons normal
                         await addMessage('ai', aiResponse);
                     }
 
@@ -5504,7 +5508,7 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
                     await saveToDatabase(userMessageText, aiResponse);
                 } catch (error) {
                     console.error('Error:', error);
-                    tempMessage.remove();
+                    // Jangan akses tempMessage di sini, karena mungkin tidak ada pada kasus revisi
                     await addMessage('ai', 'Maaf, terjadi kesalahan saat memproses pesan Anda.');
                 } finally {
                     hideLoader();
