@@ -44,18 +44,47 @@ $guru = mysqli_fetch_assoc($result);
         background-color: rgb(218, 119, 86);
     }
 
+    /* Container utama */
     #model-list-container {
         position: fixed !important;
         z-index: 100000 !important;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
         background: white !important;
         border-radius: 8px !important;
-        overflow: hidden !important;
+        overflow: visible !important;
+        /* Tetap visible untuk sub-menu */
         margin-top: 0 !important;
-        /* Reset Bootstrap margins */
         padding: 0.5rem 0 !important;
         transform: none !important;
-        /* Prevent Bootstrap transforms */
+    }
+
+    /* Aturan untuk sub-menu container */
+    .model-item-container .sub-models-container {
+        position: absolute !important;
+        top: 0 !important;
+        left: 100% !important;
+        display: none !important;
+        /* Penting! Hidden secara default */
+        padding: 0.5rem 0 !important;
+        background: white !important;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+        border-radius: 8px !important;
+        z-index: 100001 !important;
+        min-width: 220px !important;
+    }
+
+    /* Hanya tampilkan saat hover pada parent */
+    .model-item-container:hover>.sub-models-container {
+        display: block !important;
+    }
+
+    .model-item-container {
+        position: relative !important;
+    }
+
+    /* Untuk memastikan sub-menu tidak menutup terlalu cepat */
+    .model-item-container .sub-models-container:hover {
+        display: block !important;
     }
 
     .model-item {
@@ -432,6 +461,77 @@ $guru = mysqli_fetch_assoc($result);
         color: white !important;
     }
 
+    /* sub ai models */
+    .model-item.active,
+    .sub-model-item.active {
+        background-color: rgba(218, 119, 86, 0.1);
+    }
+
+    /* .model-item.parent-active {
+        border-left: 3px solid rgb(218, 119, 86);
+        padding-left: calc(0.75rem - 3px);
+    } */
+
+    /* Tambahkan area hover lebih lebar untuk memudahkan navigasi */
+    .model-item-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -20px;
+        /* Lebih lebar */
+        width: 20px;
+        height: 100%;
+    }
+
+    .sub-model-item {
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .sub-model-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    /* Mobile styles */
+    @media (max-width: 768px) {
+        .sub-models-container {
+            position: static;
+            display: none;
+            margin-left: 1rem;
+            box-shadow: none;
+            border-left: 2px solid #f0f0f0;
+            padding-left: 1rem;
+            opacity: 1;
+        }
+
+        .model-item-container.active .sub-models-container {
+            display: block;
+        }
+
+        .has-sub-models::after {
+            content: '↓' !important;
+        }
+
+        .model-item-container.active .has-sub-models::after {
+            content: '↑' !important;
+        }
+    }
+
+    /* Hover effect untuk semua item */
+    .model-item:hover,
+    .sub-model-item:hover {
+        background-color: rgba(218, 119, 86, 0.05);
+    }
+
+    /* Transisi halus */
+    .model-item,
+    .sub-model-item {
+        transition: all 0.2s ease;
+    }
+
 
     @media (max-width: 768px) {
         .menu-samping {
@@ -494,6 +594,23 @@ $guru = mysqli_fetch_assoc($result);
         .modal.show .modal-dialog {
             transform: scale(1);
         }
+
+        /* Tambahkan ke bagian style yang sudah ada */
+        .version-indicator {
+            font-size: 12px;
+            padding: 0 8px;
+            white-space: nowrap;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .version-indicator {
+                font-size: 10px;
+                padding: 0 4px;
+                min-width: 60px;
+            }
+        }
     </style>
 
 
@@ -517,7 +634,19 @@ $guru = mysqli_fetch_assoc($result);
     <div id="canvas-container" class="canvas-container">
         <div class="canvas-header">
             <h5 class="canvas-title p-0 m-0">Canvas Anda</h5>
-            <div class="canvas-actions">
+            <div class="canvas-actions d-flex gap-2">
+                <button id="prev-canvas-version" class="btn btn-sm btn-light" title="Versi sebelumnya" disabled>
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+
+                <!-- Indikator versi -->
+                <span id="version-indicator" class="version-indicator d-flex align-items-center text-muted small">
+                    Versi 1 dari 1
+                </span>
+
+                <button id="next-canvas-version" class="btn btn-sm btn-light" title="Versi berikutnya" disabled>
+                    <i class="bi bi-arrow-right"></i>
+                </button>
                 <button id="copy-canvas" class="btn btn-sm btn-light" title="Salin konten">
                     <i class="bi bi-clipboard"></i>
                 </button>
@@ -647,6 +776,20 @@ $guru = mysqli_fetch_assoc($result);
                             transition: all 0.3s ease;
                         }
 
+                        .chat-container {
+                            flex: 1;
+                            /* Mengisi seluruh ruang tersedia */
+                            overflow-y: auto;
+                            /* Scroll vertikal ketika diperlukan */
+                            padding-bottom: 20px;
+                            /* Jarak dari konten terakhir ke input */
+                            position: relative;
+                            /* Untuk positioning yang tepat */
+                            height: calc(95vh - 200px);
+                            /* Base height, dikurangi header + input + margins */
+
+                        }
+
                         @media (max-width: 768px) {
 
                             /* Sesuaikan chat container */
@@ -656,6 +799,7 @@ $guru = mysqli_fetch_assoc($result);
                                 /* Mengurangi tinggi lebih banyak */
                                 overflow-y: auto !important;
                                 margin-bottom: 0 !important;
+                                padding-bottom: 90px;
                             }
 
                             .chat-message {
@@ -667,20 +811,48 @@ $guru = mysqli_fetch_assoc($result);
                                 position: fixed !important;
                                 bottom: 100px !important;
                                 /* Memberikan ruang di atas navbar */
-                                left: 0 !important;
-                                right: 0 !important;
+                                /* left: 0 !important; */
+                                /* right: 0 !important; */
                                 background-color: #EEECE2 !important;
                                 padding: 1rem !important;
                                 margin: 1rem;
                             }
 
+
+
+                            @media (min-width: 769px) {
+                                .input-container {
+                                    left: 12rem !important;
+                                    /* Sama dengan margin-left pada .col-utama */
+                                    width: calc(90% - 10rem);
+                                    /* Kurangi lebar sidebar */
+                                    position: fixed !important;
+                                    bottom: 0 !important;
+                                    left: 0 !important;
+                                    right: 12rem;
+                                    padding: 10px;
+                                    z-index: 1000;
+                                }
+
+                                /* Ketika canvas aktif */
+                                .canvas-active .input-container {
+                                    left: 60%;
+                                    /* Mulai dari akhir canvas */
+                                    width: 40%;
+                                    /* Hanya ambil sisa ruang */
+                                }
+                            }
+
                             /* Sesuaikan ukuran dan posisi input wrapper */
                             .input-wrapper {
-                                width: 95% !important;
-                                margin: 0.5rem !important;
-                                max-width: none !important;
-                                margin-bottom: 4.5rem !important;
-                                background-color: white !important;
+                                max-height: 150px;
+                                overflow: hidden;
+                                width: 100%;
+                                max-width: 45rem;
+                                margin: 0 auto;
+                                /* Tetap di tengah dari parent container */
+                                background-color: white;
+                                border-radius: 15px;
                             }
 
                             /* Container utama */
@@ -799,7 +971,7 @@ $guru = mysqli_fetch_assoc($result);
                 </div>
 
                 <!-- Chat Messages Container -->
-                <div id="chat-container" class="card-body chat-container pe-3 mb-0 pb-1" style="height: 25rem; overflow-y: auto; overflow-x: hidden;">
+                <div id="chat-container" class="card-body chat-container pe-3 mb-0 pb-1">
                     <!-- Pesan chat akan ditampilkan di sini -->
                 </div>
 
@@ -850,20 +1022,46 @@ $guru = mysqli_fetch_assoc($result);
                 <!-- Input Area -->
                 <div class="d-flex justify-content-center input-container mt-0 pt-0">
                     <style>
+                        .input-container {
+                            position: fixed;
+                            bottom: 0;
+                            left: 0;
+                            right: 12rem;
+                            padding: 10px;
+                            z-index: 1000;
+                            left: 25rem;
+                            transition: left 0.3s ease, width 0.3s ease;
+                            /* Tambahkan transisi agar perubahan halus */
+                        }
+
+                        /* Input container saat canvas aktif di desktop */
+                        .canvas-active .input-container {
+                            left: 60%;
+                            /* Sesuaikan dengan lebar canvas (60%) */
+                            right: 0;
+                        }
+
+
+
                         @media (max-width: 768px) {
-                            .input-container {
+                            /* .input-container {
                                 position: fixed;
                                 bottom: 0;
                                 left: 0;
                                 right: 0;
                                 background-color: #EEECE2;
                                 padding: 10px;
-                            }
+                            } */
                         }
 
                         .input-wrapper {
                             max-height: 150px;
                             overflow: hidden;
+                            width: 100%;
+                            max-width: 45rem;
+                            margin: 0 auto;
+                            background-color: white;
+                            border-radius: 15px;
                         }
 
                         #user-input {
@@ -876,11 +1074,10 @@ $guru = mysqli_fetch_assoc($result);
                         @media (max-width: 768px) {
                             .input-wrapper {
                                 position: fixed;
-                                bottom: 0;
+                                bottom: 4.5rem;
                                 left: 0;
                                 right: 0;
-                                padding: 10px;
-                                background-color: #EEECE2;
+                                padding: 2rem;
                             }
 
                             #user-input {
@@ -1075,7 +1272,16 @@ $guru = mysqli_fetch_assoc($result);
                                 modelList.style.top = (btnRect.top + window.scrollY - dropupHeight - 5) + 'px';
                                 modelList.style.left = (btnRect.left + window.scrollX) + 'px';
 
+                                // Tambahkan event listener untuk mencegah dropdown tertutup saat hover
+                                modelList.addEventListener('mouseenter', function() {
+                                    if (closeTimeout) {
+                                        clearTimeout(closeTimeout);
+                                    }
+                                });
+
                                 isOpen = true;
+
+
 
                                 // Close when clicking outside
                                 setTimeout(() => {
@@ -1083,10 +1289,16 @@ $guru = mysqli_fetch_assoc($result);
                                 }, 10);
                             }
 
+                            let closeTimeout;
+
+
                             function hideDropup() {
-                                modelList.style.display = 'none';
-                                isOpen = false;
-                                document.removeEventListener('click', documentClickHandler);
+                                // Berikan delay sebelum menutup dropdown
+                                closeTimeout = setTimeout(() => {
+                                    modelList.style.display = 'none';
+                                    isOpen = false;
+                                    document.removeEventListener('click', documentClickHandler);
+                                }, 100);
                             }
 
                             function documentClickHandler(e) {
@@ -1119,17 +1331,73 @@ $guru = mysqli_fetch_assoc($result);
                     // Tambahkan script berikut untuk mengganti semuanya:
                     document.addEventListener('DOMContentLoaded', function() {
 
+                        // Tambahkan script ini setelah model-list-container diisi
+                        setTimeout(() => {
+                            document.querySelectorAll('.model-item-container').forEach(container => {
+                                container.addEventListener('mouseenter', () => {
+                                    console.log('Hover on model:', container.querySelector('.model-item').textContent.trim());
+                                    const subModels = container.querySelector('.sub-models-container');
+                                    if (subModels) {
+                                        console.log('Sub-models found, showing');
+                                        subModels.style.display = 'block';
+                                        subModels.style.opacity = '1';
+                                        subModels.style.visibility = 'visible';
+                                    }
+                                });
+
+                                container.addEventListener('mouseleave', () => {
+                                    const subModels = container.querySelector('.sub-models-container');
+                                    if (subModels) {
+                                        // Tambahkan delay kecil untuk mencegah penutupan terlalu cepat
+                                        setTimeout(() => {
+                                            if (!subModels.matches(':hover')) {
+                                                subModels.style.display = 'none';
+                                                subModels.style.opacity = '0';
+                                            }
+                                        }, 100);
+                                    }
+                                });
+                            });
+                        }, 500); // Delay untuk memastikan model-list-container sudah terisi
+
                         // Definisikan model-model AI yang tersedia
                         const aiModels = [{
-                                id: 'llama-3.3-70b-versatile',
+                                id: 'meta-llama/llama-4-scout-17b-16e-instruct',
                                 name: 'SAGA Opus',
-                                desc: 'Model Tercerdas saat ini',
-                                isDefault: true
+                                desc: 'Model Tercerdas',
+                                isDefault: true,
+                                subModels: [{
+                                        id: 'meta-llama/llama-4-scout-17b-16e-instruct',
+                                        name: 'SAGA 1.5 Opus',
+                                        desc: 'Model SAGA Tercerdas saat ini'
+                                    },
+                                    {
+                                        id: 'llama-3.3-70b-versatile',
+                                        name: 'SAGA Opus',
+                                        desc: 'Model SAGA Legacy'
+                                    }
+                                ]
                             },
                             {
                                 id: 'deepseek-r1-distill-llama-70b',
-                                name: 'SAGA Opus Thinking',
-                                desc: 'Terbaik untuk analisis'
+                                name: 'SAGA Reasoning',
+                                desc: 'Terbaik untuk analisis',
+                                subModels: [{
+                                        id: 'deepseek-r1-distill-llama-70b',
+                                        name: 'SAGA 1.5 Reasoning Pro',
+                                        desc: 'Model Penalaran terbaik SAGA saat ini'
+                                    },
+                                    {
+                                        id: 'deepseek-r1-distill-qwen-32b',
+                                        name: 'SAGA 1.5 Reasoning',
+                                        desc: 'Model Penalaran efisien '
+                                    },
+                                    {
+                                        id: 'qwen-qwq-32b',
+                                        name: 'SAGA Reasoning',
+                                        desc: 'Model Penalaran SAGA Legacy'
+                                    }
+                                ]
                             },
                             {
                                 id: 'mistral-saba-24b',
@@ -1145,7 +1413,7 @@ $guru = mysqli_fetch_assoc($result);
                                 id: 'llama-3.1-8b-instant',
                                 name: 'SAGA Ultra Mini',
                                 desc: 'Tercepat'
-                            },
+                            }
                         ];
 
                         // Set model aktif secara default
@@ -1154,41 +1422,127 @@ $guru = mysqli_fetch_assoc($result);
                         // Fungsi untuk mengatur model yang dipilih
                         window.setActiveModel = function(modelId) {
                             window.activeModelId = modelId;
-                            const selectedModel = aiModels.find(m => m.id === modelId);
+
+                            // Temukan model dari struktur data (termasuk sub-models)
+                            let selectedModel = null;
+                            aiModels.forEach(model => {
+                                if (model.id === modelId) {
+                                    selectedModel = model;
+                                } else if (model.subModels) {
+                                    model.subModels.forEach(subModel => {
+                                        if (subModel.id === modelId) {
+                                            selectedModel = subModel;
+                                            // Tambahkan referensi ke parent model untuk tampilan di UI
+                                            selectedModel.parentName = model.name;
+                                        }
+                                    });
+                                }
+                            });
 
                             // Update UI
                             const displayElement = document.getElementById('current-model-name');
                             if (displayElement && selectedModel) {
-                                displayElement.textContent = selectedModel.name;
+                                // Jika ini sub-model, tampilkan format: "Parent > Sub"
+                                if (selectedModel.parentName) {
+                                    // displayElement.textContent = `${selectedModel.parentName}: ${selectedModel.name}`;
+                                } else {
+                                    displayElement.textContent = selectedModel.name;
+                                }
                             }
 
                             // Simpan di localStorage untuk persistensi
                             localStorage.setItem('preferredModel', modelId);
                             console.log(`Model changed to: ${selectedModel?.name} (${modelId})`);
 
-                            // TAMBAHAN BARU: Update semua ikon centang di dropdown
+                            // Update semua ikon centang di dropdown
                             setTimeout(() => {
-                                document.querySelectorAll('.model-item').forEach(item => {
-                                    // Hapus semua tanda active dan ikon centang terlebih dahulu
+                                // Reset semua item
+                                document.querySelectorAll('.model-item, .sub-model-item').forEach(item => {
                                     item.classList.remove('active');
-                                    const existingCheckIcon = item.querySelector('.bi-check-circle-fill');
-                                    if (existingCheckIcon) existingCheckIcon.remove();
+                                    const checkIcon = item.querySelector('.bi-check-circle-fill');
+                                    if (checkIcon) checkIcon.remove();
+                                });
 
-                                    // Jika ini adalah item yang dipilih, tambahkan kelas active dan ikon centang
+                                // Set active class dan checkmark untuk model utama dan sub-model yang dipilih
+                                const mainItems = document.querySelectorAll('.model-item');
+                                const subItems = document.querySelectorAll('.sub-model-item');
+
+                                // Cek sub-model dulu
+                                let subModelFound = false;
+                                subItems.forEach(item => {
                                     if (item.dataset.modelId === modelId) {
                                         item.classList.add('active');
+
+                                        // Tambahkan checkmark
                                         const checkIcon = document.createElement('i');
                                         checkIcon.className = 'bi bi-check-circle-fill ms-auto';
                                         checkIcon.style.color = 'rgb(218, 119, 86)';
                                         item.appendChild(checkIcon);
-                                    } else {
-                                        // Reset border gambar model untuk item yang tidak dipilih
-                                        const modelImg = item.querySelector('.model-img');
-                                        if (modelImg) modelImg.style.border = '1px solid #dee2e6';
+
+                                        // Tandai parent juga sebagai active
+                                        const parentContainer = item.closest('.model-item-container');
+                                        const parentItem = parentContainer.querySelector('.model-item');
+                                        parentItem.classList.add('parent-active');
+
+                                        subModelFound = true;
                                     }
                                 });
-                            }, 100); // Delay singkat untuk memastikan DOM telah diperbarui
+
+                                // Jika bukan sub-model, tandai model utama yang dipilih
+                                if (!subModelFound) {
+                                    mainItems.forEach(item => {
+                                        if (item.dataset.modelId === modelId) {
+                                            item.classList.add('active');
+
+                                            // Tambahkan checkmark
+                                            const checkIcon = document.createElement('i');
+                                            checkIcon.className = 'bi bi-check-circle-fill ms-auto';
+                                            checkIcon.style.color = 'rgb(218, 119, 86)';
+                                            item.appendChild(checkIcon);
+                                        }
+                                    });
+                                }
+                            }, 100);
                         };
+
+                        // Handler untuk mobile
+                        function setupMobileHandlers() {
+                            if (window.innerWidth <= 768) {
+                                document.querySelectorAll('.model-item.has-sub-models').forEach(item => {
+                                    item.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+
+                                        // Toggle sub-models container
+                                        const parent = this.closest('.model-item-container');
+                                        parent.classList.toggle('active');
+                                    });
+                                });
+                            }
+                        }
+                        // Mencegah dropdown menutup saat hover sub-model
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const modelList = document.getElementById('model-list-container');
+
+                            if (modelList) {
+                                modelList.addEventListener('mouseover', function(e) {
+                                    // Hentikan event bubbling yang mungkin menutup dropdown
+                                    e.stopPropagation();
+                                });
+
+                                // Mencegah parent dropdown tertutup saat mengklik sub-model
+                                modelList.addEventListener('click', function(e) {
+                                    if (e.target.closest('.sub-model-item')) {
+                                        e.stopPropagation();
+                                    }
+                                });
+                            }
+                        });
+
+
+                        // Panggil saat window load dan resize
+                        window.addEventListener('load', setupMobileHandlers);
+                        window.addEventListener('resize', setupMobileHandlers);
 
 
 
@@ -1313,13 +1667,17 @@ $guru = mysqli_fetch_assoc($result);
 
                         // Populasi model list dengan gambar model alih-alih icon
                         // Reuse the existing modelListEl variable instead of redeclaring it
+                        // Populasi model list dengan gambar model dan sub-model
                         if (modelListEl) {
                             modelListEl.innerHTML = ''; // Hapus semua item terlebih dahulu
 
                             // Definisikan gambar untuk setiap model
                             const modelImages = {
                                 'llama-3.3-70b-versatile': 'assets/brain.png',
+                                'meta-llama/llama-4-scout-17b-16e-instruct': 'assets/brain.png',
                                 'deepseek-r1-distill-llama-70b': 'assets/search.png',
+                                'deepseek-r1-distill-qwen-32b': 'assets/search.png',
+                                'qwen-qwq-32b': 'assets/search.png',
                                 'llama-3.1-8b-instant': 'assets/fast.png',
                                 'mistral-saba-24b': 'assets/text.png',
                                 'gemma2-9b-it': 'assets/fast.png'
@@ -1327,54 +1685,116 @@ $guru = mysqli_fetch_assoc($result);
 
                             aiModels.forEach(model => {
                                 const item = document.createElement('li');
+                                item.className = 'model-item-container';
                                 const modelImageUrl = modelImages[model.id] || 'assets/llama.png';
 
+                                // Main model item
+                                const hasSubModels = model.subModels && model.subModels.length > 0;
+
                                 item.innerHTML = `
-                                <a class="dropdown-item d-flex align-items-center p-3 model-item ${model.isDefault ? 'active' : ''}" 
-                                   href="javascript:void(0)" 
-                                   data-model-id="${model.id}"
-                                   style="z-index:9999 !important;">
-                                  <div class="me-3 d-flex align-items-center justify-content-center border flex-shrink-0" 
-                                       style="width: 40px; height: 40px; border-radius: 10px; overflow: hidden;">
-                                    <img src="${modelImageUrl}" alt="${model.name}" class="model-img" 
-                                        style="width: 40px; height: 40px; object-fit: cover;">
-                                  </div>
-                                  <div>
-                                    <h6 class="mb-0" style="font-size: 14px;">${model.name}</h6>
-                                    <p class="mb-0 text-muted" style="font-size: 12px;">${model.desc}</p>
-                                  </div>
-                                  ${model.isDefault ? '<i class="bi bi-check-circle-fill ms-auto" style="color: rgb(218, 119, 86);"></i>' : ''}
-                                </a>
-                            `;
+            <a class="dropdown-item d-flex align-items-center p-3 model-item ${model.isDefault ? 'active' : ''} ${hasSubModels ? 'has-sub-models' : ''}" 
+               href="javascript:void(0)" 
+               data-model-id="${model.id}"
+               style="z-index:9999 !important;">
+              <div class="me-3 d-flex align-items-center justify-content-center border flex-shrink-0" 
+                   style="width: 40px; height: 40px; border-radius: 10px; overflow: hidden;">
+                <img src="${modelImageUrl}" alt="${model.name}" class="model-img" 
+                    style="width: 40px; height: 40px; object-fit: cover;">
+              </div>
+              <div>
+                <h6 class="mb-0" style="font-size: 14px;">${model.name}</h6>
+                <p class="mb-0 text-muted" style="font-size: 12px;">${model.desc}</p>
+              </div>
+              ${model.isDefault ? '<i class="bi bi-check-circle-fill ms-auto" style="color: rgb(218, 119, 86);"></i>' : ''}
+            </a>
+        `;
+
+                                // Add sub-models if any
+                                if (hasSubModels) {
+                                    const subModelsContainer = document.createElement('div');
+                                    subModelsContainer.className = 'sub-models-container';
+                                    subModelsContainer.style.zIndex = '1000001'; // Tambahkan ini
+
+                                    model.subModels.forEach(subModel => {
+                                        const subModelImageUrl = modelImages[subModel.id] || modelImageUrl;
+
+                                        const subModelItem = document.createElement('div');
+                                        subModelItem.className = 'sub-model-item';
+                                        subModelItem.dataset.modelId = subModel.id;
+
+                                        subModelItem.innerHTML = `
+    <div style="margin-left: 10px;"> <!-- Margin untuk alignment -->
+        <h6 class="mb-0" style="font-size: 13px;">${subModel.name}</h6>
+        <p class="mb-0 text-muted" style="font-size: 11px;">${subModel.desc}</p>
+    </div>
+`;
+
+                                        // Add click event to sub-model
+                                        subModelItem.addEventListener('click', function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            const modelId = this.dataset.modelId;
+                                            console.log('Sub-model clicked:', this.dataset.modelId);
+                                            setActiveModel(modelId);
+                                            // Tutup dropdown
+                                            const modelList = document.getElementById('model-list-container');
+                                            if (modelList) modelList.style.display = 'none';
+                                        });
+                                        subModelsContainer.style.marginTop = '-1px';
+                                        subModelsContainer.appendChild(subModelItem);
+                                    });
+
+                                    item.appendChild(subModelsContainer);
+                                }
 
                                 // Add click event to the model item
                                 const modelItem = item.querySelector('.model-item');
                                 if (modelItem) {
-                                    modelItem.addEventListener('click', function() {
-                                        const modelId = this.dataset.modelId;
+                                    // Temukan bagian ini di event listener untuk model item:
+                                    modelItem.addEventListener('click', function(e) {
+                                        e.stopPropagation();
 
-                                        // Update active state in UI
-                                        document.querySelectorAll('.model-item').forEach(item => {
-                                            item.classList.remove('active');
-                                            const modelImg = item.querySelector('.model-img');
-                                            if (modelImg) modelImg.style.border = '1px solid #dee2e6';
-                                            const checkIcon = item.querySelector('.bi-check-circle-fill');
-                                            if (checkIcon) checkIcon.remove();
-                                        });
+                                        // Jika memiliki sub-model
+                                        if (hasSubModels) {
+                                            e.preventDefault();
 
-                                        // Update the newly selected item
-                                        this.classList.add('active');
+                                            // Toggle tampilan sub-model
+                                            const parent = this.closest('.model-item-container');
+                                            const subModels = parent.querySelector('.sub-models-container');
 
+                                            // Tutup semua sub-model lain
+                                            document.querySelectorAll('.sub-models-container').forEach(el => {
+                                                if (el !== subModels) {
+                                                    el.style.display = 'none';
+                                                }
+                                            });
 
-                                        // Add check icon
-                                        if (!this.querySelector('.bi-check-circle-fill')) {
-                                            const checkIcon = document.createElement('i');
-                                            checkIcon.className = 'bi bi-check-circle-fill ms-auto';
-                                            checkIcon.style.color = 'rgb(218, 119, 86)';
-                                            this.appendChild(checkIcon);
+                                            // Toggle sub-model saat ini
+                                            if (subModels.style.display === 'block') {
+                                                subModels.style.display = 'none';
+                                            } else {
+                                                // Posisikan sub-model dengan benar
+                                                subModels.style.display = 'block';
+                                                subModels.style.opacity = '1';
+                                                subModels.style.visibility = 'visible';
+
+                                                // Jika ini di desktop, posisikan di sebelah kanan
+                                                if (window.innerWidth > 768) {
+                                                    subModels.style.top = '0';
+                                                    subModels.style.left = '100%';
+                                                } else {
+                                                    // Jika di mobile, posisikan di bawah
+                                                    subModels.style.top = '100%';
+                                                    subModels.style.left = '0';
+                                                }
+                                            }
+                                            return;
                                         }
 
+                                        // Kode untuk model tanpa sub-model tetap sama
+                                        const modelId = this.dataset.modelId;
                                         setActiveModel(modelId);
+                                        document.getElementById('model-list-container').style.display = 'none';
                                     });
                                 }
 
@@ -2850,6 +3270,7 @@ $guru = mysqli_fetch_assoc($result);
                             }, 300);
                         }
 
+                        // Muat pesan chat
                         fetch(`get_session_messages.php?session_id=${sessionId}`)
                             .then(response => response.json())
                             .then(messages => {
@@ -2863,12 +3284,6 @@ $guru = mysqli_fetch_assoc($result);
                                     // Flag untuk melacak apakah ada canvas yang perlu ditampilkan
                                     let canvasContent = null;
                                     let hasCanvasMessages = false;
-
-                                    if (hasCanvasMessages && canvasContent) {
-                                        setTimeout(() => {
-                                            showCanvas(canvasContent, 'konten', false); // Parameter ketiga false
-                                        }, 500);
-                                    }
 
                                     // Tampilkan semua pesan
                                     messages.forEach((message, index) => {
@@ -2896,16 +3311,31 @@ $guru = mysqli_fetch_assoc($result);
                                         }
                                     });
 
-                                    // Jika ada pesan dengan canvas, tampilkan canvas setelah semua pesan dimuat
-                                    if (hasCanvasMessages && canvasContent) {
-                                        // Tandai konten sebagai sudah di-type untuk mencegah animasi ulang
-                                        window.contentTyped = true;
-                                        window.lastTypedContent = canvasContent;
+                                    // Muat versi canvas jika ada
+                                    // TAMBAHKAN: Load canvas versions setelah memuat pesan
+                                    if (hasCanvasMessages) {
+                                        loadCanvasVersions(sessionId).then(versions => {
+                                            if (versions.length > 0) {
+                                                // Set canvas versions dari data yang dimuat
+                                                window.canvasVersions = versions.map(v => v.content);
+                                                window.currentVersionIndex = window.canvasVersions.length - 1;
 
-                                        // Tampilkan canvas setelah delay singkat
-                                        setTimeout(() => {
-                                            showCanvas(canvasContent, 'konten', false);
-                                        }, 500);
+                                                // Update UI tombol navigasi
+                                                updateVersionNavButtons();
+
+                                                // Tampilkan canvas dengan konten terakhir
+                                                if (canvasContent) {
+                                                    // Tandai konten sebagai sudah di-type untuk mencegah animasi ulang
+                                                    window.contentTyped = true;
+                                                    window.lastTypedContent = canvasContent;
+
+                                                    // Tampilkan canvas setelah delay singkat
+                                                    setTimeout(() => {
+                                                        showCanvas(canvasContent, 'konten', false);
+                                                    }, 500);
+                                                }
+                                            }
+                                        });
                                     }
                                 } else {
                                     addHistoryMessage('ai', 'Tidak ada pesan dalam chat ini');
@@ -3805,9 +4235,6 @@ $guru = mysqli_fetch_assoc($result);
                     }
                 </script>
             </div>
-            <div class="text-center peringatan pt-1">
-                <p class="text-muted p-0 m-0" style="font-size: 9px;">SMAGA AI mungkin dapat membuat kesalahan, selalu cek kembali setiap respons SMAGA AI.</p>
-            </div>
         </div>
     </div>
 
@@ -4680,11 +5107,27 @@ $guru = mysqli_fetch_assoc($result);
                 console.log("showCanvas with animate:", animate);
 
                 const cleanedContent = cleanCanvasContent(content);
-
-
                 const theCanvas = document.getElementById('canvas-container');
                 const canvasEditor = document.getElementById('canvas-editor');
                 const colUtama = document.querySelector('.col-utama');
+
+                // Reset canvas versions jika ini adalah canvas baru
+                if (!window.canvasActive) {
+                    // Jika ini adalah canvas baru, buat versi pertama
+                    if (!window.canvasVersions || window.canvasVersions.length === 0) {
+                        window.canvasVersions = [cleanedContent];
+                        window.currentVersionIndex = 0;
+
+                        // Simpan versi pertama ke database
+                        if (currentSessionId) {
+                            saveCanvasVersion(cleanedContent);
+                        }
+                    }
+                } else if (window.currentCanvasContent !== cleanedContent) {
+                    // Jika konten berubah dan canvas sudah aktif, tambahkan sebagai versi baru
+                    // Simpan versi baru ke memori dan database
+                    saveCanvasVersion(cleanedContent);
+                }
 
                 if (!theCanvas || !canvasEditor) {
                     console.error("Canvas elements not found", {
@@ -4694,12 +5137,6 @@ $guru = mysqli_fetch_assoc($result);
                     return;
                 }
 
-                // Update title di canvas
-                // const canvasTitle = theCanvas.querySelector('.canvas-title');
-                // if (canvasTitle) {
-                //     canvasTitle.textContent = contentType.charAt(0).toUpperCase() + contentType.slice(1);
-                // }
-
                 // Reset posisi untuk mobile jika perlu
                 if (isMobileDevice()) {
                     theCanvas.style.bottom = "0";
@@ -4708,7 +5145,7 @@ $guru = mysqli_fetch_assoc($result);
                 // Simpan konten untuk referensi
                 window.currentCanvasContent = cleanedContent;
                 window.currentCanvasType = contentType;
-                canvasEditor.classList.add('fade-in'); // Tambahkan ini
+                canvasEditor.classList.add('fade-in');
 
                 // Tampilkan canvas
                 theCanvas.classList.add('active');
@@ -4738,6 +5175,9 @@ $guru = mysqli_fetch_assoc($result);
                         window.lastTypedContent = cleanedContent;
                     }, 100);
                 }
+
+                // Update status tombol navigasi
+                updateVersionNavButtons();
 
                 console.log("Canvas activated with", animate ? "animation" : "fade effect");
             } catch (error) {
@@ -4933,6 +5373,151 @@ $guru = mysqli_fetch_assoc($result);
         window.currentCanvasContent = '';
         window.currentCanvasType = '';
 
+        // Tambahkan di bagian atas file, bersama variable global lainnya
+        window.canvasVersions = []; // Array untuk menyimpan versi canvas
+        window.currentVersionIndex = 0; // Indeks versi yang aktif saat ini
+
+        // Fungsi untuk menyimpan versi canvas
+        async function saveCanvasVersion(content) {
+            // Jika kita sedang di versi lama dan menambah versi baru,
+            // hapus semua versi sesudahnya dari memory
+            if (window.currentVersionIndex < window.canvasVersions.length - 1) {
+                window.canvasVersions = window.canvasVersions.slice(0, window.currentVersionIndex + 1);
+            }
+
+            // Tambahkan versi baru ke memory
+            window.canvasVersions.push(content);
+
+            // Perbarui indeks
+            window.currentVersionIndex = window.canvasVersions.length - 1;
+
+            // Update status tombol navigasi
+            updateVersionNavButtons();
+
+            // Simpan ke database jika ada session id
+            if (currentSessionId) {
+                try {
+                    // Hilangkan parameter version_number dari request body
+                    const response = await fetch('save_canvas_version.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            session_id: currentSessionId,
+                            content: content
+                        })
+                    });
+
+                    const result = await response.json();
+                    console.log('Canvas version save result:', result);
+
+                    if (result.success) {
+                        // Gunakan version_number yang dikirim dari server
+                        console.log(`Versi canvas ${result.version_number} berhasil disimpan`);
+                    } else {
+                        console.error('Failed to save canvas version:', result.error);
+                    }
+                } catch (error) {
+                    console.error('Error saving canvas version:', error);
+                }
+            }
+
+            console.log(`Version saved. Total versions: ${window.canvasVersions.length}, Current: ${window.currentVersionIndex + 1}`);
+        }
+
+
+        // Fungsi untuk memuat versi canvas dari database
+        async function loadCanvasVersions(sessionId) {
+            try {
+                const response = await fetch(`get_canvas_versions.php?session_id=${sessionId}`);
+                const data = await response.json();
+
+                if (data.success && data.versions && data.versions.length > 0) {
+                    console.log(`Loaded ${data.versions.length} canvas versions from database`);
+
+                    // Reset versi canvas di memory
+                    window.canvasVersions = [];
+
+                    // Urutkan versi berdasarkan version_number (pastikan urutan benar)
+                    data.versions.sort((a, b) => a.version_number - b.version_number);
+
+                    // Tambahkan konten dari setiap versi ke memory
+                    data.versions.forEach(version => {
+                        window.canvasVersions.push(version.content);
+                    });
+
+                    // Set versi terkini ke versi terakhir
+                    window.currentVersionIndex = window.canvasVersions.length - 1;
+
+                    // Update tampilan tombol navigasi
+                    updateVersionNavButtons();
+
+                    return data.versions;
+                } else {
+                    console.log('No canvas versions found in database');
+                    return [];
+                }
+            } catch (error) {
+                console.error('Error loading canvas versions:', error);
+                return [];
+            }
+        }
+
+        // Fungsi untuk update status tombol navigasi
+        // Update fungsi untuk perbarui status tombol dan indikator versi
+        function updateVersionNavButtons() {
+            const prevBtn = document.getElementById('prev-canvas-version');
+            const nextBtn = document.getElementById('next-canvas-version');
+            const versionIndicator = document.getElementById('version-indicator');
+
+            // Aktifkan/nonaktifkan tombol berdasarkan posisi saat ini
+            prevBtn.disabled = window.currentVersionIndex <= 0;
+            nextBtn.disabled = window.currentVersionIndex >= window.canvasVersions.length - 1;
+
+            // Update indikator versi
+            const currentVersion = window.currentVersionIndex + 1;
+            const totalVersions = window.canvasVersions.length;
+            versionIndicator.textContent = `Versi ${currentVersion} dari ${totalVersions}`;
+        }
+
+        async function navigateCanvasVersion(direction) {
+            const canvasEditor = document.getElementById('canvas-editor');
+
+            // Hitung indeks baru
+            const newIndex = window.currentVersionIndex + direction;
+
+            // Validasi indeks
+            if (newIndex < 0 || newIndex >= window.canvasVersions.length) {
+                console.error('Invalid version index');
+                return;
+            }
+
+            // Animasi fade out
+            canvasEditor.style.transition = 'opacity 0.3s ease';
+            canvasEditor.style.opacity = '0';
+
+            // Tunggu animasi fade out selesai
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            // Ganti konten dengan versi yang dipilih
+            window.currentVersionIndex = newIndex;
+            const versionContent = window.canvasVersions[newIndex];
+            canvasEditor.innerHTML = formatCanvasContent(versionContent);
+
+            // Update current canvas content untuk revisi berikutnya
+            window.currentCanvasContent = versionContent;
+
+            // Animasi fade in
+            canvasEditor.style.opacity = '1';
+
+            // Update status tombol
+            updateVersionNavButtons();
+
+            console.log(`Navigated to version ${newIndex + 1} of ${window.canvasVersions.length}`);
+        }
+
+
         async function handleCanvasRevision(revisionRequest) {
             // Buat satu elemen chat yang akan diupdate secara bertahap
             const aiMessageElement = await addMessage('ai', `Saya akan merevisi ${window.currentCanvasType} sesuai permintaan Anda.`);
@@ -4951,7 +5536,7 @@ $guru = mysqli_fetch_assoc($result);
             await new Promise(resolve => setTimeout(resolve, 500));
 
             // Update ke "Sedang berpikir..." dan fade in
-            chatBubble.innerHTML = '<em class="text-muted animate__animated animate__fadeIn">Sedang berpikir...</em>';
+            chatBubble.innerHTML = '<em class="text-muted animate__animated animate__fadeIn">Merevisi canvas Anda, sebentar lagi ...</em>';
             chatBubble.style.opacity = '1';
 
             // Gunakan AI untuk merevisi konten
@@ -4975,7 +5560,7 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
                 canvasEditor.innerHTML = `<div id="canvas-revision-content">${originalContent}</div>`;
                 const contentWrapper = document.getElementById('canvas-revision-content');
 
-                // Tambahkan animasi pulse ke konten canvas
+                // Tambahkan animasi pulse ke konten canvas (animasi berpikir)
                 let pulseCount = 0;
                 const pulseAnimation = setInterval(() => {
                     contentWrapper.style.opacity = contentWrapper.style.opacity === '0.4' ? '1' : '0.4';
@@ -4989,28 +5574,43 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
 
                 // Dapatkan respons revisi
                 const revisedContent = await getAIResponse(revisionPrompt);
-
                 const cleanedRevisedContent = cleanCanvasContent(revisedContent);
 
                 // Hentikan animasi pulse
                 clearInterval(pulseAnimation);
                 if (contentWrapper) contentWrapper.style.opacity = '1';
 
-                // Tampilkan hasil revisi dengan animasi fade in sekaligus
-                await fadeInRevisedContent(cleanedRevisedContent);
+                // Animasi fade out untuk konten lama
+                canvasEditor.style.transition = 'opacity 0.3s ease';
+                canvasEditor.style.opacity = '0';
+
+                // Tunggu fade out selesai
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // Update konten dengan hasil revisi
+                canvasEditor.innerHTML = formatCanvasContent(cleanedRevisedContent);
+
+                // Animasi fade in untuk konten baru
+                canvasEditor.style.opacity = '1';
 
                 // Simpan konten baru
                 window.currentCanvasContent = cleanedRevisedContent;
+
+                // Simpan sebagai versi baru - PENTING
+                saveCanvasVersion(cleanedRevisedContent);
+
+                // Update status tombol navigasi
+                updateVersionNavButtons();
 
                 // Fade out pesan "Sedang berpikir..."
                 chatBubble.style.opacity = '0';
                 await new Promise(resolve => setTimeout(resolve, 500));
 
                 // Update chat message ke pesan selesai dan fade in
-                chatBubble.innerHTML = 'Konten telah saya revisi, apakah ada yang bisa saya bantu kembali?';
+                chatBubble.innerHTML = 'Canvas telah saya revisi, apakah ada yang bisa saya bantu kembali?';
                 chatBubble.style.opacity = '1';
 
-                // Simpan revisi ke database
+                // Simpan revisi ke database sebagai message juga jika diperlukan
                 if (currentSessionId) {
                     try {
                         const response = await fetch('save_canvas_revision.php', {
@@ -5177,13 +5777,13 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
                     currentText += chunk;
                     typingContainer.innerHTML = currentText;
                     // Tunggu sedikit untuk tag HTML
-                    await new Promise(resolve => setTimeout(resolve, 10));
+                    await new Promise(resolve => setTimeout(resolve, 5));
                 } else {
                     // Typing effect untuk text biasa
                     for (let i = 0; i < chunk.length; i++) {
                         currentText += chunk[i];
                         typingContainer.innerHTML = currentText;
-                        await new Promise(resolve => setTimeout(resolve, 5));
+                        await new Promise(resolve => setTimeout(resolve, 1));
                     }
                 }
 
@@ -5429,6 +6029,20 @@ Tolong berikan versi yang sudah direvisi sesuai permintaan. Berikan HANYA konten
 
         // Setup event listeners setelah DOM loaded
         document.addEventListener('DOMContentLoaded', function() {
+
+            // Pasang event listener untuk tombol-tombol navigasi versi
+            const prevButton = document.getElementById('prev-canvas-version');
+            const nextButton = document.getElementById('next-canvas-version');
+
+            // Tambahkan event listeners untuk tombol navigasi versi
+            document.getElementById('prev-canvas-version').addEventListener('click', function() {
+                navigateCanvasVersion(-1); // Navigasi ke versi sebelumnya
+            });
+
+            document.getElementById('next-canvas-version').addEventListener('click', function() {
+                navigateCanvasVersion(1); // Navigasi ke versi berikutnya
+            });
+
             // Pasang event listener untuk tombol-tombol canvas
             document.getElementById('close-canvas').addEventListener('click', closeCanvas);
             document.getElementById('copy-canvas').addEventListener('click', copyCanvasContent);
