@@ -1514,17 +1514,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Nilai Akademik (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Hasil evaluasi pembelajaran dalam bentuk nilai/skor</p>
-                                                    <input type="number" name="nilai_akademik" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['nilai_akademik'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="nilai_akademik" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['nilai_akademik'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Keaktifan (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Tingkat partisipasi siswa dalam proses pembelajaran maupun di luar pembelajaran</p>
-                                                    <input type="number" name="keaktifan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['keaktifan'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="keaktifan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['keaktifan'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Pemahaman (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kemampuan menangkap dan menerapkan materi yang dipelajari</p>
-                                                    <input type="number" name="pemahaman" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['pemahaman'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="pemahaman" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['pemahaman'] ?? "Belum ada data"; ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -1542,17 +1542,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Kehadiran Ibadah (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Tingkat kedisiplinan dalam kegiatan ibadah wajib/sunah seperti shalat dhuha maupun kegiatan religius lainya</p>
-                                                    <input type="number" name="kehadiran_ibadah" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kehadiran_ibadah'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="kehadiran_ibadah" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kehadiran_ibadah'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label  p-0 m-0" style="font-size: 12px;">Kualitas Ibadah (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kesesuaian dan ketertiban di dalam pelaksanaan tata cara ibadah</p>
-                                                    <input type="number" name="kualitas_ibadah" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kualitas_ibadah'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="kualitas_ibadah" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kualitas_ibadah'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label" style="font-size: 12px;">Pemahaman Agama (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Pengetahuan tentang dasar-dasar agama dan penerapannya menurut Tarjih Muhammadiyah</p>
-                                                    <input type="number" name="pemahaman_agama" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['pemahaman_agama'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="pemahaman_agama" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['pemahaman_agama'] ?? "Belum ada data"; ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -1570,17 +1570,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Minat Bakat (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Potensi dan ketertarikan dalam bidang yang diminati siswa</p>
-                                                    <input type="number" name="minat_bakat" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['minat_bakat'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="minat_bakat" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['minat_bakat'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Prestasi (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Pencapaian siswa dalam berbagai bidang akademik/non-akademik</p>
-                                                    <input type="number" name="prestasi" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['prestasi'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="prestasi" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['prestasi'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Keaktifan Ekstrakurikuler (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Partisipasi dan keaktifan siswa dalam kegiatan ekstrakurikuler</p>
-                                                    <input type="number" name="keaktifan_ekskul" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['keaktifan_ekskul'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="keaktifan_ekskul" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['keaktifan_ekskul'] ?? "Belum ada data"; ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -1598,17 +1598,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Partisipasi Kegiatan Sosial (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Keterlibatan dalam aktivitas kemasyarakatan dalam lingkugan sekolah maupun masyarakat</p>
-                                                    <input type="number" name="partisipasi_sosial" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['partisipasi_sosial'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="partisipasi_sosial" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['partisipasi_sosial'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Empati (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kepekaan terhadap kondisi dan kebutuhan orang lain</p>
-                                                    <input type="number" name="empati" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['empati'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="empati" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['empati'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Kerja Sama (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kemampuan berkolaborasi dalam kelompok</p>
-                                                    <input type="number" name="kerja_sama" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kerja_sama'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="kerja_sama" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kerja_sama'] ?? "Belum ada data"; ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -1626,17 +1626,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Kebersihan Diri (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Perawatan kebersihan dan kerapihan tubuh dan lingkungan</p>
-                                                    <input type="number" name="kebersihan_diri" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kebersihan_diri'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="kebersihan_diri" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kebersihan_diri'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Aktivitas Fisik (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Keterlibatan dalam kegiatan olahraga/gerak badan</p>
-                                                    <input type="number" name="aktivitas_fisik" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['aktivitas_fisik'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="aktivitas_fisik" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['aktivitas_fisik'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Pola Makan (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Keteraturan dan kualitas asupan makanan</p>
-                                                    <input type="number" name="pola_makan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['pola_makan'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="pola_makan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['pola_makan'] ?? "Belum ada data"; ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -1654,17 +1654,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Kejujuran (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;"> Keselarasan antara ucapan dan tindakan</p>
-                                                    <input type="number" name="kejujuran" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kejujuran'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="kejujuran" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kejujuran'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Tanggung Jawab (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kesediaan menyelesaikan tugas dan kewajiban</p>
-                                                    <input type="number" name="tanggung_jawab" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['tanggung_jawab'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="tanggung_jawab" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['tanggung_jawab'] ?? "Belum ada data"; ?>">
                                                 </div>
                                                 <div class="mb-2">
                                                     <label class="form-label p-0 m-0" style="font-size: 12px;">Disiplin (%)</label>
                                                     <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Ketaatan terhadap aturan dan jadwal yang ditetapkan</p>
-                                                    <input type="number" name="kedisiplinan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kedisiplinan'] ?? "Belum ada data"; ?>">
+                                                    <input type="number" name="kedisiplinan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kedisiplinan'] ?? "Belum ada data"; ?>">
                                                 </div>
                                             </div>
                                         </div>
@@ -1791,17 +1791,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Nilai Akademik (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Hasil evaluasi pembelajaran dalam bentuk nilai/skor</p>
-                                                <input type="number" name="nilai_akademik" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['nilai_akademik'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="nilai_akademik" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['nilai_akademik'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Keaktifan (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Tingkat partisipasi siswa dalam proses pembelajaran maupun di luar pembelajaran</p>
-                                                <input type="number" name="keaktifan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['keaktifan'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="keaktifan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['keaktifan'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Pemahaman (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kemampuan menangkap dan menerapkan materi yang dipelajari</p>
-                                                <input type="number" name="pemahaman" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['pemahaman'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="pemahaman" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['pemahaman'] ?? "Belum ada data"; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -1819,17 +1819,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Kehadiran Ibadah (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Tingkat kedisiplinan dalam kegiatan ibadah wajib/sunah seperti shalat dhuha maupun kegiatan religius lainya</p>
-                                                <input type="number" name="kehadiran_ibadah" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kehadiran_ibadah'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="kehadiran_ibadah" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kehadiran_ibadah'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label  p-0 m-0" style="font-size: 12px;">Kualitas Ibadah (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kesesuaian dan ketertiban di dalam pelaksanaan tata cara ibadah</p>
-                                                <input type="number" name="kualitas_ibadah" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kualitas_ibadah'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="kualitas_ibadah" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kualitas_ibadah'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label" style="font-size: 12px;">Pemahaman Agama (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Pengetahuan tentang dasar-dasar agama dan penerapannya menurut Tarjih Muhammadiyah</p>
-                                                <input type="number" name="pemahaman_agama" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['pemahaman_agama'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="pemahaman_agama" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['pemahaman_agama'] ?? "Belum ada data"; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -1847,17 +1847,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Minat Bakat (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Potensi dan ketertarikan dalam bidang yang diminati siswa</p>
-                                                <input type="number" name="minat_bakat" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['minat_bakat'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="minat_bakat" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['minat_bakat'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Prestasi (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Pencapaian siswa dalam berbagai bidang akademik/non-akademik</p>
-                                                <input type="number" name="prestasi" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['prestasi'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="prestasi" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['prestasi'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Keaktifan Ekstrakurikuler (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Partisipasi dan keaktifan siswa dalam kegiatan ekstrakurikuler</p>
-                                                <input type="number" name="keaktifan_ekskul" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['keaktifan_ekskul'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="keaktifan_ekskul" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['keaktifan_ekskul'] ?? "Belum ada data"; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -1875,17 +1875,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Partisipasi Kegiatan Sosial (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Keterlibatan dalam aktivitas kemasyarakatan dalam lingkugan sekolah maupun masyarakat</p>
-                                                <input type="number" name="partisipasi_sosial" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['partisipasi_sosial'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="partisipasi_sosial" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['partisipasi_sosial'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Empati (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kepekaan terhadap kondisi dan kebutuhan orang lain</p>
-                                                <input type="number" name="empati" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['empati'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="empati" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['empati'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Kerja Sama (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kemampuan berkolaborasi dalam kelompok</p>
-                                                <input type="number" name="kerja_sama" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kerja_sama'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="kerja_sama" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kerja_sama'] ?? "Belum ada data"; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -1903,17 +1903,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Kebersihan Diri (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Perawatan kebersihan dan kerapihan tubuh dan lingkungan</p>
-                                                <input type="number" name="kebersihan_diri" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kebersihan_diri'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="kebersihan_diri" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kebersihan_diri'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Aktivitas Fisik (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Keterlibatan dalam kegiatan olahraga/gerak badan</p>
-                                                <input type="number" name="aktivitas_fisik" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['aktivitas_fisik'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="aktivitas_fisik" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['aktivitas_fisik'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Pola Makan (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Keteraturan dan kualitas asupan makanan</p>
-                                                <input type="number" name="pola_makan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['pola_makan'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="pola_makan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['pola_makan'] ?? "Belum ada data"; ?>">
                                             </div>
                                         </div>
                                     </div>
@@ -1931,17 +1931,17 @@ $siswa = mysqli_fetch_assoc($result_siswa);
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Kejujuran (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;"> Keselarasan antara ucapan dan tindakan</p>
-                                                <input type="number" name="kejujuran" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kejujuran'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="kejujuran" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kejujuran'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Tanggung Jawab (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Kesediaan menyelesaikan tugas dan kewajiban</p>
-                                                <input type="number" name="tanggung_jawab" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['tanggung_jawab'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="tanggung_jawab" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['tanggung_jawab'] ?? "Belum ada data"; ?>">
                                             </div>
                                             <div class="mb-2">
                                                 <label class="form-label p-0 m-0" style="font-size: 12px;">Disiplin (%)</label>
                                                 <p class="text-muted p-0 m-0 mb-1" style="font-size: 10px;">Ketaatan terhadap aturan dan jadwal yang ditetapkan</p>
-                                                <input type="number" name="kedisiplinan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $nilai['kedisiplinan'] ?? "Belum ada data"; ?>">
+                                                <input type="number" name="kedisiplinan" class="form-control form-control-sm" min="0" max="100" placeholder="<?php echo $statistik ['kedisiplinan'] ?? "Belum ada data"; ?>">
                                             </div>
                                         </div>
                                     </div>
