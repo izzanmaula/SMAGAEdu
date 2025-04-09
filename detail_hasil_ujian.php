@@ -133,6 +133,7 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <body>
 
@@ -159,6 +160,93 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                 .container-fluid {
                     display: none;
                 }
+            }
+
+            /* ANALISIS CANVAS */
+            /* CSS untuk Canvas Analisis */
+            #analisisCanvas {
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            }
+
+            #hasilAnalisis {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            #hasilAnalisis h3,
+            #hasilAnalisis h4 {
+                color: rgb(218, 119, 86);
+                margin-top: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            #hasilAnalisis ul {
+                padding-left: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            #hasilAnalisis li {
+                margin-bottom: 0.5rem;
+            }
+
+            .typing-effect {
+                border-right: 2px solid rgb(218, 119, 86);
+                white-space: nowrap;
+                overflow: hidden;
+                animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+            }
+
+            @keyframes typing {
+                from {
+                    width: 0
+                }
+
+                to {
+                    width: 100%
+                }
+            }
+
+            @keyframes blink-caret {
+
+                from,
+                to {
+                    border-color: transparent
+                }
+
+                50% {
+                    border-color: rgb(218, 119, 86)
+                }
+            }
+
+            /* Tambahkan ke dalam CSS Anda */
+            .analisis-result {
+                padding: 10px;
+            }
+
+            .analisis-result h2,
+            .analisis-result h3,
+            .analisis-result h4 {
+                color: rgb(0, 0, 0);
+                font-weight: 600;
+            }
+
+            .analisis-result p {
+                line-height: 1.7;
+                color: #333;
+            }
+
+            .analisis-result ul {
+                padding-left: 1.25rem;
+            }
+
+            .analisis-result ul li {
+                margin-bottom: 0.75rem;
+                line-height: 1.6;
+            }
+
+            .analisis-result strong {
+                color: rgb(0, 0, 0);
+                font-weight: 600;
             }
         </style>
 
@@ -219,7 +307,7 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                 </p>
                 <a href="ujian_guru.php" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" style="background-color: rgb(218, 119, 86); border: none;">
                     <i class="bi bi-arrow-left me-2"></i>
-                    Kembali 
+                    Kembali
                 </a>
             </div>
         </div>
@@ -271,8 +359,11 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                         </p>
                                     </div>
                                     <div>
-                                        <button onclick="window.print()" class="btn bg-white border me-2">
+                                        <button onclick="window.print()" class="btn bg-light rounded-4 border me-2">
                                             <i class="bi bi-printer"></i> Print
+                                        </button>
+                                        <button id="btnAnalisis" class="btn bg-light rounded-4 border">
+                                            <i class="bi bi-stars"></i> Analisis
                                         </button>
                                     </div>
                                 </div>
@@ -509,9 +600,9 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                         }
 
                                         .list-group-item-success {
-                                            background-color: rgba(218, 119, 86, 0.1);
-                                            color: rgb(218, 119, 86);
-                                            border-left: 4px solid rgb(218, 119, 86);
+                                            background-color: rgba(86, 218, 121, 0.1);
+                                            color: rgb(86, 218, 110);
+                                            border-left: 4px solid rgb(112, 218, 86);
                                         }
 
                                         .badge {
@@ -784,7 +875,7 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
                                             });
                                         }
                                     </script>
-                                    <div class="table-responsive">
+                                    <div class="table-responsive mt-4 border rounded-4">
                                         <style>
                                             .ios-table {
                                                 border-radius: 16px;
@@ -934,7 +1025,222 @@ while ($row = mysqli_fetch_assoc($result_soal_stats)) {
         </div>
     <?php endif; ?>
 
+    <!-- Canvas Analisis AI -->
+    <div id="analisisCanvas" class="position-fixed top-0 end-0 h-100 bg-white shadow-lg" style="width: 450px; transform: translateX(100%); transition: transform 0.5s ease; z-index: 1050;">
+        <div class="d-flex flex-column h-100">
+            <div class="card-header d-flex p-4 pb-3 bg-white rounded-top-4 justify-content-between">
+                <div class="d-flex">
+                    <span class="bi bi-stars me-2" style="font-size: 30px; color:rgb(218, 119, 86)"></span>
+                    <div>
+                        <h5 class="mb-0">Analisis Hasil Ujian</h5>
+                        <p class="text-muted mb-0" style="font-size: 12px;">Integrasi Layanan SAGA AI</p>
+                    </div>
+                </div>
+                <button id="closeAnalisis" class="btn-close"></button>
+            </div>
+            <div class="p-4 flex-grow-1 overflow-auto" id="analisisContent">
+                <div id="konfirmasiAnalisis" class="text-center py-5 px-2">
+                    <div class="mb-4">
+                        <i class="bi bi-search" style="font-size: 3rem; color: rgb(218, 119, 86);"></i>
+                    </div>
+                    <h3 class="mb-3 fw-bold">Evaluasi Pembelajaran Anda Dengan Mudah</h3>
+                    <p class="text-muted mb-4">Dapatkan kondisi, evaluasi, dan rekomendasi hasil ujian Anda dengan bantuan SAGA AI</p>
+                    <div class="border rounded-4 p-3 mb-4 bg-light d-flex align-items-center">
+                        <span class="bi bi-exclamation-circle pe-3"></span>
+                        <p style="font-size: 12px;" class="p-0 m-0 text-start">Untuk hasil analisis sempurna, pastikan ujian Anda telah selesai dilaksanakan</p>
+                    </div>
+                    <button id="startAnalisis" class="btn btn-sm px-4 py-2 rounded-4" style="background-color: rgb(218, 119, 86); color: white;">
+                        Analisis Sekarang
+                    </button>
+                </div>
+                <div id="loadingAnalisis" class="text-center py-5 d-none">
+                    <!-- <div class="spinner-border" style="color: rgb(218, 119, 86);" role="status"> -->
+                    <img src="assets/ai_loading.gif" width="80px" alt="">
+                    <!-- </div> -->
+                    <p class="mt-3 text-muted" style="font-size:12px;">Sedang menganalisis data ujian Anda, sebentar lagi</p>
+                </div>
+                <div id="hasilAnalisis" class="d-none">
+                    <!-- Hasil analisis akan muncul di sini dengan efek typing -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Variabel untuk API key Groq - ganti dengan API key Anda
+        const groqApiKey = "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";
+
+        // Fungsi untuk menampilkan canvas analisis
+        document.getElementById('btnAnalisis').addEventListener('click', function() {
+            document.getElementById('analisisCanvas').style.transform = 'translateX(0)';
+        });
+
+        // Fungsi untuk menutup canvas analisis
+        document.getElementById('closeAnalisis').addEventListener('click', function() {
+            document.getElementById('analisisCanvas').style.transform = 'translateX(100%)';
+        });
+
+        // Fungsi untuk memulai analisis
+        document.getElementById('startAnalisis').addEventListener('click', async function() {
+            document.getElementById('konfirmasiAnalisis').classList.add('d-none');
+            document.getElementById('loadingAnalisis').classList.remove('d-none');
+
+            try {
+                // Mengumpulkan data untuk analisis
+                const ujianData = {
+                    judul: "<?php echo htmlspecialchars($ujian['judul']); ?>",
+                    mataPelajaran: "<?php echo htmlspecialchars($ujian['mata_pelajaran']); ?>",
+                    tingkat: "<?php echo htmlspecialchars($ujian['tingkat']); ?>",
+                    rataRata: "<?php echo number_format($rata_rata, 1); ?>",
+                    totalSiswa: "<?php echo mysqli_num_rows($result_peserta); ?>",
+                    nilaiTertinggi: "<?php echo number_format($nilai_tertinggi, 1); ?>",
+                    nilaiTerendah: "<?php echo number_format($nilai_terendah, 1); ?>",
+                    soalStats: <?php echo json_encode($soal_stats); ?>
+                };
+
+                // Memanggil API Groq
+                const hasil = await analyzeWithGroq(ujianData);
+
+                // Menampilkan hasil dengan efek typing
+                document.getElementById('loadingAnalisis').classList.add('d-none');
+                document.getElementById('hasilAnalisis').classList.remove('d-none');
+                typeWriter(hasil, 'hasilAnalisis');
+            } catch (error) {
+                console.error("Gagal menganalisis:", error);
+                document.getElementById('loadingAnalisis').classList.add('d-none');
+                document.getElementById('hasilAnalisis').classList.remove('d-none');
+                document.getElementById('hasilAnalisis').innerHTML = `
+            <div class="alert alert-danger">
+                <h5>Terjadi Kesalahan</h5>
+                <p>Tidak dapat melakukan analisis saat ini. Silakan coba lagi nanti.</p>
+                <p>Detail error: ${error.message}</p>
+            </div>
+            <button id="retryAnalisis" class="btn btn-outline-secondary px-4 py-2 rounded-4">
+                Coba Lagi
+            </button>
+        `;
+
+                document.getElementById('retryAnalisis').addEventListener('click', function() {
+                    document.getElementById('hasilAnalisis').classList.add('d-none');
+                    document.getElementById('konfirmasiAnalisis').classList.remove('d-none');
+                });
+            }
+        });
+
+        async function analyzeWithGroq(ujianData) {
+            // Mengumpulkan statistik soal yang paling banyak salah
+            const topProblemSoal = ujianData.soalStats
+                .sort((a, b) => parseInt(b.total_salah) - parseInt(a.total_salah))
+                .slice(0, 5);
+
+            // Mempersiapkan prompt untuk AI dengan format yang lebih jelas
+            const prompt = `
+    Analisis hasil ujian berikut dan berikan rekomendasi pembelajaran:
+    
+    Judul Ujian: ${ujianData.judul}
+    Mata Pelajaran: ${ujianData.mataPelajaran}
+    Tingkat Kelas: ${ujianData.tingkat}
+    Nilai Rata-rata: ${ujianData.rataRata}/100
+    Nilai Tertinggi: ${ujianData.nilaiTertinggi}/100
+    Nilai Terendah: ${ujianData.nilaiTerendah}/100
+    Total Siswa: ${ujianData.totalSiswa}
+    
+    Detail soal-soal dengan kesalahan terbanyak:
+    ${topProblemSoal.map((soal, index) => `
+    Soal ${index + 1}: ${soal.pertanyaan}
+    Jawaban benar: ${soal.jawaban_benar}
+    Total menjawab: ${soal.total_menjawab} siswa
+    Total benar: ${soal.total_benar} siswa
+    Total salah: ${soal.total_salah} siswa
+    `).join('\n')}
+    
+    Berikan analisis lengkap dengan format berikut (gunakan format markdown dengan bold untuk poin penting):
+    1. Materi yang sudah dikuasai dengan baik
+    2. Materi yang perlu ditingkatkan
+    3. Rekomendasi metode pengajaran untuk meningkatkan pemahaman pada materi yang kurang
+    
+    Berikan analisis yang spesifik berdasarkan data soal-soal, bukan analisis generik.
+    `;
+
+            try {
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${groqApiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "gemma2-9b-it",
+                        messages: [{
+                                role: "system",
+                                content: "Kamu adalah asisten guru yang ahli dalam menganalisis hasil ujian dan memberikan rekomendasi pengajaran yang spesifik dan praktis. Analisis yang kamu berikan harus berdasarkan data statistik ujian dan soal-soal yang diberikan. Gunakan format markdown dengan headings dan list yang terstruktur."
+                            },
+                            {
+                                role: "user",
+                                content: prompt
+                            }
+                        ],
+                        temperature: 0.5,
+                        max_tokens: 1500
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error("Error calling Groq API:", error);
+                throw error;
+            }
+        }
+
+        function typeWriter(text, elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+
+            // Persiapkan container
+            element.innerHTML = `
+        <div class="analisis-result">
+            <h3 class="mb-4" style="color: rgb(218, 119, 86);">Hasil Analisis</h3>
+            <div id="typed-content"></div>
+        </div>
+    `;
+
+            const typedContent = document.getElementById('typed-content');
+
+            // Konversi markdown ke HTML dan simpan
+            const htmlContent = marked.parse(text);
+
+            // Tampilkan sedikit demi sedikit
+            let i = 0;
+            const speed = 7; // kecepatan ketik
+            const htmlWithoutTags = htmlContent.replace(/<[^>]*>/g, '');
+
+            function typeCharacter() {
+                if (i < htmlWithoutTags.length) {
+                    typedContent.innerHTML = marked.parse(text.substring(0, i));
+                    i++;
+                    setTimeout(typeCharacter, speed);
+                }
+            }
+
+            typeCharacter();
+        }
+
+        function processMarkdownText(text) {
+            // Tangani bold: **text** menjadi <strong>text</strong>
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // Tangani italic: *text* menjadi <em>text</em>
+            text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            return text;
+        }
+    </script>
     </body>
 
 </html>

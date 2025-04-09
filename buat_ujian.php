@@ -209,7 +209,7 @@ $result_kelas = mysqli_query($koneksi, $query_kelas);
                                         <span class="bi bi-stars" style="font-size: 70px; color:rgb(218, 119, 86)"></span>
                                         <div>
                                             <h5 class="card-title mb-1 fw-bold" style="font-size:1.5rem">Membuat Soal Tidak Pernah Semudah Ini</h5>
-                                            <p style="font-size: 12px;" class="pb-0 mb-0">Anda dapat memberikan topik materi yang akan di ujikan, dengan ini SAGA akan membaca dan membantu Anda dalam membuat soal.</p>
+                                            <p style="font-size: 14px;" class="pb-0 mb-0">Anda dapat memberikan topik materi yang akan di ujikan, dengan ini SAGA akan membaca dan membantu Anda dalam membuat soal.</p>
                                         </div>
                                     </div>
 

@@ -985,6 +985,10 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                     </div>
                     <h5 class="mt-3 fw-bold">Ujian Berhasil Diselesaikan</h5>
                     <p class="mb-4">Terima kasih telah mengerjakan ujian dengan baik. Jawaban Anda telah tersimpan.</p>
+                    <div class="border d-flex align-items-center text-start bg-light rounded-4 mt-3 mb-3 p-3">
+                        <span class="bi-question-circle me-3"></span>
+                        <p class="p-0 m-0" style="font-size: 12px;">Kamu bisa menklik tombol <span class="fw-bold">"Leave"</span> atau <span class="fw-bold">"Tinggal"</span> pada perintah di atas </p>
+                    </div>
                     <div class="d-flex justify-content-center">
                         <div class="spinner-border" role="status" style="color: rgb(218, 119, 86);">
                             <span class="visually-hidden">Loading...</span>
@@ -1208,7 +1212,7 @@ $_SESSION['soal_order_' . $ujian_id] = array_column($soal_array, 'id');
                     <h5 class="fw-bold">Halo, <?php echo $_SESSION['nama']; ?></h5>
                     <p class="fw-bold mb-4">Sudah siap untuk ujian kali ini?</p>
 
-                    <div class="text-start">
+                    <div class="text-start border bg-light rounded-4 m-3 p-4">
                         <p class="mb-2 fw-bold"><i class="bi bi-info-circle me-2" style="color:rgb(218, 119, 86);"></i>Peraturan Ujian:</p>
                         <ul class="small text-secondary mb-4">
                             <li>Patuhi seluruh peraturan ujian sesuai dengan ketentuan pengawas</li>

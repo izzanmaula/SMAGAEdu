@@ -549,7 +549,70 @@ $guru = mysqli_fetch_assoc($result);
     }
 </style>
 
+<!-- loading screen -->
+<style>
+    /* Loading Screen */
+    #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loader-container {
+        text-align: center;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(218, 119, 86, 0.2);
+        border-top: 5px solid rgb(218, 119, 86);
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loader-container p {
+        color: rgb(218, 119, 86);
+        font-family: 'Merriweather', serif;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    /* Tambahkan class untuk fade out */
+    #loading-screen.fade-out {
+        opacity: 0;
+        visibility: hidden;
+    }
+</style>
+
 <body>
+
+    <!-- loading awal -->
+    <div id="loading-screen">
+        <div class="loader-container">
+            <img src="assets/ai_loading.gif" alt="Loading..." style="width: 80px; height: 80px;" />
+            <p class="text-sm text-muted mt-4" style="font-size: 14px;">Sedang mempersiapkan keajaiban <br>tunggu sebentar</p>
+        </div>
+    </div>
 
     <!-- lazy loading sheetjs -->
     <script>
@@ -2283,6 +2346,21 @@ $guru = mysqli_fetch_assoc($result);
 
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
+                        // loading screen 
+                        // Sembunyikan loading screen setelah 1.5 detik (1000ms untuk loading + 500ms untuk fade out)
+                        setTimeout(function() {
+                            const loadingScreen = document.getElementById('loading-screen');
+                            if (loadingScreen) {
+                                loadingScreen.classList.add('fade-out');
+
+                                // Hapus dari DOM setelah transisi selesai
+                                setTimeout(function() {
+                                    loadingScreen.style.display = 'none';
+                                }, 500);
+                            }
+                        }, 1000);
+
+
                         const modelDescriptions = {
                             'llama-3.3-70b': {
                                 title: 'LLaMA 3.3 70B',
