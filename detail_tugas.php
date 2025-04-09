@@ -114,7 +114,7 @@ mysqli_data_seek($result_pengumpulan, 0);
     <style>
         body {
             font-family: 'Merriweather', serif;
-            background-color: #f5f5f5;
+            /* background-color: #f5f5f5; */
         }
 
         .color-web {
@@ -447,7 +447,7 @@ mysqli_data_seek($result_pengumpulan, 0);
 
                 <!-- Tab Pengumpulan -->
                 <div class="col-lg-8">
-                    <div class="card border">
+                    <div class="card border shadow-none rounded-4">
                         <div class="card-header bg-white p-2" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
                             <div class="tab-scroll-container">
                                 <button class="btn btn-sm scroll-button scroll-left" onclick="scrollTabs('left')">
@@ -934,7 +934,7 @@ mysqli_data_seek($result_pengumpulan, 0);
                         <div class="row">
                             <!-- Bagian Preview Dokumen (Kiri) -->
                             <div class="col-lg-8">
-                                <div class="card border-0">
+                                <div class="card border shadow">
                                     <div class="card-body p-0">
                                         <!-- Navigation untuk multiple file -->
                                         <div class="bg-light px-3 py-2 d-flex border-bottom justify-content-between align-items-center position-relative" style="border-radius: 10px 10px 0 0;">

@@ -1482,9 +1482,46 @@ $guru = mysqli_fetch_assoc($result);
                         // Set model aktif secara default
                         window.activeModelId = 'llama-3.3-70b-versatile';
 
-                        // Fungsi untuk mengatur model yang dipilih
+                        // Modifikasi fungsi setActiveModel untuk memperbaiki kedua masalah
                         window.setActiveModel = function(modelId) {
                             window.activeModelId = modelId;
+
+                            // Daftar model yang perlu dinonaktifkan fitur Canvas-nya
+                            const disableCanvasForModels = [
+                                'deepseek-r1-distill-llama-70b',
+                                'deepseek-r1-distill-qwen-32b',
+                                'qwen-qwq-32b',
+                                'gemma2-9b-it',
+                                'llama-3.1-8b-instant'
+                            ];
+
+                            // Dapatkan tombol Canvas
+                            const canvasModeBtn = document.getElementById('canvasModeBtn');
+
+                            // Nonaktifkan tombol jika model termasuk dalam daftar
+                            if (canvasModeBtn) {
+                                if (disableCanvasForModels.includes(modelId)) {
+                                    // Nonaktifkan tombol Canvas
+                                    canvasModeBtn.disabled = true;
+                                    canvasModeBtn.classList.add('disabled');
+                                    canvasModeBtn.style.opacity = '0.5';
+                                    canvasModeBtn.setAttribute('title', 'Canvas tidak tersedia untuk model ini');
+
+                                    // Reset status canvas mode jika sedang aktif
+                                    if (window.canvasModeEnabled) {
+                                        window.canvasModeEnabled = false;
+                                        canvasModeBtn.classList.remove('active');
+                                        canvasModeBtn.style.backgroundColor = '';
+                                        canvasModeBtn.querySelector('p').style.color = 'black';
+                                    }
+                                } else {
+                                    // Aktifkan kembali tombol Canvas
+                                    canvasModeBtn.disabled = false;
+                                    canvasModeBtn.classList.remove('disabled');
+                                    canvasModeBtn.style.opacity = '1';
+                                    canvasModeBtn.removeAttribute('title');
+                                }
+                            }
 
                             // Temukan model dari struktur data (termasuk sub-models)
                             let selectedModel = null;
@@ -1505,12 +1542,8 @@ $guru = mysqli_fetch_assoc($result);
                             // Update UI
                             const displayElement = document.getElementById('current-model-name');
                             if (displayElement && selectedModel) {
-                                // Jika ini sub-model, tampilkan format: "Parent > Sub"
-                                if (selectedModel.parentName) {
-                                    // displayElement.textContent = `${selectedModel.parentName}: ${selectedModel.name}`;
-                                } else {
-                                    displayElement.textContent = selectedModel.name;
-                                }
+                                // Tampilkan hanya nama sub-model, tanpa parent model
+                                displayElement.textContent = selectedModel.name;
                             }
 
                             // Simpan di localStorage untuk persistensi
@@ -1544,8 +1577,12 @@ $guru = mysqli_fetch_assoc($result);
 
                                         // Tandai parent juga sebagai active
                                         const parentContainer = item.closest('.model-item-container');
-                                        const parentItem = parentContainer.querySelector('.model-item');
-                                        parentItem.classList.add('parent-active');
+                                        if (parentContainer) {
+                                            const parentItem = parentContainer.querySelector('.model-item');
+                                            if (parentItem) {
+                                                parentItem.classList.add('parent-active');
+                                            }
+                                        }
 
                                         subModelFound = true;
                                     }
@@ -1567,6 +1604,66 @@ $guru = mysqli_fetch_assoc($result);
                                 }
                             }, 100);
                         };
+
+
+                        // Tambahkan kode ini ketika membuat sub-model item
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Buat ulang event handler untuk sub-model item
+                            function setupSubModelHandlers() {
+                                document.querySelectorAll('.sub-model-item').forEach(item => {
+                                    // Hapus event listener yang mungkin sudah ada untuk mencegah duplikasi
+                                    item.removeEventListener('click', subModelClickHandler);
+                                    // Tambahkan event listener baru
+                                    item.addEventListener('click', subModelClickHandler);
+                                });
+                            }
+
+                            // Handler untuk klik pada sub-model
+                            function subModelClickHandler(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                const modelId = this.dataset.modelId;
+                                console.log('Sub-model clicked:', modelId);
+
+                                // Pastikan modelId ada sebelum memanggil setActiveModel
+                                if (modelId) {
+                                    window.setActiveModel(modelId);
+
+                                    // Tutup dropdown
+                                    const modelList = document.getElementById('model-list-container');
+                                    if (modelList) {
+                                        modelList.style.display = 'none';
+                                    }
+                                } else {
+                                    console.error('No model ID found for sub-model item');
+                                }
+                            }
+
+                            // Jalankan setup setelah model-list-container diisi
+                            setTimeout(setupSubModelHandlers, 1000);
+
+                            // Juga, pasang pengintai mutasi untuk menangani sub-model yang ditambahkan secara dinamis
+                            const observer = new MutationObserver(function(mutations) {
+                                mutations.forEach(function(mutation) {
+                                    if (mutation.addedNodes.length) {
+                                        setupSubModelHandlers();
+                                    }
+                                });
+                            });
+
+                            // Mulai pengamatan setelah model-list-container tersedia
+                            setTimeout(() => {
+                                const modelList = document.getElementById('model-list-container');
+                                if (modelList) {
+                                    observer.observe(modelList, {
+                                        childList: true,
+                                        subtree: true
+                                    });
+                                }
+                            }, 1000);
+                        });
+
 
                         // Handler untuk mobile
                         function setupMobileHandlers() {
