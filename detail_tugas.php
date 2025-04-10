@@ -91,6 +91,27 @@ function formatFileSize($bytes)
     }
 }
 
+// Tambahkan query untuk mengambil file-file dari tabel file_pengumpulan_tugas
+function getSubmissionFiles($pengumpulan_id, $koneksi)
+{
+    $query = "SELECT * FROM file_pengumpulan_tugas WHERE pengumpulan_id = '$pengumpulan_id'";
+    $result = mysqli_query($koneksi, $query);
+
+    $files = [];
+    while ($file = mysqli_fetch_assoc($result)) {
+        $files[] = [
+            'id' => $file['id'],
+            'name' => $file['nama_file'],
+            'path' => $file['file_path'],
+            'type' => $file['tipe_file'],
+            'size' => $file['ukuran_file'],
+            'url' => $file['file_path'] // URL untuk akses file
+        ];
+    }
+
+    return $files;
+}
+
 // Reset pointer result_pengumpulan
 mysqli_data_seek($result_pengumpulan, 0);
 ?>
@@ -229,40 +250,40 @@ mysqli_data_seek($result_pengumpulan, 0);
 
         <div class="container-fluid">
             <div class="row">
-            <!-- Sidebar for desktop -->
-            <?php include 'includes/sidebar.php'; ?>
+                <!-- Sidebar for desktop -->
+                <?php include 'includes/sidebar.php'; ?>
 
-            <!-- Mobile navigation -->
-            <?php include 'includes/mobile_nav.php'; ?>
+                <!-- Mobile navigation -->
+                <?php include 'includes/mobile_nav.php'; ?>
 
-            <!-- Settings Modal -->
-            <?php include 'includes/settings_modal.php'; ?>
+                <!-- Settings Modal -->
+                <?php include 'includes/settings_modal.php'; ?>
             </div>
         </div>
 
         <!-- Mobile view blocker (iOS style) -->
         <div class="mobile-blocker d-md-none position-fixed top-0 start-0 w-100 h-100 bg-white" style="z-index: 9999;">
             <div class="d-flex flex-column justify-content-center align-items-center h-100 px-4">
-            <div class="text-center mb-4">
-                <i class="bi bi-laptop display-1 text-secondary"></i>
-            </div>
-            <h4 class="mb-3 fw-bold text-dark">Akses Ditolak</h4>
-            <p class="text-center text-secondary mb-4" style="font-size: 12px;">
-                Halaman detail tugas hanya dapat diakses pada perangkat laptop atau tablet.
-                Silakan gunakan perangkat dengan layar yang lebih besar.
-            </p>
-            <a href="kelas_guru.php?id=<?php echo $kelas_id; ?>" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" style="background-color: rgb(218, 119, 86); border: none;">
-                <i class="bi bi-arrow-left me-2"></i>
-                Kembali ke Kelas
-            </a>
+                <div class="text-center mb-4">
+                    <i class="bi bi-laptop display-1 text-secondary"></i>
+                </div>
+                <h4 class="mb-3 fw-bold text-dark">Akses Ditolak</h4>
+                <p class="text-center text-secondary mb-4" style="font-size: 12px;">
+                    Halaman detail tugas hanya dapat diakses pada perangkat laptop atau tablet.
+                    Silakan gunakan perangkat dengan layar yang lebih besar.
+                </p>
+                <a href="kelas_guru.php?id=<?php echo $kelas_id; ?>" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm" style="background-color: rgb(218, 119, 86); border: none;">
+                    <i class="bi bi-arrow-left me-2"></i>
+                    Kembali ke Kelas
+                </a>
             </div>
         </div>
 
         <!-- Main content (only visible on desktop) -->
         <div class="container col-utama mt-4 mb-5 d-none d-md-block">
             <div class="row">
-            <div class="col-12 mb-4">
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="col-12 mb-4">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
                         <h2 class="p-0 m-0"><?php echo htmlspecialchars($data_tugas['judul']); ?></h2>
                         <a href="kelas_guru.php?id=<?php echo $kelas_id; ?>" class="btn bg-white btn-outline-secondary" style="border-radius: 15px;">
                             <i class="bi bi-arrow-left"></i> Kembali
@@ -926,10 +947,6 @@ mysqli_data_seek($result_pengumpulan, 0);
         <div class="modal fade" id="modalPenilaian" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centere modal-fullscreen"> <!-- Ubah ukuran modal jadi extra large -->
                 <div class="modal-content">
-                    <div class="modal-header border-0">
-                        <h5 class="modal-title">Beri Nilai Tugas</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
                     <div class="modal-body">
                         <div class="row">
                             <!-- Bagian Preview Dokumen (Kiri) -->
@@ -937,7 +954,7 @@ mysqli_data_seek($result_pengumpulan, 0);
                                 <div class="card border shadow">
                                     <div class="card-body p-0">
                                         <!-- Navigation untuk multiple file -->
-                                        <div class="bg-light px-3 py-2 d-flex border-bottom justify-content-between align-items-center position-relative" style="border-radius: 10px 10px 0 0;">
+                                        <div class="bg-white px-3 py-2 d-flex border-bottom justify-content-between align-items-center position-relative" style="border-radius: 10px 10px 0 0;">
                                             <!-- Left chevron -->
                                             <button class="btn btn-sm btn-light rounded-circle shadow-sm position-absolute start-0 ms-3" id="prevFile" style="width: 32px; height: 32px;">
                                                 <i class="bi bi-chevron-left"></i>
@@ -973,28 +990,29 @@ mysqli_data_seek($result_pengumpulan, 0);
                                         </style>
 
                                         <!-- Area Preview -->
-                                        <div id="filePreview" class="position-relative" style="height: 500px;">
+                                        <div id="filePreview" class="position-relative" style="height: 550px;">
                                             <!-- Preview akan dimuat di sini -->
+                                            <!-- Ganti bagian pdfViewer Anda dengan kode ini -->
                                             <div id="pdfViewer" class="h-100 d-none">
                                                 <iframe id="pdfFrame" width="100%" height="100%" frameborder="0" style="border-radius: 20px;"></iframe>
-                                            </div>
+                                                        </div>
                                             <div id="imageViewer" class="h-100 d-none">
                                                 <div id="imageViewerContainer" class="h-100" style="border-radius: 20px;"></div>
                                                 <div class="image-controls position-absolute bottom-0 start-50 translate-middle-x mb-3 bg-dark bg-opacity-75 rounded-pill px-3 py-2">
                                                     <button class="btn btn-sm btn-light rounded-circle me-2" onclick="rotateImage(-90)">
-                                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                                        <i class="bi bi-arrow-counterclockwise" style="color: rgb(218, 119, 86);"></i>
                                                     </button>
                                                     <button class="btn btn-sm btn-light rounded-circle me-2" onclick="rotateImage(90)">
-                                                        <i class="bi bi-arrow-clockwise"></i>
+                                                        <i class="bi bi-arrow-clockwise" style="color: rgb(218, 119, 86);"></i>
                                                     </button>
                                                     <button class="btn btn-sm btn-light rounded-circle me-2" onclick="zoomIn()">
-                                                        <i class="bi bi-zoom-in"></i>
+                                                        <i class="bi bi-zoom-in" style="color: rgb(218, 119, 86);"></i>
                                                     </button>
                                                     <button class="btn btn-sm btn-light rounded-circle me-2" onclick="zoomOut()">
-                                                        <i class="bi bi-zoom-out"></i>
+                                                        <i class="bi bi-zoom-out" style="color: rgb(218, 119, 86);"></i>
                                                     </button>
                                                     <button class="btn btn-sm btn-light rounded-circle" onclick="resetView()">
-                                                        <i class="bi bi-arrows-angle-contract"></i>
+                                                        <i class="bi bi-arrows-angle-contract" style="color: rgb(218, 119, 86);"></i>
                                                     </button>
                                                 </div>
                                             </div>
@@ -1078,13 +1096,12 @@ mysqli_data_seek($result_pengumpulan, 0);
                                     <input type="hidden" name="tugas_id" value="<?php echo $tugas_id; ?>">
 
                                     <!-- iOS Style Card -->
-                                    <div class="card shadow-sm border-0 rounded-4">
+                                    <div class="card border rounded-4">
                                         <div class="card-body p-4">
                                             <!-- Student Info -->
                                             <div class="mb-4">
                                                 <div class="d-flex align-items-center mb-2">
-                                                    <i class="bi bi-person-fill text-primary me-2"></i>
-                                                    <h6 class="mb-0" id="namaSiswa"></h6>
+                                                    <h4 class="mb-0" id="namaSiswa"></h4>
                                                 </div>
                                                 <small class="text-secondary d-block" id="waktuPengumpulan"></small>
                                             </div>
@@ -1093,9 +1110,9 @@ mysqli_data_seek($result_pengumpulan, 0);
                                             <div class="mb-4">
                                                 <label class="form-label text-secondary mb-2">
                                                     <i class="bi bi-chat-left-text me-1"></i>
-                                                    Pesan Siswa
+                                                    Pesan dari Siswa
                                                 </label>
-                                                <div id="pesanSiswa" class="p-3 bg-light rounded-3" style="font-size: 0.95rem; min-height: 80px; max-height: 120px; overflow-y: auto;">
+                                                <div id="pesanSiswa" class="p-3 border rounded-3" style="font-size: 0.95rem; min-height: 80px; max-height: 120px; overflow-y: auto;">
                                                     <!-- Message will be loaded here -->
                                                 </div>
                                             </div>
@@ -1103,8 +1120,8 @@ mysqli_data_seek($result_pengumpulan, 0);
                                             <!-- Score Input -->
                                             <div class="mb-4">
                                                 <label for="nilaiInput" class="form-label text-secondary mb-2">
-                                                    <i class="bi bi-star-fill text-warning me-1"></i>
-                                                    Nilai (1-<?php echo $data_tugas['poin_maksimal']; ?>)
+                                                    <i class="bi bi-star me-1"></i>
+                                                    Beri Nilai (1-<?php echo $data_tugas['poin_maksimal']; ?>)
                                                 </label>
                                                 <input type="number"
                                                     class="form-control form-control-lg rounded-3"
@@ -1119,13 +1136,12 @@ mysqli_data_seek($result_pengumpulan, 0);
                                             <div class="mb-4">
                                                 <label for="komentarInput" class="form-label text-secondary mb-2">
                                                     <i class="bi bi-pencil me-1"></i>
-                                                    Komentar
+                                                    Beri Komentar
                                                 </label>
                                                 <textarea class="form-control rounded-3"
                                                     id="komentarInput"
                                                     name="komentar"
-                                                    rows="2"
-                                                    placeholder="Tambahkan komentar untuk siswa..."></textarea>
+                                                    rows="2"></textarea>
                                             </div>
 
                                             <!-- Submit Button -->
@@ -1225,7 +1241,7 @@ mysqli_data_seek($result_pengumpulan, 0);
 
                             // Set waktu pengumpulan
                             document.getElementById('waktuPengumpulan').textContent =
-                                `Dikumpulkan: ${new Date(data.waktu_pengumpulan).toLocaleString()}`;
+                                `Dikumpulkan pada ${new Date(data.waktu_pengumpulan).toLocaleString()}`;
 
                             // Set pesan siswa
                             document.getElementById('pesanSiswa').textContent = data.pesan || 'Siswa tidak memberikan pesan';
@@ -1261,10 +1277,11 @@ mysqli_data_seek($result_pengumpulan, 0);
 
                     // Show appropriate viewer based on file extension
                     // Show appropriate viewer based on file extension
+                    // Modifikasi di fungsi setupFilePreview, bagian PDF handler
                     if (fileName.endsWith('.pdf')) {
-    const pdfViewer = document.getElementById('pdfViewer');
-    pdfViewer.classList.remove('d-none');
-    
+                        const pdfViewer = document.getElementById('pdfViewer');
+                        pdfViewer.classList.remove('d-none');
+
     // Direct embedding - lets browser handle PDF display
     const pdfContainer = document.createElement('div');
     pdfContainer.style.width = '100%';
@@ -1281,7 +1298,7 @@ mysqli_data_seek($result_pengumpulan, 0);
     pdfContainer.appendChild(pdfEmbed);
     pdfViewer.innerHTML = '';
     pdfViewer.appendChild(pdfContainer);
-} else if (/\.(jpg|jpeg|png|gif)$/i.test(fileName)) {
+                    } else if (/\.(jpg|jpeg|png|gif)$/i.test(fileName)) {
                         const imageViewer = document.getElementById('imageViewer');
                         imageViewer.classList.remove('d-none');
                         initImageViewer(file.url);
@@ -1505,9 +1522,14 @@ mysqli_data_seek($result_pengumpulan, 0);
                             document.getElementById('nilaiInput').value = data.nilai || '';
                             document.getElementById('komentarInput').value = data.komentar || '';
 
-                            // Set waktu pengumpulan
-                            document.getElementById('waktuPengumpulan').textContent =
-                                `Dikumpulkan: ${new Date(data.waktu_pengumpulan).toLocaleString()}`;
+                            // Format waktu pengumpulan sesuai permintaan
+                            const waktuPengumpulan = new Date(data.waktu_pengumpulan);
+                            const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                            const bulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+                            
+                            const formattedDate = `${hari[waktuPengumpulan.getDay()]}, ${waktuPengumpulan.getDate()} ${bulan[waktuPengumpulan.getMonth()]} ${waktuPengumpulan.getFullYear()} pada pukul ${String(waktuPengumpulan.getHours()).padStart(2, '0')}:${String(waktuPengumpulan.getMinutes()).padStart(2, '0')}:${String(waktuPengumpulan.getSeconds()).padStart(2, '0')} WIB`;
+                            
+                            document.getElementById('waktuPengumpulan').textContent = `Dikumpulkan pada ${formattedDate}`;
 
                             // Set pesan siswa
                             document.getElementById('pesanSiswa').textContent = data.pesan || 'Tidak ada pesan';

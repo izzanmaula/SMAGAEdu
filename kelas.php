@@ -1136,16 +1136,14 @@ function formatFileSize($bytes)
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content" style="border-radius: 16px; border: none;">
                                                     <div class="modal-header border-0 pb-0">
-                                                        <div class="w-100  position-relative">
+                                                        <div class="w-100 position-relative">
                                                             <h5 class="modal-title fw-semibold mb-0" style="font-size: 18px;">Kumpulkan Tugas</h5>
                                                             <button type="button" class="btn-close position-absolute top-50 translate-middle-y" style="right: 0;" data-bs-dismiss="modal" aria-label="Close"></button>
-
                                                         </div>
                                                     </div>
 
                                                     <form action="kumpulkan_tugas.php" method="POST" enctype="multipart/form-data">
                                                         <div class="modal-body px-4">
-
                                                             <input type="hidden" name="tugas_id" id="tugas_id_input">
 
                                                             <!-- File Upload Section -->
@@ -1157,16 +1155,24 @@ function formatFileSize($bytes)
                                                                     <i class="bi bi-cloud-upload fs-1 mb-2" style="color: #666;"></i>
                                                                     <input type="file"
                                                                         class="form-control visually-hidden"
-                                                                        name="file_tugas"
+                                                                        name="file_tugas[]"
                                                                         id="file_tugas"
+                                                                        multiple
                                                                         required>
                                                                     <label for="file_tugas" class="btn btn-light border mb-2">Pilih File</label>
-                                                                    <div id="selected-file" class="small text-muted text-center">Belum ada file dipilih</div>
+                                                                    <div id="selected-files" class="small text-muted text-center">Belum ada file dipilih</div>
                                                                     <div class="form-text text-center mt-2">Format: PDF, DOC, DOCX, JPG, PNG</div>
                                                                 </div>
                                                             </div>
 
-                                                            <!-- Notes Section -->
+                                                            <!-- Preview File yang Dipilih -->
+                                                            <div id="file-preview-container" class="mb-4" style="display: none;">
+                                                                <label class="form-label fw-medium mb-2" style="font-size: 15px;">File Terpilih</label>
+                                                                <div id="file-preview-list" class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                                                                    <!-- File preview akan ditampilkan di sini -->
+                                                                </div>
+                                                            </div>
+
                                                             <!-- Comment Section -->
                                                             <div class="mb-4">
                                                                 <label class="form-label fw-medium mb-2" style="font-size: 15px;">
@@ -1205,6 +1211,125 @@ function formatFileSize($bytes)
                                             </div>
                                         </div>
 
+                                        <script>
+                                            // Tambahkan script untuk menangani multiple file upload
+                                            document.getElementById('file_tugas').addEventListener('change', function() {
+                                                const fileInput = this;
+                                                const filePreviewContainer = document.getElementById('file-preview-container');
+                                                const filePreviewList = document.getElementById('file-preview-list');
+                                                const selectedFilesText = document.getElementById('selected-files');
+
+                                                // Reset preview
+                                                filePreviewList.innerHTML = '';
+
+                                                if (fileInput.files.length > 0) {
+                                                    // Tampilkan container preview
+                                                    filePreviewContainer.style.display = 'block';
+                                                    selectedFilesText.textContent = `${fileInput.files.length} file terpilih`;
+
+                                                    // Buat preview untuk setiap file
+                                                    for (let i = 0; i < fileInput.files.length; i++) {
+                                                        const file = fileInput.files[i];
+                                                        const fileSize = file.size < 1024 * 1024 ?
+                                                            Math.round(file.size / 1024) + ' KB' :
+                                                            Math.round(file.size / (1024 * 1024) * 10) / 10 + ' MB';
+
+                                                        // Tentukan icon berdasarkan tipe file
+                                                        let iconClass = 'bi-file-earmark';
+                                                        if (file.type.includes('image')) {
+                                                            iconClass = 'bi-file-image text-success';
+                                                        } else if (file.name.endsWith('.pdf')) {
+                                                            iconClass = 'bi-file-pdf text-danger';
+                                                        } else if (file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                                                            iconClass = 'bi-file-word text-primary';
+                                                        }
+
+                                                        // Buat element preview
+                                                        const fileItem = document.createElement('div');
+                                                        fileItem.className = 'file-item d-flex align-items-center p-2 rounded mb-2 bg-light';
+                                                        fileItem.innerHTML = `
+                <i class="bi ${iconClass} me-2 fs-5"></i>
+                <div class="flex-grow-1">
+                    <div class="text-truncate">${file.name}</div>
+                    <small class="text-muted">${fileSize}</small>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger remove-file" data-index="${i}">
+                    <i class="bi bi-x"></i>
+                </button>
+            `;
+
+                                                        filePreviewList.appendChild(fileItem);
+                                                    }
+
+                                                    // Tambahkan handler untuk tombol hapus
+                                                    document.querySelectorAll('.remove-file').forEach(button => {
+                                                        button.addEventListener('click', function() {
+                                                            const index = parseInt(this.getAttribute('data-index'));
+                                                            removeFile(index);
+                                                        });
+                                                    });
+                                                } else {
+                                                    // Sembunyikan container preview jika tidak ada file
+                                                    filePreviewContainer.style.display = 'none';
+                                                    selectedFilesText.textContent = 'Belum ada file dipilih';
+                                                }
+                                            });
+
+                                            function removeFile(index) {
+                                                const fileInput = document.getElementById('file_tugas');
+                                                const dt = new DataTransfer();
+
+                                                // Salin semua file kecuali yang dihapus
+                                                for (let i = 0; i < fileInput.files.length; i++) {
+                                                    if (i !== index) dt.items.add(fileInput.files[i]);
+                                                }
+
+                                                // Update file input dengan DataTransfer baru
+                                                fileInput.files = dt.files;
+
+                                                // Trigger event change untuk memperbarui preview
+                                                const event = new Event('change');
+                                                fileInput.dispatchEvent(event);
+                                            }
+                                        </script>
+
+                                        <style>
+                                            .file-item {
+                                                transition: all 0.2s ease;
+                                            }
+
+                                            .file-item:hover {
+                                                background-color: #e9ecef !important;
+                                            }
+
+                                            .file-item .remove-file {
+                                                opacity: 0.5;
+                                                transition: opacity 0.2s;
+                                            }
+
+                                            .file-item:hover .remove-file {
+                                                opacity: 1;
+                                            }
+
+                                            #file-preview-list {
+                                                max-height: 200px;
+                                                overflow-y: auto;
+                                                scrollbar-width: thin;
+                                            }
+
+                                            #file-preview-list::-webkit-scrollbar {
+                                                width: 6px;
+                                            }
+
+                                            #file-preview-list::-webkit-scrollbar-track {
+                                                background: #f1f1f1;
+                                            }
+
+                                            #file-preview-list::-webkit-scrollbar-thumb {
+                                                background: #ddd;
+                                                border-radius: 3px;
+                                            }
+                                        </style>
                                         <style>
                                             .modal-content {
                                                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -1236,10 +1361,23 @@ function formatFileSize($bytes)
                                         </style>
 
                                         <script>
-                                            // Show selected filename
+                                            // Show selected filename(s)
                                             document.getElementById('file_tugas').addEventListener('change', function() {
-                                                const fileName = this.files[0]?.name || 'Belum ada file dipilih';
-                                                document.getElementById('selected-file').textContent = fileName;
+                                                // Cari elemen untuk menampilkan informasi file
+                                                const selectedFilesElement = document.getElementById('selected-files') || document.getElementById('selected-file');
+
+                                                if (!selectedFilesElement) {
+                                                    console.warn("Element to display selected files not found");
+                                                    return;
+                                                }
+
+                                                if (this.files.length === 0) {
+                                                    selectedFilesElement.textContent = 'Belum ada file dipilih';
+                                                } else if (this.files.length === 1) {
+                                                    selectedFilesElement.textContent = this.files[0].name;
+                                                } else {
+                                                    selectedFilesElement.textContent = `${this.files.length} file terpilih`;
+                                                }
                                             });
                                         </script>
 
@@ -1638,8 +1776,10 @@ function formatFileSize($bytes)
                                         </style>
 
                                         <script>
-                                            // Add audio element for like sound
-                                            const likeSound = new Audio('assets/like_rev.mp3'); // Make sure to add an audio file
+                                            // suara like
+                                            if (typeof likeSound === 'undefined') {
+                                                const likeSound = new Audio('assets/like_rev.mp3');
+                                            }
 
                                             function updateReactionDisplay(postId, reactions, currentEmoji) {
                                                 const button = document.getElementById(`like-btn-${postId}`);
@@ -2552,7 +2692,10 @@ function formatFileSize($bytes)
                                                             }
                                                         </script>
                                                         <script>
-                                                            let currentPostId; // Store current post ID globally
+                                                            // Untuk currentPostId
+                                                            if (typeof currentPostId === 'undefined') {
+                                                                let currentPostId;
+                                                            }
 
                                                             function replyToComment(commentId, userName, postId) {
                                                                 currentPostId = postId;
@@ -2764,8 +2907,9 @@ function formatFileSize($bytes)
                                         <!-- logika komentar -->
                                         <script>
                                             // Tambahkan style untuk animasi
-                                            const styleSheet = document.createElement("style");
-                                            styleSheet.textContent = `
+                                            if (typeof styleSheet === 'undefined') {
+                                                const styleSheet = document.createElement("style");
+                                                styleSheet.textContent = `
 @keyframes highlightComment {
     0% {
         background-color: rgba(218, 119, 86, 0.2);
@@ -2788,7 +2932,8 @@ function formatFileSize($bytes)
     animation: highlightComment 2s ease-out forwards;
 }
 `;
-                                            document.head.appendChild(styleSheet);
+                                                document.head.appendChild(styleSheet);
+                                            }
 
                                             function submitKomentar(postId) {
                                                 const form = document.querySelector(`.komentar-form[data-postid="${postId}"]`);
@@ -2967,29 +3112,34 @@ function formatFileSize($bytes)
 
                         const imageContainer = document.getElementById("imageContainer");
 
-                        // Set grid class based on number of images
-                        if (images.length === 1) {
-                            imageContainer.classList.add("one");
-                        } else if (images.length === 2) {
-                            imageContainer.classList.add("two");
-                        } else if (images.length === 3) {
-                            imageContainer.classList.add("three");
-                        } else if (images.length >= 4) {
-                            imageContainer.classList.add("four");
-                        }
+                        // Hanya lanjutkan jika elemen ditemukan
+                        if (imageContainer) {
+                            // Set grid class based on number of images
+                            if (images.length === 1) {
+                                imageContainer.classList.add("one");
+                            } else if (images.length === 2) {
+                                imageContainer.classList.add("two");
+                            } else if (images.length === 3) {
+                                imageContainer.classList.add("three");
+                            } else if (images.length >= 4) {
+                                imageContainer.classList.add("four");
+                            }
 
-                        // Add images to the grid
-                        images.forEach(src => {
-                            const img = document.createElement("img");
-                            img.src = src;
-                            img.alt = "Image";
-                            img.setAttribute("data-bs-toggle", "modal");
-                            img.setAttribute("data-bs-target", "#imageModal");
-                            img.addEventListener("click", () => {
-                                document.getElementById("modalImage").src = src;
+                            // Add images to the grid
+                            images.forEach(src => {
+                                const img = document.createElement("img");
+                                img.src = src;
+                                img.alt = "Image";
+                                img.setAttribute("data-bs-toggle", "modal");
+                                img.setAttribute("data-bs-target", "#imageModal");
+                                img.addEventListener("click", () => {
+                                    document.getElementById("modalImage").src = src;
+                                });
+                                imageContainer.appendChild(img);
                             });
-                            imageContainer.appendChild(img);
-                        });
+                        } else {
+                            console.warn("Elemen postingan bergambar tidak ditemukan di dalam DOM");
+                        }
                     </script>
                     <!-- Image Modal -->
                     <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">

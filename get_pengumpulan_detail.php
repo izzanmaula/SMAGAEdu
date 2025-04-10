@@ -13,12 +13,10 @@ try {
 
     $id = mysqli_real_escape_string($koneksi, $_GET['id']);
 
+    // Query untuk mendapatkan data pengumpulan tugas
     $query = "SELECT 
         p.id,
         p.siswa_id,
-        p.file_path, 
-        p.tipe_file,
-        p.ukuran_file,
         p.waktu_pengumpulan,
         p.nilai,
         p.komentar_guru,
@@ -34,37 +32,68 @@ try {
         throw new Exception(mysqli_error($koneksi));
     }
 
-// Di dalam blok if yang ada
-if ($data = mysqli_fetch_assoc($result)) {
-    $file_name = basename($data['file_path']);
-    
-    // Cek apakah file_path adalah Google Drive URL
-    if (strpos($data['file_path'], 'drive.google.com') !== false) {
-        $file_url = $data['file_path']; // Gunakan URL Google Drive langsung
+    if ($data = mysqli_fetch_assoc($result)) {
+        // Query untuk mengambil semua file terkait dengan pengumpulan
+        $query_files = "SELECT * FROM file_pengumpulan_tugas WHERE pengumpulan_id = '$id'";
+        $result_files = mysqli_query($koneksi, $query_files);
+        
+        if (!$result_files) {
+            // Jika tabel belum ada, coba gunakan metode lama (backward compatibility)
+            $files = [];
+            if (!empty($data['file_path'])) {
+                $file_name = basename($data['file_path']);
+                
+                // Cek apakah file_path adalah Google Drive URL
+                if (strpos($data['file_path'], 'drive.google.com') !== false) {
+                    $file_url = $data['file_path']; // Gunakan URL Google Drive langsung
+                } else {
+                    // Buat URL lengkap untuk file lokal
+                    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+                    $file_url = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . $data['file_path'];
+                }
+                
+                $files[] = [
+                    'name' => $file_name,
+                    'url' => $file_url,
+                    'type' => $data['tipe_file'] ?? 'unknown',
+                    'size' => $data['ukuran_file'] ?? 0
+                ];
+            }
+        } else {
+            // Gunakan metode baru - multiple files dari tabel file_pengumpulan_tugas
+            $files = [];
+            while ($file = mysqli_fetch_assoc($result_files)) {
+                $file_name = basename($file['file_path']);
+                
+                // Cek apakah file_path adalah Google Drive URL
+                if (strpos($file['file_path'], 'drive.google.com') !== false) {
+                    $file_url = $file['file_path']; // Gunakan URL Google Drive langsung
+                } else {
+                    // Buat URL lengkap untuk file lokal
+                    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
+                    $file_url = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . $file['file_path'];
+                }
+                
+                $files[] = [
+                    'name' => $file['nama_file'],
+                    'url' => $file_url,
+                    'type' => $file['tipe_file'],
+                    'size' => $file['ukuran_file']
+                ];
+            }
+        }
+        
+        $response = [
+            'success' => true,
+            'nilai' => $data['nilai'],
+            'komentar' => $data['komentar_guru'],
+            'waktu_pengumpulan' => $data['waktu_pengumpulan'],
+            'pesan' => $data['pesan_siswa'],
+            'files' => $files
+        ];
+        
+        echo json_encode($response);
     } else {
-        // Buat URL lengkap untuk file lokal
-        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
-        $file_url = $protocol . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']) . '/' . $data['file_path'];
-    }
-    
-    $response = [
-        'success' => true,
-        'nilai' => $data['nilai'],
-        'komentar' => $data['komentar_guru'],
-        'waktu_pengumpulan' => $data['waktu_pengumpulan'],
-        'pesan' => $data['pesan_siswa'],
-        'files' => [
-            [
-                'name' => $file_name,
-                'url' => $file_url,
-                'type' => $data['tipe_file'],
-                'size' => $data['ukuran_file']
-            ]
-        ]
-    ];
-    
-    echo json_encode($response);
-} else {
         throw new Exception('No data found for ID: ' . $id);
     }
 } catch (Exception $e) {
