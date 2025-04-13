@@ -293,11 +293,11 @@ mysqli_data_seek($result_pengumpulan, 0);
 
                 <!-- Detail Tugas -->
                 <div class="col-lg-4 mb-4">
-                    <div class="card border shadow-none rounded-4">
+                    <div class="card border shadow-none rounded-4" style="position: fixed; margin-right:1rem;">
                         <div class="card-body shadow-none p-4">
                             <!-- Title with iOS-style heading -->
                             <div class="d-flex align-items-center mb-0 mb-md-4">
-                                <i class="bi bi-info-circle-fill text-primary me-2"></i>
+                                <i class="bi bi-info-circle-fill me-2"></i>
                                 <h5 class="fw-semibold mb-0">Informasi Tugas</h5>
                                 <button class="btn btn-link ms-auto d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#detailTugasCollapse" aria-expanded="false" aria-controls="detailTugasCollapse">
                                     <i class="bi bi-chevron-down"></i>
@@ -394,7 +394,6 @@ mysqli_data_seek($result_pengumpulan, 0);
                                             Poin Maksimal
                                         </div>
                                         <div class="d-flex align-items-center">
-                                            <i class="bi bi-star-fill text-warning me-2"></i>
                                             <?php echo $data_tugas['poin_maksimal']; ?> poin
                                         </div>
                                     </div>
@@ -956,7 +955,7 @@ mysqli_data_seek($result_pengumpulan, 0);
                                         <!-- Navigation untuk multiple file -->
                                         <div class="bg-white px-3 py-2 d-flex border-bottom justify-content-between align-items-center position-relative" style="border-radius: 10px 10px 0 0;">
                                             <!-- Left chevron -->
-                                            <button class="btn btn-sm btn-light rounded-circle shadow-sm position-absolute start-0 ms-3" id="prevFile" style="width: 32px; height: 32px;">
+                                            <button class="btn btn-sm rounded-circle position-absolute start-0 ms-3" id="prevFile" style="width: 32px; height: 32px;">
                                                 <i class="bi bi-chevron-left"></i>
                                             </button>
 
@@ -966,7 +965,7 @@ mysqli_data_seek($result_pengumpulan, 0);
                                             </div>
 
                                             <!-- Right chevron -->
-                                            <button class="btn btn-sm btn-light rounded-circle shadow-sm position-absolute end-0 me-3" id="nextFile" style="width: 32px; height: 32px;">
+                                            <button class="btn btn-sm  rounded-circle position-absolute end-0 me-3" id="nextFile" style="width: 32px; height: 32px;">
                                                 <i class="bi bi-chevron-right"></i>
                                             </button>
                                         </div>
@@ -1145,11 +1144,18 @@ mysqli_data_seek($result_pengumpulan, 0);
                                             </div>
 
                                             <!-- Submit Button -->
-                                            <button type="submit" class="btn w-100 rounded-3 py-3"
-                                                style="background-color:rgb(218, 119, 86); color: white; font-weight: 500;">
-                                                <i class="bi bi-check-circle me-2"></i>
-                                                Simpan Penilaian
-                                            </button>
+                                            <div class="d-flex gap-2 mt-5">
+                                                <button type="button" class="btn btn-outline-secondary rounded-3 py-3 w-50" 
+                                                    data-bs-dismiss="modal">
+                                                    <i class="bi bi-x-circle me-2"></i>
+                                                    Tutup
+                                                </button>
+                                                <button type="submit" class="btn rounded-3 py-3 w-50"
+                                                    style="background-color:rgb(218, 119, 86); color: white; font-weight: 500;">
+                                                    <i class="bi bi-check-circle me-2"></i>
+                                                    Simpan
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
@@ -1396,6 +1402,9 @@ mysqli_data_seek($result_pengumpulan, 0);
                                 </button>
                             </div>
                         </form>
+                        <div class="text-center mt-1">
+                            <p class="text-muted" style="font-size: 12px;">Tekan <span style="background-color: grey; font-size:12px;" class="rounded px-2 text-white">Esc</span> atau tekan layar abu-abu di luar modal</p>
+                        </div>
                     </div>
                 </div>
             </div>

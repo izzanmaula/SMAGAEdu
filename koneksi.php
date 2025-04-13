@@ -1,6 +1,6 @@
 <?php
 // Koneksi ke database smagaedu
-$koneksi = mysqli_connect("localhost", "root", "", "smagaedu");
+$koneksi = mysqli_connect("localhost", "root", "kemambuan", "smagaedu");
 
 // Cek koneksi
 if (mysqli_connect_errno()){
